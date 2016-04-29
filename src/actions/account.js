@@ -2,8 +2,7 @@
 
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
-import {
-    updateUser as userUpdateUser,
+import userActions, {
     changeEmail as userChangeEmail,
     changePassword as userChangePassword
 } from './user';
@@ -18,10 +17,11 @@ export const UPDATE_FAILURE = accountPrefix('UPDATE_FAILURE');
 export function updateUser(data) {
     return function thunk(dispatch, getState) {
         const userID = getState().session.user;
+        const update = assign({}, data, { id: userID });
 
         dispatch(createAction(UPDATE_START)(data));
 
-        return dispatch(userUpdateUser(assign({}, data, { id: userID })))
+        return dispatch(userActions.update({ data: update }))
             .then(user => dispatch(createAction(UPDATE_SUCCESS)(user)))
             .catch(reason => dispatch(createAction(UPDATE_FAILURE)(reason)));
     };

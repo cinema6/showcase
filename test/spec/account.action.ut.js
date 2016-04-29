@@ -15,6 +15,7 @@ import {
 } from '../../src/actions/account';
 import { createAction } from 'redux-actions';
 import defer from 'promise-defer';
+import userActions from '../../src/actions/user';
 
 const proxyquire = require('proxyquire');
 
@@ -25,13 +26,8 @@ describe('updateUser(data)', function() {
     let data;
 
     beforeEach(function() {
-        userUpdateUser = jasmine.createSpy('updateUser()').and.callFake(require('../../src/actions/user').updateUser);
         updateUser = proxyquire('../../src/actions/account', {
-            './user': {
-                updateUser: userUpdateUser,
-
-                __esModule: true
-            }
+            './user': require('../../src/actions/user')
         }).updateUser;
 
         data = {
@@ -39,6 +35,8 @@ describe('updateUser(data)', function() {
             lastName: 'Minzner',
             company: 'Reelcontent, Inc.'
         };
+
+        spyOn(userActions, 'update').and.callThrough();
 
         thunk = updateUser(data);
     });
@@ -70,8 +68,8 @@ describe('updateUser(data)', function() {
         });
 
         it('should update the user', function() {
-            expect(userUpdateUser).toHaveBeenCalledWith(assign({}, data, { id: state.session.user }));
-            expect(dispatch).toHaveBeenCalledWith(userUpdateUser.calls.mostRecent().returnValue);
+            expect(userActions.update).toHaveBeenCalledWith({ data: assign({}, data, { id: state.session.user }) });
+            expect(dispatch).toHaveBeenCalledWith(userActions.update.calls.mostRecent().returnValue);
         });
 
         it('should dispatch UPDATE_START', function() {

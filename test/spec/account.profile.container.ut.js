@@ -138,7 +138,7 @@ describe('mapStateToProps(state)', function() {
                 user: user.id
             },
             db: {
-                users: {
+                user: {
                     [user.id]: user
                 }
             },

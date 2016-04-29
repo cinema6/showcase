@@ -15,7 +15,7 @@ export function checkAuthStatus() {
         const userID = state.session.user;
 
         if (userID) {
-            return state.db.users[userID];
+            return state.db.user[userID];
         }
 
         return dispatch(callAPI({

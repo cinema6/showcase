@@ -78,7 +78,7 @@ describe('actions: auth', function() {
                             user: user.id
                         },
                         db: {
-                            users: {
+                            user: {
                                 [user.id]: user
                             }
                         }

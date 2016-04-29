@@ -1,8 +1,8 @@
 'use strict';
 
-import usersReducer from './users';
-import { combineReducers } from 'redux';
+import userReducer from './user';
+import { createDbReducer } from '../../utils/db';
 
-export default combineReducers({
-    users: usersReducer
+export default createDbReducer({
+    user: userReducer
 });

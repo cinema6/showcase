@@ -1,10 +1,11 @@
 import dbReducer from '../../src/reducers/db';
-import usersReducer from '../../src/reducers/db/users';
+import userReducer from '../../src/reducers/db/user';
+import { createDbReducer } from '../../src/utils/db';
 
 describe('dbReducer()', function() {
     it('should return inital state', function() {
-        expect(dbReducer(undefined, 'INIT')).toEqual({
-            users: usersReducer(undefined, 'INIT')
-        });
+        expect(dbReducer(undefined, 'INIT')).toEqual(createDbReducer({
+            user: userReducer
+        })(undefined, 'INIT'));
     });
 });

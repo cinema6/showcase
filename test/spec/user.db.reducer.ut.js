@@ -1,19 +1,18 @@
-import usersReducer from '../../src/reducers/db/users';
+import userReducer from '../../src/reducers/db/user';
 import {
     LOGIN_SUCCESS,
     STATUS_CHECK_SUCCESS
 } from '../../src/actions/auth';
 import {
-    CHANGE_EMAIL_SUCCESS,
-    UPDATE_SUCCESS
+    CHANGE_EMAIL_SUCCESS
 } from '../../src/actions/user';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { assign } from 'lodash';
 
-describe('usersReducer()', function() {
+describe('userReducer()', function() {
     it('should return some inital state', function() {
-        expect(usersReducer(undefined, 'INIT')).toEqual({});
+        expect(userReducer(undefined, 'INIT')).toEqual({});
     });
 
     describe('handling actions', function() {
@@ -42,7 +41,7 @@ describe('usersReducer()', function() {
                         email: 'johnny@bananas.com'
                     };
 
-                    newState = usersReducer(state, createAction(ACTION)(user));
+                    newState = userReducer(state, createAction(ACTION)(user));
                 });
 
                 it('should add the user to the cache', function() {
@@ -62,7 +61,7 @@ describe('usersReducer()', function() {
                 user = state[id];
                 email = 'new@email.com';
 
-                newState = usersReducer(state, createAction(CHANGE_EMAIL_SUCCESS, null, () => ({ id, email }))(undefined));
+                newState = userReducer(state, createAction(CHANGE_EMAIL_SUCCESS, null, () => ({ id, email }))(undefined));
             });
 
             it('should update the user\'s email', function() {
@@ -70,29 +69,6 @@ describe('usersReducer()', function() {
                     [id]: assign({}, user, {
                         email
                     })
-                }));
-            });
-        });
-
-        describe(UPDATE_SUCCESS, function() {
-            let id, user;
-            let data;
-
-            beforeEach(function() {
-                id = Object.keys(state)[0];
-                user = state[id];
-
-                data = assign({}, user, {
-                    id: id,
-                    company: 'Reelcontent'
-                });
-
-                newState = usersReducer(state, createAction(UPDATE_SUCCESS)(data));
-            });
-
-            it('should update the user', function() {
-                expect(newState).toEqual(assign({}, state, {
-                    [id]: data
                 }));
             });
         });

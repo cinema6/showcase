@@ -6,8 +6,7 @@ import {
     STATUS_CHECK_SUCCESS
 } from '../../actions/auth';
 import {
-    CHANGE_EMAIL_SUCCESS,
-    UPDATE_SUCCESS
+    CHANGE_EMAIL_SUCCESS
 } from '../../actions/user';
 import { assign } from 'lodash';
 
@@ -29,6 +28,5 @@ export default handleActions({
         return assign({}, state, {
             [id]: assign({}, state[id], { email })
         });
-    },
-    [UPDATE_SUCCESS]: addUserToCache
+    }
 }, DEFAULT_STATE);

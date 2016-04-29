@@ -42,7 +42,7 @@ Profile.propTypes = {
 
 export function mapStateToProps(state) {
     return {
-        initialValues: state.db.users[state.session.user] || {}
+        initialValues: state.db.user[state.session.user] || {}
     };
 }
 

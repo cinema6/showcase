@@ -43,7 +43,7 @@ Email.propTypes = {
 };
 
 export function mapStateToProps(state) {
-    const user = state.db.users[state.session.user];
+    const user = state.db.user[state.session.user];
 
     return {
         currentEmail: (user && user.email) || null
