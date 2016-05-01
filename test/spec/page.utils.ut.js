@@ -180,13 +180,21 @@ describe('pageify', function() {
     });
 
     describe('when mounted', function() {
+        let store;
         let component;
         let props;
         let state;
 
+        class Renderer extends Component {
+            render() {
+                return <Provider store={store}>
+                    <Page ref="page" {...props} />
+                </Provider>;
+            }
+        }
+
         beforeEach(function() {
             props = {
-                dispatch: jasmine.createSpy('dispatch()'),
                 foo: 'bar',
                 hello: 'world'
             };
@@ -199,11 +207,12 @@ describe('pageify', function() {
                 }
             };
 
-            component = renderIntoDocument(
-                <Provider store={createStore(() => state)}>
-                    <Page {...props} />
-                </Provider>
-            );
+            store = createStore(() => state);
+            spyOn(store, 'dispatch').and.callThrough();
+
+            spyOn(store, 'subscribe').and.callThrough();
+
+            component = renderIntoDocument(<Renderer />).refs.page;
         });
 
         it('should render the wrapped component', function() {
@@ -212,23 +221,71 @@ describe('pageify', function() {
 
         it('should pass props to the wrapped class', function() {
             expect(wrapped.props).toEqual(assign({}, props, {
-                page: state.page[path]
+                page: component.state.page
             }));
         });
 
         it('should dispatch pageWillMount()', function() {
-            expect(props.dispatch).toHaveBeenCalledWith(pageWillMount({ pagePath: path }));
+            expect(store.dispatch).toHaveBeenCalledWith(pageWillMount({ pagePath: path }));
+        });
+
+        it('should copy the page state to its own state', function() {
+            expect(component.state.page).toBe(state.page[path]);
+        });
+
+        it('should register a listener with the store', function() {
+            expect(store.subscribe).toHaveBeenCalledWith(component.handleStateChange);
+            expect(component.unsubscribe).toBe(store.subscribe.calls.mostRecent().returnValue);
         });
 
         describe('and then unmounted', function() {
             beforeEach(function() {
-                props.dispatch.calls.reset();
+                store.dispatch.calls.reset();
+                spyOn(component, 'unsubscribe').and.callThrough();
 
                 unmountComponentAtNode(findDOMNode(component).parentNode);
             });
 
             it('should dispatch pageWillUnmount()', function() {
-                expect(props.dispatch).toHaveBeenCalledWith(pageWillUnmount({ pagePath: path }));
+                expect(store.dispatch).toHaveBeenCalledWith(pageWillUnmount({ pagePath: path }));
+            });
+
+            it('should unsubscribe', function() {
+                expect(component.unsubscribe).toHaveBeenCalledWith();
+            });
+        });
+
+        describe('methods:', function() {
+            describe('handleStateChange()', function() {
+                let handleStateChange;
+
+                beforeEach(function() {
+                    spyOn(component, 'setState').and.callThrough();
+
+                    handleStateChange = component.handleStateChange;
+                });
+
+                describe('if the page has changed', function() {
+                    beforeEach(function() {
+                        state.page[path] = { it: 'changed' };
+
+                        handleStateChange();
+                    });
+
+                    it('should setState() with the new page', function() {
+                        expect(component.setState).toHaveBeenCalledWith({ page: state.page[path] });
+                    });
+                });
+
+                describe('if the page has not changed', function() {
+                    beforeEach(function() {
+                        handleStateChange();
+                    });
+
+                    it('should not call setState()', function() {
+                        expect(component.setState).not.toHaveBeenCalled();
+                    });
+                });
             });
         });
     });

@@ -28,25 +28,45 @@ export function createPageReducer(reducerMap) {
 export function pageify({ path: pagePath }) {
     return function Page(Wrapped) {
         class Wrapper extends Component {
+            constructor() {
+                super(...arguments);
+
+                this.store = this.context.store;
+
+                this.state = {
+                    page: this.store.getState().page[pagePath]
+                };
+
+                this.handleStateChange = this.handleStateChange.bind(this);
+            }
+
+            handleStateChange() {
+                const page = this.store.getState().page[pagePath];
+
+                if (this.state.page === page) {
+                    return;
+                }
+
+                this.setState({ page });
+            }
+
             componentWillMount() {
-                return this.props.dispatch(pageWillMount({ pagePath }));
+                this.unsubscribe = this.store.subscribe(this.handleStateChange);
+
+                return this.store.dispatch(pageWillMount({ pagePath }));
             }
 
             componentWillUnmount() {
-                return this.props.dispatch(pageWillUnmount({ pagePath }));
+                this.unsubscribe();
+
+                return this.store.dispatch(pageWillUnmount({ pagePath }));
             }
 
             render() {
-                const state = this.context.store.getState();
-                const page = state.page[pagePath];
-
-                return <Wrapped {...this.props} page={page} />;
+                return <Wrapped {...this.props} page={this.state.page} />;
             }
         }
 
-        Wrapper.propTypes = {
-            dispatch: PropTypes.func.isRequired
-        };
         Wrapper.contextTypes = {
             store: PropTypes.shape({
                 getState: PropTypes.func.isRequired
