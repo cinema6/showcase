@@ -57,6 +57,8 @@
     "posix": "^4.0.1"
   },
   "dependencies": {
+    "braintree-web": "^2.24.0",
+    "classnames": "^2.2.5",
     "core-js": "^2.3.0",
     "flux-standard-action": "^0.6.1",
     "lodash": "^4.11.1",
