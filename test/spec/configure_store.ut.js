@@ -10,7 +10,7 @@ const proxyquire = require('proxyquire');
 
 describe('configureStore(initialState)', function() {
     let configureStore;
-    let redux, reactRouterRedux, reduxLogger;
+    let redux, reactRouterRedux, reduxLogger, reduxPromiseMiddleware;
 
     beforeEach(function() {
         redux  = {
@@ -26,12 +26,19 @@ describe('configureStore(initialState)', function() {
             __esModule: true
         };
 
+        reduxPromiseMiddleware = {
+            default: jasmine.createSpy('promiseMiddleware()').and.callFake(require('redux-promise-middleware').default),
+
+            __esModule: true
+        };
+
         reduxLogger = jasmine.createSpy('reduxLogger()').and.callFake(require('redux-logger'));
 
         configureStore = proxyquire('../../src/store/configure_store', {
             redux,
             'react-router-redux': reactRouterRedux,
             'redux-logger': reduxLogger,
+            'redux-promise-middleware': reduxPromiseMiddleware,
 
             '../reducers': {
                 default: require('../../src/reducers').default,
@@ -90,10 +97,15 @@ describe('configureStore(initialState)', function() {
             });
         });
 
+        it('should configure promise middleware', function() {
+            expect(reduxPromiseMiddleware.default).toHaveBeenCalledWith();
+        });
+
         it('should configure a middleware stack', function() {
             expect(redux.applyMiddleware).toHaveBeenCalledWith(
                 promisify,
                 thunk,
+                reduxPromiseMiddleware.default.calls.mostRecent().returnValue,
                 reactRouterRedux.routerMiddleware.calls.mostRecent().returnValue,
                 apiMiddleware,
                 reduxLogger.calls.mostRecent().returnValue
