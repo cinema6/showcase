@@ -26,6 +26,7 @@ module.exports = {
                     require('http-mock')({
                         '/api/auth': 'server/api/auth/main.js',
                         '/api/account': 'server/api/account/main.js',
+                        '/api/payments': 'server/api/payment/main.js',
                         '@verbosity': verbosity
                     })
                 ].concat(middleware);

@@ -1,0 +1,11 @@
+{
+    "token": "pay-0EkdAL055D9WAqK0",
+    "createdAt": "2016-05-02T22:02:20.020Z",
+    "updatedAt": "2016-05-02T22:02:20.020Z",
+    "imageUrl": null,
+    "default": true,
+    "type": "creditCard",
+    "cardType": "Visa",
+    "expirationDate": "11/2019",
+    "last4": 9278
+}
