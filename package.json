@@ -57,11 +57,13 @@
     "posix": "^4.0.1"
   },
   "dependencies": {
+    "accounting": "^0.4.1",
     "braintree-web": "^2.24.0",
     "classnames": "^2.2.5",
     "core-js": "^2.3.0",
     "flux-standard-action": "^0.6.1",
     "lodash": "^4.11.1",
+    "moment": "^2.13.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
