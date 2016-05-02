@@ -2,7 +2,10 @@
 
 import userReducer from './user';
 import { createDbReducer } from '../../utils/db';
+import { identity } from 'lodash';
 
 export default createDbReducer({
-    user: userReducer
+    user: userReducer,
+    payment: identity,
+    paymentMethod: identity
 });
