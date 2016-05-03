@@ -9,6 +9,7 @@ import dashboardAccountPasswordReducer from '../../src/reducers/page/dashboard/a
 import forgotPasswordReducer from '../../src/reducers/page/forgot_password';
 import resetPasswordReducer from '../../src/reducers/page/reset_password';
 import dashboardBillingReducer from '../../src/reducers/page/dashboard/billing';
+import dashboardAddProductReducer from '../../src/reducers/page/dashboard/add_product';
 
 describe('pageReducer()', function() {
     let exampleReducer;
@@ -29,7 +30,9 @@ describe('pageReducer()', function() {
             'dashboard.account.email': dashboardAccountEmailReducer,
             'dashboard.account.password': dashboardAccountPasswordReducer,
 
-            'dashboard.billing': dashboardBillingReducer
+            'dashboard.billing': dashboardBillingReducer,
+
+            'dashboard.add_product': dashboardAddProductReducer
         };
         exampleReducer = createPageReducer(pageMap);
 

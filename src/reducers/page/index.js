@@ -5,6 +5,7 @@ import dashboardAccountPasswordReducer from './dashboard/account/password';
 import forgotPasswordReducer from './forgot_password';
 import resetPasswordReducer from './reset_password';
 import dashboardBillingReducer from './dashboard/billing';
+import dashboardAddProductReducer from './dashboard/add_product';
 
 export default createPageReducer({
     'forgot_password': forgotPasswordReducer,
@@ -14,5 +15,7 @@ export default createPageReducer({
     'dashboard.account.email': dashboardAccountEmailReducer,
     'dashboard.account.password': dashboardAccountPasswordReducer,
 
-    'dashboard.billing': dashboardBillingReducer
+    'dashboard.billing': dashboardBillingReducer,
+
+    'dashboard.add_product': dashboardAddProductReducer
 });

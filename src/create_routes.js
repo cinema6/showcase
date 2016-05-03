@@ -12,6 +12,7 @@ import AccountPassword from './containers/Account/Password';
 import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import DashboardBilling from './containers/Dashboard/Billing';
+import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import {
     createProtectedRouteEnterHandler,
     createLoginEnterHandler
@@ -26,6 +27,10 @@ export default function createRoutes(store) {
             <IndexRedirect to="/dashboard" />
 
             <Route path="dashboard" component={Dashboard} onEnter={checkAuth}>
+                <IndexRedirect to="add-product" />
+
+                <Route path="add-product" component={DashboardAddProduct}></Route>
+
                 <Route path="account" component={Account}>
                     <IndexRedirect to="profile" />
 
