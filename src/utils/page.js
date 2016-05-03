@@ -73,6 +73,8 @@ export function pageify({ path: pagePath }) {
             }).isRequired
         };
 
+        Wrapper.WrappedComponent = Wrapped;
+
         return Wrapper;
     };
 }

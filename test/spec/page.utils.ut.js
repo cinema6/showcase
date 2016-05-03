@@ -179,6 +179,10 @@ describe('pageify', function() {
         expect(Page).toEqual(jasmine.any(Function));
     });
 
+    it('should save a reference to the WrappedComponent', function() {
+        expect(Page.WrappedComponent).toBe(MyComponent);
+    });
+
     describe('when mounted', function() {
         let store;
         let component;
