@@ -6,8 +6,10 @@ import {
 } from 'react-addons-test-utils';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, compose } from 'redux';
 import ProductWizard from '../../src/containers/Dashboard/ProductWizard';
+import { reducer as formReducer } from 'redux-form';
+import { assign } from 'lodash';
 
 const proxyquire = require('proxyquire');
 
@@ -39,11 +41,16 @@ describe('AddProduct', function() {
             state = {
                 page: {
                     'dashboard.add_product': {
-                        foo: 'bar'
+                        step: 0
                     }
                 }
             };
-            store = createStore(() => state);
+            store = createStore(compose(
+                (s, action) => assign({}, s, {
+                    form: formReducer(s.form, action)
+                }),
+                s => assign({}, s, state)
+            ));
 
             component = findRenderedComponentWithType(renderIntoDocument(
                 <Provider store={store}>
