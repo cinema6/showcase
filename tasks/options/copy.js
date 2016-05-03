@@ -10,5 +10,17 @@ module.exports = {
                 dest: 'server/.build/'
             }
         ]
+    },
+    build: {
+        files: [
+            {
+                expand: true,
+                cwd: 'static',
+                src: [
+                    '**'
+                ],
+                dest: '<%= settings.distDir %>'
+            }
+        ]
     }
 };
