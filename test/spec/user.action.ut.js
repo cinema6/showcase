@@ -10,7 +10,6 @@ import {
 } from '../../src/actions/user';
 import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
-import { CALL_API } from 'redux-api-middleware';
 
 const proxyquire = require('proxyquire');
 
@@ -130,9 +129,7 @@ describe('user actions', function() {
                 });
 
                 it('should not make an API call', function() {
-                    expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
-                        [CALL_API]: jasmine.any(Object)
-                    }));
+                    expect(dispatch.calls.count()).toBe(1);
                 });
 
                 it('should dispatch CHANGE_EMAIL_FAILURE', function() {
@@ -209,9 +206,7 @@ describe('user actions', function() {
                 });
 
                 it('should not make an API call', function() {
-                    expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
-                        [CALL_API]: jasmine.any(Object)
-                    }));
+                    expect(dispatch.calls.count()).toBe(1);
                 });
 
                 it('should dispatch CHANGE_EMAIL_FAILURE', function() {

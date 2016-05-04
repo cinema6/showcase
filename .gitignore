@@ -35,3 +35,5 @@ jspm_packages
 
 personal.json
 server/.build
+build
+.tmp

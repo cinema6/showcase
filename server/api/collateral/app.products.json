@@ -1,0 +1,2865 @@
+[
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Scybot Coin Counter",
+        "description": "Do you have a huge pile of coins waiting to be counted?  Then this app is for you.  Group the coins by type, point the camera at each group, and let the app do the counting!\n\nEven if you lack a huge pile of coins, this is still a cool app for showing off your iOS device to friends!\n\nDisclaimer: To be absolutely clear, this app does not identify your coins.  You have to tell it what type of coins it is looking at.  Think of it more as an advanced coin tallying app.\n\nThis app works by using image recognition libraries from the OpenCV project to detect circular objects in the camera's view.  The circle detection sensitivity can be adjusted with a single slider.  A convenient user interface assists in tallying the sum of the coins.\n\nDetailed Instructions:\n\n1. Download this app.\n\n2. Separate your pile of coins.\n\n3. Spread the coins out in each group so that no coins are on top of each other, and so that the groups are clearly separated.\n\n4. Start the app.\n\n5. Point the camera at one group such that only that group is visible on the screen.\n\n6. Adjust the detection sensitivity slider until green circles are placed around every coin in the group, and no extra circles appear anywhere else.\n\n7. The app's image processing algorithms automatically self-calibrate based on the current lighting and focus to identify the coins.  It displays the number of coins it counts in the bottom right hand corner.\n\n8. When the number of coins stabilizes, select the coin type and click add.\n\n9. The dollar amount corresponding to the number of coins is added to the total.\n\nBy downloading and/or using this apps, the user agrees to the app store End User License Agreements, as well as the Terms and Conditions Listed in the app's info screen and in this document.\n\nTips:\n\n- Place the coins on a solid background, like a blank white sheet of paper, for best results.\n\n- Make sure the coin detection area is well-illuminated.\n\n- For obtaining more accurate counts, make sure that none of the green circles are flickering, and that there are no extra green circles.  The sensitivity slider, lighting, and background all influence accuracy.\n\nUsage Terms and Conditions:\n\nTHIS SOFTWARE AND DOCUMENTATION IS PROVIDED \"AS IS,\" AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.",
+        "uri": "https://itunes.apple.com/us/app/scybot-coin-counter/id445453916?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 445453916,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/f4/37/6d/f4376deb-012f-27fe-5865-d3e4b1c58a0e/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/ed/f5/f5/edf5f5c5-9885-9e3f-87e2-872ae89ec81c/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple/v4/ff/3d/0f/ff3d0ffb-3d7e-7a5d-a93e-37e9d9def605/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "MyChange Counter Free",
+        "description": "MyChange Counter is an electronic USD coin counter that makes it easy to keep track of your spare change.  Now you'll know exactly how much spare change you have without the headache of manually counting it all out.  Save for a rainy day or open the app to see if you have enough for laundry or your morning coffee.  Mychange saves you time and money!\n\n-----------------------------------------------\nFeatures include:\n\n+ Universal App - natively supports the iPhone, iPod Touch and iPad!  \n\n+ Deposit or Withdrawl - toggle the controls to either deposit or withdrawl your change.  Enter your coins by clicking the appropriate button or bulk add them.   \n\n-----------------------------------------------\nA paid, ad free version of MyChange is also available.",
+        "uri": "https://itunes.apple.com/us/app/mychange-counter-free/id407761677?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Lifestyle"
+        ],
+        "price": "Free",
+        "extID": 407761677,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/2d/5b/8a/2d5b8ac5-8b4a-204e-3481-e94908c5a920/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple4/v4/ee/41/c8/ee41c8be-c912-d773-5d0f-f8403236ab2f/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/d5/ea/b3/d5eab32d-b31c-6832-77b0-f14d6c97338f/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple5/v4/8a/38/6a/8a386a0b-8d00-3bfa-8567-86b727c4edf8/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple4/v4/9a/b3/09/9ab30900-824c-72a3-7bff-112d8096a892/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Photo Coin Counter (Photocoin)",
+        "description": "Calculate the total money in a pile of mixed coins by taking a photo of them with Photocoin! \n\nPhotocoin recognizes USA's pennies, nickels, dimes and quarters.",
+        "uri": "https://itunes.apple.com/us/app/photo-coin-counter-photocoin/id763388830?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Entertainment"
+        ],
+        "price": "Free",
+        "extID": 763388830,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple49/v4/e8/4b/90/e84b90ba-21a1-956d-fbb4-c474aa01be1c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/f2/55/09/f25509e1-ec95-4673-6197-9e8cad775dbd/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/ad/eb/2c/adeb2c57-9974-ac45-f459-44102b6f987d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple49/v4/6b/fe/33/6bfe33d1-d07b-4d5c-2593-faf1602be4eb/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/e1/d5/7d/e1d57d5f-389d-8f40-4103-f12a7ad47f9a/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/63/cf/be/63cfbe8c-271f-617b-6e73-1cb16d216438/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/15/4f/45/154f4544-7188-a463-5c5c-04d26fbf6555/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/5e/34/4d/5e344dfe-1cc5-c735-3f54-32f92b4a8f66/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/bb/21/c8/bb21c874-44aa-869d-0374-99efe22e30c4/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple69/v4/41/d3/fd/41d3fd1a-8228-0e79-cc0e-98da8f92f7b6/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Coin Counter",
+        "description": "This is a great app to teach your kids how to count coins. Each time it will show coins with different combination of penny, nickle, dime and quarter. Kids has to do the math to get the actually amount of money. It is a fun way to learn how to count coins!",
+        "uri": "https://itunes.apple.com/us/app/coin-counter/id527823004?mt=8&uo=4",
+        "categories": [
+            "Education",
+            "Educational",
+            "Games",
+            "Family"
+        ],
+        "price": "Free",
+        "extID": 527823004,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/d7/d1/41/d7d1418c-5c35-220c-627a-1758ea1068b9/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/f0/56/8a/f0568a0a-0568-16ff-eacf-2044eb5bbab7/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/fb/24/c0/fb24c0fc-d0e0-fa6e-cfe8-7e3f43322f9c/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/cf/d6/f0/cfd6f02c-be2b-7cd8-50f6-873a0652473d/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/e8/15/8c/e8158cd6-0ea0-4571-f2b8-ecbf1da64a4d/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple/v4/fc/d4/52/fcd45281-be44-5c25-07c8-3b06374845d5/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Coin Counter- A Simple Change Counting App",
+        "description": "Coin Counter is a simple USD change counting app. You simply type in how many pennies, nickels, dimes, and quarters you have and you are done!",
+        "uri": "https://itunes.apple.com/us/app/coin-counter-simple-change/id895571755?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 895571755,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/76/45/b4/7645b401-a473-bddd-c038-424919d5999c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple1/v4/af/c0/d6/afc0d6e9-bd01-4678-a8c7-0b0b996b58e9/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/c3/22/26/c32226cc-bf16-716c-c753-ef3faba6c162/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/48/32/8f/48328f36-532e-8ab6-6763-1cd1c7a15274/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/3f/65/77/3f6577fd-3f0c-d4d1-9534-d0ad0a90f4c5/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/ff/39/38/ff39381d-5a78-10ea-d1f9-05d2dc4edef2/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple7/v4/f7/23/c8/f723c8c0-e98a-3832-9dd2-3254a8d27b56/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Cashculator - Cash Counter",
+        "description": "Having a hard time counting your cash?\n\nThis is a must have app if you are a cashier or need an easier and accurate calculator specially built for counting your cash!\n\nCounts bills, coins, and coin rolls! Just enter the amount for each denomination and the app does the calculations. Easily find and fix errors if you make a mistake.\n\nNotification Center Widget makes it easy to quickly view totals.\n\nRequires iOS 7.0 or later.\n\nComments and suggestions are welcome.",
+        "uri": "https://itunes.apple.com/us/app/cashculator-cash-counter/id574166464?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 574166464,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/62/02/3e/62023e3e-f907-8574-b8dd-5e3bb726e647/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/dc/4a/ee/dc4aee39-eca9-b7f8-ad47-b053bb14ad63/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/07/43/c2/0743c200-1e70-496c-b1dd-f6de2f3cd079/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/42/b0/a2/42b0a257-47c7-f20e-b351-28104297683e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/62/dc/21/62dc2134-5f5b-e113-06aa-0dcc0ae4fb7b/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/97/73/3b/97733b56-6240-95d8-818a-4c7cb1dafc65/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple3/v4/b0/a4/d4/b0a4d4b8-6665-2716-a678-0efd422efd8d/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/1b/5d/7d/1b5d7dbc-bbed-3fb0-9b65-8c0c5ab4cafd/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple3/v4/59/2d/2c/592d2c6c-cdf1-86e4-44de-6272410194f9/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Coin Counting Calculator",
+        "description": "Eliminate confusion when calculating coins by using the Coin Counting Calculator. The popular Coin Counting Calculator uses realistic coin buttons for the penny, nickel, dime, quarter, and half dollar. The Coin Counting Calculator has a display with the cent sign (¢), dollar sign ($), and 2-digit decimals. When the coin buttons are pushed, they add their money value to the amount at the top of the screen based upon the number of times they are pushed. \n\nThe count for each coin is updated underneath each coin image. Additionally, you can press the coin count underneath each coin and a convenient message box will prompt you to enter in specific coin count. \n\nThe Coin Counting Calculator can be used to count money and teach coin values. You can set the function of the calculator to add or subtract.",
+        "uri": "https://itunes.apple.com/us/app/coin-counting-calculator/id356872933?mt=8&uo=4",
+        "categories": [
+            "Education",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 356872933,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/92/fa/f6/92faf644-bc6e-15ec-aac0-2264253cf128/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/0b/1b/83/0b1b83b9-e116-076e-eb36-2859badbace2/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/09/ad/4f/09ad4fef-a7b7-42b4-d934-2f97a8067ba4/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/b8/9d/37/b89d3778-a7a3-5788-ab0e-2ecbba049e1e/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/1d/3b/09/1d3b0988-0fc5-d633-befc-d9eeb4c95404/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/58/57/f6/5857f6a3-2e61-a0c0-2d34-3af2977dfc4a/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "iPocketChange: ¢ Coin Tracker",
+        "description": "iPocketChange is a new and useful way to keep track of your coins.\n\nDo you have any coins in your pocket?\n\nKEY FEATURES:\n\n* Saves the quantity of each coin that exists in your wallet.\n* Tells you whether you can pay for something with exact change.\n* Automatically subtracts the amount you're paying from what you have.\n* Saves you money by keeping track of your coins and helping you to utilize them.\n\nTHE PROBLEM:\n\nA Subway sandwich is $5.41, including tax. You have six $1 bills, 1 quarter, 1 dime, 1 nickel, and 4 pennies. What would you give the cashier? If this question takes you more than 10 seconds to answer, stop fussing. Use iPocketChange, and save yourself the time and hassle.\n\nYou do these kinds of transactions every day. Eventually, we each have an enormous jar of coins. It's a hassle to count and wrap the coins, and it costs money to pay a machine to count them. iPocketChange is the solution. It keeps track of your change at the touch of a finger.\n\nWHY I USE IT:\n\nI have a bunch of coins in my wallet right now. Although I know there are coins in there, I have no idea which coins. It turns out that I have 6 quarters, 4 dimes, 1 nickel, and 1 penny. But once I dump these back in my wallet, I'll have no recollection of how many that was. All I'll know is: \"I have a bunch of coins in my wallet.\"\n\nUSAGE SCENARIO:\n\niPocketChange tracks the change you get, as you get it. When you pay for something with cash, you get a few coins back. Take out your iPhone or iPod touch, open iPocketChange, and tap the coins you just received. Sleep your device, and you're done. It's quick and easy. The app saves the information automatically, and now it knows what's in your wallet-- or purse, or whatever.\n\nNow here's the cool part. The next time you go to buy something, let's say the total is $8.58. Normally, you'd have no idea whether you need to pay $9 and get change, or if you have the right coins to pay for it exactly. Pull out your iPhone or iPod touch, and on iPocketChange's first screen, there's a sliding wheel for selecting the cents part of the item's cost. Scroll to 58, and the app will tell you whether you have exact change, based on what it knows is in your wallet. Let's say you have exact change. Tap \"Pay\", and the app automatically subtracts from your wallet's contents 2 quarters, 1 nickel, and 3 pennies-- 58 cents. Sleep the device, and pull out your wallet. You can be confident that you have the right coins to make exact change.\n\nFUN EXTRAS:\n\n* Original photos taken with a professional digital SLR camera.\n* Coin sound.\n* Accelerometer support: move the coins around the screen!\n\niPocketChange currently supports only U.S. currency, but if you're interested, we may add support for other currencies.\n\nDeveloped at USC, the University of Southern California\nPublished by GreenGar Studios\nFormerly Gengar Studios",
+        "uri": "https://itunes.apple.com/us/app/ipocketchange-coin-tracker/id315885222?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Lifestyle"
+        ],
+        "price": "Free",
+        "extID": 315885222,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/33/93/c4/3393c4ed-56f5-268b-40b9-300f54ac7557/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/aa/78/c2/aa78c2bf-5593-9689-2916-2c5edfb4696e/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/26/d6/7a/26d67a20-345f-0f09-04f3-8b22021a6f1e/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/16/9a/31/169a31ef-e653-b602-c620-1dcb48844e0b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/0a/98/e0/0a98e017-b69c-2c2e-d4a8-bc4b7dbf7d67/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple/v4/bd/6a/2c/bd6a2ce3-5c57-9697-6875-27dbafea4a45/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Gold Medal Clicker Man 2014 - Fun Tap Counter Frenzy",
+        "description": "Ready for your own Gold Medal?  Now you can have it and many more with Gold Medal Clicker 2014!\n\nWho can click the most gold medals?  Post your scores with #gmclick2014 and join in the international competition TODAY!\n\n- Endless clicking fun\n- Compete with your friends in “TIMED TRIALS”\n- Buy power ups to speed up your progress\n- DOWNLOAD NOW!!!",
+        "uri": "https://itunes.apple.com/us/app/gold-medal-clicker-man-2014/id797833722?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Sports",
+            "Card",
+            "Sports"
+        ],
+        "price": "Free",
+        "extID": 797833722,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple6/v4/56/da/13/56da1344-df56-2288-67f3-47b7de7cb5f4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/41/4f/84/414f8428-572a-7ee5-5f5b-f45e97867f3b/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/4f/7c/83/4f7c83b9-5293-fe77-f4cb-7c6dffe790cc/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/ab/0d/0c/ab0d0cf9-e4f1-a33c-d0e1-3004520f3a91/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/c2/12/47/c2124762-c94c-1ae9-2015-11a6119a4f55/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple6/v4/eb/45/e5/eb45e5eb-dcbe-38ec-e208-003290d63918/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/a9/9b/9f/a99b9f03-dc4c-ddbb-9b92-92fa5e045ba8/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple4/v4/e3/be/88/e3be88b6-c606-12f6-c586-1d11107a8a90/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/17/e2/6f/17e26fff-83cf-4edc-5ea2-045529a452d9/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/af/82/ad/af82ad5d-0392-9df7-dd33-0dff2d6f4826/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/79/a8/00/79a800a8-f540-6ee2-90cd-3190045ec953/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Money Counter",
+        "description": "Money Counter is a simple App to count your currency notes and coins of various denomination.\nSeparate Counter for all major currencies, such as US Dollars (USD) ,Euros, British Pound (GBP), Australian Dollar(AUD), Canadian Dollar (CAD), Indian Rupee (INR), Norwegian Krone (NOK), Swiss Franc (CHF), Japanese Yen (JPY), Chinese Yuan Renminbi (CNY), Swedish Krona (SEK), South African Rand (ZAR), Mexican Peso, Brazilian Real, Russian Rouble (RUB), New Zealand Dollar (NZD) etc\nIt's a handy tool to count your money, wherever you are in the world.\n\nUseful at billing, banking counters and for sales persons.\n\nAvailable in major Languages",
+        "uri": "https://itunes.apple.com/us/app/money-counter/id522348381?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 522348381,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple7/v4/32/c1/4f/32c14fa2-761a-8190-e09b-d96929e37907/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/c7/48/37/c74837a7-7afd-dc26-bd3c-b352cb8950ad/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/3c/d3/81/3cd3817a-f1ba-f7b6-294f-7fb9d131aa54/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/0d/9a/77/0d9a771c-8bcf-c1d0-7e24-0b38b32dab54/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple1/v4/76/ef/ac/76efac04-0d1b-6466-4441-95f3285e1e02/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/63/2b/08/632b0812-76c4-a980-405d-d5e030dd3ec1/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/3e/aa/0a/3eaa0ae0-b238-da5e-a77f-46dfdcf1b75e/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/c1/f4/38/c1f43823-d70e-540a-399b-91ae78c44f76/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/f2/fd/7d/f2fd7dd4-2b14-4e83-1e71-81b7ac33e86f/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/6d/fe/af/6dfeaf07-3e75-d29a-97e4-fc510af96ef4/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple49/v4/2e/da/16/2eda16c3-a027-72af-5a69-44a6140f71b3/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Coin Jar Counter",
+        "description": "Track penny savings with Coin Jar Counter! \n\nEach time you add a coin to your piggy bank, coin jar, or where ever you save, record this in the app and Coin Jar Coin will keep track of how much you have saved, and give you a visual representation of it. \n\nAdd 10ps \nAdd 20ps \nAdd 50ps \nAdd £1's \n\nCoin Jar Counter tracks the rest. \n\n\n** Look after then pennies, and the pounds take care of themselves!! **",
+        "uri": "https://itunes.apple.com/us/app/coin-jar-counter/id439523959?mt=8&uo=4",
+        "categories": [
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 439523959,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/1a/01/af/1a01af16-4ad9-c6f0-9977-24ef34fc0ad5/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/66/ea/bd/66eabdfa-4c5f-3370-74e8-f6fa7ef25f05/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/38/e1/b9/38e1b901-3cb2-f424-c311-44897869e66c/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/8b/04/82/8b04827a-a904-0237-204f-30cbddf120aa/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/91/cc/32/91cc3280-ade2-51bc-9897-6127b70ccf7b/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple/v4/a3/db/c2/a3dbc20a-5189-aa36-3c13-701d48437caf/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "D.Counter",
+        "description": "==無料化==\n\nカードゲームで厄介なライフポイント計算を簡単に!\n\niPadとiPhoneのユニバーサルアプリです!\n\niPad版では大きくライフを表示し二人分の操作が簡単にできます!\n\n簡易的なカウンターや、ダイス、コインなど様々な機能を搭載しています。",
+        "uri": "https://itunes.apple.com/us/app/d.counter/id474792173?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Card"
+        ],
+        "price": "Free",
+        "extID": 474792173,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/34/16/82/341682f7-1d44-6ee0-6970-9230bbca290d/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/e5/dc/f5/e5dcf5aa-f229-30d3-3353-f9504ed3e04b/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple4/v4/e4/43/d5/e443d57d-d0f9-98e6-bac8-55ca1a222ce8/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Simple Cash Counter",
+        "description": "Simple Money Counter was designed to make balancing a till or cash box as easy as possible. All you have to do is count the number of items you have and enter them into the appropriate boxes.\n\nTapping outside any of the boxes will hide the keyboard and immediately calculate the\nrunning totals. The total amount of money is then displayed nice, neat,\nand easy to read under each category, as well as in the separate Totals section at the bottom.\n\nIf you are interested in knowing your total profits, the default starting amount is 100, but by changing the value of the \"Starting Amount\" box in the Totals section, your profits can be  based on any whole or fractional dollar amount. If you are counting an old jar of change, set the \"Starting Amount\" to 0, or just look at the \"Grand Totals\" line for the amount you have.",
+        "uri": "https://itunes.apple.com/us/app/simple-cash-counter/id1024854614?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 1024854614,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/1c/3b/b5/1c3bb517-024d-bb36-a91a-de4becd9c922/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/cb/cc/d5/cbccd509-ea17-8e0b-cc5c-552c8b9efdb6/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/e3/44/f0/e344f042-0a76-8c20-91a7-5a3c3e74b042/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/aa/bb/56/aabb56f5-cf08-a35c-d0a9-d0965eed7f35/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/62/1b/8f/621b8f9a-7a51-fbff-0112-75239201f85a/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple69/v4/3e/b9/0a/3eb90a35-939d-fad7-1c3d-c14d76501d22/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/18/8f/b7/188fb7c6-4ed1-665f-09fe-afd00ff0d5a8/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple69/v4/29/d1/52/29d1526b-5a9d-8944-24e1-9274111e80e7/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple69/v4/3a/96/47/3a9647fe-c735-6279-6149-81634106fc08/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/b8/e4/8f/b8e48fbf-31dd-3bbc-388e-add59a4fa5e9/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple6/v4/52/8b/e7/528be7c8-533d-2652-1b85-03ef9896fdbf/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "YGO Counter",
+        "description": "YGO Counter is the one and only dedicated score tracking app for Yu-Gi-Oh! on the App Store. It lets you add and subtract life points from up to four players without trying to do the mathematics in your head, it lets you track any number of in-game counters rather than relying on bits of paper, and it also has a built-in dice roller and coin flipper to handle random game events fairly.\n\nFeatures\n========\n   - Tracks life points for two players, with an option to allow four players\n   - Calculates life points automatically - you just tell it what to add or remove\n   - Stores any number of counters\n   - Built-in dice roller and coin flipper\n   - Built-in calculator so you don't need to quit during a game\n   - Designed for Yu Gi Oh but compatible with any similar game\n   - Automatically saves game state, so you can pick up where you left off after a phone call\n\nSlick user interface\n====================\nYou want to duel, not think about how an app works, so YGO Counter stays out of your way - the main screen shows you the current scores, and to make a change you just tap on the life points you want to adjust. That's it: no fuss, no clutter and no distracting animations. \n\nSo, don't bother with a generic app that claims to work with all card games under the sun: YGO Counter is optimised for Yu-Gi-Oh and so provides an optimal experience for duelists who want the best.",
+        "uri": "https://itunes.apple.com/us/app/ygo-counter/id373201197?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Adventure",
+            "Card"
+        ],
+        "price": "$0.99",
+        "extID": 373201197,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/4e/a6/8b/4ea68b42-a542-6c80-2b33-4c090b6dd8d4/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/22/2b/5b/222b5bd5-75bd-d378-1f86-511a9280115c/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/35/3f/16/353f16c2-9671-09a0-3d2b-577e532bf13b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/6e/ac/b6/6eacb614-d846-fc33-f3af-75e5f0a14637/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/3a/d5/93/3ad593c1-d17f-da44-690f-fda19ca401d2/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple/v4/3e/78/31/3e78314f-b6f9-e5c4-3d8a-8909976ecc5d/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "DCalcLT",
+        "description": "This is life point calculator for card games.\nLT version is with AD. \n\nHow to use. ---> See YouTube VIDEO.\nPlease search \"DCalc v1.5\" in YouTube Site.",
+        "uri": "https://itunes.apple.com/us/app/dcalclt/id458595947?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Card",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 458595947,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/ce/23/e5/ce23e5fc-2bcd-2833-d969-c4915e8d506c/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/18/42/ce/1842ce40-4e91-a377-60d3-aeafd7c9bb52/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple6/v4/9d/bf/b3/9dbfb3f2-593c-ec59-8b81-eaaab3697683/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/73/6a/44/736a4498-f6b3-bb45-85a4-409cc8d771f6/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple6/v4/97/2c/9d/972c9d54-5814-ea94-3dfd-393f55c748ff/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple6/v4/8d/16/18/8d1618ec-1d41-9c98-acd0-52977d35e444/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "MTG Life Counter for iOS",
+        "description": "This free app keeps track of your life total in card games like Magic the Gathering. It’s easy to use, clean and nice to look at, and not bloated with a lot of useless features or excessive menus. Try it out and see what you think of the free version.\n\nMTG Life Counter Free Version\n-Rotary phone-like life counter\n-Large number display\n-all life counter base colors unlocked\n-a basic MTG themed life counter top and two basic play mats unlocked\n\nIf you like the free version but want more features and the ability to customize the background play mat and the life counter tops, buy the MTG Life Counter Full Version. You’ll unlock the following features if you do.\n\nMTG Life Counter Full Version\n-All tops unlocked (20 in all)\n-all background play mats unlocked (23 in all)\n-Companion rotary phone-like poison counter\n-Counter rack\n-Coin toss feature",
+        "uri": "https://itunes.apple.com/us/app/mtg-life-counter-for-ios/id920498649?mt=8&uo=4",
+        "categories": [
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 920498649,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/c7/a9/67/c7a96735-236b-0656-32a0-71ac0bdc4062/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple5/v4/1c/c6/35/1cc63522-1e0d-3a3a-f8b4-f5c3e9fadf7f/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/06/33/c1/0633c126-d3d3-8cb3-cb1b-81e5eb715868/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/3c/9c/cb/3c9ccb43-105f-ce62-75da-4b4834da5a5e/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/7c/d2/e4/7cd2e4b4-f56d-5215-bce8-8dfc242605eb/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple3/v4/97/0b/71/970b7132-0e63-2bf9-063e-0e02f5a3e0f7/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple3/v4/2f/c7/e1/2fc7e1d3-62f4-6be2-ed99-d8a1e7f4458a/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "MyChange Counter",
+        "description": "MyChange Counter is an electronic USD coin counter that makes it easy to keep track of your spare change.  Now you'll know exactly how much spare change you have without the headache of manually counting it all out.  Save for a rainy day or open the app to see if you have enough for laundry or your morning coffee.  Mychange saves you time and money!\n\n-----------------------------------------------\nFeatures include:\n\n+ Universal App - natively supports the iPhone, iPod Touch and iPad!  \n\n+ Deposit or Withdrawl - toggle the controls to either deposit or withdrawl your change.  Enter your coins by clicking the appropriate button or bulk add them.   \n\n-----------------------------------------------\nAn ad supported FREE version of MyChange is also available.",
+        "uri": "https://itunes.apple.com/us/app/mychange-counter/id404928870?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 404928870,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/c0/31/1f/c0311f7f-d38e-692f-ff60-00a234d69f9d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple4/v4/71/75/cd/7175cd01-df92-b848-d0fe-6fddef48b33c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/9b/18/5d/9b185d63-e920-e9f1-0aee-5c3124fab9c7/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple1/v4/e9/b5/f0/e9b5f0ec-5512-b08b-b3f7-41ec53e237b8/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple3/v4/76/94/40/769440b8-36dd-20f3-f324-9afc0f3c3689/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Income Counter (Salary Clock)",
+        "description": "Let the money rain! \nThis app comes with built in work motivation. It shows your income right in the moment you earn it. Just enter your hourly wage, press play and the coins will rain down.",
+        "uri": "https://itunes.apple.com/us/app/income-counter-salary-clock/id431092980?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Business"
+        ],
+        "price": "$2.99",
+        "extID": 431092980,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/52/63/26/5263265e-5d94-409d-30e2-fdf37d91c22b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/63/4b/12/634b12c5-1649-3c33-de8c-56cb595291fd/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/2d/31/6f/2d316fde-a43b-70c8-77f5-7cf173797881/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/83/5e/dd/835edd8b-8321-2bc1-f365-58d0082f7905/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/4f/f0/da/4ff0daa9-0207-6754-f94a-6e28c6cc8450/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/b2/08/5d/b2085d61-7d83-adab-4efe-863b22076111/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "UK Coin Counter",
+        "description": "*** Featured in Top 20 New and Noteworthy  Utility Apps in July 2010 ***\n\nUK Coin Counter is an easy to use, user friendly interface app that helps you track your loose change.  \n\nThis can be used to track how much change is in your pockets, in your piggy bank or where ever you keep your change.  \n\nI am always looking to improve on my apps so please send any suggestions through my website on payamchu.weebly.com",
+        "uri": "https://itunes.apple.com/us/app/uk-coin-counter/id377665246?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Lifestyle"
+        ],
+        "price": "$0.99",
+        "extID": 377665246,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/69/ca/b6/69cab6bc-2076-52e0-01be-c4c3abb3f147/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/a2/30/77/a230779b-d69b-9d8f-10a2-99c353aa0eb4/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/cd/e0/29/cde029f5-cf49-79f9-d6f3-93dc99793fa6/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple/v4/05/3f/3c/053f3c1f-6c43-4826-b389-84c20d8f7795/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Drawers - Bill and Coin Calculator",
+        "description": "Simple bill and coin calculator. \n\nLanguages: French, German, Italian and Spanish\nCurrencies: $ USD, € Euro, £ Pound\n\n\n\n***************************************\nPerfect tool for bartender or business\nby Former Bartender Sarah\n\nI wish I had this in my bartending days! This app makes it easy to keep track of multiple drawers at once. If you're a business owner, manager, or work in a restaurant, this app is for you. Super user friendly and fun!\n\n\n***************\n\nGreat app to count cash! \nby JamesL22\n\nMy tablet based POS doesn't have the function to count the money in the drawer. This app will definitely help as I have multiple POS stations. Thanks!\n\n***************\n\nDrawers review \nby B3@n C0unt3r \n\nThis is an extremely easy to use app for counting and keeping track of the number of coins and bills in your cash register. Give it a try!\n\n***************************************\n\nHave a small business with multiple point of sale cash drawers?\n\nWork in retail? Open/Close stores? \n\nSell at trade shows and art festivals?\n\nHave various piggy banks, coin jars or stacks of cash that need counting? \n\nDrawers is for you!\n\nCreate and save multiple 'drawers' to keep each one separate. \n\nSimply tap on the coin or bill you are counting to increase the amount, or tap on the count number to pull up the number pad to enter a larger number. \n\nCounting and saving multiple coin jars, drawers or piggy banks couldn't be easier.",
+        "uri": "https://itunes.apple.com/us/app/drawers-bill-coin-calculator/id905925994?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 905925994,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple3/v4/aa/f8/78/aaf8789e-1112-e81d-a014-40d80d486812/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/9e/e6/73/9ee673b3-a2b4-79a5-2a14-57e1ecbefb3c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple3/v4/9c/4d/14/9c4d14c5-7f56-19f6-6ccd-2c5e733544df/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/9d/d1/0f/9dd10f07-97e6-7982-ab9d-ddae5fcf623c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/b3/6d/b1/b36db1e2-39cf-b530-3991-a4a0e91f2d50/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple5/v4/c7/cd/b1/c7cdb1ae-d149-3d87-0caa-41e255d23250/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Count My Coins - The ultimate coin and savings companion",
+        "description": "Count My Coins is a super simple app that can be used as a coin counter, coin/savings tracker, currency converter or even a shop spending tracker! It supports multiple currencies including GBP (£), USD ($), EUR (€), DKK (Kr) and AUD ($). \n\nIt never forgets how much money you have in your virtual bank so you can always keep track of your money.\n\nHere's how you can use Count My Coins\n\nCoin counter:\n\nImagine the scenario: You empty your piggy bank after a good few months of dropping in the odd bit of change and fluff you have in your pocket. The day finally comes when you decide to take it to the bank. You empty the coins out onto your table and slowly move each coin to it's own separate pile, counting in your head as you go. This nearly always leads to losing track of how much money you have and a waste of an afternoon.\n\nWith Count My Coins, this is a thing of the past. Simply select the coin and press the screen to increment the amount.\n\nCoin or savings tracker:\n\nWhenever you drop a bit of money into your piggy bank, simply open up the app and tap the amount you have just dropped in. Close the app and forget about it! We remember how much money you had whenever you close the app so you will never lose your data!\n\nCurrency converter :\n\nIf you change the currency while tracking your coins, you now have the option to convert your current money to the destination currency!\n\nShop spending tracker:\n\nAs you walk round the store, putting things in your basket, simply enter the cost of each item into Count My Coins and when you get to the checkout you can see exactly how much you have spent!\n\nWe would love to add more currencies. If we are missing your currency please ask for it in the reviews and we will aim to add it in the next update!\n\nAny feedback, bugs or suggestions please send to http://twitter.com/treeba",
+        "uri": "https://itunes.apple.com/us/app/count-my-coins-ultimate-coin/id362020962?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 362020962,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/5f/45/92/5f4592e1-fbb6-4c61-e10f-92f0f8e11434/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/2b/14/c7/2b14c7e5-f1c9-1fef-df9e-2419ec8e3f03/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/89/b4/b9/89b4b9ee-86f3-a1ca-f725-69b24305f060/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/ac/91/91/ac91918a-17e3-692c-4163-f78135dbc3e4/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/90/e4/ef/90e4efb3-c5a0-fd14-cf95-9c7474b79f8c/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple/v4/a3/a2/4e/a3a24e11-2684-cb82-c422-7f8c7e91a090/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Cash Calculator - Money Counter",
+        "description": "Always know how much money you have. Calculators are not very efficient at counting money. Use this app instead. If you want to know how much money you have in your wallet, your cash drawer, your purse, your bag, or just about anywhere, just fire up this app, choose the currency, and start counting your money.\n\nJust count the different denominations and enter the values in the app. The app presents the sub totals and the totals. The values entered are saved until you tab the reset button.\n\nShow or hide rarely used denominations with just a flick of a switch.\n\n'Cash Calculator' makes counting money super simple and super efficient. \n\nCurrencies supported in this version are:\n\n1. Australian Dollar (AUD)\n2. Brazilian Real (BRL)\n3. British Pound (GBP)\n4. Canadian Dollar (CAD)\n5. Chilean Peso (CLP)\n6. Chinese Yuan (Renminbi) (CNY)\n7. Czech Koruna (CZK)\n8. Danish Krone (DKK)\n9. Euro (EUR)\n10. Fijian Dollar (FJD)\n11. Honduran Lempira (HNL)\n12. Hong Kong Dollar (HKD)\n13. Hungarian Forint (HUF)\n14. Icelandic Króna (ISK)\n15. Indian Rupee (INR)\n16. Indonesian Rupiah (IDR)\n17. Israeli New Shekel (ILS)\n18. Japanese Yen (JPY)\n19. Latvian Lats (LVL)\n20. Malaysian Ringgit (MYR)\n21. Mexican Peso (MXN)\n22. Nepalese Rupee (NPR)\n23. New Taiwan Dollar (TWD)\n24. New Zealand Dollar (NZD)\n25. North Korean Won (KPW)\n26. Norwegian Krone (NOK)\n27. Pakistani Rupee (PKR)\n28. Philippine Peso (PHP)\n29. Polish Złoty (PLN)\n30. Russian Ruble (RUB)\n31. Singapore Dollar (SGD)\n32. South African Rand (ZAR)\n33. South Korean Won (KRW)\n34. Swedish Krona (SEK)\n35. Swiss Franc (CHF)\n36. Thai Bhat (THB)\n37. Turkish Lira (TRY)\n38. United Arab Emirates Dirham (AED)\n39. United States Dollar (USD)\n\nMore currencies coming soon...",
+        "uri": "https://itunes.apple.com/us/app/cash-calculator-money-counter/id526033645?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 526033645,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/76/0f/36/760f362e-c1ad-d408-e7dc-9508253faa15/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/36/ea/4e/36ea4e4f-f1ba-7ca8-6ccc-b0d12cc05d4c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple2/v4/17/12/43/17124303-7741-d88a-9ea0-8d1f6aac35be/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Salary Counter",
+        "description": "With the Salary Counter app you can always see how much you've been commendable. Just enter your hourly wage, then start the counter and the app shows you how much your wage rises every second.\n\nHowever, this app is also very useful to compare if you have spent more money over the day then you have earned. For craftsmen, plumber and others who work on a time basis, this app can be very useful. With this application the wage can be billed precisely on second.\n\nOr maybe you want to see how fast your favorite football or tennis Star earns his money in a few minutes? Then this app is just right for you.\n\nAnother advantage of this app is that, if the counter was a once started, you can close it without problems or even turn your device off. And the next time you start the app you can still see how much you earned in that period. So the battery runtime of your iPad or iPhone can be significantly extended.\n\nPerhaps you want to know how much money you earn in your sleep?\nOr do you just watch me, how your earnings every second rising? \n\nThen the Salary Counter is the right app for you ;)",
+        "uri": "https://itunes.apple.com/us/app/salary-counter/id963846474?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Business"
+        ],
+        "price": "Free",
+        "extID": 963846474,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple1/v4/09/97/9e/09979e38-2c50-6a08-395e-29fd162b2bee/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/c8/0c/31/c80c31a7-8b13-fe31-30bb-b74f74bff7d3/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/ce/a6/dd/cea6dda4-58df-c4b3-67ca-cea058c8087a/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/0b/00/89/0b00894f-95ce-1f31-e161-9f5a00b78471/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/43/82/65/438265f5-b714-69f1-bd5b-61b1415e0779/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/a4/83/ca/a483ca1d-d0cb-6417-c0ba-a3651f28367c/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/4a/ac/24/4aac2475-9ab8-c19c-bc3e-a5b0a0242363/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/77/e2/ae/77e2ae15-88ff-97f5-0fd4-a45ee4ab65bc/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple3/v4/3e/f4/a4/3ef4a470-76a4-3b66-e463-1efda48e0a12/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "TallyPad",
+        "description": "TallyPad is a feature-rich fully-customizable tally counter for the iPad and iPhone. Just tap or swipe your finger in one of the designated counting areas to add or subtract from the corresponding tally count. \n\nAppAdvice.com describes TallyPad as the “essential [counting app] for those dealing with multiple tallies and have power user needs.”  http://goo.gl/gurzt\n\nTallyPad is great for just about any counting project:\n\n- Scorekeeping (especially board games like Scrabble)\n- Surveys\n- Tracking calories or diet points\n- Counting money and loose change\n- School projects\n- Household Projects\n- Voting and Informal elections\n\nWhat makes TallyPad different from all other counting applications is that you can assign customizable values to three different finger gestures. For example, you can set TallyPad to add 1 to the tally count for a single finger tap, 5 for a vertical swipe and 10 for a horizontal swipe. You get to choose the values. Also, you are not limited to whole numbers: Just switch TallyPad to decimal or money mode to add decimal values.\n\nYou can assign a multiplier to each counting area. The multipliers are applied to each counting area independent of the values assigned to finger gestures.\n\nTallyPad implements AV Out and AirPlay Mirroring with AppleTV. You can display your tallies on an external screen! This is great for keeping score at sporting events, family game night, or displaying items on a television in the classroom.\n\nBecause TallyPad saves all your custom-named tallies, you can keep track of a virtually unlimited number of tallies and come back to them later. You can also assign names to the three tally categories in each tally project. Also, the TallyPad user interface was designed to allow you to add tallies by tapping and swiping without having to look down at the device. This way you can keep your eyes on what you are counting--not on the iPhone or iPad.\n\nAnd, by popular request, version 4.0 adds more tally areas. The iPad now supports 8 tally areas. And, if you have the iPhone 5, and additional (5th) tally area has been added. Also, landscape orientation support for the iPad is back. The user interface has been redesigned for ease of use. Finally, the TV Out and AirPlay interface has been updated.\n\n***IMPORTANT NOTE***\nIf the app is crashing after installing the update, please delete the app and reinstall it. You will not be charged for the purchase/update.",
+        "uri": "https://itunes.apple.com/us/app/tallypad/id369757111?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Education"
+        ],
+        "price": "$0.99",
+        "extID": 369757111,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/40/03/41/400341a1-e862-48cb-458a-e9ebd3ce08c0/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/21/75/00/21750078-6098-0bf4-a72f-584e71e7ff6b/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/3a/b0/7e/3ab07e2b-b69e-3e9a-c703-b0113700066a/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/72/fc/9d/72fc9da1-34f1-2b62-ca3b-e77879a245ad/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/26/1d/1d/261d1da6-dcd0-740a-32e5-96232c7e3206/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/50/d1/64/50d1647d-66bb-6650-2943-0689ee9a7ca6/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/10/33/81/10338126-0a6f-5e86-0654-f274691874ce/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/83/3b/93/833b9387-d93d-8661-55cd-507a42ec0afc/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/12/c8/ec/12c8ec41-ac7b-653e-1b74-bf75a9773428/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/af/b3/21/afb321bd-a09e-c633-a110-a5913b2f02c5/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple/v4/52/6b/f8/526bf8a5-ab58-94ab-1629-af680aeeaa85/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Crazy Remote Clicker - Click Rush Dash Mania",
+        "description": "Always getting in trouble for changing the channel all the time?\n\nNow you can click away without any disrepute!\n\nThe most exciting TV Remote game is now on your iPhone, iPod and iPad.\n\nBe prepared for endless hours of fun, awesomeness and entertainment!\n\nClick on the remote to let out frustration as you can by clicking or tapping on a awesome remote as fast as you can.\nCrazy Remote Clicker seemingly endless gameplay will allow you to play for an indefinite amount of time so click away!!\n\nBecome the Master of your domain.... be the first to change the channel  1 BILLION Times!",
+        "uri": "https://itunes.apple.com/us/app/crazy-remote-clicker-click/id844810121?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Family",
+            "Strategy"
+        ],
+        "price": "Free",
+        "extID": 844810121,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/5b/1d/e2/5b1de234-be26-f6ba-a231-028806dc1dfd/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/92/6d/10/926d10e1-4335-8aab-cc18-28062b9ec6ed/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/b4/96/5c/b4965c66-6391-7a50-891a-1ce10f521355/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/27/2f/af/272fafe0-d3dd-23c1-681d-9350636b5c59/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/97/66/5c/97665cd8-362e-f22d-e2eb-fa45c59e4185/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/e3/51/f9/e351f9ba-0263-a5a8-c01c-d916a38f6f40/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple4/v4/82/32/44/8232446d-e4cf-3a58-08db-1cf32cafa9e8/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Alchemy Clicker",
+        "description": "Touch the potion to make some coins.\n\nAlchemy Clicker is an incremental clicker.\n\nGet millions of coins or billions.\n\n\n\nIf your having problems contact me before leaving a review.\n\nFacebook: https://www.facebook.com/AgileReaction\nTwitter: https://twitter.com/AgileReaction\nOur Website: http://AgileReaction.com\nemail: agilereaction@gmail.com",
+        "uri": "https://itunes.apple.com/us/app/alchemy-clicker/id938708352?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Simulation",
+            "Strategy"
+        ],
+        "price": "Free",
+        "extID": 938708352,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/05/34/d0/0534d0f2-ced5-0adb-f078-83aa02f25205/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/64/2d/45/642d454a-3050-c3a3-fdad-db16be277a00/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/ea/aa/9e/eaaa9e1e-9a96-3d82-b53d-0df530d84fec/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/d6/57/df/d657dfdf-fc63-8af6-654d-4cc4394821be/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple1/v4/0e/80/7d/0e807db0-982b-0cf4-a145-51b558aeff56/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/ab/d6/3c/abd63c6a-cd91-f3da-7960-0aaddd1fe05b/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple18/v4/29/d8/a6/29d8a6b0-b529-1484-ce30-97bcaefd2e9e/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "A+ Talking Money Counter",
+        "description": "Finally the easy way to count money at the reach of your palm in your iPhone! \nThe concept behind this application is a very simple, yet very useful one! It simply works by adding money for you. To use it just enter how many of each bill or coin you have; and the application adds it all up for you! This may sound like an easy task to do, but when you have a couple of bill and coins in your hand, and don’t feel like keeping count mentally or writing it down… that is when this application comes in hand! \nAlso, to make it even more practical, we provide you with the option to send the results via email or create a snapshot to keep for further reference! It’s the perfect tool for keeping your money records!\nWe are constantly working on this and other applications, please share with us any ideas or suggestions you may have since we are constantly coming up with applications to simplify your life!",
+        "uri": "https://itunes.apple.com/us/app/a+-talking-money-counter/id319724323?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 319724323,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/35/11/32/351132d8-fc6b-d535-0de8-9c2c1a112711/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/60/f6/86/60f68676-57f4-c4fa-cb33-1b0c8144939f/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/8d/ce/0a/8dce0abe-cb86-0d66-1df6-691c3827b7f2/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple/v4/7d/3b/0e/7d3b0e18-a4cc-d9b5-8f5d-4ba03d762768/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Girl Power Street Fighting Adventure - City Woman Punching Jumping Robber Battle Free",
+        "description": "+++ EXTREME GIRL STREET FIGHT CHALLENGE +++ \n\n------------------------------ \n1) Awesome girl street fighting game!! \n2) Check out the screen shots and see for yourself \n3) Compete against your friends \n------------------------------ \n\nThis game is so freakin' sweet! - Shayla \n\nTest your mad punching skills in the rough streets as you beat down the bad guys and collect as many coins as you can along the way! \n\nHOW LONG CAN YOU LAST? \n\n- Collect as many coins as possible \n- Pick your girl power and keep the streets clean!\n- Unlock additional levels and characters! \n\nDownload now and compete to win!",
+        "uri": "https://itunes.apple.com/us/app/girl-power-street-fighting/id851337707?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Role Playing",
+            "Entertainment",
+            "Action"
+        ],
+        "price": "Free",
+        "extID": 851337707,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple4/v4/49/0e/f2/490ef23f-1d51-0a88-f613-5f4081d75bc0/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple6/v4/07/4b/ba/074bba6e-e842-08c3-db9a-47080f9eb5cb/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/ea/8b/96/ea8b9687-8e50-ca54-6d63-32856db639de/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/41/ea/29/41ea29e7-0468-4e23-2733-4477ef77f426/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/7b/84/7d/7b847d56-2a76-6c3f-b4ec-955cab3014cc/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple2/v4/52/f8/5f/52f85f93-89bf-9b0e-5a10-666d54b398c2/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/5d/17/5c/5d175c39-c572-92b1-f659-3abc4b93939c/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/38/6f/fd/386ffdbd-6ce4-c923-6830-dd53b94dc420/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/20/0a/c0/200ac025-aa0c-ad11-674b-a5bf65031b37/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple6/v4/35/b7/15/35b71545-2d64-4f3d-527c-a53009e600c9/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple/v4/4d/08/fe/4d08fe5b-88a4-2ecd-cbf2-02d83a4d7df9/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CamCoin",
+        "description": "Do you have a huge pile of coins waiting to be counted? Then this app is for you.\n\nCamCoin provides a fun and productive way to count coins using your phone camera. Simply place coins on a letter-size (8.5x11) paper sheet, point the camera at the sheet, and let the app do the counting!\n\nCamCoin currently supports the following U.S. denomination coins: pennies, nickels, dimes and quarters.",
+        "uri": "https://itunes.apple.com/us/app/camcoin/id968597052?mt=8&uo=4",
+        "categories": [
+            "Productivity",
+            "Utilities"
+        ],
+        "price": "Free",
+        "extID": 968597052,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/fe/fb/7a/fefb7aa7-e1e6-b5b7-3c4b-5b7e83e03f20/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/35/a2/a8/35a2a802-a6a6-c695-475e-2b5c36397988/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/0c/82/b3/0c82b369-7a38-1e9e-6fdc-5e9320e59342/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/ec/49/0e/ec490e71-6890-c4c3-6cc4-f25f57581afd/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple5/v4/a2/cd/a4/a2cda48b-7154-43b8-4992-5ccffbcecd3e/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "My Piggy Bank",
+        "description": "Count all of your loose cash or coins and bank account balances quickly and easily-all in one place! \n\nMy Piggy Bank is an easy to use app that can be used as a money counter, savings tracker, currency converter, or spending tracker (perfect for holidays, birthdays, groceries, and shopping sprees!). \n\nMy Piggy Bank also remembers exactly how much money you have when you close out of the app, so there's no need to worry about losing count of your savings.\n\nThe built in currency converter fetches the most up-to-date exchange rates over the internet, so you'll always have an accurate conversion of your money. Don't have an internet connection? Don't worry. My Piggy Bank stores the rates locally as well to provide you with a conversion. The app will automatically update the rates as soon as you get an internet connection. Currently supports USD, GBP, AUD, SEK, CAD, EUR, JPY, MXN, CNY, HKD, and CHF.\n\nThe simple and easy to use interface makes it a great app for teaching kids and teens the basics of money management.",
+        "uri": "https://itunes.apple.com/us/app/my-piggy-bank/id397626590?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 397626590,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/a1/43/80/a1438074-5010-1ca7-27b5-823c32ea516c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/6d/50/05/6d50051a-2d91-fa51-a1a3-4c36d9df62b4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple1/v4/7b/5e/14/7b5e1465-e8b8-67ce-f502-75d95e829f2e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple3/v4/29/b2/bd/29b2bdd0-1084-1622-262d-459a5557ae6e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple3/v4/58/80/28/58802802-43c5-0e73-e32c-b747df0bae30/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Long Live Capitalism",
+        "description": "All hail Capitalism !\n\nMoney generators have always been the dream of all mankind.\nToday, this dream finally comes true !\nFind yourself locked in a room with a coin machine, and start making some cash !\nHow far will you go ? How will your room look after becoming money-crazed ?\n\nFeatures :\n- Simple one-touch game\n- Lovely and colorful pixels\n- Game Center support\n- Trophies and leaderboard\n- Capitalism !\n\nTap and cash now !\n\n/ ! \\ WARNING / ! \\ \nThis is a fictive game (including in-game currency) and should not be taken at face value.\nWhat you find inside in no way reflects its creators' philosophy, and we bear no responsability for any consequence that may be caused by playing this game.",
+        "uri": "https://itunes.apple.com/us/app/long-live-capitalism/id978403751?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Entertainment"
+        ],
+        "price": "Free",
+        "extID": 978403751,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/55/a7/af/55a7af51-d2b8-19e8-80fe-dcd26fd50bda/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/ec/b7/a4/ecb7a435-1d8c-1d10-0236-a2ee8eac0b72/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple5/v4/16/53/f8/1653f8bb-5a97-4da1-34f4-bd0c5233f287/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/bc/46/b3/bc46b347-7cf8-47c7-3131-984176b9d35b/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/bd/f4/f5/bdf4f5f4-f1cf-371d-e5d7-edde49534176/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/60/00/54/60005458-622a-a260-4c02-0f24d203386d/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/54/d7/e9/54d7e9da-cf33-f9b3-f1ec-33a6ce740b52/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/2a/2a/d6/2a2ad673-38db-f946-13c7-c30d5b3a3aee/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple1/v4/66/41/ba/6641baf6-a6ae-b7fa-e445-4fb8f88431d6/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Money Counting Calculator",
+        "description": "Eliminate confusion when calculating coins by using the Money Counting Calculator. The popular Money Counting Calculator uses realistic coin buttons for the penny, nickel, dime, quarter, half dollar, and coin dollar. Additionally, the Money Counting Calculator uses doll buttons for the one-dollar bill, five-dollar bill, ten-dollar bill, twenty-dollar bill, fifty-dollar bill, and the one hundred dollar bill.\n\nThe Money Counting Calculator has a display with the cent sign (¢), dollar sign ($), and 2-digit decimals. When a currency button is pushed, they add their money value to the amount at the top of the screen based upon the number of times they are pushed. The count for each currency is updated underneath each currency image. Additionally, you can press the currency count underneath each coin and a convenient message box will prompt you to enter in specific coin count.\n\nThe Money Counting Calculator can be used to count money and teach currency values. You can set the function of the calculator to add or subtract. In addition, a convenient toggle button allows you to switch between coins and dollars.",
+        "uri": "https://itunes.apple.com/us/app/money-counting-calculator/id357702889?mt=8&uo=4",
+        "categories": [
+            "Education",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 357702889,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple2/v4/63/22/1b/63221b11-548f-e348-48c6-d510d515b3a9/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple2/v4/50/4f/59/504f59ea-9341-501e-9171-bd40dda4398b/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Apscade Saver 2",
+        "description": "With Apscade Saver 2: Track multiple savings goals!\n\n* Keep track of the amount you have contributed towards three savings goals\n* or Record the amount of money you save in your piggy bank, sock or bank account\n* or use it to help you stay within budget when shopping\n\n* View statistics on your savings progress (such as percentage)\n* Customise the background colour to one of five colours\n* Choose from three themes to decorate your screen. \n* Christmas, shopper and beach themes included in this version.\n* Change your goal name and amount when necessary\n* Switch goals easily\n* Choose from three major currencies or use no currency\n* Works fine on iOS6 or iOS7 or iOS8 only\n\nThis app is a money counter only. It is not a bank account and, cannot be linked to one. Default amounts in the app are shown in dollars ($) but you can change it in EDIT GOAL.\n\nNothing in this app should be taken as financial advice.",
+        "uri": "https://itunes.apple.com/us/app/apscade-saver-2/id586836376?mt=8&uo=4",
+        "categories": [
+            "Finance"
+        ],
+        "price": "$2.99",
+        "extID": 586836376,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/97/60/5a/97605ab4-d5a8-8f9f-10ba-3fe4de4bb9b2/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/06/17/b3/0617b328-cf1d-7190-1b97-c4e0bf2593b8/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/8f/4e/ac/8f4eacc8-3e02-01ae-32e2-67bb4b126967/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/a2/8e/03/a28e0390-b53c-3378-be5b-f73901a2940e/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/44/57/bc/4457bcac-c5cc-723f-c3ed-398c9740280e/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/8d/64/61/8d6461fa-e5d8-fc9a-e6d9-5c7e254639d5/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/8a/44/cb/8a44cbc9-80a5-4331-1590-3289a1a8880c/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/4d/e3/ce/4de3ce92-6b7f-3fea-989a-652667233812/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/bf/d7/35/bfd73533-c747-a428-4b10-f0b3a4d8f536/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/99/46/ca/9946ca04-327b-1db3-0c69-20291c42d7cf/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple5/v4/26/5c/72/265c72db-af2f-b700-cea9-42b10cf6bd1e/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "MagicGameKit",
+        "description": "MagicGameKit is a great useful tool to assist players in their card Games, it has a life counter, a virtual dice row, coin flip and a creature token controller.",
+        "uri": "https://itunes.apple.com/us/app/magicgamekit/id567631510?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Strategy",
+            "Card",
+            "Games"
+        ],
+        "price": "Free",
+        "extID": 567631510,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/a8/83/c0/a883c01a-db99-3f4b-cf87-69ff0d5b2a0f/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/17/4c/72/174c7261-7960-e952-153b-aac9ac695a89/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/2e/b6/12/2eb612eb-d155-86da-1b9c-298f36d84bbd/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/0d/7f/6f/0d7f6f89-c49f-4e39-e007-31617b71e28d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple6/v4/05/40/ee/0540ee7d-791f-b2e7-fa6c-22097eecd4f9/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple4/v4/49/4e/9d/494e9d33-39ed-ec95-e6bb-996557016ea2/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Best Hockey Trivia",
+        "description": "Think you know Hockey? Become the ultimate fan with our Hockey trivia app!\n\nWe have the best trivia app for Hockey for iPhone and iPad. \n\nHow big a fan are you?  Do you know which team originally drafted Mikael Andersson?  Do you who scored a record 10 hat tricks in an NHL season? What about the first player to captain two different NHL championship teams? Those questions and many more await you in this great trivia app!  \n\n\n- This trivia app is easy to use. \nNo registration required. Start answering questions quickly. Simple to play but difficult enough to keep even seasoned fans coming back for more. \n\n- Are you stuck? \nNo problem we allow you to skip questions and get hints. We give you some for free. Need more you can grab them in the store. Keep on guessing and playing. Try and answer all of our questions to unlock a very special surprise! \n\n- Get help playing with your friends! \nWhenever you are stuck its easy to ask for help with our built in help button to ask your friends for help. Challenge them to see who is the bigger Hockey fan! \n\n- Fun, Free & Addictive! \nSee if you have what it takes to become a master of Hockey trivia. \n\nGet Hockey trivia challenge today and see if you have what it takes to be a true fan!",
+        "uri": "https://itunes.apple.com/us/app/best-hockey-trivia/id883599059?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Puzzle",
+            "Trivia",
+            "Education"
+        ],
+        "price": "Free",
+        "extID": 883599059,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/e3/f8/22/e3f822c8-d469-1141-8bb3-dc0e69fb0268/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/5b/4d/2e/5b4d2ec0-6c06-c939-4f4e-330be0d03dc8/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple6/v4/f4/e4/82/f4e482a6-2460-db7b-cd4a-88f8e7358e2c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/ea/e3/71/eae371b8-39ed-67bc-55a9-fcdbd1523ee0/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple6/v4/f6/75/35/f6753520-e048-7a79-c53f-9f85bbbfd833/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/81/8c/2f/818c2f83-3b9e-09e6-c763-48c8c3c5d662/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/90/fa/18/90fa187c-6c25-060d-643c-1ab20ab59357/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/af/95/aa/af95aa60-7151-c98b-9c77-f0b310a0ed0e/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple6/v4/d2/0b/71/d20b71c3-579c-a3c0-8dba-531b8ba79230/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple2/v4/46/3c/9f/463c9f09-70c3-e369-48a2-f939b64def17/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple1/v4/4a/5b/5d/4a5b5d66-c883-4e76-da95-2939ecb692e1/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Baseball Umpire Pocket Reference",
+        "description": "#1 selling tool for Baseball Umpires, is now available as an app for HALF THE COST of the printed version.\n\nApplies to all leagues based on Official Baseball Rules, and playing on a 90' Diamond. (Including NFHS) \n\nBase Awards: \nWe list all the official base awards for Batters and Runners. This list is perfect for new umpires still learning the rules. It's also great for those situations that don't come up very often. \nIncluded is award timing - \n\"Time of Pitch\" or \"Time of Infraction\" \n\n2 Man Crew Mechanics: \nLearning the mechanics for multiple umpires can be confusing at first. This card tells you where you should be and what your responsibilities are for common situations. Great for reviewing during the Umpire's Pre-Game Meeting. \n\nUmpire Pre-Game Meeting: \nKnow what to review with your partners in your pre-game meeting. \n\nPre-Game Plate Meeting: \nA nice checklist of what to cover with the team Coaches at the Plate Meeting. \n\nStrike Zone: \nStandard descriptions of the Strike Zone, along with a multi-view diagram.\n\nCoin Toss: \nThis feature provides a way to toss a virtual coin for determining Home team during tournaments.\n\nUmpire Indicator: \nThis feature provides standard Umpire Indicator functionality. The Indicator is designed to be used with either hand. The Indicator also includes 'Score' counters, and a 'Zero All Counters' feature. The counts are stored, so if you switch to another screen or app, the counts will be remembered.\n\nNo ads or in app purchases needed.  You get all the content and updates for one price.",
+        "uri": "https://itunes.apple.com/us/app/baseball-umpire-pocket-reference/id658824730?mt=8&uo=4",
+        "categories": [
+            "Sports",
+            "Education"
+        ],
+        "price": "$0.99",
+        "extID": 658824730,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple1/v4/d4/3f/2f/d43f2f57-4c47-58f2-e5e6-997539f6d642/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple7/v4/85/d9/87/85d987f5-9349-80fe-aa29-4b854147089a/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/93/70/ac/9370ac12-a76f-b7ac-a889-68cb5175eb50/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/4e/f0/bb/4ef0bb6f-2edd-8c21-56a1-c2d3d4269489/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple1/v4/88/0f/c8/880fc8cb-7104-f995-7c61-362f177af1b9/screen322x572.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple1/v4/c5/48/96/c5489645-acd8-ca7a-5134-919b68d64dc4/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "ChageUp App",
+        "description": "Connects to the ChangeUp device to count your coins in real time so you know exactly how much we'll be depositing into your bank account. Available as a free download on the App Store and makes counting coins fun!",
+        "uri": "https://itunes.apple.com/us/app/chageup-app/id1093730603?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 1093730603,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple4/v4/a1/bc/78/a1bc7824-c087-dfc4-fef6-52c56aaf0d1e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/38/aa/35/38aa35fd-7d89-4275-5471-44d8894f0f77/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple1/v4/1b/7e/21/1b7e21f1-a6e5-b917-a135-6d1688ace64d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/f7/6d/3b/f76d3b54-7b1c-2b42-0a64-80edd3330bdb/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple49/v4/3f/9a/9d/3f9a9dd4-d3c1-e650-5d3c-dbaa6dde86ac/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CashOfWorld - automatically calculate the money",
+        "description": "The ultimate app CashOfWorld of denomination calculation\nIt is easy to calculate the major currencies of the world\n\nCorresponding to the major eight currency of the world , it covers the majority of the population on the earth !\n- US dollar\n- Euro\n- British Pound\n- Japanese yen\n- Chinese Yuan Renminbi\n- Russian Ruble\n- India Rupee\n- Korean Won\n※ other currencies , it is scheduled to increase by future updates . \n\nDenomination of calculation , it is easily and quickly be app .\nTravel to foreign countries , the calculation of the money in the calculation of the change of the shop , such as salary calculation , it is active in various scenes .\n\n■ Main Functions and Features\n• The various currencies of the world to support .\n· Banknotes and coins will be displayed . Simple , easy to understand\n· Operation is easy . \n· You can also input from either of the number and amount \n· You can also input of the total amount . It is automatically calculated to banknotes and coins \n· You can enter by cursor movement ,more quickly \n\n■ method of operation\n· Tap the input item of the denomination of the number or amount of money you want to enter.\n· Numeric keypad will appear. Press the number, the \"DONE\" button (iPad is a return) is automatically calculated the total amount of money when you tap.\n・The vertical and horizontal movement with the cursor is possible, too. There is completion (DONE), too.\n・All input items are removed when you tap a \"clear\" button.\n・Can choose type of currency when you  tap a \"setting\" button.\n・When the number except the unit is input, I display warning. Please correct the amount of money immediately.\n\n※Immunity from responsibility, attention\n・I give a perfect test about the calculation, but cannot guarantee it about the damage by the use at all.\n・It may not be usable by update in iOS. Please understand it.\n\nPlease inform the support site of a request or a question or the malfunction or encouragement\n\nThank you",
+        "uri": "https://itunes.apple.com/us/app/cashofworld-automatically/id990318793?mt=8&uo=4",
+        "categories": [
+            "Business",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 990318793,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/60/ac/4d/60ac4d32-c124-ad36-e947-f6be61972b0d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/37/20/dd/3720dd1a-5f3d-5567-302c-59bd19e00393/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/74/2a/40/742a4094-f574-2c68-f307-c4e327090e00/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/de/63/4a/de634a73-cd15-722c-706a-bf2c79bbf2da/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/d2/b1/3d/d2b13d60-05df-4cf3-1a33-a728b029e26e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/c8/1b/9f/c81b9f09-f630-3853-18bd-9c6fb0cbf5ed/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/d6/ba/96/d6ba966b-0849-944e-46fc-87ff04ec15ea/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/48/b3/0d/48b30dad-d095-474d-426e-7009977c29cc/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/55/b3/4e/55b34e56-c1f0-1915-8fb5-6ea30f219347/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/7c/9b/84/7c9b84f8-e7a7-9a64-a534-8b0f87417565/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple6/v4/14/9d/1d/149d1d59-3a43-383f-c482-7c4937b1afa8/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc US Edition",
+        "description": "CoinCalc US Edition allows you to easily calculate the value of all those coins you have lying around.  \n\nSimply tap on the coins to add up the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc Euro Edition\n• CoinCalc Canada Edition\n• CoinCalc UK Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-us-edition/id323934968?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 323934968,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/51/51/8d/51518dc5-c571-c9ae-ca9a-f6b8f4141f8b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple/v4/8c/ac/a2/8caca2d4-f5bf-f309-86aa-8dae88e9debf/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Baby Supermarket:Grade 1 Math Games-Candy Elementary School:USD Coins Counter,Addition and Subtraction.",
+        "description": "Candy Store:1st grade kids learning addition and subtraction facts & coins learning,counting,paying,making change,matching and etc:elementary & primary    math games-children’s professional experience city: money,bill,free!\n1¢,2¢,....., oh, how can I count the coin clearly? I'm going to the supermarket to buy candy, and I need $1.99, How to pay for it? Don’t worry! Follow me to the Candy Supermarket. Let’s play a kids math game about coin counter and shopping. Soon you will be able to buy your favorite products happily. \nWelcome to Candy Supermarket,this is kindergarten and 1st grade,2nd grade and 3rd grade kids math games for USD coins counting,coins learning,coins paying,coins making change,coins matching and etc. this's kids math games,they are play  addition and subtraction  games.\nDo you like playing math games? If you do, come to candy supermarket and play with GEORGE and ANNA! The kids math game here will make you feel more confident. Ready? Give it a try! Math can be so much fun! \nThe funniest mathematical games for children: \n1: They has been tested by many teachers and students and recommended by them;\n2: 8 interactive games about USD/EUR/GBP/RMB coins learning, counting, paying, making change, matching and etc.\n3: Students can learn coins from different countries. They will win coins by working hard for correct answers;\n4: Real shopping games in a supermarket. Hundreds of articles are available there, and children can find what they want;\n5: Supermarket games are involved in selecting goods, calculation, payment and change. A real shopping experience.\n6: Addition and subtraction-related games will help your children understand additive and subtraction skills.\nCandy supermarket is kids Supermarket,it's kindergarten and 1st grade、2nd grade  and 3rd grade math games of elementary school, it's about coins  learning, counting, paying, making change, matching and etc of USD/EUR/GBP/RMB coins and bill; Kids can learning addition and subtraction with money,they can shopping in the supermarket.\nCandy Supermarket is a very funny mathematical educational game which can not only help children know and identify coins with different values, but also help them learn calculation, payment and change with coins or bill.\nThis is a math game designed for kids by a mother with over 20 years of experience in early childhood education. The enlightenment game applies the calculation way of counting to help kids learn the comprehensive calculation of penny,dime and dollar and simulation shopping. As long as the kids can count, they can easily master this game. \nPlayful and childish pictures together with a fun and easy, step-by-step learning model help kids grasp the simple counting calculation method. The supermarket simulation shopping game helps kids experience the fun of life and game. The advanced game is added calculations of continuous addition and continuous subtract. \nThere are a lot of ways to learn calculation. It’s very helpful for training kids’ thinking, reaction, analysis and operability to let them study math with a variety of calculation methods. Learning by games can help kids maintain interest in math.",
+        "uri": "https://itunes.apple.com/us/app/baby-supermarket-grade-1-math/id1060535105?mt=8&uo=4",
+        "categories": [
+            "Education",
+            "Games",
+            "Role Playing",
+            "Puzzle"
+        ],
+        "price": "$2.99",
+        "extID": 1060535105,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple49/v4/86/26/3c/86263c05-46d6-6056-4526-554bf8d87e9a/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/ec/64/17/ec6417d4-58e8-e049-9677-3d0c20a824a6/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/aa/e2/78/aae27863-695a-c6a7-a014-8e8531a3bc47/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/db/c0/87/dbc0873e-3c4e-7b47-e136-1a5982b85ee2/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/71/ee/28/71ee28cf-601b-0057-3799-40883c1ae0cd/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple49/v4/45/b2/d0/45b2d01e-e078-b503-f9de-20fcabb3d1c9/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc - Loose Change Calculator",
+        "description": "CoinCalc allows you to easily calculate the value of all that loose change you have lying around.  \n\nSimply tap on the coins to add them to the total value.\n\nFeatures the coins of five currencies:\n• US Dollar\n• Euro\n• Great British Pound\n• Australian Dollar\n• Japanese Yen\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once",
+        "uri": "https://itunes.apple.com/us/app/coincalc-loose-change-calculator/id321052905?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$1.99",
+        "extID": 321052905,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/8f/07/79/8f0779bb-9a39-0630-c4ce-12d32526c6b1/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/25/71/4b/25714baa-0783-1c34-67bc-d916c2d2e4aa/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/a8/a4/ac/a8a4acfa-549f-4c8a-b6c6-a977b1c036a4/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/9e/01/c6/9e01c6f4-4e2c-b7e2-ba8c-2d63c2aa4519/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/49/09/7d/49097ddb-1d4a-6c23-2caa-1bf37d129e8b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple/v4/2c/0d/07/2c0d07ff-141b-d7a5-ae47-a09ce56eba11/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "DCalc",
+        "description": "This is life point calculator for card games.",
+        "uri": "https://itunes.apple.com/us/app/dcalc/id454420287?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Games",
+            "Card"
+        ],
+        "price": "$1.99",
+        "extID": 454420287,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/9d/56/18/9d561854-c934-232b-c891-21aab441b87c/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple6/v4/48/3a/36/483a368c-eb3e-4eb4-ac2d-48c910ada8e4/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple4/v4/63/5e/f5/635ef57a-5bfa-960c-a0a3-ce5f04566b15/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/a7/6a/0a/a76a0ac5-b0f7-b409-20f3-6b2cc4c602c0/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/19/92/54/19925465-57dc-f256-6a5a-88b09dc37110/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple4/v4/cc/87/00/cc8700ae-34b7-af1a-afc7-4fda6e741c78/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "iDenomiCalcLite",
+        "description": "Denomination calculation of Japan is a computer made simply. \nIt plays an active part in various scenes, such as the time of payroll calculation, at the time of register settlement of accounts of the compute total amount of the contents of the wallet, a retail store, etc. \n■ Feature \n- An item displays each bill and coin beside an item in a pattern intelligibly. \n- When an item hides with simple operation of only a ten key, and a ten key, it scrolls automatically and can input. \n■ The main functions \n- Both the input from number of sheets and the input from the amount of money can be performed. \n- The contents of work are memorized at the time of an end, and a start-up is also resumed by the same contents next time. \n■ The operation method \n- Carry out a tap (it pushes) to the number-of-sheets item of a denomination (a 10,000 yen bill - a 1 yen coin) to input, or an amount-of-money item at the time. \n- Since a ten key comes out, if the button after inputting a number \"Done\" is pushed or a tap is carried out to other input items, a ten key will be stored and the sum total will be calculated automatically. \n- If the tap of the \"clearance\" button is carried out, all the input items will be eliminated. \n- Since warning is displayed when the number which is not a unit of an input bill and a coin is inputted by the input item of the amount of money, please give me correction of the amount of money promptly. \n(* attention: Since I am not doing correction processing automatically, the compute total amount of the amount of money as it is is displayed and carried out.) \n* Notes \n- Although I am doing the test thoroughgoing about calculation, since we do not offer a guarantee at all about the case where trouble should attain to business etc. by a calculation result, please use it after approving of that. \nPlease connect with a support site about the words, the question, and fault of demand and encouragement.",
+        "uri": "https://itunes.apple.com/us/app/idenomicalclite/id375352735?mt=8&uo=4",
+        "categories": [
+            "Business",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 375352735,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple3/v4/ca/0f/27/ca0f2763-4894-5af2-c8d5-d1000ec4851d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple1/v4/b5/1b/87/b51b8762-1402-5315-bece-51081692bd6e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/e4/18/ce/e418cece-813b-407c-4083-1faa570ee111/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple1/v4/4d/0c/b6/4d0cb635-356b-dfc0-9352-b11e50590c6c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/ea/7a/ce/ea7acef7-100a-bb19-f598-596b96266741/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple7/v4/42/97/d2/4297d23e-f36d-0cb4-fc10-32e6e57821b1/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Thief Adventure - Chest Break Test",
+        "description": "Thief Adventure - Chest Break Test  - game application for speed and manual dexterity training in dangerous, but romantic atmosphere of the saloon in the Wild West.\n\nA  piece of paper is waving in the wind on a flaky wall of the saloon. You come closer and read the following announcement: \"Attention! Attention! Sheriff's out of town, so a competition among the best breakers will be held in the \"Wild Coyote\" today. We are waiting for the real professionals in this field who can handle with a lock of any complexity in seconds . The prize fund is not limited - open the chests and get gold from the each one!\"\n\nJoin this illegal \"gold rush\" and choose one of the three game modes:\n- ARCADE MODE\nA great way to earn coins to open the following modes and get tickets for the competition\n- LOCKS BREAKING AGAINGS THE CLOCK\nTime is your worst enemy. Open chests as fast as if the Devil himself is chasing you\n- BREAKING MASTER\nMode for burglary gurus. There is only a counter, indicating the number of opened chests in a row. One failure and you have lost.\n\nAnother features of the Thief Adventure - Chest Break Test:\n- 2 types of currency: gold coins and tickets for the competition\n- breaking the chests with swiping - new burglary technique\n- atmosphere of a gangster saloon in the Wild West\n- receiving coins and tickets for the each chest you have opened",
+        "uri": "https://itunes.apple.com/us/app/thief-adventure-chest-break/id1060473922?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Simulation"
+        ],
+        "price": "Free",
+        "extID": 1060473922,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/75/fc/08/75fc085b-6aa3-1607-67d3-61ec98441ebb/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/0c/44/17/0c441734-91fc-34d3-43ed-9a82fec1a337/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple7/v4/66/eb/2c/66eb2c82-46c5-5204-3802-ef3be3080c5a/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple5/v4/98/a7/7b/98a77b1b-1377-dab9-de4f-e3c145aa83c6/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/17/37/75/173775d7-8759-cab6-46f0-61150a9f524d/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple5/v4/a8/d2/9d/a8d29dc0-bd21-1f27-519b-1789263d3b2b/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple69/v4/57/98/f3/5798f3d0-220f-ea20-0bcc-583c3d5a9ed9/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Japanese Money Counter DX",
+        "description": "Easy to count  money.\n( for Japanese bills and coins )\n\nマネーカウンターDXでお金の集計をぱぱっと片付けちゃいましょう！\n硬貨、紙幣の数量を入力するだけで、瞬時に合計が計算できます。\n小口現金の管理、金種表の作成などにお役立て下さい!\n◎iPadバージョン「マネーカウンターHD」もございます◎\n\n【おすすめポイント】\n・１画面の中に見やすさと使いやすさを追求したユーザーインターフェイスをデザインしました！\n・数量の微調整のための、+１、-１キーが作業効率をアップ！\n・束(紙幣)、本(硬貨)にも対応しています!\n・結果データ（CSVファイル）をメールで送信できます！\n\n【使い方は簡単です】\n・入力する紙幣または硬貨をタップして選んで下さい。\n・テンキーで数量を入力して下さい。\n・リアルタイムで合計金額が計算されます。\n※束/本は999、バラは9999まで入力できます。\n※1束は100枚、1本は50枚として計算します。\n・下1ケタの修正には、「←」（デリート）キー\n・束/本とバラを個別のクリアには、「C1」キー(Ver.1.1)\n・各紙幣、硬貨の束/本とバラ両方のクリアには、「C2」キー(Ver.1.1)\n・全ての数量をゼロにするには、「AC」キー\n・束/本とバラ入力の切り替えは入力エリアのタップまたは、「束本」キーと「枚」キー\n・金種の切り替えは入力エリアのタップまたは、「↓」「↑」キーで移動できます。\n\n\n◎お願い◎\nご意見ご質問などは、App Storeのカスタマレビューに投稿する前に、まずサポートメールまたはTwitter(@NZW31)へお気軽にお問い合わせ下さい。\nApp Storeのカスタマレビューに対して開発側から直接お返事できないため問題解決ができません。\nお手数ですがよろしくお願いいたします。\n\n\n免責事項\n本アプリ開発者は、本アプリの利用によって発生したあらゆる損失・損害について一切の責任を負いません。\n本アプリのご利用につきましては、利用者自身の責任によって行って頂くようお願い致します。",
+        "uri": "https://itunes.apple.com/us/app/japanese-money-counter-dx/id485697370?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Productivity"
+        ],
+        "price": "$2.99",
+        "extID": 485697370,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple2/v4/7e/2b/e8/7e2be861-62e0-fbbc-f791-c209fdf78f49/screen568x568.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple2/v4/f8/30/3a/f8303ae9-8b39-6ce0-94ec-f2b7eb955674/screen568x568.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/fb/7d/0e/fb7d0ea0-25c7-e7b7-a809-c1f8d5954d88/screen568x568.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/dd/65/14/dd65144d-9cdb-1c6e-5002-de9192e2f7a3/screen568x568.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/fb/76/52/fb765242-1c1e-2b3b-3d62-0a6da8c9b340/screen568x568.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/a4/e0/66/a4e0668e-5832-d1c6-6efc-bc19354f33f8/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Money Counter Pro",
+        "description": "Money Counter Pro is a simple App to count your currency notes and coins of various denomination.\nSeparate Counter for all major currencies, such as US Dollars (USD) ,Euros, British Pound (GBP), Australian Dollar(AUD), Canadian Dollar (CAD), Indian Rupee (INR), Norwegian Krone (NOK), Swiss Franc (CHF), Japanese Yen (JPY), Chinese Yuan Renminbi (CNY), Swedish Krona (SEK), South African Rand (ZAR), Mexican Peso, Brazilian Real, Russian Rouble (RUB), New Zealand Dollar (NZD) etc\nIt's a handy tool to count your money, wherever you are in the world.\n\nUseful at billing, banking counters and for sales persons.\n\nAvailable in major Languages",
+        "uri": "https://itunes.apple.com/us/app/money-counter-pro/id1000638128?mt=8&uo=4",
+        "categories": [
+            "Finance",
+            "Utilities"
+        ],
+        "price": "$0.99",
+        "extID": 1000638128,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple7/v4/2b/e0/8b/2be08bb9-358f-1b01-c05c-c94003ac19bf/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple1/v4/4a/47/49/4a4749b5-1b79-5f41-4027-e604695ac543/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/d4/5e/83/d45e831f-fba6-84d4-7c67-1b0c74d8cab3/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/b2/d6/0e/b2d60e15-ea0f-86a1-a83e-9a7c73e5d380/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple1/v4/bb/bd/b3/bbbdb38a-8b66-1223-396b-3bcbe913c180/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/a8/bb/16/a8bb166b-3a2a-2569-563f-c0ad6cf9ff75/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/7d/40/4d/7d404d63-f42d-d667-1819-c3e4684953cc/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple7/v4/fc/56/fc/fc56fc58-0ecd-4a2c-a228-5ae4ddd671dc/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple5/v4/76/90/d9/7690d9e5-a9db-acb4-e689-e30d14269c04/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple7/v4/d6/ee/cd/d6eecdd8-964e-d50f-3a15-a3738fb61f8a/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple5/v4/ea/42/8b/ea428b69-7440-3303-6b85-ddfb04e99832/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Countzilla",
+        "description": "Free unlimited counters. Toss virtual coins. Roll virtual dice.\n\nPeople who play board games or go out with friends can now use their phones to keep score and make random decisions. Countzilla combines score keeping and random choice selection in one app. When playing board games, you can add the players and keep score. When making decisions like deciding whose turn it is to pay for coffee, Countzilla guarantees that everyone gets a fair chance--even if there are volunteers.\n\nCustomers have found that Countzilla helps keeps peace in their marriage by keeping track of who is right more often, tracking chores, or simply breaking ties in an argument. It is an indispensable tool for life.\n\nExplorers use Countzilla to try new ideas. Explore a restaurant you have not visited in a while. Meet up with friends you have not seen in a while. Decide whether or not to buy those shoes or that watch.\n\nCountzilla simplifies many of life's tough choices by applying principled decision theory and mathematics, ensuring that you make rational choices, in the limit.",
+        "uri": "https://itunes.apple.com/us/app/countzilla/id1014658590?mt=8&uo=4",
+        "categories": [
+            "Lifestyle",
+            "Education"
+        ],
+        "price": "Free",
+        "extID": 1014658590,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/c9/26/8d/c9268de8-da84-79ab-c872-feb608e0cf29/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple69/v4/76/fe/45/76fe45d3-eb21-0226-f854-b53364e59b28/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple49/v4/c3/bd/e6/c3bde6b1-30a1-b860-6839-8064c2ed0be7/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple49/v4/a6/66/b7/a666b732-0371-c150-f2c6-a2623da98c5f/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/89/1d/9b/891d9b0f-1135-9cab-1d62-cae3165421d0/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/75/44/a3/7544a3a2-7aff-7090-2512-426981af5c15/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple49/v4/46/ea/06/46ea0623-595f-5d91-8ba8-c767ea32264a/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/1f/ac/de/1facdef4-6da2-422b-de33-88a3f08f6533/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple49/v4/80/2c/fc/802cfc75-23f8-77f2-87c9-cbcc81c9b286/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc UK Edition",
+        "description": "CoinCalc UK Edition allows you to easily calculate the value of all those penny and pound coins you have lying around.  \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc US Edition\n• CoinCalc Euro Edition\n• CoinCalc Canada Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-uk-edition/id323924765?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 323924765,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/3e/8e/10/3e8e10da-7172-7876-7e94-d51481e072d1/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple/v4/50/8c/92/508c9222-fb13-207f-80dd-9e452b6096f6/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc Euro Edition",
+        "description": "CoinCalc Euro Edition allows you to easily calculate the value of all those euro coins you have lying around.  \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc US Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc UK Edition\n• CoinCalc Canada Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-euro-edition/id323921933?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 323921933,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/36/e9/ab/36e9abfb-7854-262b-f833-b171f0d27941/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/04/f9/2f/04f92f5a-3628-8e80-2fc3-1433cbd9bbc0/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Deckmaster",
+        "description": "Deckmaster is the most intuitive and powerful way to manage your Magic: the Gathering card collection.  Price cards and decks, set up trades and wish lists, and visualize your collection like never before!  Put your entire trade binder in your pocket!\n\nThis app is designed to answer the following common questions:\n• How much is my collection worth?\n• How much is this card worth?\n• What are the cards I want to trade for?\n• What is the mana curve for this deck?\n• Is this deck properly balanced?\n• How can I simply and clearly track life?\n• How can I easily print proxies?\n• Is this card legal in Standard/Modern/Commander?\n\nFeatures:\n• NO in-app purchases, subscription fees, or annoying ads!\n• Intuitive and usable interface\n• Get support and help right from within the app\n\nManage your collection:\n• View cards as thumbnails, lists, or as-fan\n• Unlimited number of containers and decks and include sideboards and maybe boards\n• Move cards between containers and decks just as you’d move the physical cards (no loss of information when moving cards)\n• Add personal notes to individual cards and containers\n• Deck box creator allows you to style deck boxes in thousands of combinations\n• Booster pack and Booster Box images to accurately represent your collection and pulls\n• Import decklists in a variety of formats including Magic Online format\n• Tap and hold cards to rearrange however you want\n\nSearch for a card:\n• Includes all promo and token cards!\n• Powerful search allows filtering by set, type, rarity, color, and more\n• Full text search searches oracle text and even artist names\n• Search all cards or just the cards in your collection\n\nGet information:\n• Quickly price cards and decks and even your entire collection!\n• Beautiful high-resolution card art\n• Download card, pricing, and images for offline use on iPod touches and to save cellular data charges\n• Get mana curve and mana base visualizations\n• Granular sort allows sorting results by color, rarity, type, set, cost, and more\n• Test your decks with shake-to-shuffle\n• Get oracle text and gatherer rulings and quickly look up card in Gatherer\n\nSet up fair trades:\n• Quickly set up trades to make sure a trade is fair\n• See which cards you’re looking for across your collection\n• Mark cards as foil and specify condition for accurate pricing and valuation\n\nAugment your game:\n• Beautifully simple easy to use life counter\n• Coin flipper to quickly flip and see the results of multiple coin flips (Ral Zarek eat your heart out!)\n• Easily print proxies for a deck or just cards you’re missing or want\n• Export decklists to a variety of formats including Magic Online and Cockatrice\n\nWe have priced our app differently because we wanted to create a quality and full-featured app that didn't require nickel and dining people with in-app purchases. We wanted one awesome app you could buy once and wouldn't have to continue paying for. We may have to change that model in the future but we hope that won’t be necessary. Besides, we think this app is worth way more, and is a much better value than a holiday gift box or a single tournament entry!\n\nObviously we could use some help some marketing the app.  If you’re good at graphic design and you’d like to help us market, we’ll give you a free promo code for the app!  Send some sample work and ideas to pr@kudit.com for details.\n\nWe have lots of awesome features planned to come as well!  You won’t want to miss out on new ways to play, trade, and draft your cards!",
+        "uri": "https://itunes.apple.com/us/app/deckmaster/id664445898?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Card",
+            "Simulation",
+            "Utilities"
+        ],
+        "price": "$9.99",
+        "extID": 664445898,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple5/v4/8d/13/ce/8d13ceb2-6ea7-7b23-de6e-327459ba752b/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple3/v4/90/46/7e/90467e17-40d1-2400-a3fd-5ec6ee70e137/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple4/v4/ed/3c/4a/ed3c4aa9-d7fa-eace-56ee-61802a5d33d7/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple3/v4/07/c1/2f/07c12f2d-7e44-9ac0-7fe0-402822238144/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/dc/d8/94/dcd89457-ee0c-6561-fd70-71c18f8da9fe/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple5/v4/6e/4e/28/6e4e2809-63f8-65ca-0cbe-71ea21a11cb0/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Crazy Remote Clicker PRO - Click Rush Dash Mania",
+        "description": "Premium Version - Zero Ads! \n\nAlways getting in trouble for changing the channel all the time?\n\nNow you can click away without any disrepute!\n\nThe most exciting TV Remote game is now on your iPhone, iPod and iPad.\n\nBe prepared for endless hours of fun, awesomeness and entertainment!\n\nClick on the remote to let out frustration as you can by clicking or tapping on a awesome remote as fast as you can.\nCrazy Remote Clicker seemingly endless gameplay will allow you to play for an indefinite amount of time so click away!!\n\nBecome the Master of your domain.... be the first to change the channel  1 BILLION Times!",
+        "uri": "https://itunes.apple.com/us/app/crazy-remote-clicker-pro-click/id844825305?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Music",
+            "Strategy"
+        ],
+        "price": "$1.99",
+        "extID": 844825305,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple6/v4/98/37/30/983730cb-6266-7765-4972-38e0411ba7d4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple6/v4/b2/8b/f5/b28bf53b-c796-4a9b-041f-6ae57cd095eb/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/3e/33/89/3e338901-0d10-86de-cf1a-ae494a92d3a2/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/4f/cc/92/4fcc9234-2645-f165-52bb-bf7dda46a5b6/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple6/v4/fc/f4/f4/fcf4f4c7-583c-5aa4-9c91-f39e6340750a/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/8e/e9/3f/8ee93f87-c496-7f8c-3ecf-86514389b114/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple4/v4/cc/e7/1a/cce71a85-4951-a883-d7f6-60169bcd8cb4/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc Canada Edition",
+        "description": "CoinCalc Canada Edition allows you to easily calculate the value of all those Canadian coins / loose change you have lying around. \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc US Edition\n• CoinCalc Euro Edition\n• CoinCalc UK Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-canada-edition/id325348874?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 325348874,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/21/1c/25/211c25c4-b992-ac87-a161-3f772983af39/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple/v4/9a/3f/73/9a3f737b-e078-e04c-4e13-7e41aaff1d0b/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc Australian Edition",
+        "description": "CoinCalc Australian Edition allows you to easily calculate the value of all those Aussie coins you have lying around.  \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc New Zealand Edition\n• CoinCalc US Edition\n• CoinCalc Euro Edition\n• CoinCalc UK Edition\n• CoinCalc Canada Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-australian-edition/id323926001?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 323926001,
+        "images": [
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple/v4/1f/c4/03/1fc4039a-e06f-0ab3-8e58-d8cc906fe59f/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple/v4/44/99/95/449995cf-d3e0-56c4-c0bf-922d58bd1271/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Moedeiro",
+        "description": "Sabe aquela dor de cabeça que é contar moedas? Seus problemas acabaram!\n\nO Moedeiro, que usa a mais avançada tecnologia, tornou o processo de contar moedas mais rápido, fácil e sem erros! \n\nO melhor contador de moedas do mundo te mostra o resultado em tempo real!!!",
+        "uri": "https://itunes.apple.com/us/app/moedeiro/id969821030?mt=8&uo=4",
+        "categories": [
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 969821030,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple5/v4/e0/cf/69/e0cf697a-1a81-dbf3-23a8-8adf3c1d97e4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple3/v4/72/8b/dd/728bddb5-7982-c3cf-dfa7-2b7d94fa97da/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple1/v4/7a/bf/ed/7abfed2a-71fa-5e77-1389-08be47d5d87c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple3/v4/e8/c6/88/e8c688c4-5e14-8c6a-c8ae-351306d2caf1/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Workaround - Keeps you motivated even if your job is boring!",
+        "description": "Do you like money, but don't like working? \nKeep yourself motivated with this simple, yet fun app. Just open it when you start working and it immediately begins counting your daily earning.\n\nNo more frustration!\nNo more boredom!\n\nWhen launching for the first time, you should set all parameters on the settings page.",
+        "uri": "https://itunes.apple.com/us/app/workaround-keeps-you-motivated/id1074085238?mt=8&uo=4",
+        "categories": [
+            "Entertainment",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 1074085238,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple20/v4/2c/d2/1a/2cd21af5-c515-9c39-ac97-d8a82302b7c5/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple49/v4/9b/b4/36/9bb43699-629e-b07b-1d75-169254191537/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple69/v4/f4/a0/89/f4a08972-ef4e-b9f0-90b5-8734fd860316/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc Hong Kong Edition",
+        "description": "CoinCalc Hong Kong Edition allows you to easily calculate the value of all those Hong Kong coins you have lying around. \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc US Edition\n• CoinCalc Singapore Edition\n• CoinCalc Euro Edition\n• CoinCalc UK Edition\n• CoinCalc Canada Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-hong-kong-edition/id325349599?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 325349599,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/e1/9c/a1/e19ca1f2-d6c0-c4eb-bbfa-4e466d2dd3f4/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is3.mzstatic.com/image/thumb/Purple/v4/d0/ed/18/d0ed1864-5fa3-fc21-b8df-28b16d476a5c/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "FindCircles",
+        "description": "Find Circles is the incorporation of the Hough Circle algorithm into iOS devices.  Designed for iPhone and iPad, this app will detect, mark, and count circles from an image.  From pills on a countertop, coins on a table, and cells on a microscopic slide.  Find Circles is a crucial tool where repetitive counting is necessary.  Using OpenCV to allow the computer to 'see', Find Circles is fully adjustable to fit a wide variety of tasks.    It uses multiple phases of image processing to achieve this task.  What used to require a mainframe to run, now can be run on your device.  Use the same algorithm factories have been using since the 80's to count inventory.",
+        "uri": "https://itunes.apple.com/us/app/findcircles/id897740641?mt=8&uo=4",
+        "categories": [
+            "Productivity",
+            "Photo & Video"
+        ],
+        "price": "$9.99",
+        "extID": 897740641,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/b8/b5/10/b8b51020-2e65-aac5-5ff8-2903c7cf58a1/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/d6/d8/4f/d6d84f46-8972-ea68-03de-22bbf08364c4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/88/24/69/88246964-46c6-e735-fb74-b2705176517c/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple69/v4/40/48/3f/40483f74-60b9-2a3e-4067-2b77220ccab4/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple69/v4/02/4c/90/024c9077-c452-155a-9b38-db81cf59f944/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple69/v4/5e/b5/58/5eb5580e-6ced-5b34-7730-37f162989d2d/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple69/v4/73/77/3e/73773e44-9188-c8f2-2866-be9567651545/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple69/v4/10/25/fc/1025fc3f-d69e-57f7-8dec-4fecb2b48fcf/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple69/v4/18/49/74/1849743e-6c53-ac10-c78a-f37cbba72a6f/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple69/v4/fe/34/46/fe344697-51aa-e357-17ab-cf25a2ae7257/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple69/v4/b1/07/92/b10792d4-f3ec-dfa6-caff-8e465bfa28d0/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc New Zealand Edition",
+        "description": "CoinCalc New Zealand Edition allows you to easily calculate the value of all those Kiwi coins you have lying around.  And as there only five coins we've added some notes.\n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc Australia Edition\n• CoinCalc US Edition\n• CoinCalc Euro Edition\n• CoinCalc UK Edition\n• CoinCalc Canada Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition\n• CoinCalc Hong Kong Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-new-zealand-edition/id325349702?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 325349702,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple/v4/6e/52/e0/6e52e047-0ddf-302b-3ef5-14928470a73b/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple/v4/2d/7e/8a/2d7e8a42-f0c7-1a4d-2a35-6386183da50d/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "CoinCalc Singapore Edition",
+        "description": "CoinCalc Singapore Edition allows you to easily calculate the value of all those Singporean coins you have lying around. \n\nSimply tap on the coins to add them to the total value.\n\nOther features:\n• Individual count displays for each coin\n• Count retained in memory even when exiting application\n• Sound indicates when a coin is added (can be muted)\n• Add either 1 coin at a time or 10 coins at once\n• $2 and $5 notes also included\n\nSearch for CoinCalc to view the other versions including:\n• CoinCalc Loose Change Calculator - multiple currencies\n• CoinCalc US Edition\n• CoinCalc Hong Kong Edition\n• CoinCalc Euro Edition\n• CoinCalc UK Edition\n• CoinCalc Canada Edition\n• CoinCalc Australia Edition\n• CoinCalc New Zealand Edition\n• CoinCalc Denmark Edition\n• CoinCalc Sweden Edition\n• CoinCalc Singapore Edition",
+        "uri": "https://itunes.apple.com/us/app/coincalc-singapore-edition/id325349902?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 325349902,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/f7/ac/f8/f7acf8cc-5a0c-9254-05e0-3d37ff731dd3/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is2.mzstatic.com/image/thumb/Purple/v4/e9/a7/25/e9a7251a-a79a-eb82-6c1f-4c58a5e50ad3/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "iSalvadanaio",
+        "description": "During Christmas iSalvadanaio will be completely free !!!!\nMerry Christmas !!!\ndownload it now\n\n****************REPORTING *************** \nSome users have identified a bug that does not allow the proper functioning after the upgrade. Waiting for a fix, please delete and reinstall the app.\nThis will allow you to launch the app regularly.\nI apologize for the inconvenience.\n************************************************\n\nHow many times, seeing your piggy bank you have thought \"how much money will there be inside?\"\niSalvadanaio is the app that will answer to this big question!\n\nJust keep it updated, putting the same coin or bill you put in your real piggy bank, in the iSalvadanaio piglet and you're done!\n\n*************** NOTE **************** \nYou must only DRAG the coin or bill and drop it on the piggy bank.\n*************************************\n\niSalvadanaio  will show a statistic of all the coins or banknotes inserted divided by value.\n\nWant to start a piggy bank to buy something you want?\n\nSet your target and constantly iSalvadanaio will tell you what is missing in order to attain and will alert you as soon as you arrive to the amount!\n\nIn addition, each entry will sound different from time to time, for example, if the piggy bank is empty or not.\n\nJust then shake iSalvadanaio and feel that your iPhone is full of coins!\n\nIt can also be a nice game to bring the children to the 'first pennies'!\n\nWhat are you waiting? The collection begins!\n\n*************** SUPPORT **************** \nBefore placing negative reviews, please contact me on mail address apps@matteolucario.it.\nI will be happy to answer your questions.\nThanks to all!\n****************************************",
+        "uri": "https://itunes.apple.com/us/app/isalvadanaio/id427868289?mt=8&uo=4",
+        "categories": [
+            "Utilities",
+            "Finance"
+        ],
+        "price": "$0.99",
+        "extID": 427868289,
+        "images": [
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/cc/dd/a2/ccdda25a-85e6-1879-80f9-67a9ced6945d/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple6/v4/2e/07/1b/2e071bd6-3d88-2d16-8781-b778ca4b1127/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple4/v4/22/53/67/225367b4-737a-233a-d7e0-9956d039a6c5/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple4/v4/33/23/24/3323249c-c9b7-7c7a-166c-7a27473313a9/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple/v4/85/4d/e1/854de11a-937a-cd26-ef1d-9cf6c2e13c32/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple/v4/34/3c/f5/343cf52e-64e5-f979-151d-2747784092f9/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "KidsEuroCalc",
+        "description": "The KidsEuroCalc is an easy Euro-Money-Calculator.\n\nRetina support!\n\n----------------------------\n\nFollow us: http://twitter.com/CLIDOapps\nVisit us: http://www.clidoapps.com",
+        "uri": "https://itunes.apple.com/us/app/kidseurocalc/id436652229?mt=8&uo=4",
+        "categories": [
+            "Education",
+            "Productivity"
+        ],
+        "price": "$0.99",
+        "extID": 436652229,
+        "images": [
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple/v4/1c/6a/47/1c6a47c7-f0eb-5368-008c-06885a9212af/screen320x480.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple/v4/7f/b2/76/7fb2766e-3960-21e6-dde3-4b851c781827/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "ShowAngel-ios",
+        "description": "This app helps people to improve the efficiency of counting out a sum of money. When some one has too many coins or notes to count, use this app will save time.\nThe one who has many coins or notes to count out can use this app especially bus company, bank, store and so on.\n\n\n1) How to use this app?\n\nFunction 1: Counting Coins\nFirst, put some coins on a platform such as a desktop.The platform is black color or any other dark color.\nSecond, run the app.On the top left corner of the app's interface, there is a button (circular shape), touch it.\nThird, chose \"camera\" in the pop up dialog. And then, take a photo of the coins on the platform.\nThe last step, on the top left corner of the app's interface will show the number of the coins. Each coin will be marked by green circular.\n\nFunction 2: Counting Notes\nFirst, put some coins on a platform such as a desktop. One on top of another, reveal boxers.\nSecond, On the top right corner of the app's interface, there is a button (like a paper), touch it.\nThird, chose \"camera\" in the pop up dialog. And then, take a photo of the notes. (As far as possible to make every border of the notes is parallel to the top border of the photo.)\nThe last step, on the top right corner of the app's interface will show the number of the notes. Each note’s border will be marked by green circular.\n\n\n2) What currency format does the app accept?\n\nIt accept circular shape coins. Any country or any face value.\n\n\n3) Is the number the amount of currency or the number of bills?\n\nThe number is the amount of currency.\n\n\nNote:\nWhen users found that not all the coins or notes are marked by the green circulars,please touch the button \"+\" and touch the picture to mark them. \nAlso, when users found that some green circulars are not mark on the coins or notes, please touch the button \"x\" and touch the picture to unmark them.",
+        "uri": "https://itunes.apple.com/us/app/showangel-ios/id869245236?mt=8&uo=4",
+        "categories": [
+            "Productivity",
+            "Games"
+        ],
+        "price": "$0.99",
+        "extID": 869245236,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/14/50/64/14506462-91a3-c90c-b163-394f6f46d59e/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple4/v4/58/34/55/58345541-d6db-09d3-7515-420fab442eee/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple4/v4/ec/95/c1/ec95c101-2a7c-602e-829d-cea83a658754/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple2/v4/63/b6/85/63b6858a-697c-9503-a9ad-7077552ffe0f/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/55/22/28/552228cc-fa91-9a46-3397-802353d11d83/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a5.mzstatic.com/us/r30/Purple4/v4/21/d5/bd/21d5bda3-b3d8-de6f-6ad3-8c92e9ad7549/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple4/v4/31/8d/e2/318de23a-611f-36a5-69cf-c5ca1f4a7faf/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple/v4/4c/a2/aa/4ca2aa8b-72e1-8231-1ad8-b1558785d1d3/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple6/v4/2c/8a/9f/2c8a9f60-1885-c1c4-6de2-056edd8af7d3/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple4/v4/77/91/3e/77913ef5-ee58-5d3d-0354-17e15d1a7973/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is1.mzstatic.com/image/thumb/Purple4/v4/62/06/dd/6206ddfb-efd7-7aad-2577-45a01e0b582a/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Thief Adventure - Chest Break Test PRO",
+        "description": "Thief Adventure - Chest Break Test  - game application for speed and manual dexterity training in dangerous, but romantic atmosphere of the saloon in the Wild West.\n\nA  piece of paper is waving in the wind on a flaky wall of the saloon. You come closer and read the following announcement: \"Attention! Attention! Sheriff's out of town, so a competition among the best breakers will be held in the \"Wild Coyote\" today. We are waiting for the real professionals in this field who can handle with a lock of any complexity in seconds . The prize fund is not limited - open the chests and get gold from the each one!\"\n\nJoin this illegal \"gold rush\" and choose one of the three game modes:\n- ARCADE MODE\nA great way to earn coins to open the following modes and get tickets for the competition\n- LOCKS BREAKING AGAINGS THE CLOCK\nTime is your worst enemy. Open chests as fast as if the Devil himself is chasing you\n- BREAKING MASTER\nMode for burglary gurus. There is only a counter, indicating the number of opened chests in a row. One failure and you have lost.\n\nAnother features of the Thief Adventure - Chest Break Test:\n- 2 types of currency: gold coins and tickets for the competition\n- breaking the chests with swiping - new burglary technique\n- atmosphere of a gangster saloon in the Wild West\n- receiving coins and tickets for the each chest you have opened",
+        "uri": "https://itunes.apple.com/us/app/thief-adventure-chest-break/id1060473928?mt=8&uo=4",
+        "categories": [
+            "Games",
+            "Simulation"
+        ],
+        "price": "$1.99",
+        "extID": 1060473928,
+        "images": [
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple7/v4/6f/b0/30/6fb0303f-a798-d5b9-b29f-91823e6d9acf/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple7/v4/14/3a/dc/143adc4b-3401-92fd-839b-c8781fa05311/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a4.mzstatic.com/us/r30/Purple5/v4/e6/68/db/e668dbd3-72d8-8afb-10b7-a8fcf897cb16/screen320x320.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple7/v4/5d/57/ed/5d57ed64-f25e-f9e1-7d51-9bd03edc8b4c/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple5/v4/2a/41/7f/2a417f77-1b45-6df3-8fc9-f0562fd3fdf3/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://a3.mzstatic.com/us/r30/Purple5/v4/00/c3/ce/00c3cec5-371d-5dcb-564c-59fce8cdbaa0/screen480x480.jpeg",
+                "type": "screenshot",
+                "device": "tablet"
+            },
+            {
+                "uri": "http://is4.mzstatic.com/image/thumb/Purple69/v4/e1/c8/91/e1c8912c-f74c-ba0e-b7c4-4caebed5743b/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    }
+]

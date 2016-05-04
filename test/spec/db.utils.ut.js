@@ -555,7 +555,7 @@ describe('utils/db', function() {
                     });
 
                     it('should not call the api', function() {
-                        expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ [CALL_API]: jasmine.any(Object) }));
+                        expect(dispatch.calls.count()).toBe(1);
                     });
 
                     it('should dispatch an error', function() {
@@ -582,7 +582,7 @@ describe('utils/db', function() {
                     });
 
                     it('should not call the api', function() {
-                        expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ [CALL_API]: jasmine.any(Object) }));
+                        expect(dispatch.calls.count()).toBe(1);
                     });
 
                     it('should dispatch an error', function() {

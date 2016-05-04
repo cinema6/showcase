@@ -95,8 +95,9 @@ module.exports = function(grunt) {
     grunt.registerTask('build', 'build app into distDir', [
         'clean:build',
         'copy:build',
-        'cssmin:build',
-        'browserify:build'
+        'browserify:build',
+        'uglify:build',
+        'compress:build'
     ]);
 
     grunt.registerTask('build:docs', 'build YUIDocs', [
