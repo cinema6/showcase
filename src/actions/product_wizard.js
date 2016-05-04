@@ -15,3 +15,6 @@ export function productSelected({ product }) {
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
 }
+
+export const PRODUCT_EDITED = prefix('PRODUCT_EDITED');
+export const productEdited = createAction(PRODUCT_EDITED, ({ data }) => data);
