@@ -10,10 +10,12 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
-import { productSelected } from '../../src/actions/product_wizard';
-import  WizardSearch from '../../src/components/WizardSearch';
+import { productSelected, productEdited } from '../../src/actions/product_wizard';
+import WizardSearch from '../../src/components/WizardSearch';
+import WizardEditProduct from '../../src/components/WizardEditProduct';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
+import { createUuid } from 'rc-uuid';
 
 const proxyquire = require('proxyquire');
 
@@ -24,6 +26,7 @@ describe('ProductWizard', function() {
     beforeEach(function() {
         productWizardActions = {
             productSelected: jasmine.createSpy('productSelected()').and.callFake(productSelected),
+            productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
 
             __esModule: true
         };
@@ -38,6 +41,11 @@ describe('ProductWizard', function() {
 
             '../../components/WizardSearch': {
                 default: WizardSearch,
+
+                __esModule: true
+            },
+            '../../components/WizardEditProduct': {
+                default: WizardEditProduct,
 
                 __esModule: true
             },
@@ -65,7 +73,8 @@ describe('ProductWizard', function() {
 
             props = {
                 page: {
-                    step: 0
+                    step: 0,
+                    productData: null
                 }
             };
 
@@ -127,11 +136,49 @@ describe('ProductWizard', function() {
         describe('on step 1', function() {
             beforeEach(function() {
                 component.props.page.step = 1;
+                component.props.page.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome'
+                };
                 component.forceUpdate();
             });
 
             it('should not render a WizardSearch', function() {
                 expect(scryRenderedComponentsWithType(component, WizardSearch).length).toBe(0, 'WizardSearch is rendered!');
+            });
+
+            it('should render a WizardEditProduct', function() {
+                expect(scryRenderedComponentsWithType(component, WizardEditProduct).length).toBeGreaterThan(0, 'WizardEditProduct is not rendered!');
+            });
+
+            describe('WizardEditProduct', function() {
+                let edit;
+
+                beforeEach(function() {
+                    edit = findRenderedComponentWithType(component, WizardEditProduct);
+                });
+
+                describe('props', function() {
+                    describe('productData', function() {
+                        it('should be the productData', function() {
+                            expect(edit.props.productData).toEqual(props.page.productData);
+                        });
+                    });
+
+                    describe('onFinish()', function() {
+                        let values;
+
+                        beforeEach(function() {
+                            values = { title: 'My new name', description: 'The new, improved description.' };
+                            edit.props.onFinish(values);
+                        });
+
+                        it('should call productEdited()', function() {
+                            expect(productWizardActions.productEdited).toHaveBeenCalledWith({ data: { name: values.title, description: values.description } });
+                        });
+                    });
+                });
             });
         });
 
@@ -168,6 +215,22 @@ describe('ProductWizard', function() {
                 it('should dispatch the productSelected action', function() {
                     expect(productWizardActions.productSelected).toHaveBeenCalledWith({ product });
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.productSelected.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('productEdited()', function() {
+                let data;
+                let result;
+
+                beforeEach(function() {
+                    data = { name: 'The name', description: 'the description' };
+                    result = component.props.productEdited({ data });
+                });
+
+                it('should dispatch the productSelected action', function() {
+                    expect(productWizardActions.productEdited).toHaveBeenCalledWith({ data });
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.productEdited.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });

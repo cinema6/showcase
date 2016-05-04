@@ -3,17 +3,18 @@
 import defer from 'promise-defer';
 import { getProductData } from '../../src/actions/collateral';
 import {
-    PRODUCT_SELECTED
+    PRODUCT_SELECTED,
+    PRODUCT_EDITED
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 
 const proxyquire = require('proxyquire');
 
-describe('search actions', function() {
+describe('product wizard actions', function() {
     let collateralActions;
     let actions;
-    let productSelected;
+    let productSelected, productEdited;
 
     beforeEach(function() {
         collateralActions = {
@@ -25,6 +26,7 @@ describe('search actions', function() {
             './collateral': collateralActions
         });
         productSelected = actions.productSelected;
+        productEdited = actions.productEdited;
     });
 
     describe('productSelected({ product })', function() {
@@ -96,6 +98,24 @@ describe('search actions', function() {
                     expect(failure).toHaveBeenCalledWith(reason);
                 });
             });
+        });
+    });
+
+    describe('productEdited({ data })', function() {
+        let data;
+        let result;
+
+        beforeEach(function() {
+            data = {
+                name: 'The name',
+                description: 'The description'
+            };
+
+            result = productEdited({ data });
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual(createAction(PRODUCT_EDITED)(data));
         });
     });
 });

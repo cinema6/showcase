@@ -3,15 +3,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { findApps } from '../../actions/search';
-import { productSelected } from '../../actions/product_wizard';
+import { productSelected, productEdited } from '../../actions/product_wizard';
 import WizardSearch from '../../components/WizardSearch';
+import WizardEditProduct from '../../components/WizardEditProduct';
 
 class ProductWizard extends Component {
     render() {
         const {
             findApps,
             productSelected,
-            page: { step }
+            productEdited,
+            page: { step, productData }
         } = this.props;
 
         return (
@@ -22,6 +24,11 @@ class ProductWizard extends Component {
                     case 0:
                         return <WizardSearch findProducts={findApps}
                             onProductSelected={product => productSelected({ product })}/>;
+                    case 1:
+                        return <WizardEditProduct productData={productData}
+                            onFinish={({ title, description }) => productEdited({
+                                data: { name: title, description }
+                            })} />;
                     }
                 })()}
             </div>
@@ -32,8 +39,14 @@ class ProductWizard extends Component {
 ProductWizard.propTypes = {
     findApps: PropTypes.func.isRequired,
     productSelected: PropTypes.func.isRequired,
+    productEdited: PropTypes.func.isRequired,
+
     page: PropTypes.shape({
-        step: PropTypes.number.isRequired
+        step: PropTypes.number.isRequired,
+        productData: PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            description: PropTypes.string.isRequired
+        })
     }).isRequired
 };
 
@@ -43,5 +56,6 @@ function mapStateToProps() {
 
 export default connect(mapStateToProps, {
     findApps,
-    productSelected
+    productSelected,
+    productEdited
 })(ProductWizard);
