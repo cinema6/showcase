@@ -18,3 +18,6 @@ export function productSelected({ product }) {
 
 export const PRODUCT_EDITED = prefix('PRODUCT_EDITED');
 export const productEdited = createAction(PRODUCT_EDITED, ({ data }) => data);
+
+export const TARGETING_EDITED = prefix('TARGETING_EDITED');
+export const targetingEdited = createAction(TARGETING_EDITED, ({ data }) => data);
