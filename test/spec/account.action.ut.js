@@ -21,7 +21,6 @@ const proxyquire = require('proxyquire');
 
 describe('updateUser(data)', function() {
     let updateUser;
-    let userUpdateUser;
     let thunk;
     let data;
 

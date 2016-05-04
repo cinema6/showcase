@@ -10,7 +10,6 @@ import {
 } from '../../src/actions/user';
 import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
-import { CALL_API } from 'redux-api-middleware';
 
 const proxyquire = require('proxyquire');
 
