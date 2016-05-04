@@ -149,8 +149,8 @@ describe('TokenTextField', function() {
         describe('typing', function() {
             let input, event;
 
-            function keyDown() {
-                const event = { preventDefault: jasmine.createSpy('preventDefault()') };
+            function keyDown(keyCode = 65) {
+                const event = { preventDefault: jasmine.createSpy('preventDefault()'), keyCode };
 
                 Simulate.keyDown(input, event);
 
@@ -192,11 +192,25 @@ describe('TokenTextField', function() {
 
                 describe('if backspace is pressed', function() {
                     beforeEach(function() {
-                        Simulate.keyDown(input, { keyCode: KEY_CODES.BACKSPACE });
+                        event = keyDown(KEY_CODES.BACKSPACE);
                     });
 
                     it('should call onChange', function() {
                         expect(props.onChange).toHaveBeenCalledWith(props.value.slice(0, -1));
+                    });
+
+                    it('should preventDefault()', function() {
+                        expect(event.preventDefault).toHaveBeenCalled();
+                    });
+                });
+
+                describe('if enter is pressed', function() {
+                    beforeEach(function() {
+                        event = keyDown(KEY_CODES.ENTER);
+                    });
+
+                    it('should not preventDefault()', function() {
+                        expect(event.preventDefault).not.toHaveBeenCalled();
                     });
                 });
             });
@@ -233,6 +247,26 @@ describe('TokenTextField', function() {
                     expect(props.onChange).toHaveBeenCalledWith(tokens.concat([suggestions[2]]));
                     expect(component.setState).toHaveBeenCalledWith({ text: '' });
                     expect(component.getSuggestions).toHaveBeenCalledWith('');
+                });
+
+                describe('if there is no selection', function() {
+                    let event;
+
+                    beforeEach(function() {
+                        props.onChange.calls.reset();
+                        component.setState({ selectedSuggestion: null });
+
+                        event = { keyCode: KEY_CODES.ENTER, preventDefault: jasmine.createSpy('preventDefault()') };
+                        Simulate.keyDown(input, event);
+                    });
+
+                    it('should not call onChange', function() {
+                        expect(props.onChange).not.toHaveBeenCalled();
+                    });
+
+                    it('should not preventDefault', function() {
+                        expect(event.preventDefault).not.toHaveBeenCalled();
+                    });
                 });
             });
 

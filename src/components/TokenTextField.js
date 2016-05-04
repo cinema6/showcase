@@ -61,18 +61,17 @@ export default class TokenTextField extends Component {
                 this.setState({ selectedSuggestion: getSuggestion(+1) });
                 return true;
             case KEY_CODES.ENTER:
-                this.addToken(find(suggestions, { id: selectedSuggestion }));
-                return true;
+                return this.addToken(find(suggestions, { id: selectedSuggestion }));
             case KEY_CODES.BACKSPACE:
                 if (target.value) { return false; }
                 this.popToken();
                 return true;
             default:
-                return false;
+                return value.length >= maxValues;
             }
         };
 
-        if (respond(event.keyCode) || value.length >= maxValues) { event.preventDefault(); }
+        if (respond(event.keyCode)) { event.preventDefault(); }
     }
 
     addToken(item) {
@@ -81,10 +80,14 @@ export default class TokenTextField extends Component {
             onChange
         } = this.props;
 
+        if (!item) { return false; }
+
         onChange(value.concat([item]));
         this.setState({ text: '' });
         this.getSuggestions('');
         findDOMNode(this.refs.input).focus();
+
+        return true;
     }
 
     popToken() {
