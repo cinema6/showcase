@@ -5,10 +5,12 @@ import accountEmail from './account_email';
 import accountPassword from './account_password';
 import forgotPassword from './forgot_password';
 import resetPassword from './reset_password';
+import productWizard from './product_wizard';
 
 export default reducer.plugin({
     accountEmail,
     accountPassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    productWizard
 });

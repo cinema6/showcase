@@ -11,6 +11,9 @@ const INITIAL_STATE = {
 };
 
 export default handleActions({
+    [`${PRODUCT_SELECTED}_PENDING`]: state => assign({}, state, {
+        productData: null
+    }),
     [`${PRODUCT_SELECTED}_FULFILLED`]: (state, { payload: productData }) => assign({}, state, {
         step: 1,
         productData

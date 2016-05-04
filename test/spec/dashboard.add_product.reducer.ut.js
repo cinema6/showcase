@@ -26,6 +26,25 @@ describe('dashboardAddProductReducer()', function() {
             };
         });
 
+        describe(`${PRODUCT_SELECTED}_PENDING`, function() {
+            beforeEach(function() {
+                state.productData = {
+                    extID: createUuid(),
+                    name: 'My App',
+                    description: 'It rules!'
+                };
+
+                action = createAction(`${PRODUCT_SELECTED}_PENDING`)();
+                newState = dashboardAddProductReducer(state, action);
+            });
+
+            it('should set productData back to null', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    productData: null
+                }));
+            });
+        });
+
         describe(`${PRODUCT_SELECTED}_FULFILLED`, function() {
             let product;
 
