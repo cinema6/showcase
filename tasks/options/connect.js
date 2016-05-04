@@ -28,6 +28,7 @@ module.exports = {
                         '/api/account': 'server/api/account/main.js',
                         '/api/payments': 'server/api/payment/main.js',
                         '/api/search': 'server/api/search/main.js',
+                        '/api/collateral': 'server/api/collateral/main.js',
                         '@verbosity': verbosity
                     })
                 ].concat(middleware);
