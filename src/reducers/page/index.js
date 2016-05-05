@@ -1,4 +1,5 @@
 import { createPageReducer } from '../../utils/page';
+import dashboardReducer from './dashboard';
 import dashboardAccountProfileReducer from './dashboard/account/profile';
 import dashboardAccountEmailReducer from './dashboard/account/email';
 import dashboardAccountPasswordReducer from './dashboard/account/password';
@@ -10,6 +11,8 @@ import dashboardAddProductReducer from './dashboard/add_product';
 export default createPageReducer({
     'forgot_password': forgotPasswordReducer,
     'reset_password': resetPasswordReducer,
+
+    'dashboard': dashboardReducer,
 
     'dashboard.account.profile': dashboardAccountProfileReducer,
     'dashboard.account.email': dashboardAccountEmailReducer,

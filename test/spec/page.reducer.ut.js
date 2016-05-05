@@ -3,6 +3,7 @@
 import pageReducer from '../../src/reducers/page';
 import { createPageReducer } from '../../src/utils/page';
 import { pageWillMount } from '../../src/actions/page';
+import dashboardReducer from '../../src/reducers/page/dashboard';
 import dashboardAccountProfileReducer from '../../src/reducers/page/dashboard/account/profile';
 import dashboardAccountEmailReducer from '../../src/reducers/page/dashboard/account/email';
 import dashboardAccountPasswordReducer from '../../src/reducers/page/dashboard/account/password';
@@ -25,6 +26,8 @@ describe('pageReducer()', function() {
         pageMap = {
             'forgot_password': forgotPasswordReducer,
             'reset_password': resetPasswordReducer,
+
+            'dashboard': dashboardReducer,
 
             'dashboard.account.profile': dashboardAccountProfileReducer,
             'dashboard.account.email': dashboardAccountEmailReducer,

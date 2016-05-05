@@ -1,11 +1,13 @@
 import defer from 'promise-defer';
-import { logoutUser } from '../../src/actions/dashboard';
+import { logoutUser, showNav, toggleNav } from '../../src/actions/dashboard';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
 import { createAction } from 'redux-actions';
 import {
     LOGOUT_START,
     LOGOUT_SUCCESS,
-    LOGOUT_FAILURE
+    LOGOUT_FAILURE,
+    SHOW_NAV,
+    TOGGLE_NAV
 } from '../../src/actions/dashboard';
 import { replace } from 'react-router-redux';
 
@@ -87,5 +89,29 @@ describe('logoutUser()', function() {
                 expect(failure).toHaveBeenCalledWith(reason);
             });
         });
+    });
+});
+
+describe('showNav(show)', function() {
+    let result;
+
+    beforeEach(function() {
+        result = showNav(true);
+    });
+
+    it('should return an FSA', function() {
+        expect(result).toEqual(createAction(SHOW_NAV)(true));
+    });
+});
+
+describe('toggleNav()', function() {
+    let result;
+
+    beforeEach(function() {
+        result = toggleNav();
+    });
+
+    it('should return an FSA', function() {
+        expect(result).toEqual(createAction(TOGGLE_NAV)());
     });
 });
