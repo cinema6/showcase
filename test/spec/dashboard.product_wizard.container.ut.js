@@ -10,12 +10,14 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
-import { productSelected, productEdited } from '../../src/actions/product_wizard';
+import { productSelected, productEdited, targetingEdited } from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
+import WizardEditTargeting from '../../src/components/WizardEditTargeting';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
+import * as TARGETING from '../../src/enums/targeting';
 
 const proxyquire = require('proxyquire');
 
@@ -27,6 +29,7 @@ describe('ProductWizard', function() {
         productWizardActions = {
             productSelected: jasmine.createSpy('productSelected()').and.callFake(productSelected),
             productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
+            targetingEdited: jasmine.createSpy('targetingEdited()').and.callFake(targetingEdited),
 
             __esModule: true
         };
@@ -46,6 +49,11 @@ describe('ProductWizard', function() {
             },
             '../../components/WizardEditProduct': {
                 default: WizardEditProduct,
+
+                __esModule: true
+            },
+            '../../components/WizardEditTargeting': {
+                default: WizardEditTargeting,
 
                 __esModule: true
             },
@@ -74,7 +82,11 @@ describe('ProductWizard', function() {
             props = {
                 page: {
                     step: 0,
-                    productData: null
+                    productData: null,
+                    targeting: {
+                        age: TARGETING.AGE.ALL,
+                        gender: TARGETING.GENDER.ALL
+                    }
                 }
             };
 
@@ -182,6 +194,54 @@ describe('ProductWizard', function() {
             });
         });
 
+        describe('on step 2', function() {
+            beforeEach(function() {
+                component.props.page.step = 2;
+                component.props.page.targeting = {
+                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    gender: TARGETING.GENDER.FEMALE
+                };
+                component.forceUpdate();
+            });
+
+            it('should not render a WizardEditProduct', function() {
+                expect(scryRenderedComponentsWithType(component, WizardEditProduct).length).toBe(0, 'WizardEditProduct is rendered!');
+            });
+
+            it('should render a WizardEditTargeting', function() {
+                expect(scryRenderedComponentsWithType(component, WizardEditTargeting).length).toBeGreaterThan(0, 'WizardEditTargeting is not rendered!');
+            });
+
+            describe('WizardEditTargeting', function() {
+                let targeting;
+
+                beforeEach(function() {
+                    targeting = findRenderedComponentWithType(component, WizardEditTargeting);
+                });
+
+                describe('props', function() {
+                    describe('targeting', function() {
+                        it('should be the targeting', function() {
+                            expect(targeting.props.targeting).toEqual(props.page.targeting);
+                        });
+                    });
+
+                    describe('onFinish()', function() {
+                        let values;
+
+                        beforeEach(function() {
+                            values = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE };
+                            targeting.props.onFinish(values);
+                        });
+
+                        it('should call targetingEdited()', function() {
+                            expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data: values });
+                        });
+                    });
+                });
+            });
+        });
+
         describe('dispatch props', function() {
             let dispatchDeferred;
 
@@ -228,9 +288,25 @@ describe('ProductWizard', function() {
                     result = component.props.productEdited({ data });
                 });
 
-                it('should dispatch the productSelected action', function() {
+                it('should dispatch the productEdited action', function() {
                     expect(productWizardActions.productEdited).toHaveBeenCalledWith({ data });
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.productEdited.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('targetingEdited()', function() {
+                let data;
+                let result;
+
+                beforeEach(function() {
+                    data = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE };
+                    result = component.props.targetingEdited({ data });
+                });
+
+                it('should dispatch the targetingEdited action', function() {
+                    expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data });
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.targetingEdited.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });

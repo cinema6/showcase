@@ -3,15 +3,21 @@ import { assign } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
     PRODUCT_SELECTED,
-    PRODUCT_EDITED
+    PRODUCT_EDITED,
+    TARGETING_EDITED
 } from '../../src/actions/product_wizard';
 import { createUuid } from 'rc-uuid';
+import * as TARGETING from '../../src/enums/targeting';
 
 describe('dashboardAddProductReducer()', function() {
     it('should return some initial state for the page', function() {
         expect(dashboardAddProductReducer(undefined, 'INIT')).toEqual({
             step: 0,
-            productData: null
+            productData: null,
+            targeting: {
+                age: TARGETING.AGE.ALL,
+                gender: TARGETING.GENDER.ALL
+            }
         });
     });
 
@@ -22,7 +28,11 @@ describe('dashboardAddProductReducer()', function() {
         beforeEach(function() {
             state = {
                 step: 0,
-                productData: null
+                productData: null,
+                targeting: {
+                    age: TARGETING.AGE.ALL,
+                    gender: TARGETING.GENDER.ALL
+                }
             };
         });
 
@@ -33,14 +43,22 @@ describe('dashboardAddProductReducer()', function() {
                     name: 'My App',
                     description: 'It rules!'
                 };
+                state.targeting = {
+                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    gender: TARGETING.GENDER.MALE
+                };
 
                 action = createAction(`${PRODUCT_SELECTED}_PENDING`)();
                 newState = dashboardAddProductReducer(state, action);
             });
 
-            it('should set productData back to null', function() {
+            it('should set productData back to null and targeting back to the default', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    productData: null
+                    productData: null,
+                    targeting: {
+                        age: TARGETING.AGE.ALL,
+                        gender: TARGETING.GENDER.ALL
+                    }
                 }));
             });
         });
@@ -87,6 +105,27 @@ describe('dashboardAddProductReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     step: 2,
                     productData: assign({}, state.productData, data)
+                }));
+            });
+        });
+
+        describe(TARGETING_EDITED, function() {
+            let data;
+
+            beforeEach(function() {
+                data = {
+                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    gender: TARGETING.GENDER.FEMALE
+                };
+
+                action = createAction(TARGETING_EDITED)(data);
+                newState = dashboardAddProductReducer(state, action);
+            });
+
+            it('should update the targeting and move to step 3', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    step: 3,
+                    targeting: assign({}, state.targeting, data)
                 }));
             });
         });
