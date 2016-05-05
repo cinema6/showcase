@@ -57,11 +57,12 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('server', 'start a development server', [
+        'compass:server',
         'copy:server',
         'browserify:server',
         'connect:server',
         'open:server',
-        'watch:server'
+        'concurrent:server'
     ]);
 
     grunt.registerTask('server:docs', 'start a YUIDoc server', [
@@ -94,6 +95,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', 'build app into distDir', [
         'clean:build',
+        'compass:build',
         'copy:build',
         'browserify:build',
         'uglify:build',

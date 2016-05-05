@@ -38,3 +38,5 @@ server/.build
 build
 .tmp
 .bundle
+.sass-cache
+static/scss
