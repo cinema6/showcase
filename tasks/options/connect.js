@@ -29,7 +29,9 @@ module.exports = {
                         '/api/payments': 'server/api/payment/main.js',
                         '/api/search': 'server/api/search/main.js',
                         '/api/collateral': 'server/api/collateral/main.js',
-                        '@verbosity': verbosity
+
+                        '@verbosity': verbosity,
+                        '@delay': [500, 1000]
                     })
                 ].concat(middleware);
             }
