@@ -24,7 +24,8 @@ describe('Profile', function() {
             fields: {},
             handleSubmit: jasmine.createSpy('handleSubmit()'),
             submitting: false,
-            page: { updateSuccess: false }
+            page: { updateSuccess: false },
+            pristine: true
         };
 
         renderer.render(<Profile {...props} />);

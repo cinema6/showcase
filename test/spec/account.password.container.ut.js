@@ -28,8 +28,8 @@ describe('Password', function() {
             },
             handleSubmit: jasmine.createSpy('handleSubmit()'),
             submitting: false,
-            page: { updateSuccess: false },
-            currentPassword: 'password@me.com'
+            pristine: true,
+            page: { updateSuccess: false }
         };
 
         renderer.render(<Password {...props} />);

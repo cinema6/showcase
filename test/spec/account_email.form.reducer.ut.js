@@ -3,12 +3,16 @@
 import accountEmailReducer from '../../src/reducers/form/account_email';
 import { createAction } from 'redux-actions';
 import { CHANGE_EMAIL_SUCCESS } from '../../src/actions/account';
+import { assign } from 'lodash';
 
 describe('accountEmailReducer()', function() {
     let state;
 
     beforeEach(function() {
-        state = {};
+        state = {
+            email: { value: 'foo' },
+            password: { value: 'uhoh!' }
+        };
     });
 
     it('should return the state passed to it', function() {
@@ -23,8 +27,10 @@ describe('accountEmailReducer()', function() {
                 newState = accountEmailReducer(state, createAction(CHANGE_EMAIL_SUCCESS)('email@me.com'));
             });
 
-            it('should return undefined', function() {
-                expect(newState).toBeUndefined();
+            it('should clear the password', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    password: {}
+                }));
             });
         });
     });

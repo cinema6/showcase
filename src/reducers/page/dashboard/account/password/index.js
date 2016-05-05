@@ -2,6 +2,7 @@
 
 import { handleActions } from 'redux-actions';
 import {
+    CHANGE_PASSWORD_START,
     CHANGE_PASSWORD_SUCCESS,
     CHANGE_PASSWORD_FAILURE
 } from '../../../../../actions/account';
@@ -12,6 +13,7 @@ const INITIAL_STATE = {
 };
 
 export default handleActions({
+    [CHANGE_PASSWORD_START]: state => assign({}, state, { updateSuccess: false }),
     [CHANGE_PASSWORD_SUCCESS]: state => assign({}, state, { updateSuccess: true }),
     [CHANGE_PASSWORD_FAILURE]: state => assign({}, state, { updateSuccess: false })
 }, INITIAL_STATE);

@@ -1,5 +1,6 @@
 import dashboardAccountEmailReducer from '../../src/reducers/page/dashboard/account/email';
 import {
+    CHANGE_EMAIL_START,
     CHANGE_EMAIL_SUCCESS,
     CHANGE_EMAIL_FAILURE
 } from '../../src/actions/account';
@@ -20,6 +21,20 @@ describe('dashboardAccountEmailReducer()', function() {
             state = {
                 updateSuccess: false
             };
+        });
+
+        describe(CHANGE_EMAIL_START, function() {
+            beforeEach(function() {
+                state.updateSuccess = true;
+
+                newState = dashboardAccountEmailReducer(state, createAction(CHANGE_EMAIL_START)());
+            });
+
+            it('should set update success to false', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    updateSuccess: false
+                }));
+            });
         });
 
         describe(CHANGE_EMAIL_SUCCESS, function() {
