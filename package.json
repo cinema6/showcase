@@ -7,7 +7,9 @@
     "test": "grunt test:unit",
     "start": "grunt server",
     "tdd": "grunt tdd",
-    "build": "grunt build"
+    "build": "grunt build",
+
+    "prepublish": "grunt prepare_ruby_env && bundle install"
   },
   "repository": {
     "type": "git",
