@@ -6,3 +6,11 @@
 
 // Import Bootstrap for Sass
 @import "bootstrap";
+
+// Import animate.css library
+@import "vendor/animate";
+
+// Import daterangepicker
+@import "vendor/daterangepicker";
+
+@import "overrides";

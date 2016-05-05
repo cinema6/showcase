@@ -1,0 +1,573 @@
+/*!
+ * Reelcontent Slideshow
+ * Copyright 2016 Reelcontent, Inc.
+ */
+
+ /*!
+ * Styles for Slideshow Josh
+ ----------------------------
+ * TOC
+ ----------------------------
+ * Resets
+ * Header
+ * *Navigation
+ * * *Dropdown
+ * * *Slideout
+ * Forms
+ * Create Campaign
+ * Campaign Stats
+ * Plans 
+ * Payment Modals
+ */
+ 
+ /***
+ Resets
+ ----------------------------
+ ***/
+    body {
+        overflow-x: hidden;
+        padding-bottom: 20px;
+    }
+    body.bg-dark {
+        background: #171738;
+    }
+ /***
+ overrides
+ ----------------------------
+ ***/
+    .navbar-fixed-top .nav.navbar-nav .dropdown-menu {
+        left: initial;
+        right: 0;
+    }
+    .navbar-nav>li.dropdown {
+        min-width: 160px;
+    }
+    .navbar-nav>li>a {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .navbar-nav .user-initials {
+        width: 40px;
+        height: 40px;
+        background: orange;
+        color: #fff;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 40px;
+        text-align: center;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .table-responsive {
+        border: 0;
+    }
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #171738;
+    }
+    label {
+        font-weight: 400;
+    }
+    .form-control {
+        border-width: 2px;
+        font-size: 18px;
+        height: 40px;
+        line-height: 40px;
+    }
+    form {
+        overflow: hidden;
+    }
+    .fa-spin {
+        -webkit-animation: fa-spin 1.75s infinite linear;
+        animation: fa-spin 1.75s infinite linear;
+    }
+    .nav-justified>li>a {
+        margin-bottom: 0;
+        background: #bef2f6;
+    }
+    .alert-info button.close {
+        color: #fff;
+        opacity: 0.7;
+        text-shadow: none;
+    }
+        .alert-info button.close:hover,
+        .alert-info button.close:focus {
+            color: #fff;
+            opacity: 0.9;
+            text-shadow: none;
+        }
+        .alert-dismissable .close,
+        .alert-dismissible .close {
+            top: 0;            
+        }
+    .close {
+        text-shadow: none;
+        opacity: .4;
+    }
+    .daterangepicker.dropdown-menu {
+        border: 1px solid #ccc;
+    }
+        .daterangepicker .ranges li {
+            color: #0dbeb2;
+        }
+            .daterangepicker .ranges li:hover {
+                background: #0dbeb2;
+                border: 1px solid #0dbeb2;
+                color: #fff;
+            }
+            .daterangepicker .ranges li.active {
+                background: #0dbeb2;
+                border: 1px solid #0dbeb2;
+                color: #fff;
+            }
+        .daterangepicker .input-mini.active {
+            border: 1px solid #0dbeb2;
+            border-radius: 4px;
+        }
+        .daterangepicker td.active,
+        .daterangepicker td.active:hover {
+            background-color: #0dbeb2;
+            border-color: transparent;
+            color: #fff;
+        }
+    .modal-header,
+    .modal-footer {
+        border: 0;
+    }
+    .btn-default {
+        color: #0dbeb2;
+        background-color: #fff;
+        border-color: #0dbeb2;
+    }
+        .btn-default:hover {
+            color: #08766f;
+            background-color: #bef2f6;
+            border-color: #0dbeb2;
+        }
+        .btn-default:active,
+        .btn-default.active,
+        .open>.dropdown-toggle.btn-default {
+            color: #fff;
+            background-color: #0dbeb2;
+            border-color: #0dbeb2;
+            box-shadow: none;
+        }
+        .btn-default:active:hover,
+        .btn-default.active:hover,
+        .open>.dropdown-toggle.btn-default:hover,
+        .btn-default:active:focus, .btn-default.active:focus,
+        .open>.dropdown-toggle.btn-default:focus,
+        .btn-default:active.focus,
+        .btn-default.active.focus,
+        .open>.dropdown-toggle.btn-default.focus {
+            color: #fff;
+            background-color: #0dbeb2;
+            border-color: #0dbeb2;
+        }
+        .btn-danger:active:hover,
+        .btn-danger.active:hover,
+        .open>.dropdown-toggle.btn-danger:hover,
+        .btn-danger:active:focus,
+        .btn-danger.active:focus,
+        .open>.dropdown-toggle.btn-danger:focus,
+        .btn-danger:active.focus,
+        .btn-danger.active.focus,
+        .open>.dropdown-toggle.btn-danger.focus {
+            color: #fff;
+            background-color: #ce0e1b;
+            border-color: #a80b16;
+            outline: 0;
+        }
+        .btn-danger:focus, .btn-danger.focus {
+            color: #fff;
+            background-color: #ef1120;
+            border-color: #a80b16;
+            outline: 0;
+        }
+    .btn-lg,
+    .btn-group-lg>.btn {
+        padding: 16px;
+        font-size: 18px;
+        line-height: 1.3333333;
+        border-radius: 4px;
+    }
+ /***
+ Helper Classes
+ ----------------------------
+ ***/
+    .col-middle {
+        display: inline-block;
+        vertical-align: middle;
+        float: none;
+    }
+    .data-inline {
+        display: inline-block;
+    }
+    .card-item {
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+    
+ /***
+ Navigation
+ ----------------------------
+ ***/
+ 
+    .navbar-brand {
+        padding: 0;
+    }
+        .navbar-brand img{
+            margin: 0;
+            width: auto;
+            height: 100%;
+        }
+
+/***Slideout Menu***/
+    .slideout-menu {
+        background: #E54B4B;
+        width: 300px;
+        max-width: 90%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        margin-top: 80px;
+    }
+        .slideout-menu .menu-item-list {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            font-size: 1.75em;
+        }
+            .slideout-menu .menu-item a {
+                display: inline-block;
+                width: 100%;
+                padding: 20px 30px;
+                border-bottom: 1px solid #d82632;
+                color: #d6fcff;
+                text-decoration: none;
+            }
+            .slideout-menu .menu-item a i.fa {
+                margin-right: 0.25em;
+                display: inline-block;
+                text-align: center;
+                width: 2em;
+            }
+
+ /***
+ Forms
+ ----------------------------
+ ***/
+    .login-form {
+        padding: 15px 30px 30px;
+    }
+ /***
+ Create Campaign
+ ----------------------------
+ ***/
+    .main-section {
+        margin-top: 100px;
+    }
+    .campaign-progress-bar {
+        display: block;
+    }
+        .campaign-progress-bar .nav-pills {
+            background: #bef2f6;
+        }
+            .campaign-progress-bar .nav-pills>li.active {
+                background: #0dbeb2;
+                background-size: 200% 100%;
+                background-image: linear-gradient(to left, #0dbeb2 50%, #0dbeb2 50%);
+                -webkit-transition: background-position 1s;
+                -moz-transition: background-position 1s;
+                transition: background-position 1s;
+            }
+                .campaign-progress-bar .nav-pills>li.active.current {
+                    background-position: -100% 0 !important;
+                    transition: background-size 1s;
+                }
+            .campaign-progress-bar .nav-pills>li a {
+                background-color: transparent;
+            }
+/***App Search Form***/
+    .app-search {
+        padding: 0 5px;
+    }
+        .app-search-input {
+            padding: 0;
+        }
+            .app-search-input .input-hidden {
+                height: 36px;
+                border: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0 5px;
+                vertical-align: top;
+            }
+        .app-search-input ul {
+            display: flex;
+            padding: 0;
+            list-style-type: none;
+        }
+            .app-search-input ul li.app-selected-wrap {
+                float: left;
+                max-width: 80%;
+            }
+            .app-search-input ul li {
+                float: left;
+                width: 100%;
+            }
+        .app-search-input .app-selected img {
+            float: left;
+            margin: 2px;
+            max-width: 32px;
+            max-height: 32px;
+        }
+        .app-search-input .app-selected .app-title {
+            font-weight: 400;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            word-wrap: break-word;
+            margin: 0;
+            line-height: 36px;
+        }
+    .app-search-results {
+        display: block;
+    }
+    .app-search-results ul {
+        padding:0;
+        background: #fff;
+        box-shadow: 0 0 5px rgba(28,28,28, 0.5);
+        list-style-type: none;
+        margin: 0 3px;
+        max-height: 240px;
+        overflow: auto;
+    }
+        .app-search-results li.app-results.app-searching,
+        .app-search-results li.app-results.not-found,
+        .app-search-results li.app-results.app-item {
+            display: block;
+            height: 80px;
+            text-align: left;
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid #ccc;
+        }
+        .app-search-results li.app-results.not-found,
+        .app-search-results li.app-results.app-searching {
+            font-size: 1.75rem;
+            text-align: center;
+            line-height: 60px;            
+        }
+            .app-search-results li.app-results.app-item:hover {
+                background: #f5f5f5;
+            }
+            .app-results.app-item .app-icon {
+                width: 60px;
+                height: 60px;
+                display: inline-block;
+                float: left;
+                margin-right: 10px;
+            }
+                .app-results.app-item .app-icon img {
+                    width: 60px;
+                    height: auto;
+                    max-height: 60px;
+                    border-radius: 10px;
+                }
+            .app-results.app-item .app-title {
+                font-weight: 400;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                word-break: break-all;
+                word-wrap: break-word;
+                margin: 0;
+            }
+            .app-results.app-item .app-author {
+                color: #0dbeb2;
+                display: block;
+                margin: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                word-break: break-all;
+                word-wrap: break-word;
+                margin: 0;
+            }
+            .app-results.app-item .app-rating {
+                display: inline-block;
+                margin: 0;
+                width: 100px;
+                color: #0dbeb2;
+            }
+            .app-results.app-item .app-cost {
+                display: inline-block;
+                margin: 0;
+            }
+ /***
+ Campaign Stats
+ ----------------------------
+ ***/
+ 
+    .campaign-stats {
+        display: block;
+    }
+        .campaign-stats .campaign-overview {
+            display: block;
+            /*overflow: hidden;*/
+        }
+    .campaign-overview {
+        margin-bottom: 20px;
+    }
+        .campaign-overview .advertiser-logo {
+            height: 80px;
+            width: 80px;
+            display: inline-block;
+            margin-right: 15px;
+            margin-top: 10px;
+            vertical-align: top;
+            float: left;
+        }
+            .advertiser-logo img {
+                width: 80px;
+                height: auto;
+                max-height: 80px;
+            }
+        .campaign-overview .campaign-title {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+            .campaign-overview .campaign-title h2 {
+                display: inline;
+                line-height: 100px;
+            }
+        .campaign-mini-stats {
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+            .campaign-mini-stats p,
+            .campaign-mini-stats h3 {
+                margin: 0;
+                text-align: center;
+            }
+        .campaign-stats .stats-list td{
+            text-align: center;
+        }
+    .data-stacked {
+        margin: 20px 10px;
+    }
+        .data-stacked h3,
+        .data-stacked h4 {
+            margin: 0;
+        }
+ /***
+ Billing & Payments
+ ----------------------------
+ ***/
+ /***billing details***/
+    .billing-summary {
+        min-height: 170px;
+    }
+ /***payment modal***/
+    .payment-modal .modal-body {
+        overflow: hidden;
+    }
+        .payment-modal .modal-dialog {
+            width: 460px;
+        }
+        .payment-modal .paymentType-details label{
+            float: left;
+        }
+        .payment-modal .modal-header .close {
+            margin-top: -2px;
+            margin-top: -15px;
+            margin-right: -15px;
+            width: 30px;
+            height: 30px;
+        }
+        .signup__secured {
+            display: inline-block;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 0.25em;
+            cursor: default;
+        }
+        .signup__secured--icon {
+            background: #2875db;
+            color: #fff;
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            font-size: 1.5em;
+            line-height: 36px;
+            border-radius: 2px;
+        }
+            .signup__secured--icon .fa {
+                font-size: 24px;
+            }
+        .signup__secured--label {
+            color: #666;
+            display: inline-block;
+            line-height: 36px;
+            font-size: 1em;
+            margin: 0 0.5em 0 0.25em;
+            vertical-align: top;
+        }
+/***scrollbar***/
+
+.create-ad ::-webkit-scrollbar {
+  -webkit-appearance:none;
+  width:12px;
+  background: #FFF;
+}
+
+.create-ad ::-webkit-scrollbar-thumb {
+  border-radius:12px;
+  border:3px solid rgba(255,255,255,0);
+  background-clip:content-box;
+  _background-color:#0DBEB2;
+  background-color: #0DBEB2;
+}
+.create-ad ::-webkit-scrollbar-thumb:hover {
+  border-radius:12px;
+  border:3px solid rgba(255,255,255,0);
+  background-clip:content-box;
+  background-color: #08766f;
+}
+
+.create-ad ::-webkit-scrollbar-corner {
+  background-color:#e6e6e6;
+}
+/***button spinner***/
+.btn-waiting:after {
+        content: '\f1ce';
+        font-family: 'FontAwesome';
+        margin-left: 10px;
+        font-size: 16px;
+        line-height: 26px;
+        opacity: 0.8;
+        position: absolute;
+        -webkit-animation: spin 2s infinite linear;
+        -moz-animation: spin 2s infinite linear;
+        animation: spin 2s infinite linear;
+    }
+    @-moz-keyframes spin {
+        100% { -moz-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes spin {
+        100% { -webkit-transform: rotate(360deg); }
+    }
+    @keyframes spin {
+        100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
+    }
