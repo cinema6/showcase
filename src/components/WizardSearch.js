@@ -3,8 +3,10 @@
 import React, { Component, PropTypes } from 'react';
 import TokenTextField from './TokenTextField';
 import AppSearchItem from './AppSearchItem';
+import AppSearchToken from './AppSearchToken';
 import { assign } from 'lodash';
 import { reduxForm } from 'redux-form';
+import classnames from 'classnames';
 
 function findProducts(find, query) {
     if (!query) { return Promise.resolve([]); }
@@ -32,23 +34,40 @@ class WizardSearch extends Component {
     render() {
         const {
             fields: { search },
+            submitting,
+            pristine,
             handleSubmit,
             error
         } = this.props;
 
-        return (
+        return (<div className="create-ad step-1 col-md-6 col-md-offset-3 col-xs-12 text-center
+            animated fadeIn">
+            <h1 className="text-center">Promote your app</h1>
             <form onSubmit={handleSubmit(this.onSubmit)}>
-                <TokenTextField {...search}
-                    maxValues={1}
-                    TokenComponent={AppSearchItem}
-                    SuggestionComponent={AppSearchItem}
-                    getSuggestions={text => findProducts(this.props.findProducts, text)}
-                    value={search.value || []}/>
-
-                {error && (<div>{error.response}</div>)}
-                <button type="submit" disabled={search.value.length < 1}>Proceed</button>
+                <div className="app-search form-group text-center">
+                    <TokenTextField {...search}
+                        maxValues={1}
+                        TokenComponent={AppSearchToken}
+                        SuggestionComponent={AppSearchItem}
+                        getSuggestions={text => findProducts(this.props.findProducts, text)}
+                        value={search.value || []}/>
+                    <span id="helpBlock" className="help-block">Search for your app on iTunes</span>
+                    <br />
+                    {error && !submitting && (<div className="alert alert-danger" role="alert">
+                        <strong>Yikes...</strong> {error.response || error.message}.
+                    </div>)}
+                    <button type="submit"
+                        disabled={submitting || pristine || search.value.length < 1}
+                        className={classnames(
+                            'col-sm-6 col-sm-offset-3 col-xs-12 btn btn-danger btn-lg', {
+                                'btn-waiting': submitting
+                            }
+                        )}>
+                        Next
+                    </button>
+                </div>
             </form>
-        );
+        </div>);
     }
 }
 
@@ -60,10 +79,13 @@ WizardSearch.propTypes = {
         search: PropTypes.object.isRequired
     }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
-    error: PropTypes.instanceOf(Error)
+    error: PropTypes.instanceOf(Error),
+    submitting: PropTypes.bool.isRequired,
+    pristine: PropTypes.bool.isRequired
 };
 
 export default reduxForm({
-    form: 'wizardSearch',
-    fields: ['search']
+    form: 'productWizard',
+    fields: ['search'],
+    destroyOnUnmount: false
 })(WizardSearch);

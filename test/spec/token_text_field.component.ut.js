@@ -87,6 +87,7 @@ describe('TokenTextField', function() {
         it('should have some state', function() {
             expect(component.state).toEqual({
                 suggestions: [],
+                searching: false,
 
                 text: '',
                 selectedSuggestion: null
@@ -487,6 +488,10 @@ describe('TokenTextField', function() {
                     wait(5).then(done);
                 });
 
+                it('should set searching to true', function() {
+                    expect(component.setState).toHaveBeenCalledWith({ searching: true });
+                });
+
                 it('should get some suggestions', function() {
                     expect(props.getSuggestions).toHaveBeenCalledWith(text);
                 });
@@ -498,7 +503,7 @@ describe('TokenTextField', function() {
                     });
 
                     it('should set the suggestions', function() {
-                        expect(component.setState).toHaveBeenCalledWith({ suggestions, selectedSuggestion: suggestions[1].id });
+                        expect(component.setState).toHaveBeenCalledWith({ suggestions, selectedSuggestion: suggestions[1].id, searching: false });
                     });
                 });
 
@@ -512,7 +517,7 @@ describe('TokenTextField', function() {
 
                     it('should set selectedSuggestion to the first suggestion', function() {
                         expect(component.setState).toHaveBeenCalledWith({
-                            suggestions, selectedSuggestion: suggestions[0].id
+                            suggestions, selectedSuggestion: suggestions[0].id, searching: false
                         });
                     });
                 });
@@ -525,7 +530,7 @@ describe('TokenTextField', function() {
 
                     it('should set selectedSuggestion to null', function() {
                         expect(component.setState).toHaveBeenCalledWith({
-                            suggestions: [], selectedSuggestion: null
+                            suggestions: [], selectedSuggestion: null, searching: false
                         });
                     });
                 });
@@ -552,8 +557,8 @@ describe('TokenTextField', function() {
                     });
 
                     it('should set the state in the original call order', function() {
-                        expect(component.setState.calls.count()).toBe(2);
-                        expect(component.setState.calls.mostRecent().args[0]).toEqual({ suggestions: moreSuggestions, selectedSuggestion: moreSuggestions[0].id });
+                        expect(component.setState.calls.count()).toBe(3);
+                        expect(component.setState.calls.mostRecent().args[0]).toEqual({ suggestions: moreSuggestions, selectedSuggestion: moreSuggestions[0].id, searching: false });
                     });
                 });
             });

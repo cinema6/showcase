@@ -1,16 +1,16 @@
 'use strict';
 
-import AppSearchItem from '../../src/components/AppSearchItem';
+import AppSearchToken from '../../src/components/AppSearchToken';
 import { renderIntoDocument } from 'react-addons-test-utils';
 import React from 'react';
 
-describe('AppSearchItem', function() {
+describe('AppSearchToken', function() {
     describe('when rendered', function() {
         let props, component;
 
         beforeEach(function() {
             props = {
-                suggestion: {
+                token: {
                     title: 'Scybot Coin Counter',
                     developer: 'Scybot Technologies, L.L.C.',
                     thumbnail: 'http://is2.mzstatic.com/image/thumb/Purple/v4/ff/3d/0f/ff3d0ffb-3d7e-7a5d-a93e-37e9d9def605/source/100x100bb.jpg',
@@ -23,7 +23,7 @@ describe('AppSearchItem', function() {
             };
 
             component = renderIntoDocument(
-                <AppSearchItem {...props} />
+                <AppSearchToken {...props} />
             );
         });
 
