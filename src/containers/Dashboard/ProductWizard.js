@@ -122,21 +122,30 @@ class ProductWizard extends Component {
                 </div>
             </div>
             <br />
-            <div className="row">{(() => {
-                switch (step) {
-                case 0:
-                    return <WizardSearch findProducts={findApps}
-                        onProductSelected={this.loadProduct}/>;
-                case 1:
-                    return <WizardEditProduct productData={productData}
-                        onFinish={({ title, description }) => productEdited({
-                            data: { name: title, description }
-                        })} />;
-                case 2:
-                    return <WizardEditTargeting targeting={targeting}
-                        onFinish={targeting => targetingEdited({ data: targeting })} />;
-                }
-            })()}</div>
+            <div className="row">
+                {step > 0 && (
+                    <div className="create-ad step-2 col-md-6 col-sm-6 col-middle text-center">
+                        <img src={'https://placeholdit.imgix.net/~text?txtsize=38&bg=ffffff&' +
+                            'txtclr=333333&txt=phone&w=320&h=600&txttrack=0'}
+                            style={{borderRadius: 25}} />
+                    </div>
+                )}
+                {(() => {
+                    switch (step) {
+                    case 0:
+                        return <WizardSearch findProducts={findApps}
+                            onProductSelected={this.loadProduct}/>;
+                    case 1:
+                        return <WizardEditProduct productData={productData}
+                            onFinish={({ title, description }) => productEdited({
+                                data: { name: title, description }
+                            })} />;
+                    case 2:
+                        return <WizardEditTargeting targeting={targeting}
+                            onFinish={targeting => targetingEdited({ data: targeting })} />;
+                    }
+                })()}
+            </div>
         </div>);
     }
 }
