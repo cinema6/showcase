@@ -7,16 +7,35 @@ import React from 'react';
 
 export class Account extends Component {
     render() {
-        return <div>
-            <nav>
-                <ul>
-                    <li><Link to="/dashboard/account/profile">Edit Profile</Link></li>
-                    <li><Link to="/dashboard/account/email">Change Email</Link></li>
-                    <li><Link to="/dashboard/account/password">Change Password</Link></li>
-                </ul>
-            </nav>
-            <div>{this.props.children}</div>
-        </div>;
+        return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
+            <div className="row">
+                <div className="page-header">
+                    <h1>Account Settings</h1>
+                </div>
+                <div className="col-md-3">
+                    <br />
+                    <ul className="nav nav-pills nav-stacked">
+                        <li role="presentation">
+                            <Link to="/dashboard/account/profile" activeClassName="active">
+                                My Profile
+                            </Link>
+                        </li>
+                        <li role="presentation">
+                            <Link to="/dashboard/account/email" activeClassName="active">
+                                Edit Email/Username
+                            </Link>
+                        </li>
+                        <li role="presentation">
+                            <Link to="/dashboard/account/password" activeClassName="active">
+                                Change Password
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+                {this.props.children}
+            </div>
+            <br />
+        </div>/* /.container */);
     }
 }
 

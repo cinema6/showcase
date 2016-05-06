@@ -27,25 +27,45 @@ class Billing extends Component {
             getClientToken,
             changePaymentMethod
         } = this.props;
+        return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
+            <div className="row">
+                <div className="col-md-12">
+                    <h1>Billing Details</h1>
+                </div>
+                <div className="col-md-6">
+                    <div className="billing-summary card-item col-md-12">
+                        <div className="data-stacked">
+                            <h4>Your subscription provides</h4>
+                            <h3>2,000 views</h3>
+                        </div>
+                        <div className="data-stacked">
+                            <h4>Next Payment due</h4>
+                            <h3>$50</h3>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <PaymentMethod loading={page.loading}
+                        method={defaultPaymentMethod}
+                        onChangeMethod={() => showChangeModal(true)} />
+                </div>
+            </div>
+            <br />
+            <div className="row">
+                <div className="container">
+                    <div className="col-md-12 col-sm-12 col-middle animated card-item
+                        table-responsive">
+                        <PaymentHistory loading={page.loading} payments={payments} />
+                    </div>
+                </div>
+            </div>
 
-        return (
-            <section>
-                <h3>Billing Details</h3>
-                <PaymentMethod loading={page.loading}
-                    method={defaultPaymentMethod}
-                    onChangeMethod={() => {
-                        showChangeModal(true);
-                    }} />
-                <PaymentHistory loading={page.loading}
-                    payments={payments} />
-
-                {page.showChangeModal &&
-                    <ChangePaymentMethodModal getToken={getClientToken}
-                        onSubmit={changePaymentMethod}
-                        handleClose={() => showChangeModal(false)} />
-                }
-            </section>
-        );
+            {page.showChangeModal &&
+                <ChangePaymentMethodModal getToken={getClientToken}
+                    onSubmit={changePaymentMethod}
+                    handleClose={() => showChangeModal(false)} />
+            }
+        </div>);
     }
 }
 

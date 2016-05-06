@@ -11,12 +11,14 @@ import {
 import React from 'react';
 import TokenTextField from '../../src/components/TokenTextField';
 import AppSearchItem from '../../src/components/AppSearchItem';
+import AppSearchToken from '../../src/components/AppSearchToken';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import { assign } from 'lodash';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { reducer as formReducer } from 'redux-form';
+import { reducer as formReducer, getValues } from 'redux-form';
+import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 
 describe('WizardSearch', function() {
     describe('when rendered', function() {
@@ -60,7 +62,7 @@ describe('WizardSearch', function() {
 
             expect(field).toEqual(jasmine.any(Object));
             expect(field.props.SuggestionComponent).toBe(AppSearchItem);
-            expect(field.props.TokenComponent).toBe(AppSearchItem);
+            expect(field.props.TokenComponent).toBe(AppSearchToken);
             expect(field.props.maxValues).toBe(1);
             expect(field.props).toEqual(jasmine.objectContaining(assign({}, component.props.fields.search, { value: [] })));
         });
@@ -75,13 +77,13 @@ describe('WizardSearch', function() {
                 form = findRenderedDOMComponentWithTag(component, 'form');
                 input = findRenderedComponentWithType(component, TokenTextField);
 
-                input.props.onChange([{ id: createUuid() }]);
+                input.props.onChange([{ id: createUuid(), title: 'foo', thumbnail: 'image.jpg' }]);
                 Simulate.submit(form);
                 setTimeout(done);
             });
 
             it('should call onProductSelected with the product', function() {
-                expect(props.onProductSelected).toHaveBeenCalledWith(store.getState().form.wizardSearch.search.value[0]);
+                expect(props.onProductSelected).toHaveBeenCalledWith(store.getState().form.productWizard.search.value[0]);
             });
 
             describe('if something goes wrong', function() {
@@ -97,6 +99,17 @@ describe('WizardSearch', function() {
                 it('should set the error', function() {
                     expect(component.props.error).toBe(reason);
                 });
+            });
+        });
+
+        describe('when the component is destroyed', function() {
+            beforeEach(function() {
+                findRenderedComponentWithType(component, TokenTextField).props.onChange([]);
+                unmountComponentAtNode(findDOMNode(component).parentNode);
+            });
+
+            it('should not wipe out the form state', function() {
+                expect(getValues(store.getState().form.productWizard)).toEqual(jasmine.objectContaining({ search: [] }));
             });
         });
 

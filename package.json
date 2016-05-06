@@ -7,7 +7,8 @@
     "test": "grunt test:unit",
     "start": "grunt server",
     "tdd": "grunt tdd",
-    "build": "grunt build"
+    "build": "grunt build",
+    "prepublish": "grunt prepare_ruby_env && bundle install"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,9 @@
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
     "grunt-cli": "^1.2.0",
+    "grunt-concurrent": "^2.3.0",
     "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-compass": "^1.1.1",
     "grunt-contrib-compress": "^1.2.0",
     "grunt-contrib-connect": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
@@ -75,6 +78,7 @@
     "lodash": "^4.11.1",
     "moment": "^2.13.0",
     "react": "^15.0.1",
+    "react-bootstrap": "^0.29.3",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.3.0",

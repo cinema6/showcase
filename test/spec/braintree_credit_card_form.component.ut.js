@@ -5,6 +5,7 @@ import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import braintree from 'braintree-web';
 import classnames from 'classnames';
+import { findDOMNode } from 'react-dom';
 
 const proxyquire = require('proxyquire');
 
@@ -57,6 +58,7 @@ describe('BraintreeCreditCardForm', function() {
                 loading: true,
                 error: null,
                 submitting: false,
+                type: 'CREDIT_CARD',
 
                 cardholderName: '',
 
@@ -214,6 +216,12 @@ describe('BraintreeCreditCardForm', function() {
 
                         config.onPaymentMethodReceived(method);
                         setTimeout(done);
+                    });
+
+                    it('should set submitting to true', function() {
+                        expect(component.setState).toHaveBeenCalledWith({
+                            submitting: true
+                        });
                     });
 
                     it('should call onSubmit()', function() {
@@ -375,8 +383,65 @@ describe('BraintreeCreditCardForm', function() {
                 expect(form.querySelector(`[data-braintree="${component.id}_postalCode"]`)).not.toBeNull();
             });
 
-            it('should create a div for paypal', function() {
+            it('should hide the paypal form', function() {
+                expect(findDOMNode(component).querySelector('[data-test="paypal"]').classList).toContain('hidden');
+            });
+
+            it('should show the credit card form', function() {
+                expect(form.classList).not.toContain('hidden');
+            });
+
+            it('should create a button for paypal', function() {
                 expect(component.refs.paypal.tagName).toBe('BUTTON');
+            });
+
+            describe('when the toggle for', function() {
+                let ccToggle, paypalToggle;
+
+                beforeEach(function() {
+                    let toggles = findDOMNode(component).querySelectorAll('.payment-options input');
+
+                    ccToggle = toggles[0];
+                    paypalToggle = toggles[1];
+                });
+
+                describe('paypal is clicked', function() {
+                    beforeEach(function() {
+                        Simulate.change(paypalToggle);
+                    });
+
+                    it('should show the paypal form', function() {
+                        expect(findDOMNode(component).querySelector('[data-test="paypal"]').classList).not.toContain('hidden');
+                    });
+
+                    it('should hide the credit card form', function() {
+                        expect(form.classList).toContain('hidden');
+                    });
+
+                    it('should check the paypal toggle', function() {
+                        expect(paypalToggle.checked).toBe(true);
+                    });
+                });
+
+                describe('credit card is clicked', function() {
+                    beforeEach(function() {
+                        component.setState({ type: 'PAYPAL' });
+
+                        Simulate.change(ccToggle);
+                    });
+
+                    it('should show the credit card form', function() {
+                        expect(form.classList).not.toContain('hidden');
+                    });
+
+                    it('should hide the paypal form', function() {
+                        expect(findDOMNode(component).querySelector('[data-test="paypal"]').classList).toContain('hidden');
+                    });
+
+                    it('should check the credit card toggle', function() {
+                        expect(ccToggle.checked).toBe(true);
+                    });
+                });
             });
 
             describe('when the cardholderName is changed', function() {

@@ -25,7 +25,8 @@ describe('Email', function() {
             handleSubmit: jasmine.createSpy('handleSubmit()'),
             submitting: false,
             page: { updateSuccess: false },
-            currentEmail: 'email@me.com'
+            currentEmail: 'email@me.com',
+            pristine: true
         };
 
         renderer.render(<Email {...props} />);
@@ -156,7 +157,10 @@ describe('mapStateToProps(state)', function() {
 
     it('should return the props based on state', function() {
         expect(result).toEqual({
-            currentEmail: user.email
+            currentEmail: user.email,
+            initialValues: {
+                email: user.email
+            }
         });
     });
 
@@ -169,7 +173,10 @@ describe('mapStateToProps(state)', function() {
 
         it('should not return a currentEmail', function() {
             expect(result).toEqual({
-                currentEmail: null
+                currentEmail: null,
+                initialValues: {
+                    email: null
+                }
             });
         });
     });

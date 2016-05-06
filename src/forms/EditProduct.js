@@ -11,16 +11,15 @@ class EditProduct extends Component {
         } = this.props;
 
         return (<form onSubmit={handleSubmit}>
-            <fieldset>
-                <label>Title</label>
-                <input type="text" {...title} />
-            </fieldset>
-            <fieldset>
-                <label>Description</label>
-                <textarea {...description} />
-            </fieldset>
-
-            <button type="submit">Proceed</button>
+            <div className="form-group">
+                <label htmlFor="adTitle-input">Title</label>
+                <input {...title} type="text" id="adTitle-input" className="form-control" />
+            </div>
+            <div className="form-group">
+                <label htmlFor="adDesc-textarea">Description</label>
+                <textarea {...description} className="form-control" id="adDesc-textarea" rows={2} />
+            </div>
+            <button type="submit" className="col-sm-6 col-xs-12 btn btn-danger btn-lg">Next</button>
         </form>);
     }
 }

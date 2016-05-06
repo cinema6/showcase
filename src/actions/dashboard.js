@@ -27,3 +27,9 @@ export function logoutUser() {
         }).then(() => undefined);
     };
 }
+
+export const SHOW_NAV = dashboardType('SHOW_NAV');
+export const showNav = createAction(SHOW_NAV);
+
+export const TOGGLE_NAV = dashboardType('TOGGLE_NAV');
+export const toggleNav = createAction(TOGGLE_NAV);

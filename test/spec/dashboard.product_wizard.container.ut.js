@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
-import { productSelected, productEdited, targetingEdited } from '../../src/actions/product_wizard';
+import { productSelected, productEdited, targetingEdited, goToStep, wizardDestroyed } from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
 import WizardEditTargeting from '../../src/components/WizardEditTargeting';
@@ -18,6 +18,7 @@ import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
+import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 
 const proxyquire = require('proxyquire');
 
@@ -30,6 +31,8 @@ describe('ProductWizard', function() {
             productSelected: jasmine.createSpy('productSelected()').and.callFake(productSelected),
             productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
             targetingEdited: jasmine.createSpy('targetingEdited()').and.callFake(targetingEdited),
+            goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
+            wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
 
             __esModule: true
         };
@@ -103,6 +106,16 @@ describe('ProductWizard', function() {
             expect(component).toEqual(jasmine.any(Object));
         });
 
+        describe('and removed', function() {
+            beforeEach(function() {
+                unmountComponentAtNode(findDOMNode(component).parentNode);
+            });
+
+            it('should dispatch wizardDestroyed()', function() {
+                expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
         describe('on step 0', function() {
             beforeEach(function() {
                 component.props.page.step = 0;
@@ -139,6 +152,23 @@ describe('ProductWizard', function() {
 
                         it('should call productSelected', function() {
                             expect(productWizardActions.productSelected).toHaveBeenCalledWith({ product });
+                        });
+
+                        describe('if the product is already selected', function() {
+                            beforeEach(function() {
+                                props.page.productData = { uri: product.uri };
+                                productWizardActions.productSelected.calls.reset();
+
+                                search.props.onProductSelected(product);
+                            });
+
+                            it('should not select the product', function() {
+                                expect(productWizardActions.productSelected).not.toHaveBeenCalled();
+                            });
+
+                            it('should go to step 1', function() {
+                                expect(productWizardActions.goToStep).toHaveBeenCalledWith(1);
+                            });
                         });
                     });
                 });
@@ -307,6 +337,36 @@ describe('ProductWizard', function() {
                 it('should dispatch the targetingEdited action', function() {
                     expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data });
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.targetingEdited.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('goToStep()', function() {
+                let step;
+                let result;
+
+                beforeEach(function() {
+                    step = 2;
+                    result = component.props.goToStep(step);
+                });
+
+                it('should dispatch the goToStep action', function() {
+                    expect(productWizardActions.goToStep).toHaveBeenCalledWith(step);
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('wizardDestroyed()', function() {
+                let result;
+
+                beforeEach(function() {
+                    result = component.props.wizardDestroyed();
+                });
+
+                it('should dispatch the wizardDestroyed action', function() {
+                    expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.wizardDestroyed.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });

@@ -5,7 +5,9 @@ import { getProductData } from '../../src/actions/collateral';
 import {
     PRODUCT_SELECTED,
     PRODUCT_EDITED,
-    TARGETING_EDITED
+    TARGETING_EDITED,
+    GO_TO_STEP,
+    WIZARD_DESTROYED
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -16,7 +18,7 @@ const proxyquire = require('proxyquire');
 describe('product wizard actions', function() {
     let collateralActions;
     let actions;
-    let productSelected, productEdited, targetingEdited;
+    let productSelected, productEdited, targetingEdited, goToStep, wizardDestroyed;
 
     beforeEach(function() {
         collateralActions = {
@@ -30,6 +32,8 @@ describe('product wizard actions', function() {
         productSelected = actions.productSelected;
         productEdited = actions.productEdited;
         targetingEdited = actions.targetingEdited;
+        goToStep = actions.goToStep;
+        wizardDestroyed = actions.wizardDestroyed;
     });
 
     describe('productSelected({ product })', function() {
@@ -137,6 +141,33 @@ describe('product wizard actions', function() {
 
         it('should return an FSA', function() {
             expect(result).toEqual(createAction(TARGETING_EDITED)(data));
+        });
+    });
+
+    describe('goToStep(step)', function() {
+        let step;
+        let result;
+
+        beforeEach(function() {
+            step = 2;
+
+            result = goToStep(step);
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual(createAction(GO_TO_STEP)(step));
+        });
+    });
+
+    describe('wizardDestroyed()', function() {
+        let result;
+
+        beforeEach(function() {
+            result = wizardDestroyed();
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual(createAction(WIZARD_DESTROYED)());
         });
     });
 });

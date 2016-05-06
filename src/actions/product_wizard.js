@@ -21,3 +21,9 @@ export const productEdited = createAction(PRODUCT_EDITED, ({ data }) => data);
 
 export const TARGETING_EDITED = prefix('TARGETING_EDITED');
 export const targetingEdited = createAction(TARGETING_EDITED, ({ data }) => data);
+
+export const GO_TO_STEP = prefix('GO_TO_STEP');
+export const goToStep = createAction(GO_TO_STEP);
+
+export const WIZARD_DESTROYED = prefix('WIZARD_DESTROYED');
+export const wizardDestroyed = createAction(WIZARD_DESTROYED);

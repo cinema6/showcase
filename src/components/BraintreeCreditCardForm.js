@@ -5,6 +5,10 @@ import classnames from 'classnames';
 import { createUuid } from 'rc-uuid';
 
 const HOSTED_FIELDS = ['number', 'cvv', 'expirationDate', 'postalCode'];
+const PAYMENT_TYPE = {
+    CREDIT_CARD: 'CREDIT_CARD',
+    PAYPAL: 'PAYPAL'
+};
 
 export default class BraintreeCreditCardForm extends Component {
     constructor() {
@@ -18,6 +22,7 @@ export default class BraintreeCreditCardForm extends Component {
             loading: true,
             error: null,
             submitting: false,
+            type: PAYMENT_TYPE.CREDIT_CARD,
 
             cardholderName: '',
 
@@ -30,7 +35,7 @@ export default class BraintreeCreditCardForm extends Component {
         };
     }
 
-    getHostedFieldClassNames(field) {
+    getHostedFieldClassNames(field, ...rest) {
         const state = this.state.hostedFieldState[field];
 
         return classnames({
@@ -38,7 +43,7 @@ export default class BraintreeCreditCardForm extends Component {
             'cc_field--empty': state.empty,
             'cc_field--valid': state.valid,
             'cc_field--potentiallyValid': state.potentiallyValid
-        });
+        }, ...rest);
     }
 
     isValid() {
@@ -90,12 +95,18 @@ export default class BraintreeCreditCardForm extends Component {
                     submitting: false,
                     error: message
                 }),
-                onPaymentMethodReceived: method => this.props.onSubmit(assign({}, method, {
-                    cardholderName: this.state.cardholderName
-                })).then(() => this.setState({ submitting: false })).catch(reason => this.setState({
-                    submitting: false,
-                    error: reason.message
-                })),
+                onPaymentMethodReceived: method => {
+                    this.setState({ submitting: true });
+
+                    return this.props.onSubmit(assign({}, method, {
+                        cardholderName: this.state.cardholderName
+                    })).then(() => this.setState({
+                        submitting: false
+                    })).catch(reason => this.setState({
+                        submitting: false,
+                        error: reason.message
+                    }));
+                },
                 paypal: {
                     container: this.refs.paypal,
                     headless: true,
@@ -121,60 +132,134 @@ export default class BraintreeCreditCardForm extends Component {
             submitting,
             error,
             loading,
-            braintree
+            braintree,
+            type
         } = this.state;
 
-        return (
-            <form id={id} onSubmit={() => this.setState({ submitting: true })}>
-                {loading && (<div>Loading!</div>)}
-
-                <button ref="paypal" disabled={!braintree}
-                    onClick={event => {
-                        event.preventDefault();
-                        braintree.paypal.initAuthFlow();
-                    }}>
-                    Pay with PayPal
-                </button>
-
-                <fieldset>
-                    <label>Cardholder Name</label>
-                    <input type="text"
-                        onChange={({ target }) => this.setState({ cardholderName: target.value })}
-                        data-test="cardholderName" />
-                </fieldset>
-                <fieldset>
-                    <label>Card Number</label>
-                    <div data-braintree={`${id}_number`}
-                        className={this.getHostedFieldClassNames('number')}>
+        return (<div>
+            {loading && (<div className="spinner-wrap">
+                <div className="spinner-position">
+                    <div className="animation-target">
                     </div>
-                </fieldset>
-                <fieldset>
-                    <label>CVV</label>
-                    <div data-braintree={`${id}_cvv`}
-                        className={this.getHostedFieldClassNames('cvv')}>
+                </div>
+            </div>)}
+            <div className="payment-options">
+                <div className="btn-group" data-toggle="buttons">
+                    <label className={classnames('btn btn-defalt', {
+                        active: type === PAYMENT_TYPE.CREDIT_CARD
+                    })}>
+                        <input type="radio"
+                            name="options"
+                            autoComplete="off"
+                            checked={type === PAYMENT_TYPE.CREDIT_CARD}
+                            onChange={() => this.setState({
+                                type: PAYMENT_TYPE.CREDIT_CARD
+                            })} />
+                        Credit Card
+                    </label>
+                    <label className={classnames('btn btn-defalt', {
+                        active: type === PAYMENT_TYPE.PAYPAL
+                    })}>
+                        <input type="radio"
+                            name="options"
+                            autoComplete="off"
+                            checked={type === PAYMENT_TYPE.PAYPAL}
+                            onChange={() => this.setState({
+                                type: PAYMENT_TYPE.PAYPAL
+                            })} />
+                        PayPal
+                    </label>
+                </div>
+            </div>
+            <div className="paymentType-details col-md-10 col-md-offset-1">
+                {/* credit card payment form */}
+                <br />
+                <form id={id}
+                    onSubmit={() => this.setState({ submitting: true })}
+                    className={classnames({
+                        hidden: type !== PAYMENT_TYPE.CREDIT_CARD
+                    })}>
+                    <div className="form-group">
+                        <label htmlFor="cardholderName-input">Name On Card</label>
+                        <input type="text"
+                            id="cardholderName-input"
+                            className="form-control"
+                            onChange={({ target }) => this.setState({
+                                cardholderName: target.value
+                            })}
+                            data-test="cardholderName" />
                     </div>
-                </fieldset>
-                <fieldset>
-                    <label>Expiration</label>
-                    <div data-braintree={`${id}_expirationDate`}
-                        className={this.getHostedFieldClassNames('expirationDate')}>
+                    <div className="form-group">
+                        <label htmlFor="cardNumber-input">Card Number</label>
+                        <div id="cardNumber-input"
+                            data-braintree={`${id}_number`}
+                            className={this.getHostedFieldClassNames('number', 'form-control')}>
+                        </div>
                     </div>
-                </fieldset>
-                <fieldset>
-                    <label>Zip Code</label>
-                    <div data-braintree={`${id}_postalCode`}
-                        className={this.getHostedFieldClassNames('postalCode')}>
+                    <div className="form-group">
+                        <label htmlFor="cardExpiration-input">Expiration</label>
+                        <div id="cardExpiration-input"
+                            data-braintree={`${id}_expirationDate`}
+                            className={this.getHostedFieldClassNames(
+                                'expirationDate', 'form-control'
+                            )}>
+                        </div>
                     </div>
-                </fieldset>
-
-                {error && (<div>{error}</div>)}
-
-                <button disabled={!this.isValid() || submitting || error}
-                    type="submit">
-                    Submit
-                </button>
-            </form>
-        );
+                    <div className="form-group">
+                        <label htmlFor="cardCVV-input">CVV</label>
+                        <div id="cardCVV-input"
+                            data-braintree={`${id}_cvv`}
+                            className={this.getHostedFieldClassNames(
+                                'cvv', 'form-control'
+                            )}>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="cardZip-input">Zip Code</label>
+                        <div id="cardZip-input"
+                            data-braintree={`${id}_postalCode`}
+                            className={this.getHostedFieldClassNames(
+                                'postalCode', 'form-control'
+                            )}>
+                        </div>
+                    </div>
+                    <button type="submit"
+                        disabled={!this.isValid() || submitting || error}
+                        className={classnames(
+                            'col-md-12 col-xs-12 btn btn-danger btn-lg pull-right', {
+                                'btn-waiting': submitting
+                            }
+                        )}>
+                        Start promoting my app
+                    </button>
+                </form>
+                {/* paypal payment form */}
+                <div data-test="paypal"
+                    className={classnames({
+                        hidden: type !== PAYMENT_TYPE.PAYPAL
+                    })}>
+                    <div className="form-group">
+                        <h4>
+                            You will be redirected to PayPal to complete the payment process
+                        </h4>
+                        <br />
+                        <button ref="paypal"
+                            disabled={!braintree || submitting}
+                            onClick={event => {
+                                event.preventDefault();
+                                braintree.paypal.initAuthFlow();
+                            }}
+                            className={classnames(
+                                'col-md-12 col-xs-12 btn btn-danger btn-lg pull-right', {
+                                    'btn-waiting': submitting
+                                }
+                            )}>
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>);
     }
 }
 

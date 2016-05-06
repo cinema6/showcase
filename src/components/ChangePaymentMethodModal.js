@@ -3,14 +3,38 @@ import BraintreeCreditCardForm from './BraintreeCreditCardForm';
 
 export default class ChangePaymentMethodModal extends Component {
     render() {
-        return (
-            <div>
-                <h1>Payment Details</h1>
-                <button onClick={this.props.handleClose}>Close</button>
-                <BraintreeCreditCardForm getToken={this.props.getToken}
-                    onSubmit={this.props.onSubmit} />
+        const {
+            getToken,
+            handleClose,
+            onSubmit
+        } = this.props;
+        return (<div className="modal payment-modal fade in show">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                    <div className="modal-header text-center">
+                        <button onClick={handleClose} className="close" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h1 className="modal-title" id="myPaymentModal">Change Payment Method</h1>
+                    </div>
+                    <div className="modal-body text-center">
+                        <BraintreeCreditCardForm getToken={getToken} onSubmit={onSubmit} />
+                        <div className="secured-locked">
+                            <div className="signup__secured">
+                                <span className="signup__secured--icon">
+                                    <i className="fa fa-shield" />
+                                </span>
+                                <span className="signup__secured--label" 
+                                    title="RSA 2048bit security">
+                                    Secured Platform
+                                </span>
+                            </div>
+                        </div>
+                        <p>Your information is 128-bit SSL encrypted</p>
+                    </div>
+                </div>
             </div>
-        );
+        </div>);
     }
 }
 
