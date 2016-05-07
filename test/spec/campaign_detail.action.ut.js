@@ -1,12 +1,12 @@
 const proxyquire = require('proxyquire');
 
-describe('stats-actions',function(){
+fdescribe('campaign-detail-actions',function(){
     let lib;
     let dispatch;
     let callAPI = jasmine.createSpy('callAPI');
 
     beforeEach(function(){
-        lib = proxyquire('../../src/actions/stats', {
+        lib = proxyquire('../../src/actions/campaign_detail', {
             './api':  { callAPI },
             __esModule: true
         });
@@ -28,9 +28,9 @@ describe('stats-actions',function(){
             thunk(dispatch);
             expect(callAPI).toHaveBeenCalledWith({
                 types : [
-                    'STATS/GET_CAMPAIGN_ANALYTICS_START',
-                    'STATS/GET_CAMPAIGN_ANALYTICS_SUCCESS',
-                    'STATS/GET_CAMPAIGN_ANALYTICS_FAILURE'
+                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_START',
+                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_SUCCESS',
+                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_FAILURE'
                 ],
                 credentials: 'same-origin',
                 endpoint: '/api/analytics/campaigns?ids=xyz'
@@ -51,8 +51,8 @@ describe('stats-actions',function(){
         it('should create an action with a promise in the payload',function(){
             thunk(dispatch); 
             expect(dispatch).toHaveBeenCalledWith({
-                type : 'STATS/LOAD_PAGE_DATA',
-                payload : jasmine.any(Promise)
+                type : 'CAMPAIGN_DETAIL/LOAD_PAGE_DATA',
+                payload : undefined
             });
         });
     });

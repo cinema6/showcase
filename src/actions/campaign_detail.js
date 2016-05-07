@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions';
 import { callAPI } from './api';
 
 function prefix(type) {
-    return `STATS/${type}`;
+    return `CAMPAIGN_DETAIL/${type}`;
 }
 
 export const GET_CAMPAIGN_ANALYTICS_START   = prefix('GET_CAMPAIGN_ANALYTICS_START');

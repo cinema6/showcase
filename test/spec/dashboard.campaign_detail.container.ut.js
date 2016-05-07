@@ -5,28 +5,27 @@ import { createStore } from 'redux';
 
 const proxyquire = require('proxyquire');
 
-//const proxyquire = require('proxyquire');
-
-fdescribe('Stats', function() {
-    let statsActions;
-    let Stats;
+fdescribe('Campaign Detail', function() {
+    let campaignDetailActions;
+    let CampaignDetail;
     let store, state;
     let props;
     let component;
 
     beforeEach(function() {
-        statsActions = {
+        campaignDetailActions = {
             loadPageData: jasmine.createSpy('loadPageData()')
-                .and.callFake(require('../../src/actions/stats').loadPageData),
+                .and.callFake(require('../../src/actions/campaign_detail').loadPageData),
             __esModule: true
         };
         
-        Stats = proxyquire('../../src/containers/Dashboard/Stats', {
-            '../../actions/stats': statsActions
+        CampaignDetail =
+            proxyquire('../../src/containers/Dashboard/CampaignDetail', {
+            '../../actions/campaign_detail': campaignDetailActions
         }).default;
         state = {
             page: {
-                'dashboard.stats': {
+                'dashboard.campaign_detail': {
                     loading: false,
                     analyticsError : null
                 }
@@ -40,9 +39,9 @@ fdescribe('Stats', function() {
 
         component = findAllInRenderedTree(renderIntoDocument(
             <Provider store={store}>
-                <Stats {...props} />
+                <CampaignDetail {...props} />
             </Provider>
-        ), component => component.constructor.name === 'Statistics')[0];
+        ), component => component.constructor.name === 'CampaignDetail')[0];
     });
 
     describe('rendering',function(){
@@ -51,9 +50,9 @@ fdescribe('Stats', function() {
         });
 
         it('should load the page data', function() {
-            expect(statsActions.loadPageData).toHaveBeenCalledWith('foo');
+            expect(campaignDetailActions.loadPageData).toHaveBeenCalledWith('foo');
             expect(store.dispatch).toHaveBeenCalledWith(
-                statsActions.loadPageData.calls.mostRecent().returnValue
+                campaignDetailActions.loadPageData.calls.mostRecent().returnValue
             );
         });
     });

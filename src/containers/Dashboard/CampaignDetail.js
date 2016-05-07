@@ -5,9 +5,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { loadPageData } from '../../actions/stats';
+import { loadPageData } from '../../actions/campaign_detail';
+import CampaignDetailBar from '../../components/CampaignDetailBar';
 
-class Statistics extends Component {
+class CampaignDetail extends Component {
     componentWillMount() {
         return this.props.loadPageData(this.props.params.campaignId);
     }
@@ -21,15 +22,19 @@ class Statistics extends Component {
         var msg = page.analyticsError && page.analyticsError.message;
         return (
             <section>
-                <h3>Statistics</h3>
+                <h3>CampaignDetail</h3>
                 { page.loading && <p> Loading... </p> }
                 { !page.loading && <p> Not Loading... {campaignId}</p> }
+
+                <CampaignDetailBar campaignId={campaignId} title="Hello"
+                    views={100} clicks={50} installs={10}
+                />
             </section>
         );
     }
 }
 
-Statistics.propTypes = {
+CampaignDetail.propTypes = {
     page: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
         analyticsError: PropTypes.object
@@ -43,8 +48,8 @@ function mapStateToProps(state) {
 }
 
 export default compose(
-    pageify({ path: 'dashboard.stats' }),
+    pageify({ path: 'dashboard.campaign_detail' }),
     connect(mapStateToProps, {
         loadPageData
     })
-)(Statistics);
+)(CampaignDetail);
