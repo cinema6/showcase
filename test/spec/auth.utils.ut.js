@@ -24,15 +24,16 @@ describe('utils/auth', function() {
         createLoginEnterHandler = auth.createLoginEnterHandler;
     });
 
-    describe('createProtectedRouteEnterHandler(store, loginPath)', function() {
-        let store, loginPath;
+    describe('createProtectedRouteEnterHandler({ store, loginPath })', function() {
+        let store, loginPath, resendConfirmationPath;
         let result;
 
         beforeEach(function() {
             store = configureStore([])({});
             loginPath = '/login';
+            resendConfirmationPath = '/resend-activation';
 
-            result = createProtectedRouteEnterHandler(store, loginPath);
+            result = createProtectedRouteEnterHandler({ store, loginPath, resendConfirmationPath });
         });
 
         it('should return a Function', function() {
@@ -70,7 +71,8 @@ describe('utils/auth', function() {
 
                 beforeEach(function(done) {
                     data = {
-                        id: 'u-' + createUuid()
+                        id: 'u-' + createUuid(),
+                        status: 'active'
                     };
 
                     store.dispatch.calls.reset();
@@ -86,6 +88,51 @@ describe('utils/auth', function() {
 
                 it('should callback', function() {
                     expect(callback).toHaveBeenCalledWith();
+                });
+            });
+
+            describe('if the user is new', function() {
+                let data;
+
+                beforeEach(function(done) {
+                    data = {
+                        id: 'u-' + createUuid(),
+                        status: 'new'
+                    };
+
+                    store.dispatch.calls.reset();
+                    store.dispatch.and.returnValue(Promise.resolve());
+
+                    dispatchDeferred.resolve(data);
+                    setTimeout(done);
+                });
+
+                it('should redirect to the resendConfirmationPath', function() {
+                    expect(localReplace).toHaveBeenCalledWith(resendConfirmationPath);
+                });
+
+                it('should callback', function() {
+                    expect(callback).toHaveBeenCalledWith();
+                });
+
+                describe('if the state is already the resendConfirmationPath', function() {
+                    beforeEach(function(done) {
+                        nextState.location.pathname = resendConfirmationPath;
+                        localReplace.calls.reset();
+                        callback.calls.reset();
+                        store.dispatch.and.returnValue(Promise.resolve(data));
+
+                        result(nextState, localReplace, callback);
+                        setTimeout(done);
+                    });
+
+                    it('should not redirect', function() {
+                        expect(localReplace).not.toHaveBeenCalled();
+                    });
+
+                    it('should callback', function() {
+                        expect(callback).toHaveBeenCalledWith();
+                    });
                 });
             });
 
@@ -113,7 +160,7 @@ describe('utils/auth', function() {
         });
     });
 
-    describe('createLoginEnterHandler()', function() {
+    describe('createLoginEnterHandler({ store, dashboardPath })', function() {
         let store, dashboardPath;
         let result;
 
@@ -121,7 +168,7 @@ describe('utils/auth', function() {
             store = configureStore([])({});
             dashboardPath = '/dashboard';
 
-            result = createLoginEnterHandler(store, dashboardPath);
+            result = createLoginEnterHandler({ store, dashboardPath });
         });
 
         it('should return a Function', function() {

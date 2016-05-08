@@ -6,6 +6,7 @@ import Application from './containers/Application';
 import Dashboard from './containers/Dashboard';
 import Login from './containers/Login';
 import SignUp from './containers/SignUp';
+import ResendConfirmation from './containers/ResendConfirmation';
 import Account from './containers/Account';
 import AccountProfile from './containers/Account/Profile';
 import AccountEmail from './containers/Account/Email';
@@ -20,12 +21,18 @@ import {
 } from './utils/auth';
 
 export default function createRoutes(store) {
-    const checkAuth = createProtectedRouteEnterHandler(store, '/login');
-    const checkLoggedIn = createLoginEnterHandler(store, '/dashboard');
+    const checkAuth = createProtectedRouteEnterHandler({
+        store,
+        loginPath: '/login',
+        resendConfirmationPath: '/resend-confirmation'
+    });
+    const checkLoggedIn = createLoginEnterHandler({ store, dashboardPath: '/dashboard' });
 
     return (
         <Route path="/" component={Application}>
             <IndexRedirect to="/dashboard" />
+
+            <Route path="resend-confirmation" component={ResendConfirmation} onEnter={checkAuth} />
 
             <Route path="dashboard" component={Dashboard} onEnter={checkAuth}>
                 <IndexRedirect to="add-product" />
