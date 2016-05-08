@@ -1,7 +1,6 @@
 import configureStore from 'redux-mock-store';
 import defer from 'promise-defer';
 import { createUuid } from 'rc-uuid';
-import { replace } from 'react-router-redux';
 
 const proxyquire = require('proxyquire');
 
@@ -82,9 +81,7 @@ describe('utils/auth', function() {
                 });
 
                 it('should not redirect', function() {
-                    expect(store.dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
-                        type: replace().type
-                    }));
+                    expect(localReplace).not.toHaveBeenCalled();
                 });
 
                 it('should callback', function() {
@@ -106,7 +103,7 @@ describe('utils/auth', function() {
                 });
 
                 it('should redirect to the login page', function() {
-                    expect(store.dispatch).toHaveBeenCalledWith(replace(loginPath));
+                    expect(localReplace).toHaveBeenCalledWith(loginPath);
                 });
 
                 it('should callback', function() {
@@ -173,7 +170,7 @@ describe('utils/auth', function() {
                 });
 
                 it('should redirect to the dashboard page', function() {
-                    expect(store.dispatch).toHaveBeenCalledWith(replace(dashboardPath));
+                    expect(localReplace).toHaveBeenCalledWith(dashboardPath);
                 });
 
                 it('should callback', function() {
@@ -195,9 +192,7 @@ describe('utils/auth', function() {
                 });
 
                 it('should not redirect', function() {
-                    expect(store.dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
-                        type: replace().type
-                    }));
+                    expect(localReplace).not.toHaveBeenCalled();
                 });
 
                 it('should callback', function() {
