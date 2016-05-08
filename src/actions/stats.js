@@ -22,7 +22,7 @@ export function getCampaignAnalytics(campaignId) {
             credentials: 'same-origin',
             endpoint: `/api/analytics/campaigns?ids=${campaignId}`
         }));
-    }
+    };
 }
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
