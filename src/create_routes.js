@@ -5,6 +5,7 @@ import React from 'react';
 import Application from './containers/Application';
 import Dashboard from './containers/Dashboard';
 import Login from './containers/Login';
+import SignUp from './containers/SignUp';
 import Account from './containers/Account';
 import AccountProfile from './containers/Account/Profile';
 import AccountEmail from './containers/Account/Email';
@@ -43,6 +44,7 @@ export default function createRoutes(store) {
             </Route>
 
             <Route path="login" component={Login} onEnter={checkLoggedIn}></Route>
+            <Route path="sign-up" component={SignUp} onEnter={checkLoggedIn}></Route>
             <Route path="forgot-password" component={ForgotPassword}></Route>
             <Route path="reset-password" component={ResetPassword}></Route>
         </Route>
