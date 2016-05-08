@@ -6,17 +6,31 @@ import {
 
     CHANGE_PASSWORD_START,
     CHANGE_PASSWORD_SUCCESS,
-    CHANGE_PASSWORD_FAILURE
+    CHANGE_PASSWORD_FAILURE,
+
+    SIGN_UP_START,
+    SIGN_UP_SUCCESS,
+    SIGN_UP_FAILURE,
+
+    CONFIRM_START,
+    CONFIRM_SUCCESS,
+    CONFIRM_FAILURE,
+
+    RESEND_CONFIRMATION_EMAIL_START,
+    RESEND_CONFIRMATION_EMAIL_SUCCESS,
+    RESEND_CONFIRMATION_EMAIL_FAILURE
 } from '../../src/actions/user';
 import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
+import { CALL_API } from 'redux-api-middleware';
+import { format as formatURL } from 'url';
 
 const proxyquire = require('proxyquire');
 
 describe('user actions', function() {
     let realCreateDbActions, createDbActions;
     let actions;
-    let changeEmail, changePassword, user;
+    let changeEmail, changePassword, user, signUp, confirmUser, resendConfirmationEmail;
 
     beforeEach(function() {
         realCreateDbActions = require('../../src/utils/db').createDbActions;
@@ -38,6 +52,9 @@ describe('user actions', function() {
         changeEmail = actions.changeEmail;
         changePassword = actions.changePassword;
         user = actions.default;
+        signUp = actions.signUp;
+        confirmUser = actions.confirmUser;
+        resendConfirmationEmail = actions.resendConfirmationEmail;
     });
 
     it('should create db actions for users', function() {
@@ -213,6 +230,77 @@ describe('user actions', function() {
                     expect(dispatch).toHaveBeenCalledWith(createAction(CHANGE_PASSWORD_FAILURE)(new Error(`have no user with id: ${id}`)));
                 });
             });
+        });
+    });
+
+    describe('signUp(data)', function() {
+        let data;
+        let result;
+
+        beforeEach(function() {
+            data = {
+                firstName: 'Foo',
+                lastName: 'Bar',
+                email: 'foo@bar.com',
+                password: 'the-pass'
+            };
+
+            result = signUp(data);
+        });
+
+        it('should call the signup endpoint', function() {
+            expect(result[CALL_API]).toEqual(callAPI({
+                types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
+                method: 'POST',
+                endpoint: formatURL({
+                    pathname: '/api/account/users/signup',
+                    query: { target: 'showcase' }
+                }),
+                body: data
+            })[CALL_API]);
+        });
+    });
+
+    describe('confirmUser({ id, token })', function() {
+        let id, token;
+        let result;
+
+        beforeEach(function() {
+            id = `u-${createUuid()}`;
+            token = createUuid();
+
+            result = confirmUser({ id, token });
+        });
+
+        it('should call the confirm endpoint', function() {
+            expect(result[CALL_API]).toEqual(callAPI({
+                types: [CONFIRM_START, CONFIRM_SUCCESS, CONFIRM_FAILURE],
+                method: 'POST',
+                endpoint: formatURL({
+                    pathname: `/api/account/users/confirm/${id}`,
+                    query: { target: 'showcase' }
+                }),
+                body: { token }
+            })[CALL_API]);
+        });
+    });
+
+    describe('resendConfirmationEmail()', function() {
+        let result;
+
+        beforeEach(function() {
+            result = resendConfirmationEmail();
+        });
+
+        it('should call the resend activation email', function() {
+            expect(result[CALL_API]).toEqual(callAPI({
+                types: [RESEND_CONFIRMATION_EMAIL_START, RESEND_CONFIRMATION_EMAIL_SUCCESS, RESEND_CONFIRMATION_EMAIL_FAILURE],
+                method: 'POST',
+                endpoint: formatURL({
+                    pathname: '/api/account/users/resendActivation',
+                    query: { target: 'showcase' }
+                })
+            })[CALL_API]);
         });
     });
 });

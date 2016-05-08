@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions';
 import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
+import { format as formatURL } from 'url';
 
 function userPrefix(type) {
     return `USER/${type}`;
@@ -75,4 +76,52 @@ export function changePassword({ id, oldPassword, newPassword }) {
             }
         }));
     };
+}
+
+export const SIGN_UP_START = userPrefix('SIGN_UP_START');
+export const SIGN_UP_SUCCESS = userPrefix('SIGN_UP_SUCCESS');
+export const SIGN_UP_FAILURE = userPrefix('SIGN_UP_FAILURE');
+export function signUp(data) {
+    return callAPI({
+        types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
+        method: 'POST',
+        endpoint: formatURL({
+            pathname: '/api/account/users/signup',
+            query: { target: 'showcase' }
+        }),
+        body: data
+    });
+}
+
+export const CONFIRM_START = userPrefix('CONFIRM_START');
+export const CONFIRM_SUCCESS = userPrefix('CONFIRM_SUCCESS');
+export const CONFIRM_FAILURE = userPrefix('CONFIRM_FAILURE');
+export function confirmUser({ id, token }) {
+    return callAPI({
+        types: [CONFIRM_START, CONFIRM_SUCCESS, CONFIRM_FAILURE],
+        method: 'POST',
+        endpoint: formatURL({
+            pathname: `/api/account/users/confirm/${id}`,
+            query: { target: 'showcase' }
+        }),
+        body: { token }
+    });
+}
+
+export const RESEND_CONFIRMATION_EMAIL_START = userPrefix('RESEND_CONFIRMATION_EMAIL_START');
+export const RESEND_CONFIRMATION_EMAIL_SUCCESS = userPrefix('RESEND_CONFIRMATION_EMAIL_SUCCESS');
+export const RESEND_CONFIRMATION_EMAIL_FAILURE = userPrefix('RESEND_CONFIRMATION_EMAIL_FAILURE');
+export function resendConfirmationEmail() {
+    return callAPI({
+        types: [
+            RESEND_CONFIRMATION_EMAIL_START,
+            RESEND_CONFIRMATION_EMAIL_SUCCESS,
+            RESEND_CONFIRMATION_EMAIL_FAILURE
+        ],
+        method: 'POST',
+        endpoint: formatURL({
+            pathname: '/api/account/users/resendActivation',
+            query: { target: 'showcase' }
+        })
+    });
 }
