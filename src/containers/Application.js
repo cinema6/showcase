@@ -1,11 +1,15 @@
 'use strict';
 
-import { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import NotificationCenter from './NotificationCenter';
 
 export class Application extends Component {
     render() {
-        return this.props.children;
+        return (<div>
+            <NotificationCenter />
+            {this.props.children}
+        </div>);
     }
 }
 

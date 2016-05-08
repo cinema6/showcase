@@ -7,10 +7,13 @@ import forgotPasswordReducer from './forgot_password';
 import resetPasswordReducer from './reset_password';
 import dashboardBillingReducer from './dashboard/billing';
 import dashboardAddProductReducer from './dashboard/add_product';
+import resendConfirmationReducer from './resend_confirmation';
 
 export default createPageReducer({
     'forgot_password': forgotPasswordReducer,
     'reset_password': resetPasswordReducer,
+
+    'resend_confirmation': resendConfirmationReducer,
 
     'dashboard': dashboardReducer,
 

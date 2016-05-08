@@ -11,6 +11,7 @@ import forgotPasswordReducer from '../../src/reducers/page/forgot_password';
 import resetPasswordReducer from '../../src/reducers/page/reset_password';
 import dashboardBillingReducer from '../../src/reducers/page/dashboard/billing';
 import dashboardAddProductReducer from '../../src/reducers/page/dashboard/add_product';
+import resendConfirmationReducer from '../../src/reducers/page/resend_confirmation';
 
 describe('pageReducer()', function() {
     let exampleReducer;
@@ -26,6 +27,8 @@ describe('pageReducer()', function() {
         pageMap = {
             'forgot_password': forgotPasswordReducer,
             'reset_password': resetPasswordReducer,
+
+            'resend_confirmation': resendConfirmationReducer,
 
             'dashboard': dashboardReducer,
 
