@@ -129,6 +129,28 @@ describe('dashboardAddProductReducer()', function() {
                     targeting: assign({}, state.targeting, data)
                 }));
             });
+
+            describe('if no targeting was selected', function() {
+                beforeEach(function() {
+                    data = {
+                        age: undefined,
+                        gender: undefined
+                    };
+
+                    action = createAction(TARGETING_EDITED)(data);
+                    newState = dashboardAddProductReducer(state, action);
+                });
+
+                it('should update the targeting with defaults and move to step 3', function() {
+                    expect(newState).toEqual(assign({}, state, {
+                        step: 3,
+                        targeting: {
+                            age: TARGETING.AGE.ALL,
+                            gender: TARGETING.GENDER.ALL
+                        }
+                    }));
+                });
+            });
         });
 
         describe(GO_TO_STEP, function() {

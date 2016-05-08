@@ -65,7 +65,7 @@ class EditTargeting extends Component {
                     </label>
                 </radiogroup>
             </div>
-            <button type="button"
+            <button type="submit"
                 className="col-sm-6 col-xs-12 btn btn-danger btn-lg">
                 Next
             </button>
