@@ -7,7 +7,9 @@ import {
     GO_TO_STEP,
     WIZARD_DESTROYED,
     CREATE_CAMPAIGN,
-    WIZARD_COMPLETE
+    WIZARD_COMPLETE,
+    LOAD_CAMPAIGN,
+    UPDATE_CAMPAIGN
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -18,13 +20,14 @@ import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import { campaignFromData } from '../../src/utils/campaign';
+import { push, goBack } from 'react-router-redux';
 
 const proxyquire = require('proxyquire');
 
 describe('product wizard actions', function() {
     let collateralActions, notificationActions;
     let actions;
-    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign;
+    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign, loadCampaign, updateCampaign;
 
     beforeEach(function() {
         notificationActions = {
@@ -56,6 +59,301 @@ describe('product wizard actions', function() {
         goToStep = actions.goToStep;
         wizardDestroyed = actions.wizardDestroyed;
         createCampaign = actions.createCampaign;
+        loadCampaign = actions.loadCampaign;
+        updateCampaign = actions.updateCampaign;
+    });
+
+    describe('updateCampaign({ id, productData, targeting })', function() {
+        let id, productData, targeting;
+        let thunk;
+
+        beforeEach(function() {
+            id = `cam-${createUuid()}`;
+            productData = {
+                name: 'New Product Name',
+                description: 'Better description!'
+            };
+            targeting = {
+                gender: TARGETING.GENDER.FEMALE,
+                age: TARGETING.AGE.ZERO_TO_TWELVE
+            };
+
+            thunk = updateCampaign({ id, productData, targeting });
+        });
+
+        it('should return a thunk', function() {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            let camp;
+            let dispatchDeferred, state;
+            let dispatch, getState;
+            let success, failure;
+
+            beforeEach(function(done) {
+                camp = {
+                    id: id,
+                    product: {
+                        name: 'Old Name',
+                        description: 'Old description.',
+                        categories: ['Gaming', 'FPS'],
+                        images: []
+                    },
+                    targeting: {
+                        demographics: {
+                            age: [],
+                            gender: []
+                        },
+                        appStoreCategory: ['Gaming', 'FPS']
+                    }
+                };
+
+                dispatchDeferred = defer();
+                state = {
+                    db: {
+                        campaign: {
+                            [id]: camp
+                        }
+                    }
+                };
+
+                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
+                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+
+                    if (!(action.payload instanceof Promise)) {
+                        return Promise.resolve(action.payload);
+                    } else {
+                        return action.payload.then(value => ({ value, action }))
+                            .catch(reason => Promise.reject({ reason, action }));
+                    }
+                });
+                getState = jasmine.createSpy('getState()').and.returnValue(state);
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                spyOn(campaign, 'update').and.callThrough();
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            it('should update the campaign', function() {
+                expect(campaign.update).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }, camp) });
+                expect(dispatch).toHaveBeenCalledWith(campaign.update.calls.mostRecent().returnValue);
+            });
+
+            it('should dispatch UPDATE_CAMPAIGN', function() {
+                expect(dispatch).toHaveBeenCalledWith(createAction(UPDATE_CAMPAIGN)(jasmine.any(Promise)));
+            });
+
+            describe('when the campaign is updated', function() {
+                beforeEach(function(done) {
+                    dispatchDeferred.resolve([id]);
+                    setTimeout(done);
+                });
+
+                it('should go to the product page', function() {
+                    expect(dispatch).toHaveBeenCalledWith(push(`/dashboard/campaigns/${id}`));
+                });
+
+                it('should show a notification', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.SUCCESS,
+                        message: 'Your app has been updated!'
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should fulfill with the id', function() {
+                    expect(success).toHaveBeenCalledWith([id]);
+                });
+            });
+
+            describe('if there is a problem', function() {
+                let reason;
+
+                beforeEach(function(done) {
+                    reason = new Error('ERROR!');
+                    dispatchDeferred.reject(reason);
+                    setTimeout(done);
+                });
+
+                it('should show a notification', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.DANGER,
+                        message: `Failed to update your app: ${reason.message}`,
+                        time: 10000
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should reject with the reason', function() {
+                    expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+
+            describe('If the campaign is not in the cache', function() {
+                beforeEach(function(done) {
+                    delete state.db.campaign[id];
+                    success.calls.reset();
+                    failure.calls.reset();
+                    dispatch.calls.reset();
+                    campaign.update.calls.reset();
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should dispatch UPDATE_CAMPAIGN', function() {
+                    expect(dispatch).toHaveBeenCalledWith(createAction(UPDATE_CAMPAIGN)(jasmine.any(Promise)));
+                });
+
+                it('should not update anything', function() {
+                    expect(campaign.update).not.toHaveBeenCalled();
+                });
+
+                it('should show a notification', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.DANGER,
+                        message: `Failed to update your app: There is no campaign(${id}) in the cache.`,
+                        time: 10000
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should return a rejected promise', function() {
+                    expect(failure).toHaveBeenCalledWith(new Error(`There is no campaign(${id}) in the cache.`));
+                });
+            });
+        });
+    });
+
+    describe('loadCampaign({ id })', function() {
+        let id;
+        let thunk;
+
+        beforeEach(function() {
+            id = `cam-${createUuid()}`;
+
+            thunk = loadCampaign({ id });
+        });
+
+        it('should return a thunk', function() {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            let dispatchDeferred, state;
+            let dispatch, getState;
+            let success, failure;
+
+            beforeEach(function(done) {
+                dispatchDeferred = defer();
+                state = {
+                    db: {
+                        campaign: {}
+                    }
+                };
+
+                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
+                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+
+                    if (!(action.payload instanceof Promise)) {
+                        return Promise.resolve(action.payload);
+                    } else {
+                        return action.payload.then(value => ({ value, action }))
+                            .catch(reason => Promise.reject({ reason, action }));
+                    }
+                });
+                getState = jasmine.createSpy('getState()').and.returnValue(state);
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                spyOn(campaign, 'get').and.callThrough();
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            it('should get the campaign', function() {
+                expect(campaign.get).toHaveBeenCalledWith({ id });
+                expect(dispatch).toHaveBeenCalledWith(campaign.get.calls.mostRecent().returnValue);
+            });
+
+            it('should dispatch LOAD_CAMPAIGN', function() {
+                expect(dispatch).toHaveBeenCalledWith(createAction(LOAD_CAMPAIGN)(jasmine.any(Promise)));
+            });
+
+            describe('when the campaign is fetched', function() {
+                beforeEach(function(done) {
+                    dispatchDeferred.resolve([id]);
+                    setTimeout(done);
+                });
+
+                it('should fulfill with the id', function() {
+                    expect(success).toHaveBeenCalledWith([id]);
+                });
+            });
+
+            describe('if there is a problem', function() {
+                let reason;
+
+                beforeEach(function(done) {
+                    reason = new Error('ERROR!');
+                    dispatchDeferred.reject(reason);
+                    setTimeout(done);
+                });
+
+                it('should show an error', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.DANGER,
+                        message: `Failed to fetch data: ${reason.message}`,
+                        time: 10000
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should goBack()', function() {
+                    expect(dispatch).toHaveBeenCalledWith(goBack());
+                });
+
+                it('should reject with the reason', function() {
+                    expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+
+            describe('if there was a problem but the campaign is cached', function() {
+                let reason;
+
+                beforeEach(function(done) {
+                    state.db.campaign[id] = {
+                        id
+                    };
+                    reason = new Error('ERROR!');
+                    dispatchDeferred.reject(reason);
+                    setTimeout(done);
+                });
+
+                it('should show a warning', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.WARNING,
+                        message: `Failed to fetch latest data: ${reason.message}`
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should not goBack()', function() {
+                    expect(dispatch).not.toHaveBeenCalledWith(goBack());
+                });
+
+                it('should reject with the reason', function() {
+                    expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+        });
     });
 
     describe('createCampaign({ productData, targeting, payment })', function() {
