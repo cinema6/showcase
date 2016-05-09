@@ -8,11 +8,14 @@ import {
     productEdited,
     targetingEdited,
     goToStep,
-    wizardDestroyed
+    wizardDestroyed,
+    createCampaign
 } from '../../actions/product_wizard';
+import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
+import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import classnames from 'classnames';
 
 class ProductWizard extends Component {
@@ -60,6 +63,9 @@ class ProductWizard extends Component {
             findApps,
             productEdited,
             targetingEdited,
+            getClientToken,
+            goToStep,
+            createCampaign,
 
             page: { step, productData, targeting }
         } = this.props;
@@ -83,7 +89,7 @@ class ProductWizard extends Component {
                             active: step >= 1
                         })}>
                             <a href="#"
-                                data-disabled={!productData}
+                                data-disabled={step < 2}
                                 onClick={event => this.goToStep(1, event)}>
                                 <h3>
                                     <i className="fa fa-pencil-square-o" />
@@ -96,7 +102,7 @@ class ProductWizard extends Component {
                             active: step >= 2
                         })}>
                             <a href="#"
-                                data-disabled={!productData}
+                                data-disabled={step < 3}
                                 onClick={event => this.goToStep(2, event)}>
                                 <h3>
                                     <i className="fa fa-bullseye" />
@@ -109,7 +115,7 @@ class ProductWizard extends Component {
                             active: step >= 3
                         })}>
                             <a href="#"
-                                data-disabled={!productData}
+                                data-disabled={step < 4}
                                 onClick={event => this.goToStep(3, event)}>
                                 <h3>
                                     <i className="fa fa-paper-plane-o" />
@@ -141,11 +147,17 @@ class ProductWizard extends Component {
                                 data: { name: title, description }
                             })} />;
                     case 2:
+                    case 3:
                         return <WizardEditTargeting targeting={targeting}
                             onFinish={targeting => targetingEdited({ data: targeting })} />;
                     }
                 })()}
             </div>
+            {step === 3 && (
+                <WizardConfirmationModal getToken={getClientToken}
+                    handleClose={() => goToStep(2)}
+                    onSubmit={payment => createCampaign({ payment, productData, targeting })} />
+            )}
         </div>);
     }
 }
@@ -177,5 +189,7 @@ export default connect(mapStateToProps, {
     productEdited,
     targetingEdited,
     goToStep,
-    wizardDestroyed
+    wizardDestroyed,
+    getClientToken,
+    createCampaign
 })(ProductWizard);
