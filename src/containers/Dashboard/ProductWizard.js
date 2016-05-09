@@ -15,7 +15,7 @@ import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import classnames from 'classnames';
-import { pick } from 'lodash';
+import { pick, includes } from 'lodash';
 
 class ProductWizard extends Component {
     constructor() {
@@ -56,6 +56,7 @@ class ProductWizard extends Component {
 
             onFinish,
 
+            steps,
             productData,
             targeting,
 
@@ -66,7 +67,7 @@ class ProductWizard extends Component {
             <div className="row">
                 <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
                     <ul className="nav nav-pills nav-justified">
-                        <li className={classnames('progressbar-step-1', {
+                        {includes(steps, 0) && (<li className={classnames('progressbar-step-1', {
                             active: step >= 0
                         })}>
                             <button onClick={() => goToStep(0)}>
@@ -76,8 +77,8 @@ class ProductWizard extends Component {
                                 </h3>
                                 Search
                             </button>
-                        </li>
-                        <li className={classnames('progressbar-step-2', {
+                        </li>)}
+                        {includes(steps, 1) && (<li className={classnames('progressbar-step-2', {
                             active: step >= 1
                         })}>
                             <button disabled={step < 2}
@@ -88,8 +89,8 @@ class ProductWizard extends Component {
                                 </h3>
                                 Create
                             </button>
-                        </li>
-                        <li className={classnames('progressbar-step-3', {
+                        </li>)}
+                        {includes(steps, 2) && (<li className={classnames('progressbar-step-3', {
                             active: step >= 2
                         })}>
                             <button disabled={step < 3}
@@ -100,8 +101,8 @@ class ProductWizard extends Component {
                                 </h3>
                                 Target
                             </button>
-                        </li>
-                        <li className={classnames('progressbar-step-4', {
+                        </li>)}
+                        {includes(steps, 3) && (<li className={classnames('progressbar-step-4', {
                             active: step >= 3
                         })}>
                             <button disabled={step < 4}
@@ -112,7 +113,7 @@ class ProductWizard extends Component {
                                 </h3>
                                 Promote
                             </button>
-                        </li>
+                        </li>)}
                     </ul>
                 </div>
             </div>
@@ -167,6 +168,7 @@ ProductWizard.propTypes = {
     loadData: PropTypes.func.isRequired,
     onFinish: PropTypes.func.isRequired,
 
+    steps: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
     productData: PropTypes.shape({
         name: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired
