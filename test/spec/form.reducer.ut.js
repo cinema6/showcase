@@ -6,6 +6,7 @@ import accountPasswordReducer from '../../src/reducers/form/account_password';
 import forgotPasswordReducer from '../../src/reducers/form/forgot_password';
 import resetPasswordReducer from '../../src/reducers/form/reset_password';
 import productWizardReducer from '../../src/reducers/form/product_wizard';
+import signUpReducer from '../../src/reducers/form/sign_up';
 import formReducer from '../../src/reducers/form';
 
 describe('formReducer()', function() {
@@ -15,7 +16,8 @@ describe('formReducer()', function() {
             accountPassword: accountPasswordReducer,
             forgotPassword: forgotPasswordReducer,
             resetPassword: resetPasswordReducer,
-            productWizard: productWizardReducer
+            productWizard: productWizardReducer,
+            signUp: signUpReducer
         })(undefined, 'init'));
     });
 });

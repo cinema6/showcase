@@ -7,5 +7,6 @@ import { identity } from 'lodash';
 export default createDbReducer({
     user: userReducer,
     payment: identity,
-    paymentMethod: identity
+    paymentMethod: identity,
+    campaign: identity
 });

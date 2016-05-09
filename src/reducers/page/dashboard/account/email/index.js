@@ -2,6 +2,7 @@
 
 import { handleActions } from 'redux-actions';
 import {
+    CHANGE_EMAIL_START,
     CHANGE_EMAIL_SUCCESS,
     CHANGE_EMAIL_FAILURE
 } from '../../../../../actions/account';
@@ -12,6 +13,7 @@ const INITIAL_STATE = {
 };
 
 export default handleActions({
+    [CHANGE_EMAIL_START]: state => assign({}, state, { updateSuccess: false }),
     [CHANGE_EMAIL_SUCCESS]: state => assign({}, state, { updateSuccess: true }),
     [CHANGE_EMAIL_FAILURE]: state => assign({}, state, { updateSuccess: false })
 }, INITIAL_STATE);

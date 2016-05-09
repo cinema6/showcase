@@ -1,0 +1,54 @@
+{
+    "miniReels": [],
+    "application": "showcase",
+    "cards": [],
+    "name": "Workaround - Keeps you motivated even if your job is boring!",
+    "status": "outOfBudget",
+    "product": {
+        "type": "app",
+        "platform": "iOS",
+        "name": "Workaround - Keeps you motivated even if your job is boring!",
+        "description": "Do you like money, but don't like working? \nKeep yourself motivated with this simple, yet fun app. Just open it when you start working and it immediately begins counting your daily earning.\n\nNo more frustration!\nNo more boredom!\n\nWhen launching for the first time, you should set all parameters on the settings page.",
+        "uri": "https://itunes.apple.com/us/app/workaround-keeps-you-motivated/id1074085238?mt=8&uo=4",
+        "categories": [
+            "Entertainment",
+            "Finance"
+        ],
+        "price": "Free",
+        "extID": 1074085238,
+        "images": [
+            {
+                "uri": "http://a2.mzstatic.com/us/r30/Purple20/v4/2c/d2/1a/2cd21af5-c515-9c39-ac97-d8a82302b7c5/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://a1.mzstatic.com/us/r30/Purple49/v4/9b/b4/36/9bb43699-629e-b07b-1d75-169254191537/screen1136x1136.jpeg",
+                "type": "screenshot",
+                "device": "phone"
+            },
+            {
+                "uri": "http://is5.mzstatic.com/image/thumb/Purple69/v4/f4/a0/89/f4a08972-ef4e-b9f0-90b5-8734fd860316/source/512x512bb.jpg",
+                "type": "thumbnail"
+            }
+        ]
+    },
+    "targeting": {
+        "demographics": {
+            "age": [
+                ""
+            ],
+            "gender": [
+                ""
+            ]
+        },
+        "appStoreCategory": [
+            "Entertainment",
+            "Finance"
+        ]
+    },
+    "created": "2016-05-09T14:15:40.705Z",
+    "user": "u-35b096c999711b",
+    "org": "o-e4e8b0f244bafc",
+    "lastUpdated": "2016-05-09T14:15:40.705Z"
+}

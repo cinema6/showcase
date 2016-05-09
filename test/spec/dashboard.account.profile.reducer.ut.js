@@ -1,7 +1,8 @@
 import dashboardAccountProfileReducer from '../../src/reducers/page/dashboard/account/profile';
 import {
     UPDATE_SUCCESS,
-    UPDATE_FAILURE
+    UPDATE_FAILURE,
+    UPDATE_START
 } from '../../src/actions/account';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
@@ -39,6 +40,20 @@ describe('dashboardAccountProfileReducer()', function() {
                 state.updateSuccess = true;
 
                 newState = dashboardAccountProfileReducer(state, createAction(UPDATE_FAILURE)({}));
+            });
+
+            it('should set update success to false', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    updateSuccess: false
+                }));
+            });
+        });
+
+        describe(UPDATE_START, function() {
+            beforeEach(function() {
+                state.updateSuccess = true;
+
+                newState = dashboardAccountProfileReducer(state, createAction(UPDATE_START)({}));
             });
 
             it('should set update success to false', function() {

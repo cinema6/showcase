@@ -1,7 +1,12 @@
 'use strict';
 
 import { getProductData } from './collateral';
+import { paymentMethod } from './payment';
+import campaign from './campaign';
 import { createAction } from 'redux-actions';
+import { TYPE  as NOTIFICATION_TYPE } from '../enums/notification';
+import { notify } from './notification';
+import { replace } from 'react-router-redux';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -21,3 +26,50 @@ export const productEdited = createAction(PRODUCT_EDITED, ({ data }) => data);
 
 export const TARGETING_EDITED = prefix('TARGETING_EDITED');
 export const targetingEdited = createAction(TARGETING_EDITED, ({ data }) => data);
+
+export const GO_TO_STEP = prefix('GO_TO_STEP');
+export const goToStep = createAction(GO_TO_STEP);
+
+export const WIZARD_DESTROYED = prefix('WIZARD_DESTROYED');
+export const wizardDestroyed = createAction(WIZARD_DESTROYED);
+
+export const CREATE_CAMPAIGN = prefix('CREATE_CAMPAIGN');
+export function createCampaign({ payment, productData, targeting }) {
+    return function thunk(dispatch) {
+        return dispatch(createAction(CREATE_CAMPAIGN)(
+            dispatch(paymentMethod.create({ data: {
+                cardholderName: payment.cardholderName,
+                paymentMethodNonce: payment.nonce,
+                makeDefault: true
+            } })).then(() => dispatch(campaign.create({ data: {
+                application: 'showcase',
+                cards: [],
+                name: productData.name,
+                status: 'outOfBudget',
+                product: productData,
+                targeting: {
+                    demographics: {
+                        age: [targeting.age],
+                        gender: [targeting.gender]
+                    },
+                    appStoreCategory: productData.categories
+                }
+            } }))).then(([id]) => {
+                dispatch(replace(`/dashboard/campaigns/${id}`));
+                dispatch(notify({
+                    type: NOTIFICATION_TYPE.SUCCESS,
+                    message: 'Your app has been added!'
+                }));
+
+                return [id];
+            }).catch(reason => {
+                dispatch(notify({
+                    type: NOTIFICATION_TYPE.DANGER,
+                    message: `There was a problem: ${reason.response || reason.message}`
+                }));
+
+                return Promise.reject(reason);
+            })
+        )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
+    };
+}

@@ -1,63 +1,141 @@
 'use strict';
 
-import ReactTestUtils from 'react-addons-test-utils';
+import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
 import React from 'react';
-import { Dashboard } from '../../src/containers/Dashboard';
-import { logoutUser } from '../../src/actions/dashboard';
+import Dashboard from '../../src/containers/Dashboard';
+import { createStore } from 'redux';
+import { logoutUser, toggleNav } from '../../src/actions/dashboard';
+import { Provider } from 'react-redux';
+import { createUuid } from 'rc-uuid';
+import defer from 'promise-defer';
+import { cloneDeep as clone } from 'lodash';
 
 const proxyquire = require('proxyquire');
 
 describe('Dashboard', function() {
-    let renderer;
-    let props;
-    let dashboard;
+    let dashboardActions;
+    let Dashboard;
 
     beforeEach(function() {
-        renderer = ReactTestUtils.createRenderer();
-        props = {
-            logoutUser: jasmine.createSpy('logoutUser()')
+        dashboardActions = {
+            logoutUser: jasmine.createSpy('logoutUser()').and.callFake(logoutUser),
+            toggleNav: jasmine.createSpy('toggleNav()').and.callFake(toggleNav),
+
+            __esModule: true
         };
 
-        renderer.render(<Dashboard {...props} />);
+        Dashboard = proxyquire('../../src/containers/Dashboard', {
+            'react': React,
 
-        dashboard = renderer.getRenderOutput();
-    });
-
-    it('should exist', function() {
-        expect(dashboard).toEqual(jasmine.any(Object));
-    });
-});
-
-describe('ConnectedDashboard', function() {
-    let ConnectedDashboard;
-    let connect;
-
-    beforeEach(function() {
-        connect = jasmine.createSpy('connect()').and.callFake(require('react-redux').connect);
-
-        ConnectedDashboard = proxyquire('../../src/containers/Dashboard', {
-            'react-redux': {
-                connect,
-
-                __esModule: true
-            },
-
-            '../../actions/dashboard': {
-                logoutUser,
-
-                __esModule: true
-            }
+            '../../actions/dashboard': dashboardActions
         }).default;
     });
 
-    it('should exist', function() {
-        expect(ConnectedDashboard).toEqual(jasmine.any(Function));
-        expect(ConnectedDashboard.name).toBe('Connect');
-    });
+    describe('when rendered', function() {
+        let user;
+        let store, state;
+        let props;
+        let component;
 
-    it('should connect the Dashboard', function() {
-        expect(connect).toHaveBeenCalledWith(null, {
-            logoutUser
+        beforeEach(function() {
+            user = {
+                id: createUuid(),
+                firstName: 'Your',
+                lastName: 'Mom'
+            };
+
+            state = {
+                db: {
+                    user: {
+                        [user.id]: user
+                    }
+                },
+                session: {
+                    user: user.id
+                },
+                page: {
+                    dashboard: {
+                        showNav: false
+                    }
+                }
+            };
+            store = createStore(() => clone(state));
+            spyOn(store, 'dispatch').and.callThrough();
+
+            props = {
+                children: <div />
+            };
+
+            component = findRenderedComponentWithType(renderIntoDocument(
+                <Provider store={store}>
+                    <Dashboard {...props} />
+                </Provider>
+            ), Dashboard.WrappedComponent.WrappedComponent);
+
+            spyOn(component, 'setState').and.callThrough();
+        });
+
+        it('should exist', function() {
+            expect(component).toEqual(jasmine.any(Object));
+        });
+
+        it('should be a page', function() {
+            expect(component.props.page).toEqual(state.page.dashboard);
+        });
+
+        it('should pass in the user', function() {
+            expect(component.props).toEqual(jasmine.objectContaining({
+                user: user
+            }));
+        });
+
+        describe('if no user is logged in', function() {
+            beforeEach(function() {
+                state.session.user = null;
+                store.dispatch({ type: 'foo' });
+            });
+
+            it('should pass in null', function() {
+                expect(component.props).toEqual(jasmine.objectContaining({
+                    user: null
+                }));
+            });
+        });
+
+        describe('dispatch props', function() {
+            let dispatchDeferred;
+
+            beforeEach(function() {
+                store.dispatch.and.returnValue((dispatchDeferred = defer()).promise);
+            });
+
+            describe('logoutUser()', function() {
+                let result;
+
+                beforeEach(function() {
+                    result = component.props.logoutUser();
+                });
+
+                it('should dispatch the logoutUser action', function() {
+                    expect(dashboardActions.logoutUser).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.logoutUser.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('toggleNav()', function() {
+                let result;
+
+                beforeEach(function() {
+                    result = component.props.toggleNav();
+                });
+
+                it('should dispatch the toggleNav action', function() {
+                    expect(dashboardActions.toggleNav).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.toggleNav.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
         });
     });
 });

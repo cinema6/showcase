@@ -8,38 +8,40 @@ export default class PaymentMethod extends Component {
             onChangeMethod
         } = this.props;
 
-        if (!method && !loading) {
-            return <div>Failed to load.</div>;
-        }
-
-        if (!method) {
-            return <div>Loading!</div>;
-        }
-
-        return (
-            <div>
-                <h3>Active Payment Method</h3>
-                {(() => {
-                    switch (method.type) {
-                    case 'creditCard':
-                        return (
-                            <div>
-                                <p>{method.cardType} ****{method.last4}</p>
-                                <p>{method.cardholderName}</p>
-                                <p>Expires {method.expirationDate}</p>
-                            </div>
-                        );
-                    case 'paypal':
-                        return (
-                            <div>
-                                <p>Paypal {method.email}</p>
-                            </div>
-                        );
-                    }
-                })()}
-                <button onClick={onChangeMethod}>Change</button>
+        return (<div className="billing-summary card-item col-md-12">
+            {loading && !method && (<div className="spinner-contained">
+                <div className="spinner-position">
+                    <div className="animation-target">
+                    </div>
+                </div>
+            </div>)}
+            <h3>Active payment method</h3>
+            {method && (() => {
+                switch (method.type) {
+                case 'creditCard':
+                    return (
+                        <div className="col-md-8">
+                            <h4>{method.cardType} ****{method.last4}</h4>
+                            <h4>{method.cardholderName}</h4>
+                            <p>Expires {method.expirationDate}</p>
+                        </div>
+                    );
+                case 'paypal':
+                    return (
+                        <div className="col-md-8">
+                            <h4>Paypal {method.email}</h4>
+                        </div>
+                    );
+                }
+            })()}
+            <div className="col-md-4">
+                <button type="button"
+                    className="btn btn-primary btn-lg"
+                    onClick={onChangeMethod}>
+                    {method ? 'Change' : 'Add'}
+                </button>
             </div>
-        );
+        </div>);
     }
 }
 

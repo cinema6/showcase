@@ -32,6 +32,9 @@ describe('ResetPassword', function() {
             },
             handleSubmit: jasmine.createSpy('handleSubmit()'),
             submitting: false,
+            pristine: true,
+            valid: false,
+            submitFailed: false,
             page: {
                 submitSuccess: false
             },

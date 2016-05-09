@@ -11,7 +11,8 @@ export default class WizardEditTargeting extends Component {
             onFinish
         } = this.props;
 
-        return (<div>
+        return (<div className="col-md-5 col-sm-6 col-xs-12 col-middle animated fadeInRight">
+            <h1>Who is your app for?</h1>
             <EditTargetingForm initialValues={targeting} onSubmit={values => onFinish(values)} />
         </div>);
     }

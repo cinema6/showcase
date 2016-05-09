@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { throttle, find, findIndex, noop } from 'lodash';
 import { findDOMNode } from 'react-dom';
+import classnames from 'classnames';
 
 const KEY_CODES = {
     UP: 38,
@@ -23,6 +24,7 @@ export default class TokenTextField extends Component {
 
         this.state = {
             suggestions: [],
+            searching: false,
 
             text: '',
             selectedSuggestion: null
@@ -109,11 +111,14 @@ export default class TokenTextField extends Component {
             selectedSuggestion
         } = this.state;
 
+        this.setState({ searching: true });
+
         return this.props.getSuggestions(text).then(suggestions => {
             const includesCurrentSelection = !!find(suggestions, { id: selectedSuggestion });
             const firstSuggestion = suggestions[0] || null;
 
             this.setState({
+                searching: false,
                 suggestions,
                 selectedSuggestion: includesCurrentSelection ?
                     selectedSuggestion : (firstSuggestion && firstSuggestion.id)
@@ -125,7 +130,8 @@ export default class TokenTextField extends Component {
         const {
             suggestions,
             selectedSuggestion,
-            text
+            text,
+            searching
         } = this.state;
         const {
             value,
@@ -134,28 +140,52 @@ export default class TokenTextField extends Component {
             TokenComponent
         } = this.props;
 
-        return <span>
-            <ul>
-                {value.map(token => <li key={token.id}>
-                    <TokenComponent token={token} />
-                </li>)}
-                <li>
-                    <input ref="input"
-                        type="text"
-                        value={text}
-                        onKeyDown={this.handleKeyDown}
-                        onChange={({ target }) => this.handleNewText(target.value)} />
-                </li>
-            </ul>
-            <ul>
-                {suggestions.map(suggestion => <li key={suggestion.id}
-                    onMouseEnter={() => this.setState({ selectedSuggestion: suggestion.id })}
-                    onClick={() => this.addToken(suggestion)}>
-                    <SuggestionComponent suggestion={suggestion}
-                        active={suggestion.id === selectedSuggestion} />
-                </li>)}
-            </ul>
-        </span>;
+        return (<span>
+            {/* Search App input */}
+            <div className="app-search-input form-control">
+                <ul>
+                    {value.map(token => <li key={token.id} className="app-selected-wrap">
+                        <TokenComponent token={token} />
+                    </li>)}
+                    <li>
+                        <input ref="input"
+                            type="text"
+                            value={text}
+                            onKeyDown={this.handleKeyDown}
+                            onChange={({ target }) => this.handleNewText(target.value)}
+                            className="input-hidden" />
+                    </li>
+                </ul>
+            </div>
+            {/* app search results  - hidden until triggered */}
+            <div className={classnames('app-search-results', {
+                hidden: !text
+            })}>
+                <ul>
+                    {suggestions.length < 1 && searching && (
+                        <li className="app-results app-searching">
+                            Searching! 
+                            <i className="fa fa-circle-o-notch fa-spin fa-fw margin-bottom" />
+                        </li>
+                    )}
+                    {suggestions.length < 1 && !searching && (
+                        <li className="app-results not-found">
+                            No results found
+                        </li>
+                    )}
+                    {suggestions.map(suggestion => <li key={suggestion.id}
+                        className={classnames('app-results app-item', {
+                            active: suggestion.id === selectedSuggestion
+                        })}
+                        onMouseEnter={() => this.setState({ selectedSuggestion: suggestion.id })}
+                        onClick={() => this.addToken(suggestion)}>
+                        <SuggestionComponent suggestion={suggestion}
+                            active={suggestion.id === selectedSuggestion} />
+                    </li>)}
+                </ul>
+            </div>
+            {/* app-search-results ends */}
+        </span>);
     }
 }
 

@@ -10,26 +10,37 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
-import { productSelected, productEdited, targetingEdited } from '../../src/actions/product_wizard';
+import { productSelected, productEdited, targetingEdited, goToStep, wizardDestroyed, createCampaign } from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
 import WizardEditTargeting from '../../src/components/WizardEditTargeting';
+import WizardConfirmationModal from '../../src/components/WizardConfirmationModal';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
+import { findDOMNode, unmountComponentAtNode } from 'react-dom';
+import { getClientToken } from '../../src/actions/payment';
 
 const proxyquire = require('proxyquire');
 
 describe('ProductWizard', function() {
-    let searchActions, productWizardActions;
+    let searchActions, productWizardActions, paymentActions;
     let ProductWizard;
 
     beforeEach(function() {
+        paymentActions = {
+            getClientToken: jasmine.createSpy('getClientToken()').and.callFake(getClientToken),
+
+            __esModule: true
+        };
         productWizardActions = {
             productSelected: jasmine.createSpy('productSelected()').and.callFake(productSelected),
             productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
             targetingEdited: jasmine.createSpy('targetingEdited()').and.callFake(targetingEdited),
+            goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
+            wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
+            createCampaign: jasmine.createSpy('createCampaign()').and.callFake(createCampaign),
 
             __esModule: true
         };
@@ -57,8 +68,14 @@ describe('ProductWizard', function() {
 
                 __esModule: true
             },
+            '../../components/WizardConfirmationModal': {
+                default: WizardConfirmationModal,
+
+                __esModule: true
+            },
             '../../actions/search': searchActions,
-            '../../actions/product_wizard': productWizardActions
+            '../../actions/product_wizard': productWizardActions,
+            '../../actions/payment': paymentActions
         }).default;
     });
 
@@ -103,6 +120,16 @@ describe('ProductWizard', function() {
             expect(component).toEqual(jasmine.any(Object));
         });
 
+        describe('and removed', function() {
+            beforeEach(function() {
+                unmountComponentAtNode(findDOMNode(component).parentNode);
+            });
+
+            it('should dispatch wizardDestroyed()', function() {
+                expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
         describe('on step 0', function() {
             beforeEach(function() {
                 component.props.page.step = 0;
@@ -139,6 +166,23 @@ describe('ProductWizard', function() {
 
                         it('should call productSelected', function() {
                             expect(productWizardActions.productSelected).toHaveBeenCalledWith({ product });
+                        });
+
+                        describe('if the product is already selected', function() {
+                            beforeEach(function() {
+                                props.page.productData = { uri: product.uri };
+                                productWizardActions.productSelected.calls.reset();
+
+                                search.props.onProductSelected(product);
+                            });
+
+                            it('should not select the product', function() {
+                                expect(productWizardActions.productSelected).not.toHaveBeenCalled();
+                            });
+
+                            it('should go to step 1', function() {
+                                expect(productWizardActions.goToStep).toHaveBeenCalledWith(1);
+                            });
                         });
                     });
                 });
@@ -242,6 +286,71 @@ describe('ProductWizard', function() {
             });
         });
 
+        describe('on step 3', function() {
+            beforeEach(function() {
+                store.dispatch.and.returnValue(new Promise(() => {}));
+
+                component.props.page.step = 3;
+                component.props.page.targeting = {
+                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    gender: TARGETING.GENDER.FEMALE
+                };
+                component.forceUpdate();
+            });
+
+            it('should render a WizardEditTargeting', function() {
+                expect(scryRenderedComponentsWithType(component, WizardEditTargeting).length).toBeGreaterThan(0, 'WizardEditTargeting is not rendered!');
+            });
+
+            it('should render a WizardConfirmationModal', function() {
+                expect(scryRenderedComponentsWithType(component, WizardConfirmationModal).length).toBeGreaterThan(0, 'WizardConfirmationModal is not rendered!');
+            });
+
+            describe('WizardConfirmationModal', function() {
+                let modal;
+
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    modal = findRenderedComponentWithType(component, WizardConfirmationModal);
+                });
+
+                describe('props', function() {
+                    describe('getToken()', function() {
+                        it('should be the getClientToken action', function() {
+                            expect(modal.props.getToken).toBe(component.props.getClientToken);
+                        });
+                    });
+
+                    describe('handleClose()', function() {
+                        beforeEach(function() {
+                            modal.props.handleClose();
+                        });
+
+                        it('should go to step 2', function() {
+                            expect(productWizardActions.goToStep).toHaveBeenCalledWith(2);
+                            expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep.calls.mostRecent().returnValue);
+                        });
+                    });
+
+                    describe('onSubmit()', function() {
+                        let payment;
+
+                        beforeEach(function() {
+                            payment = { nonce: createUuid(), cardholderName: 'Buttface McGee' };
+
+                            modal.props.onSubmit(payment);
+                        });
+
+                        it('should create a campaign', function() {
+                            expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData: props.page.productData, targeting: props.page.targeting });
+                            expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.createCampaign.calls.mostRecent().returnValue);
+                        });
+                    });
+                });
+            });
+        });
+
         describe('dispatch props', function() {
             let dispatchDeferred;
 
@@ -307,6 +416,69 @@ describe('ProductWizard', function() {
                 it('should dispatch the targetingEdited action', function() {
                     expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data });
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.targetingEdited.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('goToStep()', function() {
+                let step;
+                let result;
+
+                beforeEach(function() {
+                    step = 2;
+                    result = component.props.goToStep(step);
+                });
+
+                it('should dispatch the goToStep action', function() {
+                    expect(productWizardActions.goToStep).toHaveBeenCalledWith(step);
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('wizardDestroyed()', function() {
+                let result;
+
+                beforeEach(function() {
+                    result = component.props.wizardDestroyed();
+                });
+
+                it('should dispatch the wizardDestroyed action', function() {
+                    expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.wizardDestroyed.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('createCampaign()', function() {
+                let payment, productData, targeting;
+                let result;
+
+                beforeEach(function() {
+                    payment = { nonce: createUuid(), cardholderName: 'foo' };
+                    productData = { foo: 'bar' };
+                    targeting = { age: 'foo', gender: 'foo' };
+
+                    result = component.props.createCampaign({ payment, productData, targeting });
+                });
+
+                it('should dispatch the createCampaign action', function() {
+                    expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData, targeting });
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.createCampaign.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('getClientToken()', function() {
+                let result;
+
+                beforeEach(function() {
+                    result = component.props.getClientToken();
+                });
+
+                it('should dispatch the getClientToken action', function() {
+                    expect(paymentActions.getClientToken).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(paymentActions.getClientToken.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });

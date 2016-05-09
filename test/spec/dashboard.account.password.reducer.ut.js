@@ -1,5 +1,6 @@
 import dashboardAccountPasswordReducer from '../../src/reducers/page/dashboard/account/password';
 import {
+    CHANGE_PASSWORD_START,
     CHANGE_PASSWORD_SUCCESS,
     CHANGE_PASSWORD_FAILURE
 } from '../../src/actions/account';
@@ -20,6 +21,20 @@ describe('dashboardAccountPasswordReducer()', function() {
             state = {
                 updateSuccess: false
             };
+        });
+
+        describe(CHANGE_PASSWORD_START, function() {
+            beforeEach(function() {
+                state.updateSuccess = true;
+
+                newState = dashboardAccountPasswordReducer(state, createAction(CHANGE_PASSWORD_START)());
+            });
+
+            it('should set update success to false', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    updateSuccess: false
+                }));
+            });
         });
 
         describe(CHANGE_PASSWORD_SUCCESS, function() {
