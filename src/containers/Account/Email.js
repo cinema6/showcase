@@ -43,7 +43,7 @@ export class Email extends Component {
                                     'current-email'
                                 )}
                             </label>
-                            <input {...email} type="text" className="form-control"/>
+                            <input {...email} type="email" className="form-control"/>
                         </div>
                         <div className="form-group">
                             <label htmlFor="inputHelpBlock">
@@ -59,7 +59,7 @@ export class Email extends Component {
                         </div>)}
                         <button type="submit"
                             disabled={submitting || pristine}
-                            className={classnames('col-md-4 col-xs-12 btn btn-danger btn-lg', {
+                            className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
                                 'btn-waiting': submitting
                             })}>
                             Save Changes

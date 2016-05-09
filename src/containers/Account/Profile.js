@@ -70,7 +70,7 @@ export class Profile extends Component {
                         </div>)}
                         <button type="submit"
                             disabled={submitting || pristine}
-                            className={classnames('col-md-4 col-xs-12 btn btn-danger btn-lg', {
+                            className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
                                 'btn-waiting': submitting
                             })}>
                             Save Changes

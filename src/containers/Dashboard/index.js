@@ -36,11 +36,11 @@ class Dashboard extends Component {
                         <ul className="nav navbar-nav ">
                             <li className="dropdown">
                                 <Dropdown id="user-management-dropdown">
-                                    <Dropdown.Toggle>
+                                    <Dropdown.Toggle useAnchor={true}>
                                         <span className="user-initials">{initials}</span>
                                         {user.firstName} {user.lastName}
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu className="dropdown-menu">
+                                    <Dropdown.Menu>
                                         <MenuItem href="#/dashboard/account">My Profile</MenuItem>
                                         <MenuItem onClick={logoutUser}>Sign out</MenuItem>
                                     </Dropdown.Menu>
@@ -62,7 +62,7 @@ class Dashboard extends Component {
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
                     </li>
                     <li className="menu-item">
-                        <button onClick={logoutUser}>
+                        <button className="btn btn-link" onClick={logoutUser}>
                             <i className="fa fa-power-off" /> 
                             Logout
                         </button>

@@ -229,7 +229,7 @@ $cursor-disabled:                not-allowed;
 //## Dropdown menu container and contents.
 
 //** Background for the dropdown menu.
-$dropdown-bg:                    $body-bg;
+$dropdown-bg:                    $brand-primary;
 //** Dropdown menu `border-color`.
 $dropdown-border:                darken($dropdown-bg, 15%);
 //** Dropdown menu `border-color` **for IE8**.

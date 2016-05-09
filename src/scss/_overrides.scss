@@ -38,11 +38,20 @@
     .navbar-fixed-top .nav.navbar-nav .dropdown-menu {
         left: initial;
         right: 0;
+        margin: 0;
     }
     .navbar-nav>li.dropdown {
         min-width: 160px;
     }
     .navbar-nav>li>a {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+        .navbar-nav li.dropdown>div.dropdown>a {
+            padding: 20px;
+        }
+    .navbar-nav>li>div>a {
+        display: block;
         padding-top: 20px;
         padding-bottom: 20px;
     }
@@ -58,7 +67,14 @@
         margin-right: 10px;
         font-size: 18px;
     }
-    
+    .navbar-inverse .navbar-nav a, .navbar-inverse .navbar-nav a:hover, .navbar-inverse .navbar-nav a:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+    .navbar-inverse .navbar-nav  .open>a, .navbar-inverse .navbar-nav  .open>a:hover, .navbar-inverse .navbar-nav .open>a:focus {
+        background: #00001F;
+        color: white;
+    }
     .table-responsive {
         border: 0;
     }
@@ -236,26 +252,32 @@
         top: 0;
         bottom: 0;
         margin-top: 80px;
+        z-index: 1000;
     }
-        .slideout-menu .menu-item-list {
+        .slideout-menu .menu-item-list,
+        .slideout-menu .menu-item-list .btn-link {
             padding: 0;
             margin: 0;
             list-style-type: none;
-            font-size: 1.75em;
+            font-size: 1.75rem;
         }
-            .slideout-menu .menu-item a {
+            .slideout-menu .menu-item a,
+            .slideout-menu .menu-item button.btn-link {
                 display: inline-block;
                 width: 100%;
                 padding: 20px 30px;
                 border-bottom: 1px solid #d82632;
                 color: #d6fcff;
                 text-decoration: none;
+                text-align: left;
             }
-            .slideout-menu .menu-item a i.fa {
+            .slideout-menu .menu-item a i.fa,
+            .slideout-menu .menu-item button.btn-link i.fa {
                 margin-right: 0.25em;
                 display: inline-block;
                 text-align: center;
-                width: 2em;
+                width: 2rem;
+                margin-right: 1rem;
             }
 
  /***
@@ -307,6 +329,7 @@
                 margin: 0;
                 padding: 0 5px;
                 vertical-align: top;
+                outline: 0;
             }
         .app-search-input ul {
             display: flex;
@@ -550,7 +573,11 @@
   background-color:#e6e6e6;
 }
 /***button spinner***/
-.btn-waiting:after {
+.btn-waiting {
+    padding-right: 2.5rem;
+    transition: padding 0.2s ease-in;
+}
+    .btn-waiting:after {
         content: '\f1ce';
         font-family: 'FontAwesome';
         margin-left: 10px;
@@ -562,15 +589,15 @@
         -moz-animation: spin 2s infinite linear;
         animation: spin 2s infinite linear;
     }
-    @-moz-keyframes spin {
-        100% { -moz-transform: rotate(360deg); }
-    }
-    @-webkit-keyframes spin {
-        100% { -webkit-transform: rotate(360deg); }
-    }
-    @keyframes spin {
-        100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
-    }
+        @-moz-keyframes spin {
+            100% { -moz-transform: rotate(360deg); }
+        }
+        @-webkit-keyframes spin {
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
+        }
 /***spinner/loader animation***/
     .spinner-contained {
         position: absolute; /* Put spinner-position in spinner-contained if using a spinner inline and not for full-page takeover*/
