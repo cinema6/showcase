@@ -17,7 +17,7 @@ class EditProduct extends Component {
             </div>
             <div className="form-group">
                 <label htmlFor="adDesc-textarea">Description</label>
-                <textarea {...description} className="form-control" id="adDesc-textarea" rows={2} />
+                <textarea {...description} className="form-control" id="adDesc-textarea" rows={3} />
             </div>
             <button type="submit" className="col-sm-6 col-xs-12 btn btn-danger btn-lg">Next</button>
         </form>);

@@ -35,6 +35,9 @@
  overrides
  ----------------------------
  ***/
+    .container {
+        max-width: 90%;
+    }
     .navbar-fixed-top .nav.navbar-nav .dropdown-menu {
         left: initial;
         right: 0;
@@ -92,7 +95,12 @@
         font-size: 18px;
         height: 40px;
         line-height: 40px;
+        display: block;
+        clear: left;
     }
+        textarea.form-control {
+            line-height: 24px;
+        }
     form {
         overflow: hidden;
     }
@@ -103,6 +111,17 @@
     .nav-justified>li>a {
         margin-bottom: 0;
         background: #bef2f6;
+    }
+    .alert-fixed {
+        position: fixed;
+        margin-left: auto;
+        margin-right: auto;
+        left: 10%;
+        right: 10%;
+        top: 10px;
+        max-width: 600px;
+        z-index: 10000;
+        box-shadow: 0 3px 10px rgba(28, 28, 28, 0.5)
     }
     .alert-info button.close {
         color: #fff;
@@ -508,15 +527,34 @@
         .payment-modal .modal-dialog {
             width: 460px;
         }
-        .payment-modal .paymentType-details label{
-            float: left;
+        .payment-modal .paymentType-details {
+            display: block;
+            margin-bottom: 20px;
         }
+            .payment-modal .paymentType-details label{
+                float: left;
+            }
         .payment-modal .modal-header .close {
             margin-top: -2px;
             margin-top: -15px;
             margin-right: -15px;
             width: 30px;
             height: 30px;
+        }
+    .payment-modal .modal-footer {
+        padding: 0;
+        text-align: center;
+        background: #0DBEB2;
+        color: #FFF;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        line-height: 24px;
+        font-size: 16px;
+    }
+        .payment-modal .modal-footer p {
+            margin: 0;
+            padding: 6px;
+            border-radius: 4px;
         }
         .signup__secured {
             display: inline-block;

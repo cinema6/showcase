@@ -51,7 +51,7 @@ class Dashboard extends Component {
                 </div>
             </nav>
             {/* vertical menu */} {/*hidden until triggered */}
-            <nav id="sidePanel" className={classnames('slideout-menu', {
+            <nav id="sidePanel" className={classnames('slideout-menu animated slideInLeft', {
                 hidden: !showNav
             })}>
                 <ul className="menu-item-list">
