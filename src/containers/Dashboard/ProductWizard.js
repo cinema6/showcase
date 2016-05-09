@@ -169,6 +169,8 @@ ProductWizard.propTypes = {
     targetingEdited: PropTypes.func.isRequired,
     goToStep: PropTypes.func.isRequired,
     wizardDestroyed: PropTypes.func.isRequired,
+    getClientToken: PropTypes.func.isRequired,
+    createCampaign: PropTypes.func.isRequired,
 
     page: PropTypes.shape({
         step: PropTypes.number.isRequired,
