@@ -45,34 +45,18 @@ class CampaignDetail extends Component {
             if (page.analytics === null) {
                 code = (
                     <section>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <h4>CampaignDetail</h4>
-                            Failed...
+                        <CampaignDetailBar 
+                            campaignId={campaignId} 
+                            title={campaign.name}
+                            views={undefined} 
+                            clicks={undefined} 
+                            installs={undefined}
+                        />
                     </section>
                 );
             } else {
                 code= (
                     <section>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <h4>CampaignDetail</h4>
                         <CampaignDetailBar 
                             campaignId={campaignId} 
                             title={campaign.name}
