@@ -70,7 +70,9 @@ export class Login extends Component {
                     </form>
                     <br />
                     <Link to="forgot-password" className="text-center">Forgot Password?</Link>
-                    <span className="pull-right">New User? <a href="#">Sign up now</a></span>
+                    <span className="pull-right">
+                        New User? <Link to="/sign-up">Sign up now</Link>
+                    </span>
                 </div>
             </div>
         </div>);

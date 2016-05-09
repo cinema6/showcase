@@ -6,11 +6,13 @@ import accountPassword from './account_password';
 import forgotPassword from './forgot_password';
 import resetPassword from './reset_password';
 import productWizard from './product_wizard';
+import signUp from './sign_up';
 
 export default reducer.plugin({
     accountEmail,
     accountPassword,
     forgotPassword,
     resetPassword,
-    productWizard
+    productWizard,
+    signUp
 });
