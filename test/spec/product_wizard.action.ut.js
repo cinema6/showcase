@@ -450,7 +450,7 @@ describe('product wizard actions', function() {
                     });
 
                     it('should redirect to the product page', function() {
-                        expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}`));
+                        expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}/edit`));
                     });
 
                     it('should show a success notification', function() {

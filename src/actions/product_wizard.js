@@ -42,7 +42,7 @@ export function createCampaign({ payment, productData, targeting }) {
             } })).then(() => dispatch(campaign.create({
                 data: campaignFromData({ productData, targeting })
             }))).then(([id]) => {
-                dispatch(replace(`/dashboard/campaigns/${id}`));
+                dispatch(replace(`/dashboard/campaigns/${id}/edit`));
                 dispatch(notify({
                     type: NOTIFICATION_TYPE.SUCCESS,
                     message: 'Your app has been added!'
