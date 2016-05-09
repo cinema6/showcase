@@ -104,8 +104,15 @@ describe('ProductWizard', function() {
                         age: TARGETING.AGE.ALL,
                         gender: TARGETING.GENDER.ALL
                     }
-                }
+                },
+
+                steps: [0, 1, 2, 3],
+
+                loadData: jasmine.createSpy('loadData()').and.returnValue(Promise.resolve(undefined)),
+                onFinish: jasmine.createSpy('onFinish()').and.returnValue(Promise.resolve(3))
             };
+            props.productData = props.page.productData;
+            props.targeting = props.page.targeting;
 
             component = findRenderedComponentWithType(renderIntoDocument(
                 <Provider store={store}>
@@ -118,6 +125,10 @@ describe('ProductWizard', function() {
 
         it('should exist', function() {
             expect(component).toEqual(jasmine.any(Object));
+        });
+
+        it('should call loadData()', function() {
+            expect(component.props.loadData).toHaveBeenCalledWith();
         });
 
         describe('and removed', function() {
@@ -170,8 +181,14 @@ describe('ProductWizard', function() {
 
                         describe('if the product is already selected', function() {
                             beforeEach(function() {
-                                props.page.productData = { uri: product.uri };
+                                props.productData = { uri: product.uri, name: 'Name', description: 'Description' };
                                 productWizardActions.productSelected.calls.reset();
+                                component = findRenderedComponentWithType(renderIntoDocument(
+                                    <Provider store={store}>
+                                        <ProductWizard {...props} />
+                                    </Provider>
+                                ), ProductWizard.WrappedComponent);
+                                search = findRenderedComponentWithType(component, WizardSearch);
 
                                 search.props.onProductSelected(product);
                             });
@@ -191,13 +208,17 @@ describe('ProductWizard', function() {
 
         describe('on step 1', function() {
             beforeEach(function() {
-                component.props.page.step = 1;
-                component.props.page.productData = {
+                props.page.step = 1;
+                props.productData = {
                     extID: createUuid(),
                     name: 'My Awesome Product',
                     description: 'This is why it is awesome'
                 };
-                component.forceUpdate();
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
             });
 
             it('should not render a WizardSearch', function() {
@@ -218,7 +239,7 @@ describe('ProductWizard', function() {
                 describe('props', function() {
                     describe('productData', function() {
                         it('should be the productData', function() {
-                            expect(edit.props.productData).toEqual(props.page.productData);
+                            expect(edit.props.productData).toEqual(props.productData);
                         });
                     });
 
@@ -226,12 +247,12 @@ describe('ProductWizard', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { title: 'My new name', description: 'The new, improved description.' };
+                            values = { name: 'My new name', description: 'The new, improved description.' };
                             edit.props.onFinish(values);
                         });
 
-                        it('should call productEdited()', function() {
-                            expect(productWizardActions.productEdited).toHaveBeenCalledWith({ data: { name: values.title, description: values.description } });
+                        it('should call goToStep(2)', function() {
+                            expect(productWizardActions.goToStep).toHaveBeenCalledWith(2);
                         });
                     });
                 });
@@ -240,12 +261,16 @@ describe('ProductWizard', function() {
 
         describe('on step 2', function() {
             beforeEach(function() {
-                component.props.page.step = 2;
-                component.props.page.targeting = {
+                props.page.step = 2;
+                props.targeting = {
                     age: TARGETING.AGE.ZERO_TO_TWELVE,
                     gender: TARGETING.GENDER.FEMALE
                 };
-                component.forceUpdate();
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
             });
 
             it('should not render a WizardEditProduct', function() {
@@ -266,7 +291,7 @@ describe('ProductWizard', function() {
                 describe('props', function() {
                     describe('targeting', function() {
                         it('should be the targeting', function() {
-                            expect(targeting.props.targeting).toEqual(props.page.targeting);
+                            expect(targeting.props.targeting).toEqual(props.targeting);
                         });
                     });
 
@@ -274,12 +299,21 @@ describe('ProductWizard', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE };
+                            values = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
                             targeting.props.onFinish(values);
                         });
 
-                        it('should call targetingEdited()', function() {
-                            expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data: values });
+                        it('should call onFinish()', function() {
+                            expect(props.onFinish).toHaveBeenCalledWith({
+                                targeting: {
+                                    age: values.age,
+                                    gender: values.gender
+                                },
+                                productData: {
+                                    name: values.name,
+                                    description: values.description
+                                }
+                            });
                         });
                     });
                 });
@@ -291,11 +325,20 @@ describe('ProductWizard', function() {
                 store.dispatch.and.returnValue(new Promise(() => {}));
 
                 component.props.page.step = 3;
-                component.props.page.targeting = {
+                props.targeting = {
                     age: TARGETING.AGE.ZERO_TO_TWELVE,
                     gender: TARGETING.GENDER.FEMALE
                 };
-                component.forceUpdate();
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome'
+                };
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
             });
 
             it('should render a WizardEditTargeting', function() {
@@ -343,7 +386,7 @@ describe('ProductWizard', function() {
                         });
 
                         it('should create a campaign', function() {
-                            expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData: props.page.productData, targeting: props.page.targeting });
+                            expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData: props.productData, targeting: props.targeting });
                             expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.createCampaign.calls.mostRecent().returnValue);
                         });
                     });
@@ -384,38 +427,6 @@ describe('ProductWizard', function() {
                 it('should dispatch the productSelected action', function() {
                     expect(productWizardActions.productSelected).toHaveBeenCalledWith({ product });
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.productSelected.calls.mostRecent().returnValue);
-                    expect(result).toBe(dispatchDeferred.promise);
-                });
-            });
-
-            describe('productEdited()', function() {
-                let data;
-                let result;
-
-                beforeEach(function() {
-                    data = { name: 'The name', description: 'the description' };
-                    result = component.props.productEdited({ data });
-                });
-
-                it('should dispatch the productEdited action', function() {
-                    expect(productWizardActions.productEdited).toHaveBeenCalledWith({ data });
-                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.productEdited.calls.mostRecent().returnValue);
-                    expect(result).toBe(dispatchDeferred.promise);
-                });
-            });
-
-            describe('targetingEdited()', function() {
-                let data;
-                let result;
-
-                beforeEach(function() {
-                    data = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE };
-                    result = component.props.targetingEdited({ data });
-                });
-
-                it('should dispatch the targetingEdited action', function() {
-                    expect(productWizardActions.targetingEdited).toHaveBeenCalledWith({ data });
-                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.targetingEdited.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });

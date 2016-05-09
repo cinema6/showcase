@@ -21,11 +21,8 @@ export function productSelected({ product }) {
     };
 }
 
-export const PRODUCT_EDITED = prefix('PRODUCT_EDITED');
-export const productEdited = createAction(PRODUCT_EDITED, ({ data }) => data);
-
-export const TARGETING_EDITED = prefix('TARGETING_EDITED');
-export const targetingEdited = createAction(TARGETING_EDITED, ({ data }) => data);
+export const WIZARD_COMPLETE = prefix('WIZARD_COMPLETE');
+export const wizardComplete = createAction(WIZARD_COMPLETE);
 
 export const GO_TO_STEP = prefix('GO_TO_STEP');
 export const goToStep = createAction(GO_TO_STEP);

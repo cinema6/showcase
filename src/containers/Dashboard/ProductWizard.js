@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { findApps } from '../../actions/search';
 import {
     productSelected,
-    productEdited,
-    targetingEdited,
     goToStep,
     wizardDestroyed,
     createCampaign
@@ -17,6 +15,7 @@ import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import classnames from 'classnames';
+import { pick } from 'lodash';
 
 class ProductWizard extends Component {
     constructor() {
@@ -25,14 +24,16 @@ class ProductWizard extends Component {
         this.loadProduct = this.loadProduct.bind(this);
     }
 
+    componentWillMount() {
+        return this.props.loadData();
+    }
+
     loadProduct(product) {
         const {
             productSelected,
             goToStep,
 
-            page: {
-                productData
-            }
+            productData
         } = this.props;
 
         if (product.uri === (productData && productData.uri)) {
@@ -49,13 +50,16 @@ class ProductWizard extends Component {
     render() {
         const {
             findApps,
-            productEdited,
-            targetingEdited,
             getClientToken,
             goToStep,
             createCampaign,
 
-            page: { step, productData, targeting }
+            onFinish,
+
+            productData,
+            targeting,
+
+            page: { step }
         } = this.props;
 
         return (<div className="container main-section">
@@ -128,13 +132,14 @@ class ProductWizard extends Component {
                             onProductSelected={this.loadProduct}/>;
                     case 1:
                         return <WizardEditProduct productData={productData}
-                            onFinish={({ title, description }) => productEdited({
-                                data: { name: title, description }
-                            })} />;
+                            onFinish={() => goToStep(2)} />;
                     case 2:
                     case 3:
                         return <WizardEditTargeting targeting={targeting}
-                            onFinish={targeting => targetingEdited({ data: targeting })} />;
+                            onFinish={values => onFinish({
+                                targeting: pick(values, ['age', 'gender']),
+                                productData: pick(values, ['name', 'description'])
+                            })} />;
                     }
                 })()}
             </div>
@@ -150,20 +155,26 @@ class ProductWizard extends Component {
 ProductWizard.propTypes = {
     findApps: PropTypes.func.isRequired,
     productSelected: PropTypes.func.isRequired,
-    productEdited: PropTypes.func.isRequired,
-    targetingEdited: PropTypes.func.isRequired,
     goToStep: PropTypes.func.isRequired,
     wizardDestroyed: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
 
     page: PropTypes.shape({
-        step: PropTypes.number.isRequired,
-        productData: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired
-        })
-    }).isRequired
+        step: PropTypes.number.isRequired
+    }).isRequired,
+
+    loadData: PropTypes.func.isRequired,
+    onFinish: PropTypes.func.isRequired,
+
+    productData: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired
+    }),
+    targeting: PropTypes.shape({
+        gender: PropTypes.string,
+        age: PropTypes.string
+    })
 };
 
 function mapStateToProps() {
@@ -173,8 +184,6 @@ function mapStateToProps() {
 export default connect(mapStateToProps, {
     findApps,
     productSelected,
-    productEdited,
-    targetingEdited,
     goToStep,
     wizardDestroyed,
     getClientToken,

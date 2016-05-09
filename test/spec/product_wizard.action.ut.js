@@ -4,11 +4,10 @@ import defer from 'promise-defer';
 import { getProductData } from '../../src/actions/collateral';
 import {
     PRODUCT_SELECTED,
-    PRODUCT_EDITED,
-    TARGETING_EDITED,
     GO_TO_STEP,
     WIZARD_DESTROYED,
-    CREATE_CAMPAIGN
+    CREATE_CAMPAIGN,
+    WIZARD_COMPLETE
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -24,7 +23,7 @@ const proxyquire = require('proxyquire');
 describe('product wizard actions', function() {
     let collateralActions, notificationActions;
     let actions;
-    let productSelected, productEdited, targetingEdited, goToStep, wizardDestroyed, createCampaign;
+    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign;
 
     beforeEach(function() {
         notificationActions = {
@@ -52,8 +51,7 @@ describe('product wizard actions', function() {
             }
         });
         productSelected = actions.productSelected;
-        productEdited = actions.productEdited;
-        targetingEdited = actions.targetingEdited;
+        wizardComplete = actions.wizardComplete;
         goToStep = actions.goToStep;
         wizardDestroyed = actions.wizardDestroyed;
         createCampaign = actions.createCampaign;
@@ -283,39 +281,25 @@ describe('product wizard actions', function() {
         });
     });
 
-    describe('productEdited({ data })', function() {
-        let data;
+    describe('wizardComplete({ productData, targeting })', function() {
+        let productData, targeting;
         let result;
 
         beforeEach(function() {
-            data = {
-                name: 'The name',
-                description: 'The description'
+            productData = {
+                name: 'App Name',
+                description: 'App description.'
+            };
+            targeting = {
+                age: TARGETING.AGE.EIGHTEEN_PLUS,
+                gender: TARGETING.GENDER.MALE
             };
 
-            result = productEdited({ data });
+            result = wizardComplete({ productData, targeting });
         });
 
         it('should return an FSA', function() {
-            expect(result).toEqual(createAction(PRODUCT_EDITED)(data));
-        });
-    });
-
-    describe('targetingEdited({ data })', function() {
-        let data;
-        let result;
-
-        beforeEach(function() {
-            data = {
-                gender: TARGETING.GENDER.FEMALE,
-                age: TARGETING.AGE.EIGHTEEN_PLUS
-            };
-
-            result = targetingEdited({ data });
-        });
-
-        it('should return an FSA', function() {
-            expect(result).toEqual(createAction(TARGETING_EDITED)(data));
+            expect(result).toEqual(createAction(WIZARD_COMPLETE)({ productData, targeting }));
         });
     });
 

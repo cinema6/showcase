@@ -10,16 +10,25 @@ import { createStore, compose } from 'redux';
 import ProductWizard from '../../src/containers/Dashboard/ProductWizard';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
+import { wizardComplete } from '../../src/actions/product_wizard';
 
 const proxyquire = require('proxyquire');
 
 describe('AddProduct', function() {
+    let productWizardActions;
     let AddProduct;
 
     beforeEach(function() {
+        productWizardActions = {
+            wizardComplete: jasmine.createSpy('wizardComplete()').and.callFake(wizardComplete),
+
+            __esModule: true
+        };
+
         AddProduct = proxyquire('../../src/containers/Dashboard/AddProduct', {
             'react': React,
 
+            '../../actions/product_wizard': productWizardActions,
             './ProductWizard': {
                 default: ProductWizard,
 
@@ -41,7 +50,12 @@ describe('AddProduct', function() {
             state = {
                 page: {
                     'dashboard.add_product': {
-                        step: 0
+                        step: 0,
+                        productData: {
+                            name: 'Awesome App',
+                            description: 'It is the best.'
+                        },
+                        targeting: { age: 'foo', gender: 'foo' }
                     }
                 }
             };
@@ -51,6 +65,8 @@ describe('AddProduct', function() {
                 }),
                 s => assign({}, s, state)
             ));
+
+            spyOn(store, 'dispatch').and.callThrough();
 
             component = findRenderedComponentWithType(renderIntoDocument(
                 <Provider store={store}>
@@ -69,8 +85,58 @@ describe('AddProduct', function() {
 
         it('should map the state to some props', function() {
             expect(component.props).toEqual(jasmine.objectContaining({
-                product: null
+                steps: [0, 1, 2, 3],
+
+                productData: state.page['dashboard.add_product'].productData,
+                targeting: state.page['dashboard.add_product'].targeting
             }));
+        });
+
+        describe('dispatch props', function() {
+            let result;
+
+            beforeEach(function() {
+                store.dispatch.and.returnValue(new Promise(() => {}));
+            });
+
+            describe('loadData()', function() {
+                let success, failure;
+
+                beforeEach(function(done) {
+                    success = jasmine.createSpy('success()');
+                    failure = jasmine.createSpy('failure()');
+
+                    component.props.loadData().then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should fulfill with undefined', function() {
+                    expect(success).toHaveBeenCalledWith(undefined);
+                });
+            });
+
+            describe('onFinish()', function() {
+                let targeting, productData;
+
+                beforeEach(function() {
+                    targeting = {
+                        age: '0-12',
+                        gender: 'Female'
+                    };
+                    productData = {
+                        name: 'My awesome product!',
+                        description: 'It is really great!'
+                    };
+
+                    result = component.props.onFinish({ targeting, productData });
+                });
+
+                it('should dispatch wizardComplete()', function() {
+                    expect(productWizardActions.wizardComplete).toHaveBeenCalledWith({ targeting, productData });
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.wizardComplete.calls.mostRecent().returnValue);
+                    expect(result).toBe(store.dispatch.calls.mostRecent().returnValue);
+                });
+            });
         });
     });
 });

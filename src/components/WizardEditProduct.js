@@ -13,7 +13,7 @@ export default class WizardEditProduct extends Component {
         return (<div className="app-details col-md-5 col-sm-6 col-xs-12 col-middle
             animated fadeInRight">
             <h1>App Details</h1>
-            <EditProductForm initialValues={{ title: name, description }}
+            <EditProductForm initialValues={{ name, description }}
                 onSubmit={values => onFinish(values)} />
         </div>);
     }
