@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 export default class CampaignDetailBar extends Component {
     render() {
@@ -14,16 +15,32 @@ export default class CampaignDetailBar extends Component {
         } = this.props;
 
         return (
-            <table>
-                <tbody>
-                    <tr>
-                    <td>{title}</td>
-                    <td>{views}</td>
-                    <td>{clicks}</td>
-                    <td>{installs}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div>
+                <div>
+                    <table>
+                        <tbody>
+                            <tr>
+                            <td>{title}</td>
+                            <td>{views}</td>
+                            <td>{clicks}</td>
+                            <td>{installs}</td>
+                            <td>
+                                <Dropdown id="campaign-detail-dropdown">
+                                    <Dropdown.Toggle useAnchor={true}>
+                                        Toggle Me
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className="dropdown-menu">
+                                        <MenuItem> Edit Campaign </MenuItem>
+                                        <MenuItem> Delete Campaign </MenuItem>
+                                        <MenuItem> Tracking Pixel </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         );
     }
 }

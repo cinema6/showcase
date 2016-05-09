@@ -1,6 +1,6 @@
 const proxyquire = require('proxyquire');
 
-fdescribe('campaign-detail-actions',function(){
+describe('campaign-detail-actions',function(){
     let lib;
     let dispatch;
     let callAPI = jasmine.createSpy('callAPI');
@@ -11,7 +11,7 @@ fdescribe('campaign-detail-actions',function(){
             __esModule: true
         });
 
-        dispatch = jasmine.createSpy('dispatch');
+        dispatch = jasmine.createSpy('dispatch()').and.returnValue(new Promise(() => {}));
     });
     
     describe('getCampaignAnalytics(campaignId)', function() {
@@ -52,7 +52,7 @@ fdescribe('campaign-detail-actions',function(){
             thunk(dispatch); 
             expect(dispatch).toHaveBeenCalledWith({
                 type : 'CAMPAIGN_DETAIL/LOAD_PAGE_DATA',
-                payload : undefined
+                payload : jasmine.any(Promise)
             });
         });
     });

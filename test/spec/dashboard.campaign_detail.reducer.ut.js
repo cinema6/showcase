@@ -10,10 +10,11 @@ import {
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
 
-fdescribe('dashboardCampaignDetailReducer()', function() {
+describe('dashboardCampaignDetailReducer()', function() {
     it('should return some initial state for the page', function() {
         expect(dashboardCampaignDetailReducer(undefined, 'INIT')).toEqual({
-            loading: false,
+            loading: true,
+            analytics: null,
             analyticsError: null
         });
     });
@@ -86,6 +87,24 @@ fdescribe('dashboardCampaignDetailReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     loading: false,
                     analyticsError : err
+                }));
+            });
+
+        });
+
+        describe(`${GET_CAMPAIGN_ANALYTICS_SUCCESS}`, function(){
+            var doc;
+            beforeEach(function() {
+                doc = {};
+                action = createAction(`${GET_CAMPAIGN_ANALYTICS_SUCCESS}`)(doc);
+
+                newState = dashboardCampaignDetailReducer(state, action);
+            });
+            
+            it('should set analyticsError to payload', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    loading: false,
+                    analytics: doc
                 }));
             });
 

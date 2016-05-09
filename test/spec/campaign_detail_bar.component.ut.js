@@ -22,5 +22,12 @@ describe('CampaignDetailBar', function() {
     it('should exist', function() {
         expect(component).toEqual(jasmine.any(Object));
     });
+
+    it('should have the expected properties',function(){
+        expect(component.props.title).toEqual('test');
+        expect(component.props.views).toEqual(100);
+        expect(component.props.clicks).toEqual(25);
+        expect(component.props.installs).toEqual(10);
+    });
 });
 

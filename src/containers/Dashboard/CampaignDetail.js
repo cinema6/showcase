@@ -14,37 +14,95 @@ class CampaignDetail extends Component {
     }
 
     render() {
+        let code;
         const {
             page,
-            params : { campaignId }
+            params      : { campaignId },
+            campaigns   : { [campaignId] : campaign },
         } = this.props;
 
         var msg = page.analyticsError && page.analyticsError.message;
-        return (
-            <section>
-                <h3>CampaignDetail</h3>
-                { page.loading && <p> Loading... </p> }
-                { !page.loading && <p> Not Loading... {campaignId}</p> }
+       
+        if (page.loading) {
+            code = (
+                <section>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <h4>CampaignDetail</h4>
+                        Loading...
+                </section>
+            );
+        }
+        else {
+            if (page.analytics === null) {
+                code = (
+                    <section>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h4>CampaignDetail</h4>
+                            Failed...
+                    </section>
+                );
+            } else {
+                code= (
+                    <section>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h4>CampaignDetail</h4>
+                        <CampaignDetailBar 
+                            campaignId={campaignId} 
+                            title={campaign.name}
+                            views={page.analytics.summary.views} 
+                            clicks={page.analytics.summary.clicks} 
+                            installs={page.analytics.summary.installs}
+                        />
+                    </section>
+                );
+            }
+        }
 
-                <CampaignDetailBar campaignId={campaignId} title="Hello"
-                    views={100} clicks={50} installs={10}
-                />
-            </section>
-        );
+        return code;
     }
 }
 
 CampaignDetail.propTypes = {
     page: PropTypes.shape({
-        loading: PropTypes.bool.isRequired,
-        analyticsError: PropTypes.object
+        loading         : PropTypes.bool.isRequired,
+        analyticsError  : PropTypes.object,
+        analytics       : PropTypes.object
     }).isRequired,
 
     loadPageData: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        campaigns :  state.db.campaign
+    };
 }
 
 export default compose(

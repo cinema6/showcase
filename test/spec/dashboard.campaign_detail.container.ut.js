@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 
 const proxyquire = require('proxyquire');
 
-fdescribe('Campaign Detail', function() {
+describe('Campaign Detail', function() {
     let campaignDetailActions;
     let CampaignDetail;
     let store, state;
@@ -24,9 +24,15 @@ fdescribe('Campaign Detail', function() {
             '../../actions/campaign_detail': campaignDetailActions
         }).default;
         state = {
+            db : {
+                campaign : {
+                    'foo' : {}            
+                }
+            },
             page: {
                 'dashboard.campaign_detail': {
-                    loading: false,
+                    loading: true,
+                    analytics: null,
                     analyticsError : null
                 }
             }
@@ -54,6 +60,10 @@ fdescribe('Campaign Detail', function() {
             expect(store.dispatch).toHaveBeenCalledWith(
                 campaignDetailActions.loadPageData.calls.mostRecent().returnValue
             );
+        });
+
+        it('should properly map state',function(){
+            expect(component.props.campaigns).toBe(state.db.campaign);
         });
     });
 

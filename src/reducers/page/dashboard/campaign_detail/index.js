@@ -10,13 +10,18 @@ import {
 import { assign } from 'lodash';
 
 const INITIAL_STATE = {
-    loading: false,
-    analyticsError : null
+    loading         : true,
+    analyticsError  : null,
+    analytics       : null
 };
 
 export default handleActions({
     [`${GET_CAMPAIGN_ANALYTICS_FAILURE}`]: (state,action) => assign({}, state, {
         analyticsError: action.payload
+    }),
+
+    [`${GET_CAMPAIGN_ANALYTICS_SUCCESS}`]: (state,action) => assign({}, state, {
+        analytics : action.payload
     }),
 
     [`${LOAD_PAGE_DATA}_PENDING`]: state => assign({}, state, {
