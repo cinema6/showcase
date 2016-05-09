@@ -325,28 +325,18 @@ module.exports = function(http) {
             delete campaign.rejectFlag;
         }
 
-        var cpv = getCpv(campaign);
-
-        if (campaign.pricing.budget) {
-            campaign.pricing.cost = cpv;
-        }
-
         grunt.file.write(filePath, JSON.stringify(campaign, null, '    '));
 
         if (campaign.name === 'fail') {
-            return this.respond(500, Q.when('server error').delay(1000));
+            return this.respond(500, Q.when('server error'));
         }
         if (rejectFlag) {
-            return this.respond(401, Q.when('Not Authorized').delay(1000));
-        }
-
-        if (!campaign.cards[0].data.duration && campaign.cards[0].type !== 'video') {
-            campaign.cards[0].data.duration = Math.floor(Math.random() * (120 - 15)) + 15;
+            return this.respond(401, Q.when('Not Authorized'));
         }
 
         this.respond(200, Q.when(extend(campaign, {
             id: id
-        })).delay(2000));
+        })));
     });
 
     http.whenDELETE('/api/campaigns/**', function(request) {
