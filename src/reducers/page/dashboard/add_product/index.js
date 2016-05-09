@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { assign } from 'lodash';
+import { assign, defaults } from 'lodash';
 import {
     PRODUCT_SELECTED,
     PRODUCT_EDITED,
@@ -34,7 +34,7 @@ export default handleActions({
     }),
     [TARGETING_EDITED]: (state, { payload: targeting }) => assign({}, state, {
         step: 3,
-        targeting: assign({}, state.targeting, targeting)
+        targeting: assign({}, state.targeting, defaults({}, targeting, DEFAULT_TARGETING))
     }),
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step })
 }, INITIAL_STATE);
