@@ -41,7 +41,7 @@ export class ForgotPassword extends Component {
                             <strong>Uh-oh!</strong> {error.response}
                         </div>)}
                         <button type="submit" disabled={submitting}
-                            className={classnames('btn', 'btn-danger', 'btn-lg', 'btn-block', {
+                            className={classnames('btn', 'btn-primary', 'btn-lg', 'btn-block', {
                                 'btn-waiting': submitting
                             })}>
                             Reset Password

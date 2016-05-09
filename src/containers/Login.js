@@ -61,7 +61,7 @@ export class Login extends Component {
                         <button type="submit"
                             disabled={submitting}
                             className={classnames(
-                                'btn', 'btn-danger', 'btn-lg', 'btn-block',
+                                'btn', 'btn-primary', 'btn-lg', 'btn-block',
                                 { 'btn-waiting': submitting }
                             )}>
                             Login

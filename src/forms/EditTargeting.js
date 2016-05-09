@@ -15,7 +15,7 @@ class EditTargeting extends Component {
         return (<form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="targetAge-radio">Age</label>
-                <radiogroup className="btn-group btn-group-justified">
+                <radiogroup className="btn-group btn-group-justified" data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
                         active: age.value === TARGETING.AGE.ALL
                     })}>
