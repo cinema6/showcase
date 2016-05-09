@@ -76,18 +76,16 @@ describe('EditTargeting', function() {
             it('should change values', function() {
                 let [all, zeroTo12, thirteenPlus, eitghteenPlus] = radiogroup.querySelectorAll('input');
 
+                Simulate.focus(all);
                 expect(all.checked).toBeTruthy('all');
 
-                component.props.fields.age.value = AGE.ZERO_TO_TWELVE;
-                component.forceUpdate();
+                Simulate.change(zeroTo12);
                 expect(zeroTo12.checked).toBeTruthy(AGE.ZERO_TO_TWELVE);
 
-                component.props.fields.age.value = AGE.THIRTEEN_PLUS;
-                component.forceUpdate();
+                Simulate.change(thirteenPlus);
                 expect(thirteenPlus.checked).toBeTruthy(AGE.THIRTEEN_PLUS);
 
-                component.props.fields.age.value = AGE.EIGHTEEN_PLUS;
-                component.forceUpdate();
+                Simulate.change(eitghteenPlus);
                 expect(eitghteenPlus.checked).toBeTruthy(AGE.EIGHTEEN_PLUS);
             });
         });
@@ -102,14 +100,13 @@ describe('EditTargeting', function() {
             it('should change values', function() {
                 let [all, female, male] = radiogroup.querySelectorAll('input');
 
+                Simulate.focus(all);
                 expect(all.checked).toBeTruthy('all');
 
-                component.props.fields.gender.value = GENDER.FEMALE;
-                component.forceUpdate();
+                Simulate.change(female);
                 expect(female.checked).toBeTruthy(GENDER.FEMALE);
 
-                component.props.fields.gender.value = GENDER.MALE;
-                component.forceUpdate();
+                Simulate.change(male);
                 expect(male.checked).toBeTruthy(GENDER.MALE);
             });
         });
