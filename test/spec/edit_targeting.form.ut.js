@@ -60,7 +60,9 @@ describe('EditTargeting', function() {
                 }),
                 age: jasmine.objectContaining({
                     value: props.initialValues.age
-                })
+                }),
+                name: jasmine.any(Object),
+                description: jasmine.any(Object)
             });
         });
 
@@ -74,18 +76,16 @@ describe('EditTargeting', function() {
             it('should change values', function() {
                 let [all, zeroTo12, thirteenPlus, eitghteenPlus] = radiogroup.querySelectorAll('input');
 
+                Simulate.focus(all);
                 expect(all.checked).toBeTruthy('all');
 
-                component.props.fields.age.value = AGE.ZERO_TO_TWELVE;
-                component.forceUpdate();
+                Simulate.change(zeroTo12);
                 expect(zeroTo12.checked).toBeTruthy(AGE.ZERO_TO_TWELVE);
 
-                component.props.fields.age.value = AGE.THIRTEEN_PLUS;
-                component.forceUpdate();
+                Simulate.change(thirteenPlus);
                 expect(thirteenPlus.checked).toBeTruthy(AGE.THIRTEEN_PLUS);
 
-                component.props.fields.age.value = AGE.EIGHTEEN_PLUS;
-                component.forceUpdate();
+                Simulate.change(eitghteenPlus);
                 expect(eitghteenPlus.checked).toBeTruthy(AGE.EIGHTEEN_PLUS);
             });
         });
@@ -100,14 +100,13 @@ describe('EditTargeting', function() {
             it('should change values', function() {
                 let [all, female, male] = radiogroup.querySelectorAll('input');
 
+                Simulate.focus(all);
                 expect(all.checked).toBeTruthy('all');
 
-                component.props.fields.gender.value = GENDER.FEMALE;
-                component.forceUpdate();
+                Simulate.change(female);
                 expect(female.checked).toBeTruthy(GENDER.FEMALE);
 
-                component.props.fields.gender.value = GENDER.MALE;
-                component.forceUpdate();
+                Simulate.change(male);
                 expect(male.checked).toBeTruthy(GENDER.MALE);
             });
         });
@@ -118,7 +117,12 @@ describe('EditTargeting', function() {
             });
 
             it('should call onSubmit() with the values', function() {
-                expect(props.onSubmit).toHaveBeenCalledWith(getValues(store.getState().form.productWizard), jasmine.any(Function));
+                expect(props.onSubmit).toHaveBeenCalledWith({
+                    gender: jasmine.anything(),
+                    age: jasmine.anything(),
+                    name: undefined,
+                    description: undefined
+                }, jasmine.any(Function));
             });
         });
 

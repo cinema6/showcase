@@ -30,7 +30,7 @@ describe('EditProduct', function() {
 
             props = {
                 initialValues: {
-                    title: 'This is a great thing!',
+                    name: 'This is a great thing!',
                     description: 'My app is the greatest app to ever live!'
                 },
 
@@ -54,8 +54,8 @@ describe('EditProduct', function() {
             expect(findRenderedDOMComponentWithTag(component, 'form')).toEqual(jasmine.any(Object));
             expect(store.getState().form.productWizard).toEqual(jasmine.any(Object));
             expect(component.props.fields).toEqual({
-                title: jasmine.objectContaining({
-                    value: props.initialValues.title
+                name: jasmine.objectContaining({
+                    value: props.initialValues.name
                 }),
                 description: jasmine.objectContaining({
                     value: props.initialValues.description
@@ -63,11 +63,11 @@ describe('EditProduct', function() {
             });
         });
 
-        it('should contain inputs for the title and description', function() {
-            let [title] = scryRenderedDOMComponentsWithTag(component, 'input');
+        it('should contain inputs for the name and description', function() {
+            let [name] = scryRenderedDOMComponentsWithTag(component, 'input');
             let [description] = scryRenderedDOMComponentsWithTag(component, 'textarea');
 
-            expect(title.value).toBe(props.initialValues.title);
+            expect(name.value).toBe(props.initialValues.name);
             expect(description.value).toBe(props.initialValues.description);
         });
 
