@@ -17,6 +17,7 @@ import campaign from '../../src/actions/campaign';
 import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
+import { campaignFromData } from '../../src/utils/campaign';
 
 const proxyquire = require('proxyquire');
 
@@ -134,20 +135,7 @@ describe('product wizard actions', function() {
                 });
 
                 it('should create a campaign', function() {
-                    expect(campaign.create).toHaveBeenCalledWith({ data: {
-                        application: 'showcase',
-                        cards: [],
-                        name: productData.name,
-                        status: 'outOfBudget',
-                        product: productData,
-                        targeting: {
-                            demographics: {
-                                age: [targeting.age],
-                                gender: [targeting.gender]
-                            },
-                            appStoreCategory: productData.categories
-                        }
-                    } });
+                    expect(campaign.create).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }) });
                     expect(dispatch).toHaveBeenCalledWith(campaign.create.calls.mostRecent().returnValue);
                 });
 

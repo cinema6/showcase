@@ -7,6 +7,7 @@ import { createAction } from 'redux-actions';
 import { TYPE  as NOTIFICATION_TYPE } from '../enums/notification';
 import { notify } from './notification';
 import { replace } from 'react-router-redux';
+import { campaignFromData } from '../utils/campaign';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -38,20 +39,9 @@ export function createCampaign({ payment, productData, targeting }) {
                 cardholderName: payment.cardholderName,
                 paymentMethodNonce: payment.nonce,
                 makeDefault: true
-            } })).then(() => dispatch(campaign.create({ data: {
-                application: 'showcase',
-                cards: [],
-                name: productData.name,
-                status: 'outOfBudget',
-                product: productData,
-                targeting: {
-                    demographics: {
-                        age: [targeting.age],
-                        gender: [targeting.gender]
-                    },
-                    appStoreCategory: productData.categories
-                }
-            } }))).then(([id]) => {
+            } })).then(() => dispatch(campaign.create({
+                data: campaignFromData({ productData, targeting })
+            }))).then(([id]) => {
                 dispatch(replace(`/dashboard/campaigns/${id}`));
                 dispatch(notify({
                     type: NOTIFICATION_TYPE.SUCCESS,
