@@ -25,18 +25,6 @@ class ProductWizard extends Component {
         this.loadProduct = this.loadProduct.bind(this);
     }
 
-    goToStep(step, event) {
-        const {
-            goToStep
-        } = this.props;
-
-        event.preventDefault();
-
-        if (event.currentTarget.getAttribute('data-disabled') !== 'true') {
-            return goToStep(step);
-        }
-    }
-
     loadProduct(product) {
         const {
             productSelected,
@@ -77,52 +65,49 @@ class ProductWizard extends Component {
                         <li className={classnames('progressbar-step-1', {
                             active: step >= 0
                         })}>
-                            <a href="#" onClick={event => this.goToStep(0, event)}>
+                            <button onClick={() => goToStep(0)}>
                                 <h3>
                                     <i className="fa fa-search" />
                                     <span className="sr-only">Search</span>
                                 </h3>
                                 Search
-                            </a>
+                            </button>
                         </li>
                         <li className={classnames('progressbar-step-2', {
                             active: step >= 1
                         })}>
-                            <a href="#"
-                                data-disabled={step < 2}
-                                onClick={event => this.goToStep(1, event)}>
+                            <button disabled={step < 2}
+                                onClick={() => goToStep(1)}>
                                 <h3>
                                     <i className="fa fa-pencil-square-o" />
                                     <span className="sr-only">Create</span>
                                 </h3>
                                 Create
-                            </a>
+                            </button>
                         </li>
                         <li className={classnames('progressbar-step-3', {
                             active: step >= 2
                         })}>
-                            <a href="#"
-                                data-disabled={step < 3}
-                                onClick={event => this.goToStep(2, event)}>
+                            <button disabled={step < 3}
+                                onClick={() => goToStep(2)}>
                                 <h3>
                                     <i className="fa fa-bullseye" />
                                     <span className="sr-only">Target</span>
                                 </h3>
                                 Target
-                            </a>
+                            </button>
                         </li>
                         <li className={classnames('progressbar-step-4', {
                             active: step >= 3
                         })}>
-                            <a href="#"
-                                data-disabled={step < 4}
-                                onClick={event => this.goToStep(3, event)}>
+                            <button disabled={step < 4}
+                                onClick={() => goToStep(3)}>
                                 <h3>
                                     <i className="fa fa-paper-plane-o" />
                                     <span className="sr-only">Promote</span>
                                 </h3>
                                 Promote
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </div>
