@@ -1,6 +1,6 @@
 'use strict';
 
-import { Route, IndexRedirect } from 'react-router';
+import { Route, IndexRedirect, IndexRoute } from 'react-router';
 import React from 'react';
 import Application from './containers/Application';
 import Dashboard from './containers/Dashboard';
@@ -22,6 +22,10 @@ import {
     createLoginEnterHandler
 } from './utils/auth';
 
+import { TYPE as NOTIFICATION_TYPE } from './enums/notification';
+import { getCampaigns } from './actions/session';
+import { notify } from './actions/notification';
+
 export default function createRoutes(store) {
     const checkAuth = createProtectedRouteEnterHandler({
         store,
@@ -29,6 +33,37 @@ export default function createRoutes(store) {
         resendConfirmationPath: '/resend-confirmation'
     });
     const checkLoggedIn = createLoginEnterHandler({ store, dashboardPath: '/dashboard' });
+
+    function onEnterDashboard(routerState, replace, done) {
+        return store.dispatch(getCampaigns()).then(([campaign]) => {
+            if (!campaign) {
+                return replace('/dashboard/add-product');
+            } else {
+                return replace(`/dashboard/campaigns/${campaign}/edit`);
+            }
+        }).catch(reason => {
+            store.dispatch(notify({
+                type: NOTIFICATION_TYPE.DANGER,
+                message: `Unexpected error: ${reason.response || reason.message}`,
+                time: 10000
+            }));
+        }).then(() => done());
+    }
+
+    function onEnterAddProduct(routerState, replace, done) {
+        return store.dispatch(getCampaigns()).then(([campaign]) => {
+            if (campaign) {
+                return replace('/dashboard');
+            }
+        }).catch(reason => {
+            store.dispatch(notify({
+                type: NOTIFICATION_TYPE.WARNING,
+                message: `Unexpected error: ${reason.response || reason.message}`
+            }));
+
+            return replace('/dashboard');
+        }).then(() => done());
+    }
 
     return (
         <Route path="/" component={Application}>
@@ -38,9 +73,12 @@ export default function createRoutes(store) {
             <Route path="resend-confirmation" component={ResendConfirmation} onEnter={checkAuth} />
 
             <Route path="dashboard" component={Dashboard} onEnter={checkAuth}>
-                <IndexRedirect to="add-product" />
+                <IndexRoute onEnter={onEnterDashboard} />
 
-                <Route path="add-product" component={DashboardAddProduct}></Route>
+                <Route path="add-product"
+                    component={DashboardAddProduct}
+                    onEnter={onEnterAddProduct}>
+                </Route>
 
                 <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct}></Route>
 
