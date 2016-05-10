@@ -7,13 +7,16 @@ import {
     LOGOUT_SUCCESS
 } from '../actions/auth';
 import payment, { paymentMethod } from '../actions/payment';
-import { assign } from 'lodash';
+import campaign from '../actions/campaign';
+import { assign, reject, includes } from 'lodash';
 
 const DEFAULT_STATE = {
     user: null,
 
     payments: [],
-    paymentMethods: []
+    paymentMethods: [],
+
+    campaigns: null
 };
 
 function addUserToSession(state, { payload: user }) {
@@ -32,8 +35,8 @@ export default handleActions({
     [payment.create.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
         payments: state.payments.concat(payments)
     }),
-    [payment.remove.SUCCESS]: (state, { payload: [payment] }) => assign({}, state, {
-        payments: state.payments.filter(id => id !== payment)
+    [payment.remove.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
+        payments: reject(state.payments, id => includes(payments, id))
     }),
 
     [paymentMethod.list.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
@@ -42,11 +45,19 @@ export default handleActions({
     [paymentMethod.create.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
         paymentMethods: state.paymentMethods.concat(paymentMethods)
     }),
-    [paymentMethod.remove.SUCCESS]: (state, { payload: [paymentMethod] }) => assign({}, state, {
-        paymentMethods: state.paymentMethods.filter(id => id !== paymentMethod)
+    [paymentMethod.remove.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
+        paymentMethods: reject(state.paymentMethods, id => includes(paymentMethods, id))
     }),
 
-    [LOGOUT_SUCCESS]: state => assign({}, state, {
-        user: null
-    })
+    [campaign.list.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
+        campaigns
+    }),
+    [campaign.create.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
+        campaigns: (state.campaigns || []).concat(campaigns)
+    }),
+    [campaign.remove.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
+        campaigns: state.campaigns && reject(state.campaigns, id => includes(campaigns, id))
+    }),
+
+    [LOGOUT_SUCCESS]: () => DEFAULT_STATE
 }, DEFAULT_STATE);

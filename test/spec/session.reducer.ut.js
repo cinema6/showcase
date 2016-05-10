@@ -5,6 +5,7 @@ import {
     LOGOUT_SUCCESS
 } from '../../src/actions/auth';
 import payment, { paymentMethod } from '../../src/actions/payment';
+import campaign from '../../src/actions/campaign';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
@@ -14,7 +15,8 @@ describe('sessionReducer()', function() {
         expect(sessionReducer(undefined, 'INIT')).toEqual({
             user: null,
             payments: [],
-            paymentMethods: []
+            paymentMethods: [],
+            campaigns: null
         });
     });
 
@@ -27,7 +29,8 @@ describe('sessionReducer()', function() {
                 user: null,
 
                 payments: Array.apply([], new Array(5)).map(() => createUuid()),
-                paymentMethods: Array.apply([], new Array(3)).map(() => createUuid())
+                paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
+                campaigns: Array.apply([], new Array(10)).map(() => createUuid())
             };
         });
 
@@ -60,10 +63,82 @@ describe('sessionReducer()', function() {
                 newState = sessionReducer(state, createAction(LOGOUT_SUCCESS)());
             });
 
-            it('should set the user to null', function() {
+            it('should restore the initial state', function() {
+                expect(newState).toEqual(sessionReducer(undefined, {}));
+            });
+        });
+
+        describe(campaign.list.SUCCESS, function() {
+            let campaigns;
+
+            beforeEach(function() {
+                campaigns = [`cam-${createUuid()}`];
+
+                newState = sessionReducer(state, createAction(campaign.list.SUCCESS)(campaigns));
+            });
+
+            it('should update the campaigns', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    user: null
+                    campaigns
                 }));
+            });
+        });
+
+        describe(campaign.create.SUCCESS, function() {
+            let campaigns;
+
+            beforeEach(function() {
+                campaigns = [`cam-${createUuid()}`];
+
+                newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+            });
+
+            it('should add the campaign', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    campaigns: state.campaigns.concat(campaigns)
+                }));
+            });
+
+            describe('if there are no campaigns', function() {
+                beforeEach(function() {
+                    state.campaigns = null;
+
+                    newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+                });
+
+                it('should update the campaigns', function() {
+                    expect(newState).toEqual(assign({}, state, {
+                        campaigns
+                    }));
+                });
+            });
+        });
+
+        describe(campaign.remove.SUCCESS, function() {
+            let campaigns;
+
+            beforeEach(function() {
+                campaigns = [state.campaigns[4]];
+
+                newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+            });
+
+            it('should remove the campaign', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    campaigns: state.campaigns.filter(id => campaigns.indexOf(id) < 0)
+                }));
+            });
+
+            describe('if there are no campaigns in the state', function() {
+                beforeEach(function() {
+                    state.campaigns = null;
+
+                    newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                });
+
+                it('should do nothing', function() {
+                    expect(newState).toEqual(state);
+                });
             });
         });
 
