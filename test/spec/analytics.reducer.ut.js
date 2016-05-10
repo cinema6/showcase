@@ -27,6 +27,22 @@ describe('analyticsReducer()', function() {
             };
         });
 
+        describe(`${GET_CAMPAIGN_ANALYTICS_START}`, function(){
+            beforeEach(function() {
+                state.lastError = 'some error';
+                action = createAction(`${GET_CAMPAIGN_ANALYTICS_START}`)({});
+                newState = analyticsReducer(state, action);
+            });
+            
+            it('should set lastError to null', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    results : {},
+                    lastError : null
+                }));
+            });
+
+        });
+
         describe(`${GET_CAMPAIGN_ANALYTICS_FAILURE}`, function(){
             var err;
             beforeEach(function() {

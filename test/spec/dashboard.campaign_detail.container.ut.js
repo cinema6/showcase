@@ -67,7 +67,8 @@ describe('Campaign Detail', function() {
         });
 
         it('should properly map state',function(){
-            expect(component.props.campaigns).toBe(state.db.campaign);
+            expect(component.props.campaign).toBe(state.db.campaign.foo);
+            expect(component.props.analytics).toBe(state.analytics.results.foo);
         });
     });
 

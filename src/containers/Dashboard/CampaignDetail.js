@@ -17,11 +17,11 @@ class CampaignDetail extends Component {
     render() {
         let inner, thumbNail, logoUrl;
         const {
-            page : { loading },
-            params      : { campaignId },
-            analytics : { results : { [campaignId] : analytics = {} } },
-            analytics : { lastError : analyticsError },
-            campaigns   : { [campaignId ] :  campaign = {} }
+            page    : { loading },
+            params  : { campaignId },
+            analytics,
+            analyticsError,
+            campaign
         } = this.props;
         
         if (loading) {
@@ -61,16 +61,17 @@ CampaignDetail.propTypes = {
     page: PropTypes.shape({
         loading         : PropTypes.bool.isRequired
     }).isRequired,
-    campaigns  : PropTypes.object.isRequired,
-    analytics  : PropTypes.object.isRequired,
-
+    campaign   : PropTypes.object,
+    analytics  : PropTypes.object,
+    analyticsError: PropTypes.object,
     loadPageData: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, props) {
     return {
-        analytics :  state.analytics,
-        campaigns :  state.db.campaign
+        campaign        :  state.db.campaign[props.params.campaignId],
+        analytics       :  state.analytics.results[props.params.campaignId],
+        analyticsError  : state.analytics.lastError
     };
 }
 
