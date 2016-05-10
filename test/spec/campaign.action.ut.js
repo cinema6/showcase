@@ -28,7 +28,10 @@ describe('campaign actions', function() {
     it('should create db actions for campaigns', function() {
         expect(createDbActions).toHaveBeenCalledWith({
             type: 'campaign',
-            endpoint: '/api/campaigns'
+            endpoint: '/api/campaigns',
+            queries: {
+                list: { application: 'showcase' }
+            }
         });
         expect(campaign).toEqual(createDbActions.calls.mostRecent().returnValue);
     });
