@@ -15,7 +15,7 @@ class CampaignDetail extends Component {
     }
 
     render() {
-        let inner, thumbNail, logoUrl;
+        let inner, logoUrl;
         const {
             page    : { loading },
             params  : { campaignId },
@@ -34,7 +34,7 @@ class CampaignDetail extends Component {
         else {
             if (campaign && campaign.product) {
                 logoUrl = (find(campaign.product.images, (img) => {
-                    return img.type === 'thumbnail'
+                    return img.type === 'thumbnail';
                 }) || {}).uri;
             }
             inner = (
@@ -60,6 +60,9 @@ class CampaignDetail extends Component {
 CampaignDetail.propTypes = {
     page: PropTypes.shape({
         loading         : PropTypes.bool.isRequired
+    }).isRequired,
+    params: PropTypes.shape({
+        campaignId      : PropTypes.string.isRequired
     }).isRequired,
     campaign   : PropTypes.object,
     analytics  : PropTypes.object,

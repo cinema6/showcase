@@ -13,14 +13,8 @@ const DEFAULT_STATE = {
     lastError  : null
 };
 
-function addUserToSession(state, { payload: user }) {
-    return assign({}, state, {
-        user: user.id
-    });
-}
-
 export default handleActions({
-    [`${GET_CAMPAIGN_ANALYTICS_START}`]: (state,action) => assign({}, state, {
+    [`${GET_CAMPAIGN_ANALYTICS_START}`]: (state) => assign({}, state, {
         lastError : null
     }),
 
@@ -30,6 +24,6 @@ export default handleActions({
 
     [`${GET_CAMPAIGN_ANALYTICS_SUCCESS}`]: (state,action) => assign({}, state, {
         results : assign({}, state.results, { [action.payload.campaignId] : action.payload })
-    }),
+    })
 }, DEFAULT_STATE);
 
