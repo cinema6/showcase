@@ -10,6 +10,7 @@ import {
     map
 } from 'lodash';
 import { createAction } from 'redux-actions';
+import { format as formatURL } from 'url';
 
 export const LIST = getActionNames('LIST');
 export const GET = getActionNames('GET');
@@ -29,7 +30,7 @@ function getActionNames(method, type) {
     };
 }
 
-export function createDbActions({ type, endpoint, key = 'id' }) {
+export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
     function call(config, id = null) {
         return callAPI(assign({}, config, {
             types: config.types.map(action => ({ type: action, meta: { type, key, id } }))
@@ -58,7 +59,10 @@ export function createDbActions({ type, endpoint, key = 'id' }) {
         return function thunk(dispatch) {
             return wrap(list, dispatch, () => dispatch(call({
                 types: [LIST.START, LIST.SUCCESS, LIST.FAILURE],
-                endpoint,
+                endpoint: formatURL({
+                    pathname: endpoint,
+                    query: queries.list
+                }),
                 method: 'GET'
             })).then(items => map(items, key)));
         };
@@ -69,7 +73,10 @@ export function createDbActions({ type, endpoint, key = 'id' }) {
         return function thunk(dispatch) {
             return wrap(get, dispatch, () =>  dispatch(call({
                 types: [GET.START, GET.SUCCESS, GET.FAILURE],
-                endpoint: `${endpoint}/${id}`,
+                endpoint: formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.get
+                }),
                 method: 'GET'
             }, id)).then(item => [item[key]]));
         };
@@ -80,7 +87,10 @@ export function createDbActions({ type, endpoint, key = 'id' }) {
         return function thunk(dispatch) {
             return wrap(create, dispatch, () => dispatch(call({
                 types: [CREATE.START, CREATE.SUCCESS, CREATE.FAILURE],
-                endpoint,
+                endpoint: formatURL({
+                    pathname: endpoint,
+                    query: queries.create
+                }),
                 method: 'POST',
                 body: data
             })).then(item => [item[key]]));
@@ -108,7 +118,10 @@ export function createDbActions({ type, endpoint, key = 'id' }) {
 
             return wrap(update, dispatch, () => dispatch(call({
                 types: [UPDATE.START, UPDATE.SUCCESS, UPDATE.FAILURE],
-                endpoint: `${endpoint}/${id}`,
+                endpoint: formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.update
+                }),
                 method: 'PUT',
                 body: assign({}, current, data)
             }, id)).then(item => [item[key]]));
@@ -120,7 +133,10 @@ export function createDbActions({ type, endpoint, key = 'id' }) {
         return function thunk(dispatch) {
             return wrap(remove, dispatch, () => dispatch(call({
                 types: [REMOVE.START, REMOVE.SUCCESS, REMOVE.FAILURE],
-                endpoint: `${endpoint}/${id}`,
+                endpoint: formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.remove
+                }),
                 method: 'DELETE'
             }, id)).then(() => [id]));
         };
