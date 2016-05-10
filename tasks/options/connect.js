@@ -30,6 +30,7 @@ module.exports = {
                         '/api/search': 'server/api/search/main.js',
                         '/api/collateral': 'server/api/collateral/main.js',
                         '/api/campaigns': 'server/api/campaign/main.js',
+                        '/api/analytics/campaigns': 'server/api/analytics/main.js',
 
                         '@verbosity': verbosity,
                         '@delay': [500, 1000]

@@ -15,6 +15,7 @@ import AccountPassword from './containers/Account/Password';
 import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import DashboardBilling from './containers/Dashboard/Billing';
+import DashboardCampaignDetail from './containers/Dashboard/CampaignDetail';
 import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import DashboardEditProduct from './containers/Dashboard/EditProduct';
 import {
@@ -91,6 +92,8 @@ export default function createRoutes(store) {
                 </Route>
 
                 <Route path="billing" component={DashboardBilling}></Route>
+                <Route path="campaign/:campaignId" 
+                    component={DashboardCampaignDetail}></Route>
             </Route>
 
             <Route path="login" component={Login} onEnter={checkLoggedIn}></Route>

@@ -1,10 +1,9 @@
 'use strict';
 
-import { createAction } from 'redux-actions';
 import { callAPI } from './api';
 
 function prefix(type) {
-    return `STATS/${type}`;
+    return `ANALYTICS/${type}`;
 }
 
 export const GET_CAMPAIGN_ANALYTICS_START   = prefix('GET_CAMPAIGN_ANALYTICS_START');
@@ -22,14 +21,5 @@ export function getCampaignAnalytics(campaignId) {
             credentials: 'same-origin',
             endpoint: `/api/analytics/campaigns?ids=${campaignId}`
         }));
-    };
-}
-
-export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
-export function loadPageData(campaignId) {
-    return function thunk(dispatch) {
-        return dispatch(createAction(LOAD_PAGE_DATA)(
-            Promise.resolve(getCampaignAnalytics(campaignId))
-        ));
     };
 }
