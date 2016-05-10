@@ -109,8 +109,11 @@ describe('user actions', function() {
             });
 
             it('should make an api call', function() {
-                expect(dispatch).toHaveBeenCalledWith(callAPI({
-                    endpoint: '/api/account/users/email',
+                expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                    endpoint: formatURL({
+                        pathname: '/api/account/users/email',
+                        query: { target: 'showcase' }
+                    }),
                     method: 'POST',
                     types: [
                         CHANGE_EMAIL_START,
@@ -128,7 +131,7 @@ describe('user actions', function() {
                         email: state.db.user[id].email,
                         password: password
                     }
-                }));
+                })[CALL_API]);
             });
 
             it('should fulfill with the new email', function() {
@@ -200,8 +203,11 @@ describe('user actions', function() {
             });
 
             it('should make an api call', function() {
-                expect(dispatch).toHaveBeenCalledWith(callAPI({
-                    endpoint: '/api/account/users/password',
+                expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                    endpoint: formatURL({
+                        pathname: '/api/account/users/password',
+                        query: { target: 'showcase' }
+                    }),
                     method: 'POST',
                     types: [CHANGE_PASSWORD_START, CHANGE_PASSWORD_SUCCESS, CHANGE_PASSWORD_FAILURE],
                     body: {
@@ -209,7 +215,7 @@ describe('user actions', function() {
                         password: oldPassword,
                         newPassword: newPassword
                     }
-                }));
+                })[CALL_API]);
             });
 
             describe('if the id is for an unknown user', function() {

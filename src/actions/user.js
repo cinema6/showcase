@@ -30,7 +30,10 @@ export function changeEmail({ id, email, password }) {
         }
 
         return dispatch(callAPI({
-            endpoint: '/api/account/users/email',
+            endpoint: formatURL({
+                pathname: '/api/account/users/email',
+                query: { target: 'showcase' }
+            }),
             method: 'POST',
             types: [
                 CHANGE_EMAIL_START,
@@ -66,7 +69,10 @@ export function changePassword({ id, oldPassword, newPassword }) {
         }
 
         return dispatch(callAPI({
-            endpoint: '/api/account/users/password',
+            endpoint: formatURL({
+                pathname: '/api/account/users/password',
+                query: { target: 'showcase' }
+            }),
             method: 'POST',
             types: [CHANGE_PASSWORD_START, CHANGE_PASSWORD_SUCCESS, CHANGE_PASSWORD_FAILURE],
             body: {
