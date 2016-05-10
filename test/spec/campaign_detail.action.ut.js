@@ -14,30 +14,6 @@ describe('campaign-detail-actions',function(){
         dispatch = jasmine.createSpy('dispatch()').and.returnValue(new Promise(() => {}));
     });
     
-    describe('getCampaignAnalytics(campaignId)', function() {
-        let thunk;
-        beforeEach(function(){
-            thunk = lib.getCampaignAnalytics('xyz'); 
-        });
-
-        it('should return a thunk', function() {
-            expect(thunk).toEqual(jasmine.any(Function));
-        });
-
-        it('the thunk should call callAPI', function() {
-            thunk(dispatch);
-            expect(callAPI).toHaveBeenCalledWith({
-                types : [
-                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_START',
-                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_SUCCESS',
-                    'CAMPAIGN_DETAIL/GET_CAMPAIGN_ANALYTICS_FAILURE'
-                ],
-                credentials: 'same-origin',
-                endpoint: '/api/analytics/campaigns?ids=xyz'
-            });
-        });
-    });
-
     describe('loadPageData(campaignId)',function(){
         let thunk;
         beforeEach(function(){

@@ -2,28 +2,15 @@
 
 import { handleActions } from 'redux-actions';
 import {
-    LOAD_PAGE_DATA,
-    GET_CAMPAIGN_ANALYTICS_START,
-    GET_CAMPAIGN_ANALYTICS_SUCCESS,
-    GET_CAMPAIGN_ANALYTICS_FAILURE 
+    LOAD_PAGE_DATA
 } from '../../../../actions/campaign_detail';
 import { assign } from 'lodash';
 
 const INITIAL_STATE = {
-    loading         : true,
-    analyticsError  : null,
-    analytics       : null
+    loading         : true
 };
 
 export default handleActions({
-    [`${GET_CAMPAIGN_ANALYTICS_FAILURE}`]: (state,action) => assign({}, state, {
-        analyticsError: action.payload
-    }),
-
-    [`${GET_CAMPAIGN_ANALYTICS_SUCCESS}`]: (state,action) => assign({}, state, {
-        analytics : action.payload
-    }),
-
     [`${LOAD_PAGE_DATA}_PENDING`]: state => assign({}, state, {
         loading: true
     }),

@@ -18,9 +18,9 @@ class CampaignDetail extends Component {
         let inner, thumbNail, logoUrl;
         const {
             page : { loading },
-            page : { analytics },
-            page : { analyticsError },
             params      : { campaignId },
+            analytics : { results : { [campaignId] : analytics = {} } },
+            analytics : { lastError : analyticsError },
             campaigns   : { [campaignId ] :  campaign = {} }
         } = this.props;
         
@@ -59,16 +59,17 @@ class CampaignDetail extends Component {
 
 CampaignDetail.propTypes = {
     page: PropTypes.shape({
-        loading         : PropTypes.bool.isRequired,
-        analyticsError  : PropTypes.object,
-        analytics       : PropTypes.object
+        loading         : PropTypes.bool.isRequired
     }).isRequired,
+    campaigns  : PropTypes.object.isRequired,
+    analytics  : PropTypes.object.isRequired,
 
     loadPageData: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
     return {
+        analytics :  state.analytics,
         campaigns :  state.db.campaign
     };
 }

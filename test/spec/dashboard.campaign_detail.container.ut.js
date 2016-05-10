@@ -24,6 +24,12 @@ describe('Campaign Detail', function() {
             '../../actions/campaign_detail': campaignDetailActions
         }).default;
         state = {
+            analytics: {
+                results : {
+                    'foo' : {}
+                },
+                lastError : null
+            },
             db : {
                 campaign : {
                     'foo' : {}            
@@ -31,9 +37,7 @@ describe('Campaign Detail', function() {
             },
             page: {
                 'dashboard.campaign_detail': {
-                    loading: true,
-                    analytics: null,
-                    analyticsError : null
+                    loading: true
                 }
             }
         };
