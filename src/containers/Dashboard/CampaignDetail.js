@@ -5,6 +5,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
+import { get, find } from 'lodash';
 import { loadPageData } from '../../actions/campaign_detail';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
 
@@ -14,62 +15,45 @@ class CampaignDetail extends Component {
     }
 
     render() {
-        let code;
+        let inner, thumbNail, logoUrl;
         const {
-            page,
+            page : { loading },
+            page : { analytics },
+            page : { analyticsError },
             params      : { campaignId },
-            campaigns   : { [campaignId] : campaign },
+            campaigns   : { [campaignId ] :  campaign = {} }
         } = this.props;
-
-        var msg = page.analyticsError && page.analyticsError.message;
-       
-        if (page.loading) {
-            code = (
-                <section>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <h4>CampaignDetail</h4>
-                        Loading...
-                </section>
-            );
+        
+        if (loading) {
+            inner = <span> Loading... </span>;
+        }
+        else 
+        if (analyticsError) {
+            inner = <span> { analyticsError.message } </span>;
         }
         else {
-            if (page.analytics === null) {
-                code = (
-                    <section>
-                        <CampaignDetailBar 
-                            campaignId={campaignId} 
-                            title={campaign.name}
-                            views={undefined} 
-                            clicks={undefined} 
-                            installs={undefined}
-                        />
-                    </section>
-                );
-            } else {
-                code= (
-                    <section>
-                        <CampaignDetailBar 
-                            campaignId={campaignId} 
-                            title={campaign.name}
-                            views={page.analytics.summary.views} 
-                            clicks={page.analytics.summary.clicks} 
-                            installs={page.analytics.summary.installs}
-                        />
-                    </section>
-                );
+            if (campaign && campaign.product) {
+                logoUrl = (find(campaign.product.images, (img) => {
+                    return img.type === 'thumbnail'
+                }) || {}).uri;
             }
+            inner = (
+                    <CampaignDetailBar 
+                        campaignId={campaignId} 
+                        title={campaign.name}
+                        logoUrl={logoUrl}
+                        views={get(analytics,'summary.views')} 
+                        clicks={get(analytics,'summary.clicks')} 
+                        installs={get(analytics,'summary.installs')} 
+                    />
+            );
         }
-
-        return code;
+        
+        return (
+            <div className="container main-section campaign-stats">
+                {inner}
+            </div>
+        );
     }
 }
 
