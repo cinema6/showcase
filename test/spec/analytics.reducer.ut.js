@@ -46,7 +46,7 @@ describe('analyticsReducer()', function() {
         describe(`${GET_CAMPAIGN_ANALYTICS_FAILURE}`, function(){
             var err;
             beforeEach(function() {
-                err = new Error('error');;
+                err = new Error('error');
                 action = createAction(`${GET_CAMPAIGN_ANALYTICS_FAILURE}`)(err);
 
                 newState = analyticsReducer(state, action);

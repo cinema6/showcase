@@ -1,4 +1,4 @@
-import { renderIntoDocument, findAllInRenderedTree, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { renderIntoDocument, findAllInRenderedTree } from 'react-addons-test-utils';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -21,8 +21,8 @@ describe('Campaign Detail', function() {
         
         CampaignDetail =
             proxyquire('../../src/containers/Dashboard/CampaignDetail', {
-            '../../actions/campaign_detail': campaignDetailActions
-        }).default;
+                '../../actions/campaign_detail': campaignDetailActions
+            }).default;
         state = {
             analytics: {
                 results : {
