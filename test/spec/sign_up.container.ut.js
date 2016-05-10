@@ -7,8 +7,9 @@ import { createStore } from 'redux';
 import { signUp } from '../../src/actions/user';
 import { Provider } from 'react-redux';
 import defer from 'promise-defer';
-import { cloneDeep as clone } from 'lodash';
+import { cloneDeep as clone, assign } from 'lodash';
 import SignUpForm from '../../src/forms/SignUp';
+import APP_CONFIG from '../../config';
 
 const proxyquire = require('proxyquire');
 
@@ -90,8 +91,26 @@ describe('SignUp', function() {
 
             describe('props', function() {
                 describe('onSubmit', function() {
-                    it('should be signUp()', function() {
-                        expect(form.props.onSubmit).toBe(component.props.signUp);
+                    let values;
+
+                    beforeEach(function() {
+                        values = {
+                            firstName: 'Foo',
+                            lastName: 'bar',
+                            email: 'foo@bar.com',
+                            company: 'this company',
+                            password: 'hey'
+                        };
+
+                        store.dispatch.and.stub();
+
+                        form.props.onSubmit(values);
+                    });
+
+                    it('should call signUp()', function() {
+                        expect(userActions.signUp).toHaveBeenCalledWith(assign({}, values, {
+                            paymentPlanId: APP_CONFIG.paymentPlans[0].id
+                        }));
                     });
                 });
             });
