@@ -12,9 +12,10 @@ import { assign, clone, keyBy, omit } from 'lodash';
 import { createAction } from 'redux-actions';
 import { CALL_API } from 'redux-api-middleware';
 import defer from 'promise-defer';
+import { format as formatURL } from 'url';
 
 describe('utils/db', function() {
-    describe('createDbActions({ type, endpoint })', function() {
+    describe('createDbActions({ type, endpoint, queries })', function() {
         let type, endpoint;
         let actions;
 
@@ -32,6 +33,79 @@ describe('utils/db', function() {
                 create: jasmine.any(Function),
                 update: jasmine.any(Function),
                 remove: jasmine.any(Function)
+            });
+        });
+
+        describe('if queries are provided', function() {
+            let queries, id;
+
+            function getCall(action) {
+                if (typeof action === 'function') {
+                    let result;
+                    let dispatch = data => {
+                        result = data;
+                        return new Promise(() => {});
+                    };
+                    let getState = () => ({
+                        db: {
+                            [type]: {
+                                [id]: {}
+                            }
+                        }
+                    });
+
+                    action(dispatch, getState);
+                    return result[CALL_API];
+                }
+
+                return action[CALL_API];
+            }
+
+            beforeEach(function() {
+                queries = {
+                    list: {
+                        a: 'list-param'
+                    },
+                    get: {
+                        b: 'get-param'
+                    },
+                    create: {
+                        c: 'create-param'
+                    },
+                    update: {
+                        d: 'update-param'
+                    },
+                    remove: {
+                        e: 'remove-param'
+                    }
+                };
+
+                id = `cam-${createUuid()}`;
+
+                actions = createDbActions({ type, endpoint, queries });
+            });
+
+            it('should add the queries to each of the actions', function() {
+                expect(getCall(actions.list()).endpoint).toEqual(formatURL({
+                    pathname: endpoint,
+                    query: queries.list
+                }));
+                expect(getCall(actions.get({ id })).endpoint).toEqual(formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.get
+                }));
+                expect(getCall(actions.create({ data: {} })).endpoint).toEqual(formatURL({
+                    pathname: endpoint,
+                    query: queries.create
+                }));
+                expect(getCall(actions.update({ data: { id } })).endpoint).toEqual(formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.update
+                }));
+                expect(getCall(actions.remove({ id })).endpoint).toEqual(formatURL({
+                    pathname: `${endpoint}/${id}`,
+                    query: queries.remove
+                }));
             });
         });
 

@@ -2,9 +2,8 @@ import { handleActions } from 'redux-actions';
 import { assign, defaults } from 'lodash';
 import {
     PRODUCT_SELECTED,
-    PRODUCT_EDITED,
-    TARGETING_EDITED,
-    GO_TO_STEP
+    GO_TO_STEP,
+    WIZARD_COMPLETE
 } from '../../../../actions/product_wizard';
 import * as TARGETING from '../../../../enums/targeting';
 
@@ -28,13 +27,10 @@ export default handleActions({
         step: 1,
         productData
     }),
-    [PRODUCT_EDITED]: (state, { payload: productData }) => assign({}, state, {
-        step: 2,
-        productData: assign({}, state.productData, productData)
-    }),
-    [TARGETING_EDITED]: (state, { payload: targeting }) => assign({}, state, {
-        step: 3,
-        targeting: assign({}, state.targeting, defaults({}, targeting, DEFAULT_TARGETING))
-    }),
-    [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step })
+    [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
+    [WIZARD_COMPLETE]: (state, { payload: { productData, targeting } }) => assign({}, state, {
+        productData: assign({}, state.productData, productData),
+        targeting: defaults({}, targeting, DEFAULT_TARGETING),
+        step: 3
+    })
 }, INITIAL_STATE);

@@ -6,14 +6,14 @@ import React, { Component, PropTypes } from 'react';
 class EditProduct extends Component {
     render() {
         const {
-            fields: { title, description },
+            fields: { name, description },
             handleSubmit
         } = this.props;
 
         return (<form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="adTitle-input">Title</label>
-                <input {...title} type="text" id="adTitle-input" className="form-control" />
+                <input {...name} type="text" id="adTitle-input" className="form-control" />
             </div>
             <div className="form-group">
                 <label htmlFor="adDesc-textarea">Description</label>
@@ -26,7 +26,7 @@ class EditProduct extends Component {
 
 EditProduct.propTypes = {
     fields: PropTypes.shape({
-        title: PropTypes.object.isRequired,
+        name: PropTypes.object.isRequired,
         description: PropTypes.object.isRequired
     }).isRequired,
 
@@ -35,6 +35,6 @@ EditProduct.propTypes = {
 
 export default reduxForm({
     form: 'productWizard',
-    fields: ['title', 'description'],
+    fields: ['name', 'description'],
     destroyOnUnmount: false
 })(EditProduct);

@@ -3,8 +3,7 @@ import { assign } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
     PRODUCT_SELECTED,
-    PRODUCT_EDITED,
-    TARGETING_EDITED,
+    WIZARD_COMPLETE,
     GO_TO_STEP
 } from '../../src/actions/product_wizard';
 import { createUuid } from 'rc-uuid';
@@ -86,73 +85,6 @@ describe('dashboardAddProductReducer()', function() {
             });
         });
 
-        describe(PRODUCT_EDITED, function() {
-            let data;
-
-            beforeEach(function() {
-                state.productData = {
-                    extID: createUuid(),
-                    name: 'foo',
-                    description: 'bar'
-                };
-
-                data = { name: 'A Good Name', description: 'A Good Description' };
-
-                action = createAction(PRODUCT_EDITED)(data);
-                newState = dashboardAddProductReducer(state, action);
-            });
-
-            it('should update the product and move to step 2', function() {
-                expect(newState).toEqual(assign({}, state, {
-                    step: 2,
-                    productData: assign({}, state.productData, data)
-                }));
-            });
-        });
-
-        describe(TARGETING_EDITED, function() {
-            let data;
-
-            beforeEach(function() {
-                data = {
-                    age: TARGETING.AGE.ZERO_TO_TWELVE,
-                    gender: TARGETING.GENDER.FEMALE
-                };
-
-                action = createAction(TARGETING_EDITED)(data);
-                newState = dashboardAddProductReducer(state, action);
-            });
-
-            it('should update the targeting and move to step 3', function() {
-                expect(newState).toEqual(assign({}, state, {
-                    step: 3,
-                    targeting: assign({}, state.targeting, data)
-                }));
-            });
-
-            describe('if no targeting was selected', function() {
-                beforeEach(function() {
-                    data = {
-                        age: undefined,
-                        gender: undefined
-                    };
-
-                    action = createAction(TARGETING_EDITED)(data);
-                    newState = dashboardAddProductReducer(state, action);
-                });
-
-                it('should update the targeting with defaults and move to step 3', function() {
-                    expect(newState).toEqual(assign({}, state, {
-                        step: 3,
-                        targeting: {
-                            age: TARGETING.AGE.ALL,
-                            gender: TARGETING.GENDER.ALL
-                        }
-                    }));
-                });
-            });
-        });
-
         describe(GO_TO_STEP, function() {
             let step;
 
@@ -167,6 +99,57 @@ describe('dashboardAddProductReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     step
                 }));
+            });
+        });
+
+        describe(WIZARD_COMPLETE, function() {
+            let productData, targeting;
+
+            beforeEach(function() {
+                productData = {
+                    name: 'The name of my app',
+                    description: 'A description of my app'
+                };
+                targeting = {
+                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    gender: TARGETING.GENDER.FEMALE
+                };
+
+                state.productData = {
+                    name: 'Default name',
+                    description: 'default description',
+                    categories: ['Games', 'Action'],
+                    images: []
+                };
+
+                action = createAction(WIZARD_COMPLETE)({ productData, targeting });
+                newState = dashboardAddProductReducer(state, action);
+            });
+
+            it('should update the productData and targeting and move to step 3', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    productData: assign({}, state.productData, productData),
+                    targeting,
+                    step: 3
+                }));
+            });
+
+            describe('if the targeting options are not defined', function() {
+                beforeEach(function() {
+                    targeting.age = undefined;
+                    targeting.gender = undefined;
+
+                    newState = dashboardAddProductReducer(state, action);
+                });
+
+                it('should use targeting defaults', function() {
+                    expect(newState).toEqual(jasmine.objectContaining({
+                        targeting: {
+                            age: TARGETING.AGE.ALL,
+                            gender: TARGETING.GENDER.ALL
+                        }
+                    }));
+                });
             });
         });
     });

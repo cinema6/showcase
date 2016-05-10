@@ -35,12 +35,8 @@
     },
     "targeting": {
         "demographics": {
-            "age": [
-                ""
-            ],
-            "gender": [
-                ""
-            ]
+            "age": [],
+            "gender": []
         },
         "appStoreCategory": [
             "Entertainment",
@@ -50,5 +46,6 @@
     "created": "2016-05-09T14:15:40.705Z",
     "user": "u-35b096c999711b",
     "org": "o-e4e8b0f244bafc",
-    "lastUpdated": "2016-05-09T14:15:40.705Z"
+    "lastUpdated": "2016-05-09T22:22:42.055Z",
+    "id": "c-0Ek3KG05D_uphth9"
 }
