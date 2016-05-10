@@ -1,6 +1,7 @@
 'use strict';
 
 import { callAPI } from './api';
+import { format as formatURL } from 'url';
 
 function authType(type) {
     return `AUTH/${type}`;
@@ -30,7 +31,10 @@ export const LOGIN_SUCCESS = authType('LOGIN_SUCCESS');
 export const LOGIN_FAILURE = authType('LOGIN_FAILURE');
 export function loginUser({ email, password }) {
     return callAPI({
-        endpoint: '/api/auth/login',
+        endpoint: formatURL({
+            pathname: '/api/auth/login',
+            query: { target: 'showcase' }
+        }),
         method: 'POST',
         types: [LOGIN_START, LOGIN_SUCCESS, LOGIN_FAILURE],
         body: { email, password }
@@ -53,7 +57,10 @@ export const FORGOT_PASSWORD_SUCCESS = authType('FORGOT_PASSWORD_SUCCESS');
 export const FORGOT_PASSWORD_FAILURE = authType('FORGOT_PASSWORD_FAILURE');
 export function forgotPassword({ email }) {
     return callAPI({
-        endpoint: '/api/auth/password/forgot',
+        endpoint: formatURL({
+            pathname: '/api/auth/password/forgot',
+            query: { target: 'showcase' }
+        }),
         method: 'POST',
         types: [FORGOT_PASSWORD_START, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE],
         body: { email, target: 'bob' }
@@ -65,7 +72,10 @@ export const RESET_PASSWORD_SUCCESS = authType('RESET_PASSWORD_SUCCESS');
 export const RESET_PASSWORD_FAILURE = authType('RESET_PASSWORD_FAILURE');
 export function resetPassword({ id, token, newPassword }) {
     return callAPI({
-        endpoint: '/api/auth/password/reset',
+        endpoint: formatURL({
+            pathname: '/api/auth/password/reset',
+            query: { target: 'showcase' }
+        }),
         method: 'POST',
         types: [RESET_PASSWORD_START, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE],
         body: { id, token, newPassword }

@@ -29,7 +29,9 @@ import {
 import {
     callAPI
 } from '../../src/actions/api';
+import { CALL_API } from 'redux-api-middleware';
 import { createUuid } from 'rc-uuid';
+import { format as formatURL } from 'url';
 
 describe('actions: auth', function() {
     describe('checkAuthStatus()', function() {
@@ -111,12 +113,15 @@ describe('actions: auth', function() {
         });
 
         it('should return an RSAA', function() {
-            expect(result).toEqual(callAPI({
-                endpoint: '/api/auth/login',
+            expect(result[CALL_API]).toEqual(callAPI({
+                endpoint: formatURL({
+                    pathname: '/api/auth/login',
+                    query: { target: 'showcase' }
+                }),
                 method: 'POST',
                 types: [LOGIN_START, LOGIN_SUCCESS, LOGIN_FAILURE],
                 body: { email, password }
-            }));
+            })[CALL_API]);
         });
     });
 
@@ -147,12 +152,15 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result).toEqual(callAPI({
-                endpoint: '/api/auth/password/forgot',
+            expect(result[CALL_API]).toEqual(callAPI({
+                endpoint: formatURL({
+                    pathname: '/api/auth/password/forgot',
+                    query: { target: 'showcase' }
+                }),
                 method: 'POST',
                 types: [FORGOT_PASSWORD_START, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE],
                 body: { email, target: 'bob' }
-            }));
+            })[CALL_API]);
         });
     });
 
@@ -169,12 +177,15 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result).toEqual(callAPI({
-                endpoint: '/api/auth/password/reset',
+            expect(result[CALL_API]).toEqual(callAPI({
+                endpoint: formatURL({
+                    pathname: '/api/auth/password/reset',
+                    query: { target: 'showcase' }
+                }),
                 method: 'POST',
                 types: [RESET_PASSWORD_START, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE],
                 body: { id, token, newPassword }
-            }));
+            })[CALL_API]);
         });
     });
 });
