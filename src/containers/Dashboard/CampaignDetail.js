@@ -8,6 +8,7 @@ import { pageify } from '../../utils/page';
 import { get, find } from 'lodash';
 import { loadPageData } from '../../actions/campaign_detail';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
+import CampaignDetailChartIntraday from '../../components/CampaignDetailChartIntraday';
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -52,6 +53,7 @@ class CampaignDetail extends Component {
         return (
             <div className="container main-section campaign-stats">
                 {inner}
+                <CampaignDetailChartIntraday data={analytics || {}} />
             </div>
         );
     }
