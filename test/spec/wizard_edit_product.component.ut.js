@@ -57,7 +57,7 @@ describe('WizardEditProduct', function() {
 
             it('should be passed some initialValues', function() {
                 expect(form.props.initialValues).toEqual({
-                    title: props.productData.name,
+                    name: props.productData.name,
                     description: props.productData.description
                 });
             });
@@ -67,7 +67,7 @@ describe('WizardEditProduct', function() {
 
                 beforeEach(function() {
                     values = {
-                        title: 'My Modified Title',
+                        name: 'My Modified Title',
                         description: 'My modified description. Yay!'
                     };
 

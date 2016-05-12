@@ -8,7 +8,8 @@ describe('dbReducer()', function() {
         expect(dbReducer(undefined, 'INIT')).toEqual(createDbReducer({
             user: userReducer,
             payment: identity,
-            paymentMethod: identity
+            paymentMethod: identity,
+            campaign: identity
         })(undefined, 'INIT'));
     });
 });

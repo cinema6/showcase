@@ -1,7 +1,4 @@
 import {
-    loginUser
-} from '../../src/actions/login';
-import {
     LOGIN_START,
     LOGIN_SUCCESS,
     LOGIN_FAILURE
@@ -10,11 +7,35 @@ import defer from 'promise-defer';
 import {
     loginUser as authLoginUser
 } from '../../src/actions/auth';
+import {
+    getCampaigns
+} from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { replace } from 'react-router-redux';
 
+const proxyquire = require('proxyquire');
+
 describe('actions: auth', function() {
+    let authActions, sessionActions;
+    let actions;
+    let loginUser;
+
+    beforeEach(function() {
+        authActions = {
+            loginUser: jasmine.createSpy('authLoginUser()').and.callFake(authLoginUser)
+        };
+        sessionActions = {
+            getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns)
+        };
+
+        actions = proxyquire('../../src/actions/login', {
+            './auth': authActions,
+            './session': sessionActions
+        });
+        loginUser = actions.loginUser;
+    });
+
     describe('loginUser({ email, password, redirect })', function() {
         let email, password, redirect;
         let thunk;
@@ -42,7 +63,8 @@ describe('actions: auth', function() {
             });
 
             it('should login the user', function() {
-                expect(dispatch).toHaveBeenCalledWith(authLoginUser({ email, password }));
+                expect(authActions.loginUser).toHaveBeenCalledWith({ email, password });
+                expect(dispatch).toHaveBeenCalledWith(authActions.loginUser.calls.mostRecent().returnValue);
             });
 
             it('should dispatch a LOGIN_START action', function() {
@@ -59,18 +81,33 @@ describe('actions: auth', function() {
                         };
 
                         dispatch.calls.reset();
-                        dispatch.and.returnValue(Promise.resolve(undefined));
-
                         dispatchDeferred.resolve(data);
                         setTimeout(done);
+
+                        dispatch.and.returnValue((dispatchDeferred = defer()).promise);
                     });
 
-                    it('should dispatch LOGIN_SUCCESS', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(LOGIN_SUCCESS)(data));
+                    it('should get the campaigns', function() {
+                        expect(sessionActions.getCampaigns).toHaveBeenCalledWith();
+                        expect(dispatch).toHaveBeenCalledWith(sessionActions.getCampaigns.calls.mostRecent().returnValue);
                     });
 
-                    it('should dispatch a transition to the redirect', function() {
-                        expect(dispatch).toHaveBeenCalledWith(replace(redirect));
+                    describe('when the campaigns are fetched', function() {
+                        beforeEach(function(done) {
+                            dispatchDeferred.resolve([]);
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
+                            dispatch.and.callFake(action => Promise.resolve(action.payload));
+                        });
+
+                        it('should dispatch LOGIN_SUCCESS', function() {
+                            expect(dispatch).toHaveBeenCalledWith(createAction(LOGIN_SUCCESS)(data));
+                        });
+
+                        it('should dispatch a transition to the redirect', function() {
+                            expect(dispatch).toHaveBeenCalledWith(replace(redirect));
+                        });
                     });
                 });
 

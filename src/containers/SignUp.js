@@ -7,19 +7,29 @@ import { pageify } from '../utils/page';
 import SignUpForm from '../forms/SignUp';
 import { signUp } from '../actions/user';
 import { Link } from 'react-router';
+import APP_CONFIG from '../../config';
+import { assign } from 'lodash';
 
 class SignUp extends Component {
-    render() {
-        const {
-            signUp
-        } = this.props;
+    constructor() {
+        super(...arguments);
 
+        this.signUp = this.signUp.bind(this);
+    }
+
+    signUp(formValues) {
+        return this.props.signUp(assign({}, formValues, {
+            paymentPlanId: APP_CONFIG.paymentPlans[0].id
+        }));
+    }
+
+    render() {
         return (<div className="container main-section">
             <div className="row">
                 <div className="login-form col-md-4 col-md-offset-4 col-xs-12
                     animated fadeIn card-item">
                     <h1 className="text-center">Signup</h1>
-                    <SignUpForm onSubmit={signUp} />
+                    <SignUpForm onSubmit={this.signUp} />
                     <br />
                     <div className="text-center">Existing User? <Link to="/login">Login</Link></div>
                 </div>

@@ -12,6 +12,7 @@ import resetPasswordReducer from '../../src/reducers/page/reset_password';
 import dashboardBillingReducer from '../../src/reducers/page/dashboard/billing';
 import dashboardAddProductReducer from '../../src/reducers/page/dashboard/add_product';
 import resendConfirmationReducer from '../../src/reducers/page/resend_confirmation';
+import dashboardEditProductReducer from '../../src/reducers/page/dashboard/edit_product';
 
 describe('pageReducer()', function() {
     let exampleReducer;
@@ -38,7 +39,8 @@ describe('pageReducer()', function() {
 
             'dashboard.billing': dashboardBillingReducer,
 
-            'dashboard.add_product': dashboardAddProductReducer
+            'dashboard.add_product': dashboardAddProductReducer,
+            'dashboard.edit_product': dashboardEditProductReducer
         };
         exampleReducer = createPageReducer(pageMap);
 

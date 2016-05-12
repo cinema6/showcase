@@ -5,15 +5,17 @@ import { connect } from 'react-redux';
 import { findApps } from '../../actions/search';
 import {
     productSelected,
-    productEdited,
-    targetingEdited,
     goToStep,
-    wizardDestroyed
+    wizardDestroyed,
+    createCampaign
 } from '../../actions/product_wizard';
+import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
+import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import classnames from 'classnames';
+import { pick, includes } from 'lodash';
 
 class ProductWizard extends Component {
     constructor() {
@@ -22,16 +24,8 @@ class ProductWizard extends Component {
         this.loadProduct = this.loadProduct.bind(this);
     }
 
-    goToStep(step, event) {
-        const {
-            goToStep
-        } = this.props;
-
-        event.preventDefault();
-
-        if (event.currentTarget.getAttribute('data-disabled') !== 'true') {
-            return goToStep(step);
-        }
+    componentWillMount() {
+        return this.props.loadData();
     }
 
     loadProduct(product) {
@@ -39,9 +33,7 @@ class ProductWizard extends Component {
             productSelected,
             goToStep,
 
-            page: {
-                productData
-            }
+            productData
         } = this.props;
 
         if (product.uri === (productData && productData.uri)) {
@@ -58,66 +50,70 @@ class ProductWizard extends Component {
     render() {
         const {
             findApps,
-            productEdited,
-            targetingEdited,
+            getClientToken,
+            goToStep,
+            createCampaign,
 
-            page: { step, productData, targeting }
+            onFinish,
+
+            steps,
+            productData,
+            targeting,
+
+            page: { step }
         } = this.props;
 
         return (<div className="container main-section">
             <div className="row">
                 <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
                     <ul className="nav nav-pills nav-justified">
-                        <li className={classnames('progressbar-step-1', {
+                        {includes(steps, 0) && (<li className={classnames('progressbar-step-1', {
                             active: step >= 0
                         })}>
-                            <a href="#" onClick={event => this.goToStep(0, event)}>
+                            <button onClick={() => goToStep(0)}>
                                 <h3>
                                     <i className="fa fa-search" />
                                     <span className="sr-only">Search</span>
                                 </h3>
                                 Search
-                            </a>
-                        </li>
-                        <li className={classnames('progressbar-step-2', {
+                            </button>
+                        </li>)}
+                        {includes(steps, 1) && (<li className={classnames('progressbar-step-2', {
                             active: step >= 1
                         })}>
-                            <a href="#"
-                                data-disabled={!productData}
-                                onClick={event => this.goToStep(1, event)}>
+                            <button disabled={step < 2}
+                                onClick={() => goToStep(1)}>
                                 <h3>
                                     <i className="fa fa-pencil-square-o" />
                                     <span className="sr-only">Create</span>
                                 </h3>
                                 Create
-                            </a>
-                        </li>
-                        <li className={classnames('progressbar-step-3', {
+                            </button>
+                        </li>)}
+                        {includes(steps, 2) && (<li className={classnames('progressbar-step-3', {
                             active: step >= 2
                         })}>
-                            <a href="#"
-                                data-disabled={!productData}
-                                onClick={event => this.goToStep(2, event)}>
+                            <button disabled={step < 3}
+                                onClick={() => goToStep(2)}>
                                 <h3>
                                     <i className="fa fa-bullseye" />
                                     <span className="sr-only">Target</span>
                                 </h3>
                                 Target
-                            </a>
-                        </li>
-                        <li className={classnames('progressbar-step-4', {
+                            </button>
+                        </li>)}
+                        {includes(steps, 3) && (<li className={classnames('progressbar-step-4', {
                             active: step >= 3
                         })}>
-                            <a href="#"
-                                data-disabled={!productData}
-                                onClick={event => this.goToStep(3, event)}>
+                            <button disabled={step < 4}
+                                onClick={() => goToStep(3)}>
                                 <h3>
                                     <i className="fa fa-paper-plane-o" />
                                     <span className="sr-only">Promote</span>
                                 </h3>
                                 Promote
-                            </a>
-                        </li>
+                            </button>
+                        </li>)}
                     </ul>
                 </div>
             </div>
@@ -137,15 +133,22 @@ class ProductWizard extends Component {
                             onProductSelected={this.loadProduct}/>;
                     case 1:
                         return <WizardEditProduct productData={productData}
-                            onFinish={({ title, description }) => productEdited({
-                                data: { name: title, description }
-                            })} />;
+                            onFinish={() => goToStep(2)} />;
                     case 2:
+                    case 3:
                         return <WizardEditTargeting targeting={targeting}
-                            onFinish={targeting => targetingEdited({ data: targeting })} />;
+                            onFinish={values => onFinish({
+                                targeting: pick(values, ['age', 'gender']),
+                                productData: pick(values, ['name', 'description'])
+                            })} />;
                     }
                 })()}
             </div>
+            {step === 3 && (
+                <WizardConfirmationModal getToken={getClientToken}
+                    handleClose={() => goToStep(2)}
+                    onSubmit={payment => createCampaign({ payment, productData, targeting })} />
+            )}
         </div>);
     }
 }
@@ -153,18 +156,27 @@ class ProductWizard extends Component {
 ProductWizard.propTypes = {
     findApps: PropTypes.func.isRequired,
     productSelected: PropTypes.func.isRequired,
-    productEdited: PropTypes.func.isRequired,
-    targetingEdited: PropTypes.func.isRequired,
     goToStep: PropTypes.func.isRequired,
     wizardDestroyed: PropTypes.func.isRequired,
+    getClientToken: PropTypes.func.isRequired,
+    createCampaign: PropTypes.func.isRequired,
 
     page: PropTypes.shape({
-        step: PropTypes.number.isRequired,
-        productData: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired
-        })
-    }).isRequired
+        step: PropTypes.number.isRequired
+    }).isRequired,
+
+    loadData: PropTypes.func.isRequired,
+    onFinish: PropTypes.func.isRequired,
+
+    steps: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+    productData: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired
+    }),
+    targeting: PropTypes.shape({
+        gender: PropTypes.string,
+        age: PropTypes.string
+    })
 };
 
 function mapStateToProps() {
@@ -174,8 +186,8 @@ function mapStateToProps() {
 export default connect(mapStateToProps, {
     findApps,
     productSelected,
-    productEdited,
-    targetingEdited,
     goToStep,
-    wizardDestroyed
+    wizardDestroyed,
+    getClientToken,
+    createCampaign
 })(ProductWizard);

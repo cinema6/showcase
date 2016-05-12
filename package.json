@@ -76,6 +76,7 @@
     "flux-standard-action": "^0.6.1",
     "lodash": "^4.11.1",
     "moment": "^2.13.0",
+    "numeral": "^1.5.3",
     "rc-uuid": "^2.0.1",
     "react": "^15.0.1",
     "react-bootstrap": "^0.29.3",
