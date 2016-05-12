@@ -1,13 +1,72 @@
 {            
     "campaignId" : "c-0Ek3KG05D_uphth9",
     "summary" : {
-        "impressions" : 8409,
+        "users"       : 4595,
         "views"       : 6461,
-        "clicks"      : 1300
+        "clicks"      : 1300,
+        "installs"    : 60
     },
-    "today" : {
-        "impressions" : 8409,
-        "views"       : 6461,
-        "clicks"      : 1300
-    }
+    "monthly" : [
+        {
+            "month"       : "2016-03",
+            "views"       : 250,
+            "users"       : 200,
+            "clicks"      : 13,
+            "installs"    : 0
+        },
+        {
+            "month"       : "2016-04",
+            "views"       : 125,
+            "users"       : 175,
+            "clicks"      : 3,
+            "installs"    : 0
+        },
+        {
+            "month"       : "2016-05",
+            "views"       : 433,
+            "users"       : 395,
+            "clicks"      : 50,
+            "installs"    : 5
+        }
+    ],
+    "daily" : [
+        {
+            "date"        : "2016-05-10",
+            "views"       : 250,
+            "users"       : 200,
+            "clicks"      : 13
+        },
+        {
+            "date"        : "2016-05-11",
+            "views"       : 125,
+            "users"       : 175,
+            "clicks"      : 3
+        },
+        {
+            "date"        : "2016-05-12",
+            "views"       : 433,
+            "users"       : 395,
+            "clicks"      : 50
+        }
+    ],
+    "hourly" : [
+        {
+            "hour"        : "2016-05-12T04:00:00.000Z",
+            "views"       : 250,
+            "users"       : 200,
+            "clicks"      : 13
+        },
+        {
+            "hour"        : "2016-05-12T05:00:00.000Z",
+            "views"       : 125,
+            "users"       : 175,
+            "clicks"      : 3
+        },
+        {
+            "hour"        : "2016-05-12T06:00:00.000Z",
+            "views"       : 433,
+            "users"       : 395,
+            "clicks"      : 50
+        }
+    ]
 }

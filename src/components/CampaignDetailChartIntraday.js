@@ -1,92 +1,49 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import ChartistGraph from 'react-chartist';
+import numeral from 'numeral';
+
+function prefix(type) {
+    return `CAMPAIGN_DETAIL_${type}`;
+}
+
+export const CHART_TODAY = prefix('CHART_TODAY');
+export const CHART_7DAY  = prefix('CHART_7DAY');
+export const CHART_30DAY = prefix('CHART_30DAY');
+
+export const SERIES_USERS   = prefix('SERIES_USERS');
+export const SERIES_VIEWS   = prefix('SERIES_VIEWS');
+export const SERIES_CLICKS  = prefix('SERIES_CLICKS');
+export const SERIES_INSTALLS = prefix('SERIES_INSTALLS');
 
 export default class CampaignDetailChartIntraday extends Component {
     render() {
-        const {
-            data
-        } = this.props;
+        //const {
+        //    data,
+        //    chart,
+        //    series
+        //} = this.props;
+       
+        let format = (n) => numeral(n).format('0,0');
 
         let chartData= {
-            labels: [
-              '4/12',
-              '4/13',
-              '4/14',
-              '4/15',
-              '4/16',
-              '4/17',
-              '4/18',
-              '4/19',
-              '4/20',
-              '4/21',
-              '4/22',
-              '4/23',
-              '4/24',
-              '4/25',
-              '4/26',
-              '4/27',
-              '4/28',
-              '4/29',
-              '4/30',
-              '5/1',
-              '5/2',
-              '5/3',
-              '5/4',
-              '5/5',
-              '5/6',
-              '5/7',
-              '5/8',
-              '5/9',
-              '5/10',
-              '5/11'
-            ],
-            series: [[
-                3457,
-                3196,
-                3490,
-                3246,
-                2000, //3500,
-                2000, //3570,
-                3208,
-                3612,
-                3478,
-                3409,
-                3471,
-                2000, //3441,
-                3472,
-                3274,
-                3214,
-                2553,
-                2749,
-                3226,
-                3529,
-                2883
-//                2943,
-//                2980,
-//                3275,
-//                3081,
-//                3173,
-//                3203,
-//                3182,
-//                3214,
-//                3159,
-//                1609
-            ]]
+            labels: [],
+            series: [[ ]]
         };
 
         let options = {
             axisX: {
 //                showGrid: false
             },
+            axisY : {
+                labelInterpolationFnc: function(value) {
+                    return format(value);
+                }
+            },
             lineSmooth: false,
             showArea: true,
-            classNames: {
-                bar : 'cust-bar',
-                label : 'cust-label'
-            }
+            showPoint : false
         };
 
         let responsiveOptions = [
@@ -99,11 +56,6 @@ export default class CampaignDetailChartIntraday extends Component {
                         }
                         return '';
                     }
-                },
-                showPoint : false,
-                classNames: {
-                    bar : 'cust-bar-extra-small',
-                    label : 'cust-label-small'
                 }
             }],
             ['screen and (min-width: 701px) and (max-width: 1285px)',{
@@ -115,40 +67,14 @@ export default class CampaignDetailChartIntraday extends Component {
                         }
                         return '';
                     }
-                },
-                showPoint : false,
-                classNames: {
-                    bar : 'cust-bar-small',
-                    label : 'cust-label-small'
                 }
-            }],
-            ['screen and (min-width: 1286px)',{
-                axisX: {
-                    showGrid: true
-                },
-                classNames: {
-                    bar : 'cust-bar',
-                    label : 'cust-label'
-                }
-
             }]
         ];
 
-        let listeners = {
-            'draw' : function(data){
-//                console.log('draw some data:',data);
-                //if (data.type === 'bar'){
-                //    data.element.attr({
-                //        style : 'stroke-width: 30px; stroke: #6FE071'
-                //    });
-                //}
-            }
-        };
-    
         return (
             <div>
                 <ChartistGraph className={'ct-octave'} 
-                    data={chartData} options={options} type={'Line'} listener={listeners} 
+                    data={chartData} options={options} type={'Line'}  
                     responsiveOptions={responsiveOptions} 
                     />
             </div>
@@ -158,6 +84,7 @@ export default class CampaignDetailChartIntraday extends Component {
 
 
 CampaignDetailChartIntraday.propTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    chart: PropTypes.string.isRequired,
+    series: PropTypes.string.isRequired
 };
-

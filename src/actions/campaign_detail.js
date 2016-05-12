@@ -8,6 +8,11 @@ function prefix(type) {
     return `CAMPAIGN_DETAIL/${type}`;
 }
 
+export const UPDATE_CHART_SELECTION = prefix('UPDATE_CHART_SELECTION');
+export function updateChartSelection(activeChart,activeSeries){
+    return createAction(UPDATE_CHART_SELECTION)( { activeChart, activeSeries });
+}
+
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export function loadPageData(campaignId) {
     return function thunk(dispatch) {
