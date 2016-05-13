@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import ChartistGraph from 'react-chartist';
 import numeral from 'numeral';
+import moment from 'moment';
 
 function prefix(type) {
     return `CAMPAIGN_DETAIL_${type}`;
@@ -17,6 +18,21 @@ export const SERIES_VIEWS   = prefix('SERIES_VIEWS');
 export const SERIES_CLICKS  = prefix('SERIES_CLICKS');
 export const SERIES_INSTALLS = prefix('SERIES_INSTALLS');
 
+
+const format = (n) => numeral(n).format('0,0');
+
+// Temporary hack to work-around a bug in the Chartist and react-chartist
+// https://github.com/fraserxu/react-chartist/issues/38
+class ChartistGraphExt extends ChartistGraph {
+    updateChart(config) {
+        if (this.chartist) {
+            this.chartist.responsiveOptions = config.responsiveOptions || [];
+        }
+        return super.updateChart(config);
+    }
+
+}
+
 export class ChartistParameters {
     constructor( { type, data, series, options, responsiveOptions, 
         labelFormatter } ) {
@@ -28,9 +44,8 @@ export class ChartistParameters {
             throw new Error('ChartistParameters requires labelFormatter function.');
         }
 
-        const format = (n) => numeral(n).format('0,0');
         let defaultOptions = {
-            axisX   : { showGrid: false },
+            axisX   : { showGrid: false  },
             axisY   : { labelInterpolationFnc: (value) => format(value) },
             lineSmooth  : false,
             showArea    : true,
@@ -80,52 +95,85 @@ export class ChartistParameters {
 export class TodayChartParameters extends ChartistParameters {
     constructor({series, data}) {
 
-        let labelFormatter = (datum) => { 
-            var d = new Date(datum.hour).getHours();
-            if (d === 0) {
-                return 'Midnight';
-            }
-            if (d < 12) {
-                return d + 'am';
-            }
-            return  + 'pm';
-        };
+        let labelFormatter = (datum) => moment(datum.hour).utc().format('ha');
         super( { labelFormatter, series, data : data.today  } );
     }
 }
 
 export class Daily7ChartParameters extends ChartistParameters {
     constructor({series, data}) {
-
-        let labelFormatter = (datum) => { 
-            return datum.date.substr(5,5);
+        let labelFormatter = (datum) => moment(datum.date).format('dddd M/D');
+        
+        let options = {
+            axisX   : { showGrid: false, labelOffset: { x: -30}  },
+            axisY   : { labelInterpolationFnc: (value) => format(value) },
+            lineSmooth  : false,
+            showArea    : true,
+            showPoint   : false,
+            fullWidth: true
         };
-        super( { labelFormatter, series, data : data.daily_7  } );
+
+        let responsiveOptions = [
+            ['screen and (max-width: 700px)',{
+                axisX: {
+                    labelOffset: { x: 0} ,
+                    labelInterpolationFnc: (value) =>  value.split(' ')[0].substr(0,2)
+                }
+            }],
+            ['screen and (min-width: 701px) and (max-width: 1285px)',{
+                axisX: {
+                    labelOffset: { x: -18} ,
+                    labelInterpolationFnc: (value) =>  value.split(' ')[0]
+                }
+            }]
+        ];
+        super( { labelFormatter, series, options, responsiveOptions, data : data.daily_7 } );
     }
+}
+
+export class Daily30ChartParameters extends ChartistParameters {
+    constructor({series, data}) {
+        let labelFormatter = (datum) => moment(datum.date).format('M/D');
+        super( { labelFormatter, series, data : data.daily_30  } );
+    }
+}
+
+export function createChartParameters({ chart, series, data }) {
+
+    var ctor;
+
+    if (chart === CHART_TODAY) {
+        ctor = TodayChartParameters;
+    }
+    else
+    if (chart === CHART_7DAY) { 
+        ctor = Daily7ChartParameters;
+    }
+    else
+    if (chart === CHART_30DAY) { 
+        ctor = Daily30ChartParameters;
+    }
+    else {
+        throw new Error('Unrecognized Chart Type: ' + chart);
+    }
+
+    return new ctor({series, data });
+
 }
 
 export default class CampaignDetailChartIntraday extends Component {
     render() {
-        //const {
-        //    data,
-        //    chart,
-        //    series
-        //} = this.props;
-       
-        let chartData= {
-            labels: [],
-            series: [[ ]]
-        };
-
-        let options;
-        let responsiveOptions;
+        let params = createChartParameters(this.props);
 
         return (
             <div>
-                <ChartistGraph className={'ct-octave'} 
-                    data={chartData} options={options} type={'Line'}  
-                    responsiveOptions={responsiveOptions} 
-                    />
+                <ChartistGraphExt
+                    className={'ct-octave'} 
+                    data={params.data} 
+                    options={params.options} 
+                    type={params.type}  
+                    responsiveOptions={params.responsiveOptions} 
+                />
             </div>
         );
     }
