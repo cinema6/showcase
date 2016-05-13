@@ -9,7 +9,7 @@ import CampaignDetailChart, {
 
         createChartParameters
     }
-    from '../../src/components/CampaignDetailChartIntraday';
+    from '../../src/components/CampaignDetailChart';
 
 describe('CampaignDetailChart', function() {
     describe('CampaignDetailChartComponent', function() {

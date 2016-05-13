@@ -161,7 +161,7 @@ export function createChartParameters({ chart, series, data }) {
 
 }
 
-export default class CampaignDetailChartIntraday extends Component {
+export default class CampaignDetailChart extends Component {
     render() {
         let params = createChartParameters(this.props);
 
@@ -180,7 +180,7 @@ export default class CampaignDetailChartIntraday extends Component {
 }
 
 
-CampaignDetailChartIntraday.propTypes = {
+CampaignDetailChart.propTypes = {
     data: PropTypes.object.isRequired,
     chart: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired

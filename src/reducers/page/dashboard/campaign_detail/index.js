@@ -9,7 +9,7 @@ import {
 import {
     CHART_TODAY,
     SERIES_USERS
-} from '../../../../components/CampaignDetailChartIntraday';
+} from '../../../../components/CampaignDetailChart';
 
 import { assign } from 'lodash';
 

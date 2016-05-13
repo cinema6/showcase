@@ -9,7 +9,7 @@ import { pageify } from '../../utils/page';
 import { get, find } from 'lodash';
 import { loadPageData, updateChartSelection } from '../../actions/campaign_detail';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
-import CampaignDetailChartIntraday, {
+import CampaignDetailChart, {
            CHART_TODAY,
            CHART_7DAY,
            CHART_30DAY,
@@ -18,7 +18,7 @@ import CampaignDetailChartIntraday, {
            SERIES_VIEWS,
            SERIES_CLICKS,
            SERIES_INSTALLS
-       } from '../../components/CampaignDetailChartIntraday';
+       } from '../../components/CampaignDetailChart';
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -78,7 +78,7 @@ class CampaignDetail extends Component {
                         </div>
                     </div>
                     <div className="row">
-                        <CampaignDetailChartIntraday data={analytics || {}} 
+                        <CampaignDetailChart data={analytics || {}} 
                             chart={page.activeChart} series={page.activeSeries} />
                     </div>
                 </div>
