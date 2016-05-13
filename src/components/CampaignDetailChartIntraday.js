@@ -18,10 +18,41 @@ export const SERIES_CLICKS  = prefix('SERIES_CLICKS');
 export const SERIES_INSTALLS = prefix('SERIES_INSTALLS');
 
 export class ChartistParameters {
-    constructor( { type, data, series } ) {
+    constructor( { type, data, series, options, responsiveOptions, 
+        labelFormatter } ) {
         if (!data) {
             throw new Error('ChartistParameters requires a data property.');
         }
+
+        if (!labelFormatter) {
+            throw new Error('ChartistParameters requires labelFormatter function.');
+        }
+
+        const format = (n) => numeral(n).format('0,0');
+        let defaultOptions = {
+            axisX   : { showGrid: false },
+            axisY   : { labelInterpolationFnc: (value) => format(value) },
+            lineSmooth  : false,
+            showArea    : true,
+            showPoint   : false
+        };
+        
+        let defaultRespOpts = [
+            ['screen and (max-width: 700px)',{
+                axisX: {
+                    showGrid: false,
+                    labelInterpolationFnc: 
+                        (value, idx) => (idx % 5 === 0) ? value : ''
+                }
+            }],
+            ['screen and (min-width: 701px) and (max-width: 1285px)',{
+                axisX: {
+                    showGrid: false,
+                    labelInterpolationFnc: 
+                        (value, idx) => (idx % 2 === 0) ? value : ''
+                }
+            }]
+        ];
 
         let field = ((() => {
             if (series === SERIES_USERS)    { return 'users'; }
@@ -31,12 +62,13 @@ export class ChartistParameters {
             throw new Error('Unexpected series type: ' + series);
         })());
 
-        this._type               = type;
+        this._type               = type || 'Line';
         this._data               = { labels: [], series : [] };
-        this._options            = null;
-        this._responsiveOptions  = null;
-       
+        this._options            = options || defaultOptions;
+        this._responsiveOptions  = responsiveOptions || defaultRespOpts;
+      
         this._data.series.push( data.map((datum) => datum[field]) );
+        this._data.labels = data.map((datum) => labelFormatter(datum) );
     }
 
     get data()      { return this._data; }
@@ -47,10 +79,29 @@ export class ChartistParameters {
 
 export class TodayChartParameters extends ChartistParameters {
     constructor({series, data}) {
-        let type = 'Line';
-        super( { type, series, data : data.hourly } );
-    }
 
+        let labelFormatter = (datum) => { 
+            var d = new Date(datum.hour).getHours();
+            if (d === 0) {
+                return 'Midnight';
+            }
+            if (d < 12) {
+                return d + 'am';
+            }
+            return  + 'pm';
+        };
+        super( { labelFormatter, series, data : data.today  } );
+    }
+}
+
+export class Daily7ChartParameters extends ChartistParameters {
+    constructor({series, data}) {
+
+        let labelFormatter = (datum) => { 
+            return datum.date.substr(5,5);
+        };
+        super( { labelFormatter, series, data : data.daily_7  } );
+    }
 }
 
 export default class CampaignDetailChartIntraday extends Component {
@@ -61,51 +112,13 @@ export default class CampaignDetailChartIntraday extends Component {
         //    series
         //} = this.props;
        
-        let format = (n) => numeral(n).format('0,0');
-
         let chartData= {
             labels: [],
             series: [[ ]]
         };
 
-        let options = {
-            axisX: {
-//                showGrid: false
-            },
-            axisY : {
-                labelInterpolationFnc: function(value) {
-                    return format(value);
-                }
-            },
-            lineSmooth: false,
-            showArea: true,
-            showPoint : false
-        };
-
-        let responsiveOptions = [
-            ['screen and (max-width: 700px)',{
-                axisX: {
-                    showGrid: false,
-                    labelInterpolationFnc: function(value, idx) {
-                        if (idx % 5 === 0) {
-                            return value;
-                        }
-                        return '';
-                    }
-                }
-            }],
-            ['screen and (min-width: 701px) and (max-width: 1285px)',{
-                axisX: {
-                    showGrid: false,
-                    labelInterpolationFnc: function(value, idx) {
-                        if (idx % 2 === 0) {
-                            return value;
-                        }
-                        return '';
-                    }
-                }
-            }]
-        ];
+        let options;
+        let responsiveOptions;
 
         return (
             <div>

@@ -29,7 +29,7 @@
             "installs"    : 5
         }
     ],
-    "daily" : [
+    "daily_7" : [
         {
             "date"        : "2016-05-10",
             "views"       : 250,
@@ -49,7 +49,7 @@
             "clicks"      : 50
         }
     ],
-    "hourly" : [
+    "today" : [
         {
             "hour"        : "2016-05-12T04:00:00.000Z",
             "views"       : 250,

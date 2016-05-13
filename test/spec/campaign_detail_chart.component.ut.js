@@ -1,7 +1,11 @@
 'use strict';
 import { renderIntoDocument } from 'react-addons-test-utils';
 import React from 'react';
-import CampaignDetailChart, { ChartistParameters, TodayChartParameters }
+import CampaignDetailChart, { 
+        ChartistParameters,
+        TodayChartParameters,
+        Daily7ChartParameters 
+    }
     from '../../src/components/CampaignDetailChartIntraday';
 
 fdescribe('CampaignDetailChart', function() {
@@ -30,18 +34,27 @@ fdescribe('CampaignDetailChart', function() {
     });
 
     describe('ChartistParameters',function(){
-        let chartParams, series, data;
+        let chartParams, series, data, labelFormatter;
         
         beforeEach(function(){
             series =  'CAMPAIGN_DETAIL_SERIES_VIEWS';
+            labelFormatter = jasmine.createSpy('formatter').and.returnValue('foo');
             data = {
-                "hourly" : [
+                "today" : [
                     { "hour"  : "2016-05-12T04:00:00.000Z",
                       "views" : 250, "users" : 200, "clicks" : 13 },
                     { "hour"  : "2016-05-12T05:00:00.000Z",
                       "views" : 125, "users" : 175, "clicks": 3 },
                     { "hour"  : "2016-05-12T06:00:00.000Z",
                       "views" : 433, "users" : 395, "clicks": 50 }
+                ],
+                "daily_7" : [
+                    {   "date": "2016-05-10",
+                        "views":250, "users":200, "clicks": 13 },
+                    {   "date": "2016-05-11",
+                        "views": 125, "users": 175, "clicks": 3 },
+                    {   "date": "2016-05-12",
+                        "views": 433, "users": 395, "clicks": 50 }
                 ]
             };
         });
@@ -49,62 +62,78 @@ fdescribe('CampaignDetailChart', function() {
         describe('Base Class',function(){
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_VIEWS',function(){
-                chartParams = new ChartistParameters({ series, data : data.hourly });
-                expect(chartParams.data).toEqual({
-                    labels : [],
+                chartParams = new ChartistParameters({ labelFormatter, series,
+                    data : data.today });
+                expect(labelFormatter.calls.count()).toEqual(3);
+                expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 250, 125, 433 ] ]
-                });
+                }));
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_USERS',function(){
                 series =  'CAMPAIGN_DETAIL_SERIES_USERS';
-                chartParams = new ChartistParameters({ series, data : data.hourly });
-                expect(chartParams.data).toEqual({
-                    labels : [],
+                chartParams = new ChartistParameters({ labelFormatter, series,
+                    data : data.today });
+                expect(labelFormatter.calls.count()).toEqual(3);
+                expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 200, 175, 395 ] ]
-                });
+                }));
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_CLICKS',function(){
                 series =  'CAMPAIGN_DETAIL_SERIES_CLICKS';
-                chartParams = new ChartistParameters({ series, data : data.hourly });
-                expect(chartParams.data).toEqual({
-                    labels : [],
+                chartParams = new ChartistParameters({ labelFormatter, series,
+                    data : data.today });
+                expect(labelFormatter.calls.count()).toEqual(3);
+                expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 13, 3, 50 ] ]
-                });
+                }));
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_INSTALLS',function(){
                 series =  'CAMPAIGN_DETAIL_SERIES_INSTALLS';
-                chartParams = new ChartistParameters({ series, data : data.hourly });
-                expect(chartParams.data).toEqual({
-                    labels : [],
+                chartParams = new ChartistParameters({ labelFormatter, series,
+                    data : data.today });
+                expect(labelFormatter.calls.count()).toEqual(3);
+                expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ undefined, undefined, undefined ] ]
-                });
+                }));
             });
 
             it('should throw an exception with a bad series',function(){
                 series = 'bad';
                 expect( () => {
-                    chartParams = new ChartistParameters({ series, data : data.hourly });
+                    chartParams = new ChartistParameters({ labelFormatter, series,
+                        data : data.today });
                 }).toThrowError('Unexpected series type: bad');
 
             });
 
             it('should throw an exception with missing data',function(){
-                series = 'bad';
                 expect( () => {
-                    chartParams = new ChartistParameters({ series, data : data.noop });
+                    chartParams = new ChartistParameters({ labelFormatter, series,
+                        data : data.noop });
                 }).toThrowError('ChartistParameters requires a data property.');
             });
+            
+            it('should throw an exception with a missing labelFormatter',function(){
+                expect( () => {
+                    chartParams = new ChartistParameters({ series,
+                        data : data.today });
+                }).toThrowError('ChartistParameters requires labelFormatter function.');
 
+            });
 
         });
         
         describe('TodayChartParameters',function(){
 
             it('should blah',function(){
-                //chartParams = new TodayChartParameters({ series, data });
+                chartParams = new TodayChartParameters({ series, data });
+                expect(chartParams.data).toEqual({
+                    labels: [ 'Midnight', '1am', '2am' ],
+                    series : [ [ 250, 125, 433 ] ]
+                });
             });
         });
     });
