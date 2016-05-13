@@ -17,6 +17,42 @@ export const SERIES_VIEWS   = prefix('SERIES_VIEWS');
 export const SERIES_CLICKS  = prefix('SERIES_CLICKS');
 export const SERIES_INSTALLS = prefix('SERIES_INSTALLS');
 
+export class ChartistParameters {
+    constructor( { type, data, series } ) {
+        if (!data) {
+            throw new Error('ChartistParameters requires a data property.');
+        }
+
+        let field = ((() => {
+            if (series === SERIES_USERS)    { return 'users'; }
+            if (series === SERIES_VIEWS)    { return 'views'; }
+            if (series === SERIES_CLICKS)   { return 'clicks'; }
+            if (series === SERIES_INSTALLS) { return 'installs'; }
+            throw new Error('Unexpected series type: ' + series);
+        })());
+
+        this._type               = type;
+        this._data               = { labels: [], series : [] };
+        this._options            = null;
+        this._responsiveOptions  = null;
+       
+        this._data.series.push( data.map((datum) => datum[field]) );
+    }
+
+    get data()      { return this._data; }
+    get options()   { return this._options; }
+    get type()      { return this._type; }
+    get responsiveOptions() { return this._responsiveOptions; }
+}
+
+export class TodayChartParameters extends ChartistParameters {
+    constructor({series, data}) {
+        let type = 'Line';
+        super( { type, series, data : data.hourly } );
+    }
+
+}
+
 export default class CampaignDetailChartIntraday extends Component {
     render() {
         //const {
