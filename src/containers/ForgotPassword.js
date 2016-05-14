@@ -21,35 +21,37 @@ export class ForgotPassword extends Component {
             page: { submitSuccess }
         } = this.props;
 
-        return (<div className="container main-section">
-            <div className="row">
-                <div className="login-form col-md-4 col-md-offset-4 col-xs-12 animated
-                    fadeIn card-item">
-                    <h1 className="text-center">Reset Password</h1>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="usernameInput">Email Address</label>
-                            <input {...email} type="email"
-                                className="form-control"
-                                id="usernameInput"
-                                placeholder="Email" />
-                        </div>
-                        {submitSuccess && (<div className="alert alert-success" role="alert">
-                            <strong>Sucess!</strong> Check your email for further instructions.
-                        </div>)}
-                        {error && !submitting && (<div className="alert alert-danger" role="alert">
-                            <strong>Uh-oh!</strong> {error.response}
-                        </div>)}
-                        <button type="submit" disabled={submitting}
-                            className={classnames('btn', 'btn-primary', 'btn-lg', 'btn-block', {
-                                'btn-waiting': submitting
-                            })}>
-                            Reset Password
-                        </button>
-                    </form>
-                    <br />
-                    <Link className="text-center" to="login">Login</Link>
-                    <span className="pull-right">New User? <a href="#">Sign up now</a></span>
+        return (<div className="bg-dark-wrap">
+            <div className="container main-section">
+                <div className="row">
+                    <div className="login-form col-md-4 col-md-offset-4 col-xs-12 animated
+                        fadeIn card-item">
+                        <h1 className="text-center">Reset Password</h1>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="usernameInput">Email Address</label>
+                                <input {...email} type="email"
+                                    className="form-control"
+                                    id="usernameInput"
+                                    placeholder="Email" />
+                            </div>
+                            {submitSuccess && (<div className="alert alert-success" role="alert">
+                                <strong>Sucess!</strong> Check your email for further instructions.
+                            </div>)}
+                            {error && !submitting && (<div className="alert alert-danger" role="alert">
+                                <strong>Uh-oh!</strong> {error.response}
+                            </div>)}
+                            <button type="submit" disabled={submitting}
+                                className={classnames('btn', 'btn-primary', 'btn-lg', 'btn-block', {
+                                    'btn-waiting': submitting
+                                })}>
+                                Reset Password
+                            </button>
+                        </form>
+                        <br />
+                        <Link className="text-center" to="login">Login</Link>
+                        <span className="pull-right">New User? <a href="#/sign-up">Sign up now</a></span>
+                    </div>
                 </div>
             </div>
         </div>);
