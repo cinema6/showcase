@@ -701,6 +701,14 @@
             }
     }
     @media (max-width: 767px) {
+        .main-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+            .login-form {
+                max-width: 90%;
+                margin-left: 5%;
+            }
         .navbar-nav .open .dropdown-menu {
             position: fixed;
             top: 80px;
