@@ -10,6 +10,7 @@ import defer from 'promise-defer';
 import { cloneDeep as clone, assign } from 'lodash';
 import SignUpForm from '../../src/forms/SignUp';
 import APP_CONFIG from '../../config';
+import { createUuid } from 'rc-uuid';
 
 const proxyquire = require('proxyquire');
 
@@ -18,6 +19,8 @@ describe('SignUp', function() {
     let SignUp;
 
     beforeEach(function() {
+        APP_CONFIG.defaultPromotion = `pro-${createUuid()}`;
+
         userActions = {
             signUp: jasmine.createSpy('signUp()').and.callFake(signUp),
 
@@ -26,6 +29,12 @@ describe('SignUp', function() {
 
         SignUp = proxyquire('../../src/containers/SignUp', {
             'react': React,
+
+            '../../config': {
+                default: APP_CONFIG,
+
+                __esModule: true
+            },
 
             '../forms/SignUp': {
                 default: SignUpForm,
@@ -109,7 +118,8 @@ describe('SignUp', function() {
 
                     it('should call signUp()', function() {
                         expect(userActions.signUp).toHaveBeenCalledWith(assign({}, values, {
-                            paymentPlanId: APP_CONFIG.paymentPlans[0].id
+                            paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+                            promotion: APP_CONFIG.defaultPromotion
                         }));
                     });
                 });

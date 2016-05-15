@@ -19,7 +19,8 @@ class SignUp extends Component {
 
     signUp(formValues) {
         return this.props.signUp(assign({}, formValues, {
-            paymentPlanId: APP_CONFIG.paymentPlans[0].id
+            paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+            promotion: APP_CONFIG.defaultPromotion
         }));
     }
 
