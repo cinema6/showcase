@@ -4,5 +4,6 @@ export default {
             id: 'pp-0Ekdsm05KVZ43Aqj',
             price: 50
         }
-    ]
+    ],
+    defaultPromotion: null
 };
