@@ -15,12 +15,14 @@ import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
 import WizardEditTargeting from '../../src/components/WizardEditTargeting';
 import WizardConfirmationModal from '../../src/components/WizardConfirmationModal';
-import { reducer as formReducer } from 'redux-form';
+import { reducer as formReducer, getValues } from 'redux-form';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
 import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 import { getClientToken } from '../../src/actions/payment';
+import AdPreview from '../../src/components/AdPreview';
+import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 
 const proxyquire = require('proxyquire');
 
@@ -29,6 +31,8 @@ describe('ProductWizard', function() {
     let ProductWizard;
 
     beforeEach(function() {
+        jasmine.clock().install();
+
         paymentActions = {
             getClientToken: jasmine.createSpy('getClientToken()').and.callFake(getClientToken),
 
@@ -52,6 +56,11 @@ describe('ProductWizard', function() {
 
         ProductWizard = proxyquire('../../src/containers/Dashboard/ProductWizard', {
             'react': React,
+            'showcase-core/dist/factories/app': {
+                createInterstitialFactory,
+
+                __esModule: true
+            },
 
             '../../components/WizardSearch': {
                 default: WizardSearch,
@@ -73,10 +82,19 @@ describe('ProductWizard', function() {
 
                 __esModule: true
             },
+            '../../components/AdPreview': {
+                default: AdPreview,
+
+                __esModule: true
+            },
             '../../actions/search': searchActions,
             '../../actions/product_wizard': productWizardActions,
             '../../actions/payment': paymentActions
         }).default;
+    });
+
+    afterEach(function() {
+        jasmine.clock().uninstall();
     });
 
     describe('when rendered', function() {
@@ -86,7 +104,28 @@ describe('ProductWizard', function() {
 
         beforeEach(function() {
             state = {
+                form: {
+                    productWizard: {
+                        _submitting: false,
 
+                        name: {
+                            _isFieldValue: true,
+                            value: 'I edited the Name!'
+                        },
+                        description: {
+                            _isFieldValue: true,
+                            value: 'My revised description!'
+                        },
+                        age: {
+                            _isFieldValue: true,
+                            value: '13+'
+                        },
+                        gender: {
+                            _isFieldValue: true,
+                            value: 'Female'
+                        }
+                    }
+                }
             };
             store = createStore(compose(
                 (s, action) => assign({}, s, {
@@ -129,6 +168,12 @@ describe('ProductWizard', function() {
 
         it('should call loadData()', function() {
             expect(component.props.loadData).toHaveBeenCalledWith();
+        });
+
+        it('should have some props', function() {
+            expect(component.props).toEqual(jasmine.objectContaining({
+                formValues: getValues(store.getState().form.productWizard)
+            }));
         });
 
         describe('and removed', function() {
@@ -212,7 +257,11 @@ describe('ProductWizard', function() {
                 props.productData = {
                     extID: createUuid(),
                     name: 'My Awesome Product',
-                    description: 'This is why it is awesome'
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
                     <Provider store={store}>
@@ -227,6 +276,52 @@ describe('ProductWizard', function() {
 
             it('should render a WizardEditProduct', function() {
                 expect(scryRenderedComponentsWithType(component, WizardEditProduct).length).toBeGreaterThan(0, 'WizardEditProduct is not rendered!');
+            });
+
+            it('should render an AdPreview', function() {
+                expect(scryRenderedComponentsWithType(component, AdPreview).length).toBe(1, 'AdPreview is not rendered.');
+            });
+
+            describe('AdPreview', function() {
+                let preview;
+
+                beforeEach(function() {
+                    preview = findRenderedComponentWithType(component, AdPreview);
+                });
+
+                describe('props', function() {
+                    describe('cardOptions', function() {
+                        it('should exist', function() {
+                            expect(preview.props.cardOptions).toEqual({
+                                cardType: 'showcase-app'
+                            });
+                        });
+                    });
+
+                    describe('placementOptions', function() {
+                        it('should exist', function() {
+                            expect(preview.props.placementOptions).toEqual({
+                                type: 'mobile-card',
+                                branding: 'showcase-app--interstitial'
+                            });
+                        });
+                    });
+
+                    describe('productData', function() {
+                        it('should be the stored productData and the state of the form merged together', function() {
+                            expect(preview.props.productData).toEqual(assign({}, props.productData, {
+                                name: component.props.formValues.name,
+                                description: component.props.formValues.description
+                            }));
+                        });
+                    });
+
+                    describe('factory', function() {
+                        it('should be the interstitial factory', function() {
+                            expect(preview.props.factory).toBe(createInterstitialFactory);
+                        });
+                    });
+                });
             });
 
             describe('WizardEditProduct', function() {
@@ -262,6 +357,15 @@ describe('ProductWizard', function() {
         describe('on step 2', function() {
             beforeEach(function() {
                 props.page.step = 2;
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
+                };
                 props.targeting = {
                     age: TARGETING.AGE.ZERO_TO_TWELVE,
                     gender: TARGETING.GENDER.FEMALE
@@ -332,7 +436,11 @@ describe('ProductWizard', function() {
                 props.productData = {
                     extID: createUuid(),
                     name: 'My Awesome Product',
-                    description: 'This is why it is awesome'
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
                     <Provider store={store}>

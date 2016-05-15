@@ -14,8 +14,21 @@ import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
+import AdPreview from '../../components/AdPreview';
 import classnames from 'classnames';
-import { pick, includes } from 'lodash';
+import { pick, includes, assign } from 'lodash';
+import { getValues as getFormValues } from 'redux-form';
+import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+
+const PREVIEW = {
+    CARD_OPTIONS: {
+        cardType: 'showcase-app'
+    },
+    PLACEMENT_OPTIONS: {
+        type: 'mobile-card',
+        branding: 'showcase-app--interstitial'
+    }
+};
 
 class ProductWizard extends Component {
     constructor() {
@@ -59,6 +72,7 @@ class ProductWizard extends Component {
             steps,
             productData,
             targeting,
+            formValues,
 
             page: { step }
         } = this.props;
@@ -120,11 +134,12 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <div className="create-ad step-2 col-md-6 col-sm-6 col-middle text-center">
-                        <img src={'https://placeholdit.imgix.net/~text?txtsize=38&bg=ffffff&' +
-                            'txtclr=333333&txt=phone&w=320&h=600&txttrack=0'}
-                            style={{borderRadius: 25}} />
-                    </div>
+                    <AdPreview cardOptions={PREVIEW.CARD_OPTIONS}
+                        placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                        productData={productData && assign({}, productData, pick(formValues, [
+                            'name', 'description'
+                        ]))}
+                        factory={createInterstitialFactory}/>
                 )}
                 {(() => {
                     switch (step) {
@@ -161,6 +176,8 @@ ProductWizard.propTypes = {
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
 
+    formValues: PropTypes.object,
+
     page: PropTypes.shape({
         step: PropTypes.number.isRequired
     }).isRequired,
@@ -179,8 +196,10 @@ ProductWizard.propTypes = {
     })
 };
 
-function mapStateToProps() {
-    return {};
+function mapStateToProps(state) {
+    return {
+        formValues: getFormValues(state.form.productWizard)
+    };
 }
 
 export default connect(mapStateToProps, {

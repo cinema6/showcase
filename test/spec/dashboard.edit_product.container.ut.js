@@ -59,7 +59,11 @@ describe('EditProduct', function() {
                 id: `cam-${createUuid()}`,
                 product: {
                     name: 'Product Name',
-                    description: 'Product description.'
+                    description: 'Product description.',
+                    images: [
+                        { type: 'thumbnail', uri: 'thumb.gif' }
+                    ],
+                    price: 'Free'
                 },
                 targeting: {
                     demographics: {
