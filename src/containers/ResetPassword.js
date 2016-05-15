@@ -82,7 +82,7 @@ export class ResetPassword extends Component {
                         )}
                         <button type="submit"
                             disabled={submitting || pristine || !valid}
-                            className={classnames('btn btn-danger btn-lg btn-block', {
+                            className={classnames('btn btn-primary btn-lg btn-block', {
                                 'btn-waiting': submitting
                             })}>
                             Confirm Reset

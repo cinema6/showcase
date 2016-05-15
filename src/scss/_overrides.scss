@@ -24,25 +24,59 @@
  Resets
  ----------------------------
  ***/
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+/*        overflow-x: hidden;*/
+    }
     body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
         overflow-x: hidden;
         padding-bottom: 20px;
     }
     body.bg-dark {
         background: #171738;
     }
+    .bg-dark-wrap {
+        background:  #171738;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
  /***
  overrides
  ----------------------------
  ***/
+    /*.container {
+        max-width: 90%;
+    }
     .navbar-fixed-top .nav.navbar-nav .dropdown-menu {
         left: initial;
         right: 0;
+        margin: 0;
+    }*/
+    .navbar-nav {
+        margin: 0;
     }
     .navbar-nav>li.dropdown {
         min-width: 160px;
     }
     .navbar-nav>li>a {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+        .navbar-nav li.dropdown>div.dropdown>a {
+            padding: 20px;
+        }
+    .navbar-nav>li>div>a {
+        display: block;
         padding-top: 20px;
         padding-bottom: 20px;
     }
@@ -59,6 +93,49 @@
         font-size: 18px;
     }
     
+    .nav-justified>li {
+        float: none;
+    }
+        .nav-justified>li>button,
+        .nav-justified>li>button:disabled:hover,
+        .nav-justified>li>button:disabled:focus {
+            background: #bef2f6;            
+            color: #0dbeb2;
+            display: block;
+            position: relative;
+            margin-bottom: 0;
+            padding: 10px 15px;
+            border: 0;
+            width: 100%;
+        }
+            .nav-justified>li>button:disabled:hover,
+            .nav-justified>li>button:disabled:focus {
+                cursor: not-allowed;
+            }
+            .nav-justified>li>button:hover,
+            .nav-justified>li>button:focus {
+                color: #08766f;
+            }
+            .nav-justified>li.active>button { 
+                color: #fff;
+                background-color: #0dbeb2;
+            }
+                .nav-justified > li.active > button:disabled {
+                    background: #4ECDC4;
+                    color: #08766f;
+                }
+        .nav > li > a.active {
+            background: #0dbeb2;
+            color: #fff;
+        }
+    .navbar-inverse .navbar-nav a, .navbar-inverse .navbar-nav a:hover, .navbar-inverse .navbar-nav a:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+    .navbar-inverse .navbar-nav  .open>a, .navbar-inverse .navbar-nav  .open>a:hover, .navbar-inverse .navbar-nav .open>a:focus {
+        background: #00001F;
+        color: white;
+    }
     .table-responsive {
         border: 0;
     }
@@ -76,7 +153,12 @@
         font-size: 18px;
         height: 40px;
         line-height: 40px;
+        display: block;
+        clear: left;
     }
+        textarea.form-control {
+            line-height: 24px;
+        }
     form {
         overflow: hidden;
     }
@@ -87,6 +169,17 @@
     .nav-justified>li>a {
         margin-bottom: 0;
         background: #bef2f6;
+    }
+    .alert-fixed {
+        position: fixed;
+        margin-left: auto;
+        margin-right: auto;
+        left: 10%;
+        right: 10%;
+        top: 10px;
+        max-width: 600px;
+        z-index: 10000;
+        box-shadow: 0 3px 10px rgba(28, 28, 28, 0.5)
     }
     .alert-info button.close {
         color: #fff;
@@ -224,6 +317,8 @@
             margin: 0;
             width: auto;
             height: 100%;
+            vertical-align: middle;
+            display: inline;
         }
 
 /***Slideout Menu***/
@@ -231,31 +326,37 @@
         background: #E54B4B;
         width: 300px;
         max-width: 90%;
-        position: absolute;
+        position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
         margin-top: 80px;
+        z-index: 1000;
     }
-        .slideout-menu .menu-item-list {
+        .slideout-menu .menu-item-list,
+        .slideout-menu .menu-item-list .btn-link {
             padding: 0;
             margin: 0;
             list-style-type: none;
-            font-size: 1.75em;
+            font-size: 1.75rem;
         }
-            .slideout-menu .menu-item a {
+            .slideout-menu .menu-item a,
+            .slideout-menu .menu-item button.btn-link {
                 display: inline-block;
                 width: 100%;
                 padding: 20px 30px;
                 border-bottom: 1px solid #d82632;
                 color: #d6fcff;
                 text-decoration: none;
+                text-align: left;
             }
-            .slideout-menu .menu-item a i.fa {
+            .slideout-menu .menu-item a i.fa,
+            .slideout-menu .menu-item button.btn-link i.fa {
                 margin-right: 0.25em;
                 display: inline-block;
                 text-align: center;
-                width: 2em;
+                width: 2rem;
+                margin-right: 1rem;
             }
 
  /***
@@ -271,6 +372,7 @@
  ***/
     .main-section {
         margin-top: 100px;
+        margin-bottom: 20px;
     }
     .campaign-progress-bar {
         display: block;
@@ -293,6 +395,9 @@
             .campaign-progress-bar .nav-pills>li a {
                 background-color: transparent;
             }
+            .create-ad img{
+                max-width: 100%;
+            }
 /***App Search Form***/
     .app-search {
         padding: 0 5px;
@@ -307,6 +412,7 @@
                 margin: 0;
                 padding: 0 5px;
                 vertical-align: top;
+                outline: 0;
             }
         .app-search-input ul {
             display: flex;
@@ -337,9 +443,9 @@
             margin: 0;
             line-height: 36px;
         }
-    .app-search-results {
+    /*.app-search-results {
         display: block;
-    }
+    }*/
     .app-search-results ul {
         padding:0;
         background: #fff;
@@ -348,6 +454,13 @@
         margin: 0 3px;
         max-height: 240px;
         overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        /**added**/
+        position: absolute;
+        top: 40px;
+        left: 5px;
+        right: 5px;
+        z-index: 10;
     }
         .app-search-results li.app-results.app-searching,
         .app-search-results li.app-results.not-found,
@@ -382,8 +495,8 @@
                     border-radius: 10px;
                 }
             .app-results.app-item .app-title {
-                font-weight: 400;
                 overflow: hidden;
+                font-weight: 400;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 word-break: break-all;
@@ -411,6 +524,20 @@
                 display: inline-block;
                 margin: 0;
             }
+/***ios scroll fix***/
+.app-search {
+    padding: 0 5px;
+    position: relative;
+    height: 340px;
+}
+   /* .app-search-results {
+        display: block;
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        height: auto;
+        z-index: 10;
+    }*/
  /***
  Campaign Stats
  ----------------------------
@@ -476,24 +603,49 @@
  ***/
  /***billing details***/
     .billing-summary {
-        min-height: 170px;
+        min-height: 180px;
+        padding: 15px;
+        margin-bottom: 15px;
     }
  /***payment modal***/
+     .modal.payment-modal {
+        background: rgba(28,28,28,0.7);
+    }
     .payment-modal .modal-body {
         overflow: hidden;
     }
         .payment-modal .modal-dialog {
             width: 460px;
         }
-        .payment-modal .paymentType-details label{
-            float: left;
+        .payment-modal .paymentType-details {
+            display: block;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
+            .payment-modal .paymentType-details label{
+                float: left;
+            }
         .payment-modal .modal-header .close {
             margin-top: -2px;
             margin-top: -15px;
             margin-right: -15px;
             width: 30px;
             height: 30px;
+        }
+    .payment-modal .modal-footer {
+        padding: 0;
+        text-align: center;
+        background: #0DBEB2;
+        color: #FFF;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        line-height: 24px;
+        font-size: 16px;
+    }
+        .payment-modal .modal-footer p {
+            margin: 0;
+            padding: 6px;
+            border-radius: 4px;
         }
         .signup__secured {
             display: inline-block;
@@ -524,6 +676,78 @@
             margin: 0 0.5em 0 0.25em;
             vertical-align: top;
         }
+ /***
+ Responsive styles
+ ----------------------------
+ ***/
+@media (min-width: 768px) {
+        .nav-justified>li {
+            display: table-cell;
+            width: 1%;
+        }
+        .navbar.navbar-inverse .dropdown-menu li a {
+            padding: 10px 20px;
+        }
+        .navbar.navbar-inverse .dropdown-menu {
+            background-color: #00001F;
+            margin: 0;
+            border: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+            .navbar.navbar-inverse .dropdown-menu > li > a:hover,
+            .navbar.navbar-inverse .dropdown-menu > li > a:focus {
+                background-color: #0DBEB2;
+            }
+    }
+    @media (max-width: 767px) {
+        .main-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+            .login-form {
+                max-width: 90%;
+                margin-left: 5%;
+            }
+        .navbar-nav .open .dropdown-menu {
+            position: fixed;
+            top: 80px;
+            float: none;
+            width: auto;
+            margin-top: 0;
+            background-color: #00001F;
+            border-radius: 0;
+            box-shadow: none;
+            left: 0;
+            right: 0;
+            padding: 0;
+        }
+        .navbar-inverse .navbar-nav .open .dropdown-menu > li {
+            border-bottom: 1px solid #171738;
+        }
+            .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+                color: #d6fcff;
+                padding: 20px;
+                text-align: center;                
+            }
+            .nav-justified > li, .nav-tabs.nav-justified > li {
+                display: table-cell;
+                width: 1%;
+            }
+            .nav-justified>li>button,
+            .nav-justified>li>button:disabled:hover,
+            .nav-justified>li>button:disabled:focus {
+                padding: 5px 8px;
+            }
+            .payment-modal .modal-dialog {
+                max-width: 90%;
+                margin: 5%;
+                overflow-y: auto;
+                position: relative;
+                max-height: 95%;
+            }
+    }
+
 /***scrollbar***/
 
 .create-ad ::-webkit-scrollbar {
@@ -534,14 +758,14 @@
 
 .create-ad ::-webkit-scrollbar-thumb {
   border-radius:12px;
-  border:3px solid rgba(255,255,255,0);
+  /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   _background-color:#0DBEB2;
   background-color: #0DBEB2;
 }
 .create-ad ::-webkit-scrollbar-thumb:hover {
   border-radius:12px;
-  border:3px solid rgba(255,255,255,0);
+  /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   background-color: #08766f;
 }
@@ -550,7 +774,11 @@
   background-color:#e6e6e6;
 }
 /***button spinner***/
-.btn-waiting:after {
+.btn-waiting {
+    padding-right: 2.5rem;
+    transition: padding 0.2s ease-in;
+}
+    .btn-waiting:after {
         content: '\f1ce';
         font-family: 'FontAwesome';
         margin-left: 10px;
@@ -562,15 +790,15 @@
         -moz-animation: spin 2s infinite linear;
         animation: spin 2s infinite linear;
     }
-    @-moz-keyframes spin {
-        100% { -moz-transform: rotate(360deg); }
-    }
-    @-webkit-keyframes spin {
-        100% { -webkit-transform: rotate(360deg); }
-    }
-    @keyframes spin {
-        100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
-    }
+        @-moz-keyframes spin {
+            100% { -moz-transform: rotate(360deg); }
+        }
+        @-webkit-keyframes spin {
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
+        }
 /***spinner/loader animation***/
     .spinner-contained {
         position: absolute; /* Put spinner-position in spinner-contained if using a spinner inline and not for full-page takeover*/

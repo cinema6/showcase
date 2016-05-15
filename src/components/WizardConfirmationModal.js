@@ -26,6 +26,20 @@ export default class WizardConfirmationModal extends Component {
                     </div>
                     <div className="modal-body text-center">
                         <BraintreeCreditCardForm getToken={getToken} onSubmit={onSubmit} />
+                        <div className="secured-locked">
+                            <div className="signup__secured">
+                                <span className="signup__secured--icon">
+                                    <i className="fa fa-shield" />
+                                </span>
+                                <span className="signup__secured--label" 
+                                    title="RSA 2048bit security">
+                                    Secured Platform
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <p>Your information is 128-bit SSL encrypted</p>
                     </div>
                 </div>
             </div>

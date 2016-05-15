@@ -13,8 +13,8 @@ export default class NotificationItem extends Component {
             onClose
         } = this.props;
 
-        return (<div className={classnames('alert alert-dismissible', `alert-${type}`)}
-            role="alert">
+        return (<div className={classnames('alert alert-dismissible', `alert-${type}`,
+            'alert-fixed')} role="alert">
             <button type="button"
                 onClick={() => onClose(id)}
                 className="close"
