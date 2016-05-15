@@ -60,6 +60,7 @@ module.exports = function(grunt) {
         'compass:server',
         'copy:server',
         'browserify:server',
+        'configureProxies:server',
         'connect:server',
         'open:server',
         'concurrent:server'
