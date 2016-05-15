@@ -32,7 +32,8 @@ class SignUp extends Component {
                         <h1 className="text-center">Signup</h1>
                         <SignUpForm onSubmit={this.signUp} />
                         <br />
-                        <div className="text-center">Existing User? <Link to="/login">Login</Link></div>
+                        <div className="text-center">Existing User? <Link to="/login">Login</Link>
+                        </div>
                     </div>
                 </div>
             </div>

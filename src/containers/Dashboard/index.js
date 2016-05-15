@@ -38,7 +38,8 @@ class Dashboard extends Component {
                                 <Dropdown id="user-management-dropdown">
                                     <Dropdown.Toggle useAnchor={true}>
                                         <span className="user-initials">{initials}</span>
-                                        <span className="hidden-xs">{user.firstName} {user.lastName}</span>
+                                        <span className="hidden-xs">{user.firstName} {user.lastName}
+                                        </span>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <MenuItem href="#/dashboard/account">My Profile</MenuItem>

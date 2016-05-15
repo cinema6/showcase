@@ -52,11 +52,14 @@ export class Login extends Component {
                                     id="passwordInput"
                                     placeholder="Password" />
                                 {/*<span className="form-control-feedback" aria-hidden="true">
-                                    <i className="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    <i className="fa fa-exclamation-triangle" aria-hidden="true">
+                                    </i>
                                 </span>*/}
-                                {/*<span id="inputError2Status" className="sr-only">(error)</span>*/}
+                                {/*<span id="inputError2Status" className="sr-only">(error)
+                                    </span>*/}
                             </div>
-                            {error && !submitting && (<div className="alert alert-danger" role="alert">
+                            {error && !submitting && (<div className="alert alert-danger" 
+                                role="alert">
                                 <strong>Login failed!</strong> {error.response}.
                             </div>)}
                             <button type="submit"

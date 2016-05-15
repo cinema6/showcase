@@ -38,7 +38,8 @@ export class ForgotPassword extends Component {
                             {submitSuccess && (<div className="alert alert-success" role="alert">
                                 <strong>Sucess!</strong> Check your email for further instructions.
                             </div>)}
-                            {error && !submitting && (<div className="alert alert-danger" role="alert">
+                            {error && !submitting && (<div className="alert alert-danger"
+                                role="alert">
                                 <strong>Uh-oh!</strong> {error.response}
                             </div>)}
                             <button type="submit" disabled={submitting}
@@ -50,7 +51,8 @@ export class ForgotPassword extends Component {
                         </form>
                         <br />
                         <Link className="text-center" to="login">Login</Link>
-                        <span className="pull-right">New User? <a href="#/sign-up">Sign up now</a></span>
+                        <span className="pull-right">New User? <a href="#/sign-up">Sign up now</a>
+                        </span>
                     </div>
                 </div>
             </div>
