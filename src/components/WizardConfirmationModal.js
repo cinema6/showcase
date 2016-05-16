@@ -25,7 +25,9 @@ export default class WizardConfirmationModal extends Component {
                         <h4>to launch and reach 2,000 users</h4>
                     </div>
                     <div className="modal-body text-center">
-                        <BraintreeCreditCardForm getToken={getToken} onSubmit={onSubmit} />
+                        <BraintreeCreditCardForm submitText="Start Promoting My App"
+                            getToken={getToken}
+                            onSubmit={onSubmit} />
                         <div className="secured-locked">
                             <div className="signup__secured">
                                 <span className="signup__secured--icon">
