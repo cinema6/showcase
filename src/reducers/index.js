@@ -6,6 +6,7 @@ import pageReducer from './page';
 import formReducer from './form';
 import analyticsReducer from './analytics';
 import notificationReducer from './notification';
+import alertReducer from './alert';
 
 export default combineReducers({
     routing: routerReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
     db: dbReducer,
     session: sessionReducer,
     page: pageReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    alert: alertReducer
 });
