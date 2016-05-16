@@ -135,6 +135,9 @@ export default class BraintreeCreditCardForm extends Component {
             braintree,
             type
         } = this.state;
+        const {
+            submitText
+        } = this.props;
 
         return (<div>
             {loading && (<div className="spinner-wrap">
@@ -230,7 +233,7 @@ export default class BraintreeCreditCardForm extends Component {
                                 'btn-waiting': submitting
                             }
                         )}>
-                        Start promoting my app
+                        {submitText}
                     </button>
                 </form>
                 {/* paypal payment form */}
@@ -254,7 +257,7 @@ export default class BraintreeCreditCardForm extends Component {
                                     'btn-waiting': submitting
                                 }
                             )}>
-                            Submit
+                            {submitText}
                         </button>
                     </div>
                 </div>
@@ -265,5 +268,9 @@ export default class BraintreeCreditCardForm extends Component {
 
 BraintreeCreditCardForm.propTypes = {
     getToken: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    submitText: PropTypes.string.isRequired
+};
+BraintreeCreditCardForm.defaultProps = {
+    submitText: 'Submit'
 };
