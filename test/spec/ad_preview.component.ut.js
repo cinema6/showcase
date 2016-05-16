@@ -1,8 +1,6 @@
 import {
     renderIntoDocument,
-    findRenderedComponentWithType,
-    scryRenderedDOMComponentsWithTag,
-    findRenderedDOMComponentWithTag
+    findRenderedComponentWithType
 } from 'react-addons-test-utils';
 import React, { Component, PropTypes } from 'react';
 import { Player } from 'c6embed';
@@ -169,8 +167,7 @@ describe('AdPreview', function() {
     });
 
     it('should render a <div>', function() {
-        expect(scryRenderedDOMComponentsWithTag(this.component, 'div').length).toBe(1, 'Did not find the <div>.');
-        expect(this.component.refs.root).toBe(findRenderedDOMComponentWithTag(this.component, 'div'));
+        expect(this.component.refs.root.tagName).toBe('DIV');
     });
 
     it('should create a Player', function() {
