@@ -39,7 +39,8 @@ module.exports = {
                 dest: '<%= settings.s3.staging.app %><%= _version %>/',
                 rel : '<%= settings.distDir %>/',
                 options: {
-                    CacheControl: 'max-age=15'
+                    CacheControl: 'max-age=15',
+                    ContentEncoding: 'gzip'
                 }
             },
             {
@@ -48,6 +49,15 @@ module.exports = {
                 rel : '<%= settings.distDir %>/',
                 options: {
                     CacheControl: 'max-age=15'
+                }
+            },
+            {
+                src: '<%= settings.distDir %>/*.html',
+                dest: '<%= settings.s3.staging.app %>',
+                rel : '<%= settings.distDir %>/',
+                options: {
+                    CacheControl: 'max-age=15',
+                    ContentEncoding: 'gzip'
                 }
             }
         ]
@@ -87,7 +97,8 @@ module.exports = {
                 dest: '<%= settings.s3.production.app %><%= _version %>/',
                 rel : '<%= settings.distDir %>/',
                 options: {
-                    CacheControl: 'max-age=60'
+                    CacheControl: 'max-age=15',
+                    ContentEncoding: 'gzip'
                 }
             },
             {
@@ -96,6 +107,15 @@ module.exports = {
                 rel : '<%= settings.distDir %>/',
                 options: {
                     CacheControl: 'max-age=60'
+                }
+            },
+            {
+                src: '<%= settings.distDir %>/*.html',
+                dest: '<%= settings.s3.production.app %>',
+                rel : '<%= settings.distDir %>/',
+                options: {
+                    CacheControl: 'max-age=60',
+                    ContentEncoding: 'gzip'
                 }
             }
         ]
