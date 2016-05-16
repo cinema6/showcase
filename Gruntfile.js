@@ -18,12 +18,12 @@ module.exports = function(grunt) {
         awsJSON: '.aws.json',
         s3: {
             staging: {
-                bucket: 'com.cinema6.staging',
-                app: 'apps/<%= package.name %>'
+                bucket: 'com.cinema6.staging.showcase.apps',
+                app: '/'
             },
             production: {
-                bucket: 'com.cinema6.portal',
-                app: 'apps/<%= package.name %>'
+                bucket: 'com.cinema6.portal.showcase.apps',
+                app: '/'
             }
         }
     };
