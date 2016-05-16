@@ -65,8 +65,12 @@ export default class AdPreview extends Component {
     }
 
     render() {
-        return (<div ref="root"
-            className="create-ad step-2 col-md-6 col-sm-6 col-middle text-center">
+        return (<div
+            className="create-ad step-2 col-md-6 col-sm-12 col-xs-12 col-middle text-center">
+            <div className="phone-wrap">
+                <div ref="root" className="phone-frame">
+                </div>
+            </div>
         </div>);
     }
 

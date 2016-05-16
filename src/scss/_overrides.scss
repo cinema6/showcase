@@ -1,4 +1,4 @@
-/*!
+ /*!
  * Reelcontent Slideshow
  * Copyright 2016 Reelcontent, Inc.
  */
@@ -135,6 +135,9 @@
     .navbar-inverse .navbar-nav  .open>a, .navbar-inverse .navbar-nav  .open>a:hover, .navbar-inverse .navbar-nav .open>a:focus {
         background: #00001F;
         color: white;
+    }
+    .page-header {
+        margin: 20px 20px 0;
     }
     .table-responsive {
         border: 0;
@@ -421,7 +424,8 @@
         }
             .app-search-input ul li.app-selected-wrap {
                 float: left;
-                max-width: 80%;
+                max-width: 90%;
+                width: auto;
             }
             .app-search-input ul li {
                 float: left;
@@ -442,6 +446,7 @@
             word-wrap: break-word;
             margin: 0;
             line-height: 36px;
+            margin-left: 40px;
         }
     /*.app-search-results {
         display: block;
@@ -538,6 +543,57 @@
         height: auto;
         z-index: 10;
     }*/
+/***Player Preview***/
+    .phone-wrap {
+        height: 700px;
+        width: 330px;
+        position: relative;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .phone-frame {
+        position: absolute;
+        width: 90%;
+        top: 5%;
+        bottom: 5%;
+        left: 5%;
+        right: 5%;
+        background: #fff;
+        text-align: center;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 5px #ddd;
+    }
+        .phone-frame:before {
+            width: 16%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 42%;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 3px #bbb;
+        }
+        .phone-frame:after {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 1px solid #ccc;
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 45%;
+            box-shadow: inset 0 0 3px #bbb;
+        }
+        .phone-frame iframe {
+            margin-top: 12%;
+            border: 1px solid #ccc;
+            height: 86% !important;
+        }
  /***
  Campaign Stats
  ----------------------------
@@ -701,7 +757,7 @@
             }
     }
     @media (max-width: 767px) {
-        .main-section {
+        .bg-dark-wrap .main-section {
             margin-top: 40px;
             margin-bottom: 40px;
         }
@@ -741,11 +797,18 @@
             }
             .payment-modal .modal-dialog {
                 max-width: 90%;
-                margin: 5%;
+                margin: 5% auto;
                 overflow-y: auto;
                 position: relative;
                 max-height: 95%;
             }
+                .payment-modal .modal-title {
+                    font-size: 1.75em;
+                    font-weight: 400;
+                }
+                .payment-modal .modal-header h4 {
+                    font-size: 18px;
+                }
     }
 
 /***scrollbar***/
