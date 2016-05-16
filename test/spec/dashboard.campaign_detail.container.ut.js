@@ -21,7 +21,8 @@ describe('Campaign Detail', function() {
         
         CampaignDetail =
             proxyquire('../../src/containers/Dashboard/CampaignDetail', {
-                '../../actions/campaign_detail': campaignDetailActions
+                '../../actions/campaign_detail': campaignDetailActions,
+                'react' : React
             }).default;
         state = {
             analytics: {

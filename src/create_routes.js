@@ -40,7 +40,7 @@ export default function createRoutes(store) {
             if (!campaign) {
                 return replace('/dashboard/add-product');
             } else {
-                return replace(`/dashboard/campaigns/${campaign}/edit`);
+                return replace(`/dashboard/campaigns/${campaign}`);
             }
         }).catch(reason => {
             store.dispatch(notify({
@@ -92,7 +92,7 @@ export default function createRoutes(store) {
                 </Route>
 
                 <Route path="billing" component={DashboardBilling}></Route>
-                <Route path="campaign/:campaignId" 
+                <Route path="campaigns/:campaignId" 
                     component={DashboardCampaignDetail}></Route>
             </Route>
 
