@@ -33,7 +33,7 @@ class CampaignDetail extends Component {
             campaign  = {},
             updateChartSelection
         } = this.props;
-        
+
         let inner, logoUrl;
         let selectChart = (key) => updateChartSelection(key,page.activeSeries);
         let selectSeries = (key) => updateChartSelection(page.activeChart,key);
@@ -88,7 +88,7 @@ class CampaignDetail extends Component {
         return (
             <div className="container main-section campaign-stats">
                 <CampaignDetailBar 
-                    campaignId={page.campaignId} 
+                    campaignId={campaign.id} 
                     title={campaign.name}
                     logoUrl={logoUrl}
                     views={get(analytics,'summary.views')} 
