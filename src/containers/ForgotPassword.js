@@ -51,7 +51,7 @@ export class ForgotPassword extends Component {
                         </form>
                         <br />
                         <Link className="text-center" to="login">Login</Link>
-                        <span className="pull-right">New User? <a href="#/sign-up">Sign up now</a>
+                        <span className="pull-right">New User? <a href="/#/sign-up">Sign up now</a>
                         </span>
                     </div>
                 </div>

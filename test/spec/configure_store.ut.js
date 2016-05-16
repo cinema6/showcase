@@ -6,7 +6,7 @@ import { apiMiddleware } from 'redux-api-middleware';
 import thunk from 'redux-thunk';
 import promisify from '../../src/middleware/promisify';
 import rootReducer from '../../src/reducers';
-import { hashHistory } from 'react-router';
+import history from '../../src/history';
 
 const proxyquire = require('proxyquire');
 
@@ -46,8 +46,8 @@ describe('configureStore(initialState)', function() {
                 __esModule: true
             },
 
-            'react-router': {
-                hashHistory: require('react-router').hashHistory,
+            '../history': {
+                default: history,
 
                 __esModule: true
             }
@@ -94,7 +94,7 @@ describe('configureStore(initialState)', function() {
         });
 
         it('should configure routing middleware', function() {
-            expect(reactRouterRedux.routerMiddleware).toHaveBeenCalledWith(hashHistory);
+            expect(reactRouterRedux.routerMiddleware).toHaveBeenCalledWith(history);
         });
 
         it('should configure logging middleware', function() {

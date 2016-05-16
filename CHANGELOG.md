@@ -1,5 +1,10 @@
 # Showcase
 
+* *[v0.1.0-rc5]*
+  * [FIX]: Make sure the redirect to the dashboard and other pages works
+  * [FIX]: Fix for more S3 issues
+* *[/v0.1.0-rc5]*
+
 * *[v0.1.0-rc4]*
   * [FIX]: Fix for an issue that caused the user not to be able to log
     in

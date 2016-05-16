@@ -6,14 +6,14 @@ import { apiMiddleware } from 'redux-api-middleware';
 import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import promisify from '../middleware/promisify';
-import { hashHistory } from 'react-router';
+import history from '../history';
 import promiseMiddleware from 'redux-promise-middleware';
 
 const middlewares = [
     promisify,
     thunk,
     promiseMiddleware(),
-    routerMiddleware(hashHistory),
+    routerMiddleware(history),
     apiMiddleware
 ];
 
