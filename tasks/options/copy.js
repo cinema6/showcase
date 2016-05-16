@@ -17,9 +17,11 @@ module.exports = {
                 expand: true,
                 cwd: 'static',
                 src: [
-                    '**'
+                    '**',
+                    '!*.html',
+                    '!*.css'
                 ],
-                dest: '<%= settings.distDir %>'
+                dest: '<%= settings.distDir %>/<%= _version %>'
             }
         ]
     }

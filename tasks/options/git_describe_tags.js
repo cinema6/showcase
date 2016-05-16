@@ -4,12 +4,8 @@ var grunt = require('grunt');
 
 module.exports = {
     options: {
-        config: function(data) {
-            var distDir = grunt.config.get('settings.distDir'),
-                distVersionDir = distDir + '/' + data;
-
-            grunt.config.set('_version', data);
-            grunt.config.set('_versionDir', distVersionDir);
+        config: function(version) {
+            grunt.config.set('_version', version);
         }
     }
 };
