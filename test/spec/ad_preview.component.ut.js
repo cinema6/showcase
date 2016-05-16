@@ -183,6 +183,10 @@ describe('AdPreview', function() {
             experience: {
                 id: 'e-showcase_preview',
                 data: {
+                    campaign: {},
+                    collateral: {},
+                    params: {},
+                    links: {},
                     deck: [createInterstitialFactory(this.cardOptions)(this.productData)]
                 }
             }
@@ -245,9 +249,9 @@ describe('AdPreview', function() {
             }, this.placementOptions), {
                 experience: {
                     id: 'e-showcase_preview',
-                    data: {
+                    data: jasmine.objectContaining({
                         deck: [createInterstitialFactory(this.cardOptions)(this.productData)]
-                    }
+                    })
                 }
             });
             expect(this.component.player).toBe(this.Player.calls.mostRecent().returnValue);

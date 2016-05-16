@@ -46,6 +46,10 @@ export default class AdPreview extends Component {
             experience: {
                 id: 'e-showcase_preview',
                 data: {
+                    campaign: {},
+                    collateral: {},
+                    params: {},
+                    links: {},
                     deck: [factory(cardOptions)(productData)]
                 }
             }
