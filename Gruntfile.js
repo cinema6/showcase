@@ -19,11 +19,11 @@ module.exports = function(grunt) {
         s3: {
             staging: {
                 bucket: 'com.cinema6.staging.showcase.apps',
-                app: '/'
+                app: ''
             },
             production: {
                 bucket: 'com.cinema6.portal.showcase.apps',
-                app: '/'
+                app: ''
             }
         }
     };
