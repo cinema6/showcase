@@ -1,6 +1,6 @@
 {
   "name": "showcase",
-  "version": "0.1.0-rc3",
+  "version": "0.1.0-rc4",
   "description": "Reelcontent Showcase app.",
   "main": "src/index.js",
   "scripts": {
@@ -78,11 +78,12 @@
     "accounting": "^0.4.1",
     "babel-runtime": "^6.6.1",
     "braintree-web": "^2.24.0",
-    "chartist": "^0.9.7",
     "c6embed": "^3.11.0",
+    "chartist": "^0.9.7",
     "classnames": "^2.2.5",
     "core-js": "^2.3.0",
     "flux-standard-action": "^0.6.1",
+    "history": "^2.1.1",
     "lodash": "^4.11.1",
     "moment": "^2.13.0",
     "numeral": "^1.5.3",
