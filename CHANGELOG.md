@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.1.0-rc3]*
+  * [FIX]: More S3 fixes
+* *[/v0.1.0-rc3]*
+
 * *[v0.1.0-rc2]*
   * [FIX]: Fix for an issue that caused the app not to deploy correctly
 * *[/v0.1.0-rc2]*
