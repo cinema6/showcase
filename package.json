@@ -32,10 +32,11 @@
     "es6-promise": "^3.1.2",
     "eslint-plugin-jasmine": "^1.8.1",
     "eslint-plugin-react": "^5.0.1",
-    "grunt": "^1.0.1",
+    "grunt": "^0.4.5",
     "grunt-browserify": "^5.0.0",
     "grunt-cli": "^1.2.0",
     "grunt-concurrent": "^2.3.0",
+    "grunt-connect-proxy": "^0.2.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-compass": "^1.1.1",
     "grunt-contrib-compress": "^1.2.0",
@@ -72,6 +73,7 @@
     "babel-runtime": "^6.6.1",
     "braintree-web": "^2.24.0",
     "chartist": "^0.9.7",
+    "c6embed": "^3.11.0",
     "classnames": "^2.2.5",
     "core-js": "^2.3.0",
     "flux-standard-action": "^0.6.1",
@@ -92,6 +94,7 @@
     "redux-form": "^5.2.0",
     "redux-logger": "^2.6.1",
     "redux-promise-middleware": "^3.0.0",
-    "redux-thunk": "^2.0.1"
+    "redux-thunk": "^2.0.1",
+    "showcase-core": "^1.0.1"
   }
 }

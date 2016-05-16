@@ -145,7 +145,7 @@ export default class BraintreeCreditCardForm extends Component {
             </div>)}
             <div className="payment-options">
                 <div className="btn-group" data-toggle="buttons">
-                    <label className={classnames('btn btn-defalt', {
+                    <label className={classnames('btn btn-default', {
                         active: type === PAYMENT_TYPE.CREDIT_CARD
                     })}>
                         <input type="radio"
@@ -157,7 +157,7 @@ export default class BraintreeCreditCardForm extends Component {
                             })} />
                         Credit Card
                     </label>
-                    <label className={classnames('btn btn-defalt', {
+                    <label className={classnames('btn btn-default', {
                         active: type === PAYMENT_TYPE.PAYPAL
                     })}>
                         <input type="radio"

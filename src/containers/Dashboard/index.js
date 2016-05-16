@@ -27,20 +27,21 @@ class Dashboard extends Component {
             {/* top navigation bar */}
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container-fluid">
-                    <div className="navbar-header">
+                    <div className="navbar-header pull-left">
                         <a className="navbar-brand" onClick={toggleNav}>
-                            <img src="images/rc-logo-square.png" />
+                            <i className="fa fa-bars"></i><img src="images/rc-logo-square.png" />
                         </a>
                     </div>
-                    <div id="navbar" className="collapse navbar-collapse pull-right">
-                        <ul className="nav navbar-nav ">
+                    <div id="navbar" className="pull-right">
+                        <ul className="nav navbar-nav navbar-right text-right">
                             <li className="dropdown">
                                 <Dropdown id="user-management-dropdown">
-                                    <Dropdown.Toggle>
+                                    <Dropdown.Toggle useAnchor={true}>
                                         <span className="user-initials">{initials}</span>
-                                        {user.firstName} {user.lastName}
+                                        <span className="hidden-xs">{user.firstName} {user.lastName}
+                                        </span>
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu className="dropdown-menu">
+                                    <Dropdown.Menu>
                                         <MenuItem href="#/dashboard/account">My Profile</MenuItem>
                                         <MenuItem onClick={logoutUser}>Sign out</MenuItem>
                                     </Dropdown.Menu>
@@ -51,18 +52,21 @@ class Dashboard extends Component {
                 </div>
             </nav>
             {/* vertical menu */} {/*hidden until triggered */}
-            <nav id="sidePanel" className={classnames('slideout-menu', {
+            <nav id="sidePanel" className={classnames('slideout-menu animated slideInLeft', {
                 hidden: !showNav
             })}>
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
+                        <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
+                    </li>                    
+                    <li className="menu-item">
+                        <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
                     </li>
                     <li className="menu-item">
-                        <button onClick={logoutUser}>
+                        <button className="btn btn-link" onClick={logoutUser}>
                             <i className="fa fa-power-off" /> 
                             Logout
                         </button>

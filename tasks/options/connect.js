@@ -17,6 +17,20 @@ module.exports = {
         }
     },
     server: {
+        proxies: [
+            {
+                context: '/api',
+                port: 443,
+                https: true,
+                host: 'platform-staging.reelcontent.com',
+                protocol: 'https:',
+                headers: {
+                    origin : 'https://platform-staging.reelcontent.com',
+                    host: 'platform-staging.reelcontent.com',
+                    'accept-encoding': ''
+                }
+            }
+        ],
         options: {
             port: '<%= settings.port %>',
             base: 'server/.build',
@@ -34,7 +48,8 @@ module.exports = {
 
                         '@verbosity': verbosity,
                         '@delay': [500, 1000]
-                    })
+                    }),
+                    require('grunt-connect-proxy/lib/utils').proxyRequest
                 ].concat(middleware);
             }
         }
