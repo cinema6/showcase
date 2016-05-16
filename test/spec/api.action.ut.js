@@ -21,18 +21,17 @@ describe('callAPI(config)', function() {
     });
 
     it('should return an api call with some defaults', function() {
-        expect(result).toEqual({
-            [CALL_API]: {
-                endpoint: config.endpoint,
-                types: config.types.map(type => ({
-                    type,
-                    payload: jasmine.any(Function)
-                })),
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
+        expect(result[CALL_API]).toEqual({
+            endpoint: config.endpoint,
+            types: config.types.map(type => ({
+                type,
+                payload: jasmine.any(Function)
+            })),
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
         });
     });
 
@@ -47,19 +46,18 @@ describe('callAPI(config)', function() {
         });
 
         it('should respect the overrides', function() {
-            expect(result).toEqual({
-                [CALL_API]: {
-                    endpoint: config.endpoint,
-                    types: config.types.map(type => ({
-                        type,
-                        payload: jasmine.any(Function)
-                    })),
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept-Encoding': 'foo'
-                    }
-                }
+            expect(result[CALL_API]).toEqual({
+                endpoint: config.endpoint,
+                types: config.types.map(type => ({
+                    type,
+                    payload: jasmine.any(Function)
+                })),
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Encoding': 'foo'
+                },
+                credentials: 'same-origin'
             });
         });
     });
@@ -72,19 +70,18 @@ describe('callAPI(config)', function() {
         });
 
         it('should stringify it', function() {
-            expect(result).toEqual({
-                [CALL_API]: {
-                    endpoint: config.endpoint,
-                    types: config.types.map(type => ({
-                        type,
-                        payload: jasmine.any(Function)
-                    })),
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(config.body)
-                }
+            expect(result[CALL_API]).toEqual({
+                endpoint: config.endpoint,
+                types: config.types.map(type => ({
+                    type,
+                    payload: jasmine.any(Function)
+                })),
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(config.body)
             });
         });
     });
@@ -99,15 +96,14 @@ describe('callAPI(config)', function() {
         });
 
         it('should not create new Objects', function() {
-            expect(result).toEqual({
-                [CALL_API]: {
-                    endpoint: config.endpoint,
-                    types: config.types.map(config => assign({}, config, { payload: jasmine.any(Function) })),
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
+            expect(result[CALL_API]).toEqual({
+                endpoint: config.endpoint,
+                types: config.types.map(config => assign({}, config, { payload: jasmine.any(Function) })),
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
             });
         });
     });

@@ -28,7 +28,8 @@ export function callAPI(config) {
     return {
         [CALL_API]: merge(defaults({}, config, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin'
         }), {
             body: JSON.stringify(config.body),
             types: config.types.map((type, index) => {
