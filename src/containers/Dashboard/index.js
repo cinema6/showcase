@@ -42,7 +42,7 @@ class Dashboard extends Component {
                                         </span>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <MenuItem href="#/dashboard/account">My Profile</MenuItem>
+                                        <MenuItem href="/#/dashboard/account">My Profile</MenuItem>
                                         <MenuItem onClick={logoutUser}>Sign out</MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>

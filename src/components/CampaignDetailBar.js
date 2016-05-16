@@ -49,7 +49,7 @@ export default class CampaignDetailBar extends Component {
                                 <i className="fa fa-ellipsis-v" aria-hidden="true"> </i>
                               </Dropdown.Toggle>
                               <Dropdown.Menu className="dropdown-menu" >
-                                  <MenuItem href={`#/dashboard/campaigns/${campaignId}/edit`} >
+                                  <MenuItem href={`/#/dashboard/campaigns/${campaignId}/edit`} >
                                     <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     Edit Campaign
                                   </MenuItem>
