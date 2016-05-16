@@ -643,8 +643,27 @@
                 margin: 0;
                 text-align: center;
             }
+        .campaign-stats .campaign-menu li a .fa {
+            margin-right: 10px;
+            text-align: center;
+            margin-left: -5px;
+        }
         .campaign-stats .stats-list td{
             text-align: center;
+        }
+    .campaign-stats .nav-justified > li > a,
+    .campaign-stats .nav-tabs.nav-justified > li > a {
+        border-radius: 0;
+    }
+        .campaign-stats .nav-justified > li:first-child > a,
+        .campaign-stats .nav-tabs.nav-justified > li:first-child > a {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        .campaign-stats .nav-justified > li:last-child > a,
+        .campaign-stats .nav-tabs.nav-justified > li:last-child > a {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
     .data-stacked {
         margin: 20px 10px;
@@ -765,6 +784,9 @@
                 max-width: 90%;
                 margin-left: 5%;
             }
+        .main-section.campaign-stats {
+            margin-top: 100px;
+        }
         .navbar-nav .open .dropdown-menu {
             position: fixed;
             top: 80px;
@@ -809,7 +831,34 @@
                 .payment-modal .modal-header h4 {
                     font-size: 18px;
                 }
+        .campaign-stats .nav-justified {
+            margin-bottom: 10px;
+        }
+        .campaign-stats .campaign-overview .advertiser-logo {
+            height: 50px;
+            width: 50px;
+        }
+            .campaign-stats .campaign-overview .advertiser-logo img {
+                max-width: 50px;
+                max-height: 50px;
+            }
+        .campaign-stats .campaign-overview .campaign-title {
+            max-width: 70%;
+        }
+            .campaign-stats .campaign-overview .campaign-title h2 {
+                display: inline;
+                line-height: 60px;
+            }
+        .campaign-stats .campaign-mini-stats .data-inline p {
+            font-size: 13px;
+        }
+        .campaign-stats .campaign-mini-stats .data-inline h3 {
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
     }
+    
 
 /***scrollbar***/
 
