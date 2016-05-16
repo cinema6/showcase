@@ -122,7 +122,7 @@ describe('createRoutes(store)', function() {
                                 });
 
                                 it('should go to the /campaigns/:campaignId state', function() {
-                                    expect(replace).toHaveBeenCalledWith(`/dashboard/campaigns/${campaign}/edit`);
+                                    expect(replace).toHaveBeenCalledWith(`/dashboard/campaigns/${campaign}`);
                                     expect(callback).toHaveBeenCalledWith();
                                 });
                             });

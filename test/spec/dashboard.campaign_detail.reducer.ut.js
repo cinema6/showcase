@@ -9,7 +9,9 @@ import { assign } from 'lodash';
 describe('dashboardCampaignDetailReducer()', function() {
     it('should return some initial state for the page', function() {
         expect(dashboardCampaignDetailReducer(undefined, 'INIT')).toEqual({
-            loading: true
+            loading: true,
+            activeChart: 'CAMPAIGN_DETAIL_CHART_TODAY',
+            activeSeries: 'CAMPAIGN_DETAIL_SERIES_USERS'
         });
     });
 
