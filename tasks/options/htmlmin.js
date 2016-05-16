@@ -9,19 +9,17 @@ module.exports = {
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true
     },
-    tmp: {
+    build: {
         files: [
             {
                 expand: true,
-                cwd: 'public',
+                cwd: 'static',
                 src: ['**/*.html'],
-                dest: '.tmp/<%= settings.distDir %>'
+                dest: '.tmp/uncompressed/static'
             },
             {
-                expand: true,
-                cwd: 'src',
-                src: ['**/*.html'],
-                dest: '.tmp/src'
+                src: '.tmp/static/index.html',
+                dest: '.tmp/uncompressed/static/index.html'
             }
         ]
     }

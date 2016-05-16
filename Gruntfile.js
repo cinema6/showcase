@@ -19,11 +19,11 @@ module.exports = function(grunt) {
         s3: {
             staging: {
                 bucket: 'com.cinema6.staging',
-                app: 'apps/<%= package.name %>/'
+                app: 'apps/<%= package.name %>'
             },
             production: {
                 bucket: 'com.cinema6.portal',
-                app: 'apps/<%= package.name %>/'
+                app: 'apps/<%= package.name %>'
             }
         }
     };
@@ -95,8 +95,11 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('build', 'build app into distDir', [
+        'git_describe_tags',
         'clean:build',
+        'rebase:build',
         'compass:build',
+        'htmlmin:build',
         'copy:build',
         'browserify:build',
         'uglify:build',
@@ -115,7 +118,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('publish', 'build and upload the application to s3', function(target) {
         grunt.task.run('build');
-        grunt.task.run('build:docs');
         grunt.task.run('s3:' + target);
     });
 };
