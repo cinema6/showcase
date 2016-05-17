@@ -538,6 +538,34 @@ describe('product wizard actions', function() {
 
                 });
             });
+
+            describe('if no payment is specified', function() {
+                beforeEach(function(done) {
+                    dispatchDeferred = defer();
+                    dispatch.calls.reset();
+                    paymentMethod.create.calls.reset();
+
+                    success.calls.reset();
+                    failure.calls.reset();
+
+                    spyOn(advertiser, 'query').and.callThrough();
+
+                    createCampaign({ productData, targeting })(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should not create a paymentMethod', function() {
+                    expect(paymentMethod.create).not.toHaveBeenCalled();
+                });
+
+                it('should get the advertiser', function() {
+                    expect(advertiser.query).toHaveBeenCalledWith({
+                        org: state.db.user[state.session.user].org,
+                        limit: 1
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(advertiser.query.calls.mostRecent().returnValue);
+                });
+            });
         });
     });
 
@@ -615,7 +643,7 @@ describe('product wizard actions', function() {
 
     describe('wizardComplete({ productData, targeting })', function() {
         let productData, targeting;
-        let result;
+        let thunk;
 
         beforeEach(function() {
             productData = {
@@ -627,11 +655,129 @@ describe('product wizard actions', function() {
                 gender: TARGETING.GENDER.MALE
             };
 
-            result = wizardComplete({ productData, targeting });
+            thunk = wizardComplete({ productData, targeting });
         });
 
-        it('should return an FSA', function() {
-            expect(result).toEqual(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+        it('should return a thunk', function() {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            let user;
+            let success, failure;
+            let state, dispatchDeferred;
+            let dispatch, getState;
+
+            beforeEach(function(done) {
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                user = {
+                    id: `u-${createUuid()}`
+                };
+
+                dispatchDeferred = defer();
+                state = {
+                    session: {
+                        user: user.id,
+                        paymentMethods: []
+                    },
+                    db: {
+                        user: user
+                    }
+                };
+
+                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
+                    if (typeof action === 'function') {
+                        return dispatchDeferred.promise;
+                    }
+
+                    if (action.payload instanceof Promise) {
+                        return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
+                    }
+
+                    return Promise.resolve(action.payload);
+                });
+                getState = jasmine.createSpy('getState()').and.returnValue(state);
+
+                spyOn(paymentMethod, 'list').and.callThrough();
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            it('should list the paymentMethods', function() {
+                expect(paymentMethod.list).toHaveBeenCalledWith();
+                expect(dispatch).toHaveBeenCalledWith(paymentMethod.list.calls.mostRecent().returnValue);
+            });
+
+            describe('when the paymentMethods are fetched', function() {
+                describe('if there is one', function() {
+                    beforeEach(function(done) {
+                        dispatch.calls.reset();
+                        dispatchDeferred.resolve([createUuid()]);
+                        dispatch.and.callFake(action => {
+                            if (typeof action === 'function') {
+                                return Promise.resolve(action(dispatch, getState));
+                            }
+
+                            if (action.payload instanceof Promise) {
+                                return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
+                            }
+
+                            return Promise.resolve(action.payload);
+                        });
+
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch createCampaign()', function() {
+                        expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ type: CREATE_CAMPAIGN, payload: jasmine.any(Promise) }));
+                    });
+                });
+
+                describe('if there are none', function() {
+                    beforeEach(function(done) {
+                        dispatch.calls.reset();
+                        dispatchDeferred.resolve([]);
+
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch WIZARD_COMPLETE', function() {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+                    });
+                });
+            });
+
+            describe('if the user has a payment method', function() {
+                beforeEach(function(done) {
+                    dispatch.calls.reset();
+                    dispatch.and.callFake(action => {
+                        if (typeof action === 'function') {
+                            return Promise.resolve(action(dispatch, getState));
+                        }
+
+                        if (action.payload instanceof Promise) {
+                            return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
+                        }
+
+                        return Promise.resolve(action.payload);
+                    });
+                    state.session.paymentMethods = [createUuid()];
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should not dispatch WIZARD_COMPLETE', function() {
+                    expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ type: WIZARD_COMPLETE }));
+                });
+
+                it('should dispatch createCampaign()', function() {
+                    expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ type: CREATE_CAMPAIGN, payload: jasmine.any(Promise) }));
+                });
+            });
         });
     });
 
