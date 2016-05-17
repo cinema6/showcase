@@ -8,6 +8,9 @@ import {
 } from '../actions/auth';
 import payment, { paymentMethod } from '../actions/payment';
 import campaign from '../actions/campaign';
+import {
+    CANCEL as CANCEL_CAMPAIGN
+} from '../actions/campaign';
 import { assign, reject, includes } from 'lodash';
 
 const DEFAULT_STATE = {
@@ -57,6 +60,9 @@ export default handleActions({
     }),
     [campaign.remove.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
         campaigns: state.campaigns && reject(state.campaigns, id => includes(campaigns, id))
+    }),
+    [`${CANCEL_CAMPAIGN}_FULFILLED`]: (state, { payload: [campaign] }) => assign({}, state, {
+        campaigns: state.campaigns && reject(state.campaigns, id => id === campaign)
     }),
 
     [LOGOUT_SUCCESS]: () => DEFAULT_STATE
