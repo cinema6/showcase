@@ -9,7 +9,8 @@ describe('dbReducer()', function() {
             user: userReducer,
             payment: identity,
             paymentMethod: identity,
-            campaign: identity
+            campaign: identity,
+            advertiser: identity
         })(undefined, 'INIT'));
     });
 });
