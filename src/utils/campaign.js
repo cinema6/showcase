@@ -5,7 +5,8 @@ import {
     defaultsDeep,
     defaults,
     assign,
-    cloneDeep as clone
+    cloneDeep as clone,
+    get
 } from 'lodash';
 import * as TARGETING from '../enums/targeting';
 
@@ -45,8 +46,8 @@ export function productDataFromCampaign(campaign) {
 export function targetingFromCampaign(campaign) {
     if (!campaign) { return null; }
 
-    const [gender] = campaign.targeting.demographics.gender;
-    const [age] = campaign.targeting.demographics.age;
+    const [gender] = get(campaign, 'targeting.demographics.gender', []);
+    const [age] = get(campaign, 'targeting.demographics.age', []);
 
     return defaults({ gender, age }, {
         gender: TARGETING.GENDER.ALL,
