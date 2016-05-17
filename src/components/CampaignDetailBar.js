@@ -12,7 +12,9 @@ export default class CampaignDetailBar extends Component {
             title,
             views,
             clicks,
-            installs
+            installs,
+
+            onDeleteCampaign
         } = this.props;
 
         let format = (n) => numeral(n).format('0,0');
@@ -54,7 +56,7 @@ export default class CampaignDetailBar extends Component {
                                     Edit Campaign
                                   </MenuItem>
                                   <MenuItem divider />
-                                  <MenuItem>
+                                  <MenuItem onSelect={() => onDeleteCampaign()}>
                                     <i className="fa fa-trash-o" aria-hidden="true"></i>
                                     Delete Campaign
                                   </MenuItem>
@@ -76,11 +78,13 @@ export default class CampaignDetailBar extends Component {
 }
 
 CampaignDetailBar.propTypes = {
-    campaignId: PropTypes.string,
-    logoUrl:    PropTypes.string,
-    title:      PropTypes.string,
-    views:      PropTypes.number,
-    clicks:     PropTypes.number,
-    installs:   PropTypes.number
+    campaignId:         PropTypes.string,
+    logoUrl:            PropTypes.string,
+    title:              PropTypes.string,
+    views:              PropTypes.number,
+    clicks:             PropTypes.number,
+    installs:           PropTypes.number,
+
+    onDeleteCampaign:   PropTypes.func.isRequired
 };
 
