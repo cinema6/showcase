@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.1.0-rc6]*
+  * [FIX]: Allow users to create campaigns
+* *[/v0.1.0-rc6]*
+
 * *[v0.1.0-rc5]*
   * [FIX]: Make sure the redirect to the dashboard and other pages works
   * [FIX]: Fix for more S3 issues

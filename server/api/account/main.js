@@ -243,7 +243,7 @@ module.exports = function(http) {
      **********************************************************************************************/
 
     http.whenGET('/api/account/advrs', function(request) {
-        var filters = pluckExcept(request.query, ['orgs']),
+        var filters = pluckExcept(request.query, ['sort', 'limit', 'skip']),
             advertisers = grunt.file.expand(path.resolve(__dirname, './advertisers/*.json'))
                 .map(function(path) {
                     var id = path.match(/[^\/]+(?=\.json)/)[0];
@@ -251,15 +251,10 @@ module.exports = function(http) {
                     return extend(grunt.file.readJSON(path), { id: id });
                 })
                 .filter(function(advr) {
-                    return Object.keys(request.query)
+                    return Object.keys(filters)
                         .every(function(key) {
                             return request.query[key] === advr[key];
                         });
-                })
-                .filter(function(advr) {
-                    var org = request.query.org;
-
-                    return !org || advr.org === org;
                 });
 
         this.respond(200, advertisers);

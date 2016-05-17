@@ -16,6 +16,7 @@ import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
 import { paymentMethod } from '../../src/actions/payment';
 import campaign from '../../src/actions/campaign';
+import advertiser from '../../src/actions/advertiser';
 import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
@@ -50,6 +51,11 @@ describe('product wizard actions', function() {
             },
             './campaign': {
                 default: campaign,
+
+                __esModule: true
+            },
+            './advertiser': {
+                default: advertiser,
 
                 __esModule: true
             }
@@ -384,12 +390,28 @@ describe('product wizard actions', function() {
         });
 
         describe('when executed', function() {
-            let dispatchDeferred;
+            let userID;
+            let dispatchDeferred, state;
             let dispatch, getState;
             let success, failure;
 
             beforeEach(function(done) {
+                userID = `u-${createUuid}`;
+
                 dispatchDeferred = defer();
+                state = {
+                    session: {
+                        user: userID
+                    },
+                    db: {
+                        user: {
+                            [userID]: {
+                                id: userID,
+                                org: `o-${createUuid()}`
+                            }
+                        }
+                    }
+                };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
                     if (typeof action === 'function') { return dispatchDeferred.promise; }
@@ -401,7 +423,7 @@ describe('product wizard actions', function() {
                             .catch(reason => Promise.reject({ reason, action }));
                     }
                 });
-                getState = jasmine.createSpy('getState()').and.returnValue({});
+                getState = jasmine.createSpy('getState()').and.returnValue(state);
 
                 success = jasmine.createSpy('success()');
                 failure = jasmine.createSpy('failure()');
@@ -423,7 +445,7 @@ describe('product wizard actions', function() {
 
             describe('when the payment method is created', function() {
                 beforeEach(function(done) {
-                    spyOn(campaign, 'create').and.callThrough();
+                    spyOn(advertiser, 'query').and.callThrough();
                     dispatchDeferred.resolve([createUuid()]);
 
                     dispatchDeferred = defer();
@@ -432,64 +454,88 @@ describe('product wizard actions', function() {
                     setTimeout(done);
                 });
 
-                it('should create a campaign', function() {
-                    expect(campaign.create).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }) });
-                    expect(dispatch).toHaveBeenCalledWith(campaign.create.calls.mostRecent().returnValue);
+                it('should get the advertiser', function() {
+                    expect(advertiser.query).toHaveBeenCalledWith({
+                        org: state.db.user[state.session.user].org,
+                        limit: 1
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(advertiser.query.calls.mostRecent().returnValue);
                 });
 
-                describe('when the campaign has been created', function() {
-                    let id;
+                describe('when the advertiser is fetched', function() {
+                    let advertiserID;
 
                     beforeEach(function(done) {
-                        id = `cam-${createUuid()}`;
-                        dispatchDeferred.resolve([id]);
+                        advertiserID = `a-${createUuid()}`;
+                        dispatchDeferred.resolve([advertiserID]);
 
+                        spyOn(campaign, 'create').and.callThrough();
                         dispatchDeferred = defer();
                         dispatch.calls.reset();
+
                         setTimeout(done);
                     });
 
-                    it('should redirect to the product page', function() {
-                        expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}`));
+                    it('should create a campaign', function() {
+                        expect(campaign.create).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }, { advertiserId: advertiserID }) });
+                        expect(dispatch).toHaveBeenCalledWith(campaign.create.calls.mostRecent().returnValue);
                     });
 
-                    it('should show a success notification', function() {
-                        expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.SUCCESS, message: 'Your app has been added!' });
-                        expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                    describe('when the campaign has been created', function() {
+                        let id;
+
+                        beforeEach(function(done) {
+                            id = `cam-${createUuid()}`;
+                            dispatchDeferred.resolve([id]);
+
+                            dispatchDeferred = defer();
+                            dispatch.calls.reset();
+                            setTimeout(done);
+                        });
+
+                        it('should redirect to the product page', function() {
+                            expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}`));
+                        });
+
+                        it('should show a success notification', function() {
+                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.SUCCESS, message: 'Your app has been added!' });
+                            expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                        });
+
+                        it('should fulfill the promise', function() {
+                            expect(success).toHaveBeenCalledWith([id]);
+                        });
                     });
 
-                    it('should fulfill the promise', function() {
-                        expect(success).toHaveBeenCalledWith([id]);
+                    describe('if there is a problem', function() {
+                        let reason;
+
+                        beforeEach(function(done) {
+                            reason = new Error('It went wrong!');
+                            reason.response = 'Something bad happened!';
+                            dispatchDeferred.reject(reason);
+
+                            dispatchDeferred = defer();
+                            dispatch.calls.reset();
+                            setTimeout(done);
+                        });
+
+                        it('should not redirect to the product page', function() {
+                            expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
+                                type: replace('foo').type
+                            }));
+                        });
+
+                        it('should show a failure notification', function() {
+                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.DANGER, message: `There was a problem: ${reason.response}` });
+                            expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                        });
+
+                        it('should reject the promise', function() {
+                            expect(failure).toHaveBeenCalledWith(reason);
+                        });
                     });
-                });
 
-                describe('if there is a problem', function() {
-                    let reason;
-
-                    beforeEach(function(done) {
-                        reason = new Error('It went wrong!');
-                        reason.response = 'Something bad happened!';
-                        dispatchDeferred.reject(reason);
-
-                        dispatchDeferred = defer();
-                        dispatch.calls.reset();
-                        setTimeout(done);
-                    });
-
-                    it('should not redirect to the product page', function() {
-                        expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
-                            type: replace('foo').type
-                        }));
-                    });
-
-                    it('should show a failure notification', function() {
-                        expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.DANGER, message: `There was a problem: ${reason.response}` });
-                        expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
-                    });
-
-                    it('should reject the promise', function() {
-                        expect(failure).toHaveBeenCalledWith(reason);
-                    });
                 });
             });
         });

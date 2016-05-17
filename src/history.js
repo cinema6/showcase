@@ -1,6 +1,7 @@
 import createHashHistory from 'history/lib/createHashHistory';
-import useQueries from 'history/lib/useQueries';
+import useRouterHistory from 'react-router/lib/useRouterHistory';
 
-export default useQueries(createHashHistory)({
-    queryKey: false
+export default useRouterHistory(createHashHistory)({
+    queryKey: false,
+    basename: ''
 });

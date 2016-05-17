@@ -2,6 +2,7 @@ import { createDbActions, createDbReducer } from '../../src/utils/db';
 import {
     LIST,
     GET,
+    QUERY,
     CREATE,
     UPDATE,
     REMOVE
@@ -30,6 +31,7 @@ describe('utils/db', function() {
             expect(actions).toEqual({
                 list: jasmine.any(Function),
                 get: jasmine.any(Function),
+                query: jasmine.any(Function),
                 create: jasmine.any(Function),
                 update: jasmine.any(Function),
                 remove: jasmine.any(Function)
@@ -69,14 +71,17 @@ describe('utils/db', function() {
                     get: {
                         b: 'get-param'
                     },
+                    query: {
+                        c: 'query-param'
+                    },
                     create: {
-                        c: 'create-param'
+                        d: 'create-param'
                     },
                     update: {
-                        d: 'update-param'
+                        e: 'update-param'
                     },
                     remove: {
-                        e: 'remove-param'
+                        f: 'remove-param'
                     }
                 };
 
@@ -93,6 +98,10 @@ describe('utils/db', function() {
                 expect(getCall(actions.get({ id })).endpoint).toEqual(formatURL({
                     pathname: `${endpoint}/${id}`,
                     query: queries.get
+                }));
+                expect(getCall(actions.query({ foo: 'bar' })).endpoint).toEqual(formatURL({
+                    pathname: endpoint,
+                    query: assign({}, queries.query, { foo: 'bar' })
                 }));
                 expect(getCall(actions.create({ data: {} })).endpoint).toEqual(formatURL({
                     pathname: endpoint,
@@ -342,6 +351,136 @@ describe('utils/db', function() {
 
                     it('should call the api with that key in the meta', function() {
                         expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } })));
+                    });
+                });
+            });
+        });
+
+        describe('query(params)', function() {
+            let params;
+            let thunk;
+
+            beforeEach(function() {
+                params = { foo: 'bar', limit: 1 };
+                thunk = actions.query(params);
+            });
+
+            it('should return a thunk', function() {
+                expect(thunk).toEqual(jasmine.any(Function));
+            });
+
+            it('should include action names', function() {
+                expect(actions.query.START).toBe(`@@db:${type}/QUERY/START`);
+                expect(actions.query.SUCCESS).toBe(`@@db:${type}/QUERY/SUCCESS`);
+                expect(actions.query.FAILURE).toBe(`@@db:${type}/QUERY/FAILURE`);
+            });
+
+            describe('when called', function() {
+                let items, dispatchDeferred;
+                let dispatch, getState;
+                let success, failure;
+
+                beforeEach(function(done) {
+                    items = [
+                        {
+                            id: createUuid(),
+                            foo: 'bar',
+                            hello: 'world'
+                        },
+                        {
+                            id: createUuid(),
+                            foo: 'bar',
+                            hello: 'there'
+                        }
+                    ];
+                    dispatch = jasmine.createSpy('dispatch()').and.returnValue((dispatchDeferred = defer()).promise);
+                    getState = jasmine.createSpy('getState()').and.returnValue({});
+
+                    success = jasmine.createSpy('success()');
+                    failure = jasmine.createSpy('failure()');
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should dispatch a START action for the type', function() {
+                    expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.START)());
+                });
+
+                it('should call the api', function() {
+                    expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                        types: [
+                            {
+                                type: QUERY.START,
+                                meta: { type, key: 'id', id: null }
+                            },
+                            {
+                                type: QUERY.SUCCESS,
+                                meta: { type, key: 'id', id: null }
+                            },
+                            {
+                                type: QUERY.FAILURE,
+                                meta: { type, key: 'id', id: null }
+                            }
+                        ],
+                        endpoint: formatURL({
+                            pathname: endpoint,
+                            query: params
+                        }),
+                        method: 'GET'
+                    })[CALL_API]);
+                });
+
+                describe('if the action succeeds', function() {
+                    beforeEach(function(done) {
+                        dispatch.calls.reset();
+
+                        dispatchDeferred.resolve(items);
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch a SUCCESS action for the type', function() {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.SUCCESS)(items.map(item => item.id)));
+                    });
+
+                    it('should fulfill with an Array of ids', function() {
+                        expect(success).toHaveBeenCalledWith(items.map(item => item.id));
+                    });
+                });
+
+                describe('if the action fails', function() {
+                    let reason;
+
+                    beforeEach(function(done) {
+                        dispatch.calls.reset();
+
+                        reason = new Error('It went wrong.');
+                        dispatchDeferred.reject(reason);
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch a FAILURE action for the type', function() {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.FAILURE)(reason));
+                    });
+
+                    it('should reject with the reason', function() {
+                        expect(failure).toHaveBeenCalledWith(reason);
+                    });
+                });
+
+                describe('if another key is specified', function() {
+                    let key;
+
+                    beforeEach(function(done) {
+                        key = 'token';
+                        dispatch.calls.reset();
+
+                        createDbActions({ type, endpoint, key }).query(params)(dispatch, getState).then(success, failure);
+                        setTimeout(done);
+                    });
+
+                    it('should call the api with that key in the meta', function() {
+                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } })));
                     });
                 });
             });
@@ -939,6 +1078,44 @@ describe('utils/db', function() {
                     });
                 });
 
+                describe(QUERY.SUCCESS, function() {
+                    let payload;
+                    let meta;
+                    let action;
+                    let expected;
+
+                    beforeEach(function() {
+                        payload = [
+                            {
+                                id: `cam-${createUuid()}`,
+                                name: 'foo'
+                            },
+                            {
+                                id: `cam-${createUuid()}`,
+                                name: 'bar'
+                            }
+                        ];
+                        meta = { type: 'campaign', key: 'id' };
+
+                        expected = assign({}, state, {
+                            campaign: assign({}, state.campaign, keyBy(payload, 'id'))
+                        });
+
+                        action = createAction(QUERY.SUCCESS, null, () => meta)(payload);
+                        newState = reducer(state, action);
+                    });
+
+                    it('should add the object to the store', function() {
+                        expect(newState).toEqual(expected);
+                    });
+
+                    it('should call each reducer', function() {
+                        Object.keys(entityReducers).forEach(type => expect(entityReducers[type]).toHaveBeenCalledWith(expected[type], action));
+                        expect(newState.user).toBe(entityReducers.user.calls.mostRecent().returnValue);
+                        expect(newState.campaign).toBe(entityReducers.campaign.calls.mostRecent().returnValue);
+                    });
+                });
+
                 describe(CREATE.SUCCESS, function() {
                     let payload;
                     let meta;
@@ -1026,11 +1203,11 @@ describe('utils/db', function() {
                         newState = reducer(state, action);
                     });
 
-                    it('should add the object to the store', function() {
+                    it('should remove the object from the store', function() {
                         expect(newState).toEqual(expected);
                     });
 
-                    it('should call each reducer', function() {
+                    it('should call every reducer', function() {
                         Object.keys(entityReducers).forEach(type => expect(entityReducers[type]).toHaveBeenCalledWith(expected[type], action));
                         expect(newState.user).toBe(entityReducers.user.calls.mostRecent().returnValue);
                         expect(newState.campaign).toBe(entityReducers.campaign.calls.mostRecent().returnValue);

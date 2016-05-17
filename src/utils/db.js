@@ -14,6 +14,7 @@ import { format as formatURL } from 'url';
 
 export const LIST = getActionNames('LIST');
 export const GET = getActionNames('GET');
+export const QUERY = getActionNames('QUERY');
 export const CREATE = getActionNames('CREATE');
 export const UPDATE = getActionNames('UPDATE');
 export const REMOVE = getActionNames('REMOVE');
@@ -83,6 +84,20 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
     }
     assign(get, getTypedActionNames('GET'));
 
+    function query(params) {
+        return function thunk(dispatch) {
+            return wrap(query, dispatch, () => dispatch(call({
+                types: [QUERY.START, QUERY.SUCCESS, QUERY.FAILURE],
+                endpoint: formatURL({
+                    pathname: endpoint,
+                    query: assign({}, queries.query, params)
+                }),
+                method: 'GET'
+            })).then(items => map(items, key)));
+        };
+    }
+    assign(query, getTypedActionNames('QUERY'));
+
     function create({ data }) {
         return function thunk(dispatch) {
             return wrap(create, dispatch, () => dispatch(call({
@@ -143,7 +158,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
     }
     assign(remove, getTypedActionNames('REMOVE'));
 
-    return { list, get, create, update, remove };
+    return { list, get, query, create, update, remove };
 }
 
 export function createDbReducer(reducerMap) {
@@ -170,6 +185,7 @@ export function createDbReducer(reducerMap) {
     function updateStore(state, action) {
         switch (action.type) {
         case LIST.SUCCESS:
+        case QUERY.SUCCESS:
             return addMany(state, action);
         case GET.SUCCESS:
         case CREATE.SUCCESS:

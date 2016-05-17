@@ -53,7 +53,7 @@ describe('campaign utils', function() {
                 application: 'showcase',
                 cards: [],
                 name: productData.name,
-                status: 'outOfBudget',
+                status: 'draft',
                 product: productData,
                 targeting: {
                     demographics: {
@@ -83,6 +83,44 @@ describe('campaign utils', function() {
                         appStoreCategory: productData.categories
                     }
                 }));
+            });
+        });
+
+        describe('if a partial campaign is passed', function() {
+            let campaign;
+
+            beforeEach(function() {
+                campaign = {
+                    advertiserId: `a-${createUuid()}`
+                };
+
+                productData = {
+                    name: 'New Name',
+                    description: 'New Description'
+                };
+                targeting = {
+                    gender: TARGETING.GENDER.FEMALE
+                };
+
+                result = campaignFromData({ productData, targeting }, campaign);
+            });
+
+            it('should use defaults to create a full campaign', function() {
+                expect(result).toEqual({
+                    advertiserId: campaign.advertiserId,
+                    application: 'showcase',
+                    cards: [],
+                    name: productData.name,
+                    status: 'draft',
+                    product: productData,
+                    targeting: {
+                        demographics: {
+                            gender: [TARGETING.GENDER.FEMALE],
+                            age: []
+                        },
+                        appStoreCategory: []
+                    }
+                });
             });
         });
 
