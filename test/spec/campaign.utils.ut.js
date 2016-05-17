@@ -53,7 +53,7 @@ describe('campaign utils', function() {
                 application: 'showcase',
                 cards: [],
                 name: productData.name,
-                status: 'outOfBudget',
+                status: 'draft',
                 product: productData,
                 targeting: {
                     demographics: {
@@ -111,7 +111,7 @@ describe('campaign utils', function() {
                     application: 'showcase',
                     cards: [],
                     name: productData.name,
-                    status: 'outOfBudget',
+                    status: 'draft',
                     product: productData,
                     targeting: {
                         demographics: {

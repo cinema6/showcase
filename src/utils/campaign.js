@@ -15,7 +15,7 @@ export function campaignFromData({ productData, targeting }, campaign) {
     const base = defaultsDeep({}, campaign, {
         application: 'showcase',
         cards: [],
-        status: 'outOfBudget',
+        status: 'draft',
         targeting: {
             demographics: {
                 age: [],
