@@ -13,7 +13,8 @@ class EditTargeting extends Component {
     render() {
         const {
             fields: { age, gender },
-            handleSubmit
+            handleSubmit,
+            submitting
         } = this.props;
 
         return (<form onSubmit={handleSubmit}>
@@ -70,7 +71,9 @@ class EditTargeting extends Component {
                 </radiogroup>
             </div>
             <button type="submit"
-                className="col-sm-6 col-xs-12 btn btn-danger btn-lg">
+                className={classnames('col-sm-6 col-xs-12 btn btn-danger btn-lg', {
+                    'btn-waiting': submitting
+                })}>
                 Next
             </button>
         </form>);
@@ -82,6 +85,8 @@ EditTargeting.propTypes = {
         age: PropTypes.object.isRequired,
         gender: PropTypes.object.isRequired
     }).isRequired,
+    submitting: PropTypes.bool.isRequred,
+
     handleSubmit: PropTypes.func.isRequired
 };
 
