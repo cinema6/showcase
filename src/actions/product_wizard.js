@@ -3,6 +3,7 @@
 import { getProductData } from './collateral';
 import { paymentMethod } from './payment';
 import campaign from './campaign';
+import advertiser from './advertiser';
 import { createAction } from 'redux-actions';
 import { TYPE  as NOTIFICATION_TYPE } from '../enums/notification';
 import { notify } from './notification';
@@ -33,14 +34,20 @@ export const wizardDestroyed = createAction(WIZARD_DESTROYED);
 
 export const CREATE_CAMPAIGN = prefix('CREATE_CAMPAIGN');
 export function createCampaign({ payment, productData, targeting }) {
-    return function thunk(dispatch) {
+    return function thunk(dispatch, getState) {
+        const state = getState();
+        const user = state.db.user[state.session.user];
+
         return dispatch(createAction(CREATE_CAMPAIGN)(
             dispatch(paymentMethod.create({ data: {
                 cardholderName: payment.cardholderName,
                 paymentMethodNonce: payment.nonce,
                 makeDefault: true
-            } })).then(() => dispatch(campaign.create({
-                data: campaignFromData({ productData, targeting })
+            } })).then(() => dispatch(advertiser.query({
+                org: user.org,
+                limit: 1
+            }))).then(([advertiserId]) => dispatch(campaign.create({
+                data: campaignFromData({ productData, targeting }, { advertiserId })
             }))).then(([id]) => {
                 dispatch(replace(`/dashboard/campaigns/${id}`));
                 dispatch(notify({
