@@ -37,7 +37,22 @@ describe('campaign actions', function() {
             type: 'campaign',
             endpoint: '/api/campaigns',
             queries: {
-                list: { application: 'showcase' }
+                list: {
+                    application: 'showcase',
+                    statuses: [
+                        'draft',
+                        'new',
+                        'pending',
+                        'approved',
+                        'rejected',
+                        'active',
+                        'paused',
+                        'inactive',
+                        'expired',
+                        'outOfBudget',
+                        'error'
+                    ].join(',')
+                }
             }
         });
         expect(campaign).toEqual(createDbActions.calls.mostRecent().returnValue);

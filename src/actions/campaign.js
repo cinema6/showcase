@@ -9,7 +9,13 @@ const campaign = createDbActions({
     type: 'campaign',
     endpoint: '/api/campaigns',
     queries: {
-        list: { application: 'showcase' }
+        list: {
+            application: 'showcase',
+            statuses: [
+                'draft', 'new', 'pending', 'approved', 'rejected', 'active', 'paused', 'inactive',
+                'expired', 'outOfBudget', 'error'
+            ].join(',')
+        }
     }
 });
 
