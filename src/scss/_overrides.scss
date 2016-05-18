@@ -366,7 +366,7 @@
  Forms
  ----------------------------
  ***/
-    .login-form {
+    .pre-login-form {
         padding: 15px 30px 30px;
     }
  /***
@@ -672,6 +672,14 @@
         .data-stacked h4 {
             margin: 0;
         }
+/***tracking modal***/
+    .tracking-modal .modal-body {
+        overflow: auto;
+        padding-bottom: 40px;
+    }
+        .tracking-modal .btn-group {
+            margin-bottom: 30px;
+        }
  /***
  Billing & Payments
  ----------------------------
@@ -780,7 +788,7 @@
             margin-top: 40px;
             margin-bottom: 40px;
         }
-            .login-form {
+            .pre-login-form {
                 max-width: 90%;
                 margin-left: 5%;
             }

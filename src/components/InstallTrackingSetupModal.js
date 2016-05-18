@@ -15,9 +15,9 @@ export default class InstallTrackingSetupModal extends Component {
             onCopyCampaignIdError
         } = this.props;
 
-        return (<Modal show={show} onHide={onClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Track Your Installs</Modal.Title>
+        return (<Modal className="tracking-modal" show={show} onHide={onClose}>
+            <Modal.Header closeButton className="text-center">
+                <h2 className="modal-title">Track Your Installs</h2>
                 <p>Add a tracking pixel to track your installs</p>
             </Modal.Header>
             <Modal.Body>
@@ -25,14 +25,14 @@ export default class InstallTrackingSetupModal extends Component {
                     <div className="col-md-8 col-md-offset-2 text-center">
                         <form>
                             <div className="form-group">
-                                <label htmlFor="usernameInput">Product ID</label>
-                                <input type="text" value={campaignId} readOnly />
+                                <label htmlFor="tracking-id">Product ID</label>
+                                <input type="text" className="form-control text-center" id="tracking-id" value={campaignId} readOnly />
                             </div>
                             <CopyButton copyText={campaignId}
                                 onCopySuccess={onCopyCampaignIdSuccess}
                                 onCopyError={onCopyCampaignIdError}
                                 bsSize="lg"
-                                bsStyle="primary">
+                                bsStyle="primary" className="btn-block">
                                 Copy
                             </CopyButton>
                         </form>
