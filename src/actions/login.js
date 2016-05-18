@@ -8,6 +8,7 @@ import {
 } from './session';
 import { replace } from 'react-router-redux';
 import { createAction } from 'redux-actions';
+import { noop } from 'lodash';
 
 function loginType(type) {
     return `LOGIN/${type}`;
@@ -21,8 +22,8 @@ export function loginUser({ email, password, redirect }) {
         dispatch(createAction(LOGIN_START)());
 
         return dispatch(authLoginUser({ email, password }))
-            .then(data => dispatch(getCampaigns())
-            .then(() => Promise.all([
+            .then(data => dispatch(getCampaigns()).catch(noop) // Log-in even if GETting campaigns
+            .then(() => Promise.all([                          // fails
                 dispatch(createAction(LOGIN_SUCCESS)(data)),
                 dispatch(replace(redirect))
             ])))
