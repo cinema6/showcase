@@ -1,7 +1,7 @@
 'use strict';
 
 import {
-    filter,
+    reject,
     defaultsDeep,
     defaults,
     assign,
@@ -31,8 +31,8 @@ export function campaignFromData({ productData, targeting }, campaign) {
         product: assign({}, base.product, productData),
         targeting: assign({}, base.targeting, {
             demographics: {
-                age: filter([newTargeting.age]),
-                gender: filter([newTargeting.gender])
+                age: reject([newTargeting.age], age => age === TARGETING.AGE.ALL),
+                gender: reject([newTargeting.gender], gender => gender === TARGETING.GENDER.ALL)
             },
             appStoreCategory: productData.categories || base.targeting.appStoreCategory
         })

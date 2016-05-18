@@ -16,7 +16,7 @@ import { replace } from 'react-router-redux';
 
 const proxyquire = require('proxyquire');
 
-describe('actions: auth', function() {
+describe('actions: login', function() {
     let authActions, sessionActions;
     let actions;
     let loginUser;
@@ -95,6 +95,27 @@ describe('actions: auth', function() {
                     describe('when the campaigns are fetched', function() {
                         beforeEach(function(done) {
                             dispatchDeferred.resolve([]);
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
+                            dispatch.and.callFake(action => Promise.resolve(action.payload));
+                        });
+
+                        it('should dispatch LOGIN_SUCCESS', function() {
+                            expect(dispatch).toHaveBeenCalledWith(createAction(LOGIN_SUCCESS)(data));
+                        });
+
+                        it('should dispatch a transition to the redirect', function() {
+                            expect(dispatch).toHaveBeenCalledWith(replace(redirect));
+                        });
+                    });
+
+                    describe('if getting the campaigns fails', function() {
+                        let reason;
+
+                        beforeEach(function(done) {
+                            reason = new Error('It failed!');
+                            dispatchDeferred.reject(reason);
                             setTimeout(done);
 
                             dispatch.calls.reset();
