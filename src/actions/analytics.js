@@ -19,7 +19,7 @@ export function getCampaignAnalytics(campaignId) {
                 GET_CAMPAIGN_ANALYTICS_FAILURE
             ],
             credentials: 'same-origin',
-            endpoint: `/api/analytics/campaigns?ids=${campaignId}`
+            endpoint: `/api/analytics/campaigns/showcase/apps/${campaignId}`
         }));
     };
 }
