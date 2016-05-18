@@ -24,7 +24,21 @@ export function productSelected({ product }) {
 }
 
 export const WIZARD_COMPLETE = prefix('WIZARD_COMPLETE');
-export const wizardComplete = createAction(WIZARD_COMPLETE);
+export function wizardComplete({ productData, targeting }) {
+    return function thunk(dispatch, getState) {
+        const [method] = getState().session.paymentMethods;
+
+        return Promise.resolve(
+            method || dispatch(paymentMethod.list()).then(([method]) => method)
+        ).then(paymentMethod => {
+            if (paymentMethod) {
+                return dispatch(createCampaign({ productData, targeting }));
+            } else {
+                return dispatch(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+            }
+        });
+    };
+}
 
 export const GO_TO_STEP = prefix('GO_TO_STEP');
 export const goToStep = createAction(GO_TO_STEP);
@@ -39,11 +53,11 @@ export function createCampaign({ payment, productData, targeting }) {
         const user = state.db.user[state.session.user];
 
         return dispatch(createAction(CREATE_CAMPAIGN)(
-            dispatch(paymentMethod.create({ data: {
+            (payment ? dispatch(paymentMethod.create({ data: {
                 cardholderName: payment.cardholderName,
                 paymentMethodNonce: payment.nonce,
                 makeDefault: true
-            } })).then(() => dispatch(advertiser.query({
+            } })) : Promise.resolve()).then(() => dispatch(advertiser.query({
                 org: user.org,
                 limit: 1
             }))).then(([advertiserId]) => dispatch(campaign.create({

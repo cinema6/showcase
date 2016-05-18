@@ -7,13 +7,17 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
 import { get, find } from 'lodash';
-import { loadPageData, updateChartSelection } from '../../actions/campaign_detail';
+import {
+    loadPageData,
+    updateChartSelection,
+    removeCampaign
+} from '../../actions/campaign_detail';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
 import CampaignDetailChart, {
            CHART_TODAY,
            CHART_7DAY,
            CHART_30DAY,
-           
+
            SERIES_USERS,
            SERIES_VIEWS,
            SERIES_CLICKS,
@@ -31,7 +35,9 @@ class CampaignDetail extends Component {
             analyticsError,
             analytics = { summary : {} },
             campaign  = {},
-            updateChartSelection
+
+            updateChartSelection,
+            removeCampaign
         } = this.props;
 
         let inner, logoUrl;
@@ -43,11 +49,11 @@ class CampaignDetail extends Component {
                 return img.type === 'thumbnail';
             }) || {}).uri;
         }
-            
+
         if (page.loading) {
             inner = <span> Loading... </span>;
         }
-        else 
+        else
         if (analyticsError) {
             inner = (
                 <div className="row">
@@ -69,7 +75,7 @@ class CampaignDetail extends Component {
                             </Nav>
                         </div>
                         <div className="col-md-5 col-md-offset-2">
-                            <Nav bsStyle="pills" className="nav-justified" 
+                            <Nav bsStyle="pills" className="nav-justified"
                                 activeKey={page.activeChart} onSelect={selectChart}>
                                 <NavItem eventKey={CHART_TODAY}> Today </NavItem>
                                 <NavItem eventKey={CHART_7DAY}> Past 7 Days </NavItem>
@@ -78,22 +84,23 @@ class CampaignDetail extends Component {
                         </div>
                     </div>
                     <div className="row">
-                        <CampaignDetailChart data={analytics || {}} 
+                        <CampaignDetailChart data={analytics || {}}
                             chart={page.activeChart} series={page.activeSeries} />
                     </div>
                 </div>
             );
         }
-        
+
         return (
             <div className="container main-section campaign-stats">
-                <CampaignDetailBar 
-                    campaignId={campaign.id} 
+                <CampaignDetailBar
+                    campaignId={campaign.id}
                     title={campaign.name}
                     logoUrl={logoUrl}
-                    views={get(analytics,'summary.views')} 
-                    clicks={get(analytics,'summary.clicks')} 
-                    installs={get(analytics,'summary.installs')} 
+                    views={get(analytics,'summary.views')}
+                    clicks={get(analytics,'summary.clicks')}
+                    installs={get(analytics,'summary.installs')}
+                    onDeleteCampaign={() => removeCampaign(campaign.id)}
                 />
                 {inner}
             </div>
@@ -113,8 +120,10 @@ CampaignDetail.propTypes = {
     campaign   : PropTypes.object,
     analytics  : PropTypes.object,
     analyticsError: PropTypes.object,
+
     loadPageData: PropTypes.func.isRequired,
-    updateChartSelection: PropTypes.func.isRequired
+    updateChartSelection: PropTypes.func.isRequired,
+    removeCampaign: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, props) {
@@ -129,6 +138,7 @@ export default compose(
     pageify({ path: 'dashboard.campaign_detail' }),
     connect(mapStateToProps, {
         loadPageData,
-        updateChartSelection
+        updateChartSelection,
+        removeCampaign
     })
 )(CampaignDetail);

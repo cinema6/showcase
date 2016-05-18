@@ -13,7 +13,9 @@ describe('CampaignDetailBar', function() {
             title : 'test',
             views: 100,
             clicks: 25,
-            installs: 10
+            installs: 10,
+
+            onDeleteCampaign: jasmine.createSpy('onDeleteCampaign()')
         };
 
         component = renderIntoDocument(<CampaignDetailBar {...props} />);
@@ -28,6 +30,7 @@ describe('CampaignDetailBar', function() {
         expect(component.props.views).toEqual(100);
         expect(component.props.clicks).toEqual(25);
         expect(component.props.installs).toEqual(10);
+        expect(component.props.onDeleteCampaign).toBe(props.onDeleteCampaign);
     });
 });
 

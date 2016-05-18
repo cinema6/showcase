@@ -5,7 +5,9 @@ import {
     LOGOUT_SUCCESS
 } from '../../src/actions/auth';
 import payment, { paymentMethod } from '../../src/actions/payment';
-import campaign from '../../src/actions/campaign';
+import campaign, {
+    CANCEL
+} from '../../src/actions/campaign';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
@@ -134,6 +136,34 @@ describe('sessionReducer()', function() {
                     state.campaigns = null;
 
                     newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                });
+
+                it('should do nothing', function() {
+                    expect(newState).toEqual(state);
+                });
+            });
+        });
+
+        describe(`${CANCEL}_FULFILLED`, function() {
+            let campaign;
+
+            beforeEach(function() {
+                campaign = state.campaigns[3];
+
+                newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
+            });
+
+            it('should remove the campaign from the session', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    campaigns: state.campaigns.filter(id => id !== campaign)
+                }));
+            });
+
+            describe('if there are no campaigns in the session', function() {
+                beforeEach(function() {
+                    state.campaigns = null;
+
+                    newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
                 });
 
                 it('should do nothing', function() {

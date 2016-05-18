@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.1.0-rc7]*
+  * [FEATURE]: Add ability to delete campaigns
+
 * *[v0.1.0-rc6]*
   * [FIX]: Allow users to create campaigns
 * *[/v0.1.0-rc6]*
