@@ -5,22 +5,35 @@ import { createStore } from 'redux';
 import CampaignDetailBar from '../../src/components/CampaignDetailBar';
 import {
     loadPageData,
-    removeCampaign
+    removeCampaign,
+    showInstallTrackingInstructions
 } from '../../src/actions/campaign_detail';
+import {
+    notify
+} from '../../src/actions/notification';
+import InstallTrackingSetupModal from '../../src/components/InstallTrackingSetupModal';
+import { TYPE as NOTIFICATION } from '../../src/enums/notification';
 
 const proxyquire = require('proxyquire');
 
 describe('Campaign Detail', function() {
-    let campaignDetailActions;
+    let campaignDetailActions, notificationActions;
     let CampaignDetail;
     let store, state;
     let props;
     let component;
 
     beforeEach(function() {
+        notificationActions = {
+            notify: jasmine.createSpy('notify()').and.callFake(notify),
+
+            __esModule: true
+        };
+
         campaignDetailActions = {
             loadPageData: jasmine.createSpy('loadPageData()').and.callFake(loadPageData),
             removeCampaign: jasmine.createSpy('removeCampaign()').and.callFake(removeCampaign),
+            showInstallTrackingInstructions: jasmine.createSpy('showInstallTrackingInstructions()').and.callFake(showInstallTrackingInstructions),
 
             __esModule: true
         };
@@ -29,8 +42,14 @@ describe('Campaign Detail', function() {
             'react' : React,
 
             '../../actions/campaign_detail': campaignDetailActions,
+            '../../actions/notification': notificationActions,
             '../../components/CampaignDetailBar': {
                 default: CampaignDetailBar,
+
+                __esModule: true
+            },
+            '../../components/InstallTrackingSetupModal': {
+                default: InstallTrackingSetupModal,
 
                 __esModule: true
             }
@@ -52,7 +71,8 @@ describe('Campaign Detail', function() {
             },
             page: {
                 'dashboard.campaign_detail': {
-                    loading: true
+                    loading: true,
+                    showInstallTrackingInstructions: false
                 }
             }
         };
@@ -107,6 +127,84 @@ describe('Campaign Detail', function() {
                 it('should call removeCampaign()', function() {
                     expect(campaignDetailActions.removeCampaign).toHaveBeenCalledWith(component.props.campaign.id);
                     expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.removeCampaign.calls.mostRecent().returnValue);
+                });
+            });
+
+            describe('onShowInstallTrackingInstructions()', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    bar.props.onShowInstallTrackingInstructions();
+                });
+
+                it('should call dispatch showInstallTrackingInstructions(false)', function() {
+                    expect(campaignDetailActions.showInstallTrackingInstructions).toHaveBeenCalledWith(true);
+                    expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.showInstallTrackingInstructions.calls.mostRecent().returnValue);
+                });
+            });
+        });
+
+        describe('the InstallTrackingSetupModal', function() {
+            let modal;
+
+            beforeEach(function() {
+                modal = findRenderedComponentWithType(component, InstallTrackingSetupModal);
+            });
+
+            it('should exist', function() {
+                expect(modal).toEqual(jasmine.any(Object));
+            });
+
+            it('should pass the show property', function() {
+                expect(modal.props.show).toBe(component.props.page.showInstallTrackingInstructions);
+            });
+
+            it('should pass the campaignId', function() {
+                expect(modal.props.campaignId).toBe(component.props.campaign.id);
+            });
+
+            describe('onClose()', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    modal.props.onClose();
+                });
+
+                it('should call dispatch showInstallTrackingInstructions(false)', function() {
+                    expect(campaignDetailActions.showInstallTrackingInstructions).toHaveBeenCalledWith(false);
+                    expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.showInstallTrackingInstructions.calls.mostRecent().returnValue);
+                });
+            });
+
+            describe('onCopyCampaignIdSuccess()', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    modal.props.onCopyCampaignIdSuccess();
+                });
+
+                it('should show a notification', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION.SUCCESS,
+                        message: 'Copied to clipboard!'
+                    });
+                    expect(store.dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+            });
+
+            describe('onCopyCampaignIdError()', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    modal.props.onCopyCampaignIdError();
+                });
+
+                it('should show a notification', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION.WARNING,
+                        message: 'Unable to copy.'
+                    });
+                    expect(store.dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
                 });
             });
         });

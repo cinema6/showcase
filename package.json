@@ -1,6 +1,6 @@
 {
   "name": "showcase",
-  "version": "0.1.0-rc6",
+  "version": "0.1.0-rc7",
   "description": "Reelcontent Showcase app.",
   "main": "src/index.js",
   "scripts": {
@@ -81,6 +81,7 @@
     "c6embed": "^3.11.0",
     "chartist": "^0.9.7",
     "classnames": "^2.2.5",
+    "clipboard": "^1.5.10",
     "core-js": "^2.3.0",
     "flux-standard-action": "^0.6.1",
     "history": "^2.1.1",

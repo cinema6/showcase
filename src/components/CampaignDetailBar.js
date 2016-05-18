@@ -14,7 +14,8 @@ export default class CampaignDetailBar extends Component {
             clicks,
             installs,
 
-            onDeleteCampaign
+            onDeleteCampaign,
+            onShowInstallTrackingInstructions
         } = this.props;
 
         let format = (n) => numeral(n).format('0,0');
@@ -61,7 +62,7 @@ export default class CampaignDetailBar extends Component {
                                     Delete Campaign
                                   </MenuItem>
                                   <MenuItem divider />
-                                  <MenuItem> 
+                                  <MenuItem onSelect={() => onShowInstallTrackingInstructions()}>
                                     <i className="fa fa-mouse-pointer" aria-hidden="true"></i>
                                     Tracking Pixel
                                   </MenuItem>
@@ -78,13 +79,14 @@ export default class CampaignDetailBar extends Component {
 }
 
 CampaignDetailBar.propTypes = {
-    campaignId:         PropTypes.string,
-    logoUrl:            PropTypes.string,
-    title:              PropTypes.string,
-    views:              PropTypes.number,
-    clicks:             PropTypes.number,
-    installs:           PropTypes.number,
+    campaignId:                         PropTypes.string,
+    logoUrl:                            PropTypes.string,
+    title:                              PropTypes.string,
+    views:                              PropTypes.number,
+    clicks:                             PropTypes.number,
+    installs:                           PropTypes.number,
 
-    onDeleteCampaign:   PropTypes.func.isRequired
+    onDeleteCampaign:                   PropTypes.func.isRequired,
+    onShowInstallTrackingInstructions:  PropTypes.func.isRequired
 };
 

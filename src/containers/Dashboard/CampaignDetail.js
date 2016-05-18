@@ -10,19 +10,25 @@ import { get, find } from 'lodash';
 import {
     loadPageData,
     updateChartSelection,
-    removeCampaign
+    removeCampaign,
+    showInstallTrackingInstructions
 } from '../../actions/campaign_detail';
+import {
+    notify
+} from '../../actions/notification';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
 import CampaignDetailChart, {
-           CHART_TODAY,
-           CHART_7DAY,
-           CHART_30DAY,
+   CHART_TODAY,
+   CHART_7DAY,
+   CHART_30DAY,
 
-           SERIES_USERS,
-           SERIES_VIEWS,
-           SERIES_CLICKS,
-           SERIES_INSTALLS
-       } from '../../components/CampaignDetailChart';
+   SERIES_USERS,
+   SERIES_VIEWS,
+   SERIES_CLICKS,
+   SERIES_INSTALLS
+} from '../../components/CampaignDetailChart';
+import InstallTrackingSetupModal from '../../components/InstallTrackingSetupModal';
+import { TYPE as NOTIFICATION } from '../../enums/notification';
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -37,7 +43,9 @@ class CampaignDetail extends Component {
             campaign  = {},
 
             updateChartSelection,
-            removeCampaign
+            removeCampaign,
+            showInstallTrackingInstructions,
+            notify
         } = this.props;
 
         let inner, logoUrl;
@@ -101,8 +109,20 @@ class CampaignDetail extends Component {
                     clicks={get(analytics,'summary.clicks')}
                     installs={get(analytics,'summary.installs')}
                     onDeleteCampaign={() => removeCampaign(campaign.id)}
+                    onShowInstallTrackingInstructions={() => showInstallTrackingInstructions(true)}
                 />
                 {inner}
+                <InstallTrackingSetupModal show={page.showInstallTrackingInstructions}
+                    campaignId={campaign.id}
+                    onClose={() => showInstallTrackingInstructions(false)}
+                    onCopyCampaignIdSuccess={() => notify({
+                        type: NOTIFICATION.SUCCESS,
+                        message: 'Copied to clipboard!'
+                    })}
+                    onCopyCampaignIdError={() => notify({
+                        type: NOTIFICATION.WARNING,
+                        message: 'Unable to copy.'
+                    })} />
             </div>
         );
     }
@@ -123,7 +143,9 @@ CampaignDetail.propTypes = {
 
     loadPageData: PropTypes.func.isRequired,
     updateChartSelection: PropTypes.func.isRequired,
-    removeCampaign: PropTypes.func.isRequired
+    removeCampaign: PropTypes.func.isRequired,
+    showInstallTrackingInstructions: PropTypes.func.isRequired,
+    notify: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, props) {
@@ -139,6 +161,8 @@ export default compose(
     connect(mapStateToProps, {
         loadPageData,
         updateChartSelection,
-        removeCampaign
+        removeCampaign,
+        showInstallTrackingInstructions,
+        notify
     })
 )(CampaignDetail);

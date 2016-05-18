@@ -15,7 +15,8 @@ describe('CampaignDetailBar', function() {
             clicks: 25,
             installs: 10,
 
-            onDeleteCampaign: jasmine.createSpy('onDeleteCampaign()')
+            onDeleteCampaign: jasmine.createSpy('onDeleteCampaign()'),
+            onShowInstallTrackingInstructions: jasmine.createSpy('onShowInstallTrackingInstructions()')
         };
 
         component = renderIntoDocument(<CampaignDetailBar {...props} />);
@@ -31,6 +32,7 @@ describe('CampaignDetailBar', function() {
         expect(component.props.clicks).toEqual(25);
         expect(component.props.installs).toEqual(10);
         expect(component.props.onDeleteCampaign).toBe(props.onDeleteCampaign);
+        expect(component.props.onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
     });
 });
 

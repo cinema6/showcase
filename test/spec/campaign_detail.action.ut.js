@@ -9,6 +9,9 @@ import defer from 'promise-defer';
 import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
+import {
+    SHOW_INSTALL_TRACKING_INSTRUCTIONS
+} from '../../src/actions/campaign_detail';
 
 const proxyquire = require('proxyquire');
 
@@ -46,6 +49,21 @@ describe('campaign-detail-actions',function(){
         });
 
         dispatch = jasmine.createSpy('dispatch()').and.returnValue(new Promise(() => {}));
+    });
+
+    describe('showInstallTrackingInstructions(show)', function() {
+        let result;
+
+        beforeEach(function() {
+            result = lib.showInstallTrackingInstructions(false);
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual({
+                type: SHOW_INSTALL_TRACKING_INSTRUCTIONS,
+                payload: false
+            });
+        });
     });
 
     describe('loadPageData(campaignId)',function(){
