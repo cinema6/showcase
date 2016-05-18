@@ -33,7 +33,7 @@ describe('analytics-actions',function(){
                     'ANALYTICS/GET_CAMPAIGN_ANALYTICS_FAILURE'
                 ],
                 credentials: 'same-origin',
-                endpoint: '/api/analytics/campaigns?ids=xyz'
+                endpoint: '/api/analytics/campaigns/showcase/apps/xyz'
             });
         });
     });
