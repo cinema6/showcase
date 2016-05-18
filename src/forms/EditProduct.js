@@ -36,7 +36,7 @@ EditProduct.propTypes = {
         name: PropTypes.object.isRequired,
         description: PropTypes.object.isRequired
     }).isRequired,
-    submitting: PropTypes.bool.isRequred,
+    submitting: PropTypes.bool.isRequired,
 
     handleSubmit: PropTypes.func.isRequired
 };
