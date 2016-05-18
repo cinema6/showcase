@@ -12,8 +12,8 @@ module.exports = function(http) {
     }
 
 
-    http.whenGET('/api/analytics/campaigns', function(request) {
-        var id = request.query.ids,
+    http.whenGET('/api/analytics/campaigns/showcase/apps/**', function(request) {
+        var id = db.idFromPath(request.pathname),
             filePath = objectPath('campaigns', id),
             analytics = grunt.file.exists(filePath) ? grunt.file.readJSON(filePath) : null;
 
