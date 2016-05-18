@@ -61,3 +61,6 @@ export function removeCampaign(campaignId) {
         }));
     };
 }
+
+export const SHOW_INSTALL_TRACKING_INSTRUCTIONS = prefix('SHOW_INSTALL_TRACKING_INSTRUCTIONS');
+export const showInstallTrackingInstructions = createAction(SHOW_INSTALL_TRACKING_INSTRUCTIONS);

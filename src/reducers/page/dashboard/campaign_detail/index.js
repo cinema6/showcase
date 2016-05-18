@@ -3,7 +3,8 @@
 import { handleActions } from 'redux-actions';
 import {
     LOAD_PAGE_DATA,
-    UPDATE_CHART_SELECTION
+    UPDATE_CHART_SELECTION,
+    SHOW_INSTALL_TRACKING_INSTRUCTIONS
 } from '../../../../actions/campaign_detail';
 
 import {
@@ -14,9 +15,10 @@ import {
 import { assign } from 'lodash';
 
 const INITIAL_STATE = {
-    loading         : true,
-    activeChart     : CHART_TODAY,
-    activeSeries    : SERIES_USERS
+    loading                         : true,
+    showInstallTrackingInstructions : false,
+    activeChart                     : CHART_TODAY,
+    activeSeries                    : SERIES_USERS
 };
 
 export default handleActions({
@@ -30,6 +32,10 @@ export default handleActions({
     }),
     [`${LOAD_PAGE_DATA}_REJECTED`]: state => assign({}, state, {
         loading: false
+    }),
+
+    [SHOW_INSTALL_TRACKING_INSTRUCTIONS]: (state, { payload: show }) => assign({}, state, {
+        showInstallTrackingInstructions: show
     })
 }, INITIAL_STATE);
 
