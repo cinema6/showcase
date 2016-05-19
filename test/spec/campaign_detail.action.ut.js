@@ -2,7 +2,7 @@ import { createUuid } from 'rc-uuid';
 import {
     showAlert
 } from '../../src/actions/alert';
-import {
+import campaign, {
     cancel as cancelCampaign
 } from '../../src/actions/campaign';
 import defer from 'promise-defer';
@@ -10,18 +10,27 @@ import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import {
+    LOAD_PAGE_DATA,
     SHOW_INSTALL_TRACKING_INSTRUCTIONS
 } from '../../src/actions/campaign_detail';
+import {
+    getCampaignAnalytics
+} from '../../src/actions/analytics';
 
 const proxyquire = require('proxyquire');
 
 describe('campaign-detail-actions',function(){
     let lib;
-    let dispatch;
-    let callAPI, alertActions, campaignActions, notificationActions;
+    let callAPI, alertActions, campaignActions, notificationActions, analyticsActions;
 
     beforeEach(function(){
         callAPI = jasmine.createSpy('callAPI()');
+
+        analyticsActions = {
+            getCampaignAnalytics: jasmine.createSpy('getCampaignAnalytics()').and.callFake(getCampaignAnalytics),
+
+            __esModule: true
+        };
 
         alertActions = {
             showAlert: jasmine.createSpy('showAlert').and.callFake(showAlert),
@@ -31,6 +40,7 @@ describe('campaign-detail-actions',function(){
 
         campaignActions = {
             cancel: jasmine.createSpy('cancel()').and.callFake(cancelCampaign),
+            default: campaign,
 
             __esModule: true
         };
@@ -45,10 +55,9 @@ describe('campaign-detail-actions',function(){
             './api':  { callAPI },
             './alert': alertActions,
             './campaign': campaignActions,
-            './notification': notificationActions
+            './notification': notificationActions,
+            './analytics': analyticsActions
         });
-
-        dispatch = jasmine.createSpy('dispatch()').and.returnValue(new Promise(() => {}));
     });
 
     describe('showInstallTrackingInstructions(show)', function() {
@@ -67,20 +76,189 @@ describe('campaign-detail-actions',function(){
     });
 
     describe('loadPageData(campaignId)',function(){
+        let campaignId;
         let thunk;
+
         beforeEach(function(){
-            thunk = lib.loadPageData('abc');
+            campaignId = `cam-${createUuid()}`;
+            thunk = lib.loadPageData(campaignId);
         });
 
         it('should return a thunk', function() {
             expect(thunk).toEqual(jasmine.any(Function));
         });
 
-        it('should create an action with a promise in the payload',function(){
-            thunk(dispatch);
-            expect(dispatch).toHaveBeenCalledWith({
-                type : 'CAMPAIGN_DETAIL/LOAD_PAGE_DATA',
-                payload : jasmine.any(Promise)
+        describe('when executed', function() {
+            let dispatchDeferreds, state;
+            let success, failure;
+            let dispatch, getState;
+
+            beforeEach(function(done) {
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                dispatchDeferreds = new WeakMap();
+                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
+                    if (typeof action === 'function') {
+                        let deferred = defer();
+                        dispatchDeferreds.set(action, deferred);
+                        return deferred.promise;
+                    }
+
+                    if (action.payload instanceof Promise) {
+                        return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
+                    }
+
+                    return Promise.resolve(action.payload);
+                });
+                state = {
+                    db: {
+                        campaign: {}
+                    }
+                };
+                getState = jasmine.createSpy('getState()').and.returnValue(state);
+
+                spyOn(campaign, 'get').and.callThrough();
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            it('should create an action with a promise in the payload',function(){
+                expect(dispatch).toHaveBeenCalledWith({
+                    type : LOAD_PAGE_DATA,
+                    payload : jasmine.any(Promise)
+                });
+            });
+
+            it('should get the campaign', function() {
+                expect(campaign.get).toHaveBeenCalledWith({ id: campaignId });
+                expect(dispatch).toHaveBeenCalledWith(campaign.get.calls.mostRecent().returnValue);
+            });
+
+            it('should get the campaign analytics', function() {
+                expect(analyticsActions.getCampaignAnalytics).toHaveBeenCalledWith(campaignId);
+                expect(dispatch).toHaveBeenCalledWith(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue);
+            });
+
+            describe('if getting both succeeds', function() {
+                let campaignData, analyticsData;
+
+                beforeEach(function(done) {
+                    campaignData = {
+                        id: campaignId,
+                        product: {},
+                        targeting: {}
+                    };
+                    analyticsData = {
+                        data: {},
+                        foo: 'bar'
+                    };
+
+                    dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).resolve(campaignData);
+                    dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).resolve(analyticsData);
+
+                    setTimeout(done);
+                });
+
+                it('should fulfill the Promise', function() {
+                    expect(success).toHaveBeenCalledWith([campaignData, analyticsData]);
+                });
+            });
+
+            describe('if getting analytics fails', function() {
+                let reason, campaignData;
+
+                beforeEach(function(done) {
+                    campaignData = {
+                        id: campaignId,
+                        product: {},
+                        targeting: {}
+                    };
+                    reason = new Error('It just didn\'t work...');
+
+                    dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).resolve(campaignData);
+                    dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).reject(reason);
+
+                    setTimeout(done);
+                });
+
+                it('should show a warning', function() {
+                    expect(notificationActions.notify).toHaveBeenCalledWith({
+                        type: NOTIFICATION_TYPE.WARNING,
+                        message: `Couldn't fetch analytics: ${reason.message}`,
+                        time: 10000
+                    });
+                    expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+
+                it('should fulfill the promise', function() {
+                    expect(success).toHaveBeenCalledWith([campaignData, null]);
+                });
+            });
+
+            describe('if getting the campaign fails', function() {
+                let reason, analyticsData;
+
+                beforeEach(function() {
+                    analyticsData = {
+                        data: {},
+                        foo: 'bar'
+                    };
+                    reason = new Error('There were issues.');
+
+                    dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).reject(reason);
+                    dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).resolve(analyticsData);
+                });
+
+                describe('if there is cached data', function() {
+                    beforeEach(function(done) {
+                        state.db.campaign[campaignId] = {
+                            id: campaignId
+                        };
+
+                        setTimeout(done);
+                    });
+
+                    it('should not show a notification', function() {
+                        expect(notificationActions.notify).not.toHaveBeenCalled();
+                    });
+
+                    it('should not redirect', function() {
+                        expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
+                            type: replace('foo').type
+                        }));
+                    });
+
+                    it('should fulfill with the cached data', function() {
+                        expect(success).toHaveBeenCalledWith([state.db.campaign[campaignId], analyticsData]);
+                    });
+                });
+
+                describe('if there is no cached data', function() {
+                    beforeEach(function(done) {
+                        delete state.db.campaign[campaignId];
+
+                        setTimeout(done);
+                    });
+
+                    it('should show an error', function() {
+                        expect(notificationActions.notify).toHaveBeenCalledWith({
+                            type: NOTIFICATION_TYPE.DANGER,
+                            message: `Failed to fetch campaign: ${reason.message}`,
+                            time: 10000
+                        });
+                        expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                    });
+
+                    it('should redirect', function() {
+                        expect(dispatch).toHaveBeenCalledWith(replace('/dashboard'));
+                    });
+
+                    it('should reject', function() {
+                        expect(failure).toHaveBeenCalledWith(reason);
+                    });
+                });
             });
         });
     });

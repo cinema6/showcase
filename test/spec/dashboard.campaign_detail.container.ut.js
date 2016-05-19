@@ -1,5 +1,5 @@
 import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import CampaignDetailBar from '../../src/components/CampaignDetailBar';
@@ -13,6 +13,8 @@ import {
 } from '../../src/actions/notification';
 import InstallTrackingSetupModal from '../../src/components/InstallTrackingSetupModal';
 import { TYPE as NOTIFICATION } from '../../src/enums/notification';
+import { assign } from 'lodash';
+import { createUuid } from 'rc-uuid';
 
 const proxyquire = require('proxyquire');
 
@@ -21,7 +23,25 @@ describe('Campaign Detail', function() {
     let CampaignDetail;
     let store, state;
     let props;
-    let component;
+    let renderer, component;
+
+    class Renderer extends Component {
+        constructor(props) {
+            super(...arguments);
+
+            this.state = {
+                props: props.props
+            };
+        }
+
+        render() {
+            const { props } = this.state;
+            return <CampaignDetail {...props} />;
+        }
+    }
+    Renderer.propTypes = {
+        props: PropTypes.object.isRequired
+    };
 
     beforeEach(function() {
         notificationActions = {
@@ -82,11 +102,12 @@ describe('Campaign Detail', function() {
 
         spyOn(store, 'dispatch');
 
-        component = findRenderedComponentWithType(renderIntoDocument(
+        renderer = findRenderedComponentWithType(renderIntoDocument(
             <Provider store={store}>
-                <CampaignDetail {...props} />
+                <Renderer props={props} />
             </Provider>
-        ), CampaignDetail.WrappedComponent.WrappedComponent);
+        ), Renderer);
+        component = findRenderedComponentWithType(renderer, CampaignDetail.WrappedComponent.WrappedComponent);
     });
 
     describe('rendering',function(){
@@ -99,6 +120,41 @@ describe('Campaign Detail', function() {
             expect(store.dispatch).toHaveBeenCalledWith(
                 campaignDetailActions.loadPageData.calls.mostRecent().returnValue
             );
+        });
+
+        describe('if the campaignId does not change', function() {
+            beforeEach(function() {
+                campaignDetailActions.loadPageData.calls.reset();
+
+                renderer.setState({
+                    props: assign({}, props, {
+                        foo: {}
+                    })
+                });
+            });
+
+            it('should not loadPageData()', function() {
+                expect(campaignDetailActions.loadPageData).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('if the campaignId changes', function() {
+            beforeEach(function() {
+                campaignDetailActions.loadPageData.calls.reset();
+
+                renderer.setState({
+                    props: assign({}, props, {
+                        params: assign({}, props.params, {
+                            campaignId: `cam-${createUuid()}`
+                        })
+                    })
+                });
+            });
+
+            it('should loadPageData() with the new campaignId', function() {
+                expect(campaignDetailActions.loadPageData).toHaveBeenCalledWith(component.props.params.campaignId);
+                expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.loadPageData.calls.mostRecent().returnValue);
+            });
         });
 
         it('should properly map state',function(){

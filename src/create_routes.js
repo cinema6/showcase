@@ -18,6 +18,7 @@ import DashboardBilling from './containers/Dashboard/Billing';
 import DashboardCampaignDetail from './containers/Dashboard/CampaignDetail';
 import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import DashboardEditProduct from './containers/Dashboard/EditProduct';
+import NotFound from './components/NotFound';
 import {
     createProtectedRouteEnterHandler,
     createLoginEnterHandler
@@ -100,6 +101,8 @@ export default function createRoutes(store) {
             <Route path="sign-up" component={SignUp} onEnter={checkLoggedIn}></Route>
             <Route path="forgot-password" component={ForgotPassword}></Route>
             <Route path="reset-password" component={ResetPassword}></Route>
+
+            <Route path="*" component={NotFound} />
         </Route>
     );
 }

@@ -19,13 +19,41 @@ export const updateChartSelection = createAction(UPDATE_CHART_SELECTION,
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export function loadPageData(campaignId) {
-    return function thunk(dispatch) {
+    return function thunk(dispatch, getState) {
         return dispatch(createAction(LOAD_PAGE_DATA)(
-                Promise.all([
-                    dispatch(campaign.get({ id : campaignId })),
-                    dispatch(getCampaignAnalytics(campaignId)).catch(function(){ })
-                ])
-        ));
+            Promise.all([
+                dispatch(campaign.get({ id : campaignId })).catch(reason => {
+                    const cachedCampaign = getState().db.campaign[campaignId];
+
+                    // If the campaign can't be fetched but there is some cached data, return the
+                    // cached data.
+                    if (cachedCampaign) {
+                        return cachedCampaign;
+                    }
+
+                    // If there is no cached campaign, bounce the user back to the dashboard and
+                    // display an error message.
+                    dispatch(notify({
+                        type: NOTIFICATION.DANGER,
+                        message: `Failed to fetch campaign: ${reason.response || reason.message}`,
+                        time: 10000
+                    }));
+                    dispatch(replace('/dashboard'));
+
+                    throw reason;
+                }),
+                dispatch(getCampaignAnalytics(campaignId)).catch(reason => {
+                    // Show a warning if the analytics can't be fetched, but don't fail.
+                    dispatch(notify({
+                        type: NOTIFICATION.WARNING,
+                        message: `Couldn't fetch analytics: ${reason.response || reason.message}`,
+                        time: 10000
+                    }));
+
+                    return null;
+                })
+            ])
+        )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
 }
 

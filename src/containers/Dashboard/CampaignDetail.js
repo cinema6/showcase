@@ -17,6 +17,7 @@ import {
     notify
 } from '../../actions/notification';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
+import CampaignDetailTable from '../../components/CampaignDetailTable';
 import CampaignDetailChart, {
    CHART_TODAY,
    CHART_7DAY,
@@ -33,6 +34,12 @@ import { TYPE as NOTIFICATION } from '../../enums/notification';
 class CampaignDetail extends Component {
     componentWillMount() {
         return this.props.loadPageData(this.props.params.campaignId);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.campaignId !== this.props.params.campaignId) {
+            return this.props.loadPageData(nextProps.params.campaignId);
+        }
     }
 
     render() {
@@ -95,6 +102,10 @@ class CampaignDetail extends Component {
                         <CampaignDetailChart data={analytics || {}}
                             chart={page.activeChart} series={page.activeSeries} />
                     </div>
+                    <div className="row">
+                        <CampaignDetailTable data={analytics || {}}
+                            chart={page.activeChart} />
+                    </div>
                 </div>
             );
         }
@@ -112,7 +123,8 @@ class CampaignDetail extends Component {
                     onShowInstallTrackingInstructions={() => showInstallTrackingInstructions(true)}
                 />
                 {inner}
-                <InstallTrackingSetupModal show={page.showInstallTrackingInstructions}
+                {campaign.id && (<InstallTrackingSetupModal
+                    show={page.showInstallTrackingInstructions}
                     campaignId={campaign.id}
                     onClose={() => showInstallTrackingInstructions(false)}
                     onCopyCampaignIdSuccess={() => notify({
@@ -122,7 +134,8 @@ class CampaignDetail extends Component {
                     onCopyCampaignIdError={() => notify({
                         type: NOTIFICATION.WARNING,
                         message: 'Unable to copy.'
-                    })} />
+                    })}
+                />)}
             </div>
         );
     }
