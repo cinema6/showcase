@@ -11,7 +11,7 @@ import CampaignDetailChart, {
     }
     from '../../src/components/CampaignDetailChart';
 
-fdescribe('CampaignDetailChart', function() {
+describe('CampaignDetailChart', function() {
     describe('CampaignDetailChartComponent', function() {
         let props;
         let component;

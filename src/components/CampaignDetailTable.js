@@ -29,7 +29,7 @@ export default class CampaignDetailTable extends Component {
                     <span> {moment(datum.date).format('dddd')} </span> ,
                     <span> {moment(datum.date).format('M/D')} </span>
                 ]);
-            }
+            };
         } else
         if (chart === CHART_30DAY) {
             activeSet = data.daily_30;
