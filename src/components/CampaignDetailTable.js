@@ -39,32 +39,46 @@ export default class CampaignDetailTable extends Component {
         const numsFormatter = (n) => n === 0 ? '-' : numeral(n).format('0,0');
         
         return (
-            <div className="col-md-12 col-sm-12 col-middle table-responsive animated card-item">
-                <table className="table table-hover stats-list">
-                    <thead>
-                        <tr>
-                            <th> <h4> Timeline </h4> </th>
-                            <th className="text-center"> <h4> Views </h4> </th>
-                            <th className="text-center"> <h4> Reach </h4> </th>
-                            <th className="text-center"> <h4> Clicks </h4> </th>
-                            <th className="text-center"> <h4> Installs </h4> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {activeSet.map(function(row,i){
-                            return (
-                                <tr key={i}>
-                                    <th> <h4>{timeFormatter(row)} </h4></th> 
-                                    <td> <h4>{numsFormatter(row.views)} </h4></td> 
-                                    <td> <h4>{numsFormatter(row.users)} </h4></td> 
-                                    <td> <h4>{numsFormatter(row.clicks)} </h4></td> 
-                                    <td> <h4>{numsFormatter(row.installs)} </h4></td> 
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            <div className="container">
+                <div className="col-md-12 col-sm-12 col-middle table-responsive animated card-item">
+                    <table className="table table-hover stats-list">
+                        <thead>
+                            <tr>
+                                <th> <h4> Timeline </h4> </th>
+                                <th className="text-center"> <h4> Views </h4> </th>
+                                <th className="text-center"> <h4> Reach </h4> </th>
+                                <th className="text-center"> <h4> Clicks </h4> </th>
+                                <th className="text-center"> <h4> Installs </h4> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {activeSet.map(function(row,i){
+                                return (
+                                    <tr key={i}>
+                                        <th> <h4>{timeFormatter(row)} </h4></th> 
+                                        <td> <h4 className="stats-value stats-col-views">
+                                            {numsFormatter(row.views)} </h4>
+                                            <span className="small">Views</span>
+                                        </td> 
+                                        <td> <h4 className="stats-value stats-col-reach">
+                                            {numsFormatter(row.users)} </h4>
+                                            <span className="small">Reach</span>
+                                        </td> 
+                                        <td> <h4 className="stats-value stats-col-clicks">
+                                            {numsFormatter(row.clicks)} </h4>
+                                            <span className="small">Clicks</span>
+                                        </td> 
+                                        <td> <h4 className="stats-value stats-col-installs">
+                                            {numsFormatter(row.installs)} </h4>
+                                            <span className="small">Installs</span>
+                                        </td> 
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>                
         );
     }
 }

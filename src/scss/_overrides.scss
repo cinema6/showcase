@@ -319,8 +319,8 @@
  ----------------------------
  ***/
     $stats-views:         #0496FF;
-    $stats-reach:         #AB6FC5;
-    $stats-clicks:        #25ab27;
+    $stats-reach:         #09E40D;
+    $stats-clicks:        #FAA916;
     $stats-installs:      #353A47;
  /***
  Navigation
@@ -747,20 +747,23 @@
         .campaign-stats .stats-list td{
             text-align: center;
         }
-    .campaign-stats .nav-justified > li > a,
-    .campaign-stats .nav-tabs.nav-justified > li > a {
-        border-radius: 0;
+    .campaign-stats .nav-justified {
+        margin-bottom: 10px;
     }
-        .campaign-stats .nav-justified > li:first-child > a,
-        .campaign-stats .nav-tabs.nav-justified > li:first-child > a {
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
+        .campaign-stats .nav-justified > li > a,
+        .campaign-stats .nav-tabs.nav-justified > li > a {
+            border-radius: 0;
         }
-        .campaign-stats .nav-justified > li:last-child > a,
-        .campaign-stats .nav-tabs.nav-justified > li:last-child > a {
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
+            .campaign-stats .nav-justified > li:first-child > a,
+            .campaign-stats .nav-tabs.nav-justified > li:first-child > a {
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+            .campaign-stats .nav-justified > li:last-child > a,
+            .campaign-stats .nav-tabs.nav-justified > li:last-child > a {
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
     .data-stacked {
         margin: 20px 10px;
     }
@@ -780,6 +783,14 @@
     .stats-list h4 {
         font-weight: 400;
     }
+    .stats-list h4.stats-value {
+        font-weight: 400;
+        font-size: 26px;
+        margin-bottom: 0;
+    }
+    .stats-list span.small {
+        color: #888;
+    }
     .stats-col-views {
         color: $stats-views;
     }
@@ -793,8 +804,50 @@
         color: $stats-installs;
     }
     .ct-label {
-        
+        color: #333;
     }
+    .table > thead > tr > th,
+    .table > thead > tr > td,
+    .table > tbody > tr > th,
+    .table > tbody > tr > td,
+    .table > tfoot > tr > th,
+    .table > tfoot > tr > td {
+        vertical-align: middle;
+    }
+    .chart-views,
+    .chart-reach,
+    .chart-clicks,
+    .chart-installs {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+        .ct-area {
+            fill-opacity: 0.5;
+        }
+        .chart-views .ct-series-a .ct-line {
+            stroke: $stats-views;
+        }
+        .chart-views .ct-series-a .ct-area {
+            fill: $stats-views;
+        }        
+        .chart-reach .ct-series-a .ct-line {
+            stroke: $stats-reach;
+        }
+        .chart-reach .ct-series-a .ct-area {
+            fill: $stats-reach;
+        }
+        .chart-clicks .ct-series-a .ct-line {
+            stroke: $stats-clicks;
+        }
+        .chart-clicks .ct-series-a .ct-area {
+            fill: $stats-clicks;
+        }
+        .chart-installs .ct-series-a .ct-line {
+            stroke: $stats-installs;
+        }
+        .chart-installs .ct-series-a .ct-area {
+            fill: $stats-installs;
+        }
  /***
  Billing & Payments
  ----------------------------

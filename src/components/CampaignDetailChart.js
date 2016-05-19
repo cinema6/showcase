@@ -174,15 +174,17 @@ export default class CampaignDetailChart extends Component {
         }
         
         return (
-            <div className={params.chartClass}>
-                {empty}
-                <ChartistGraphExt
-                    className={'ct-octave'} 
-                    data={params.data} 
-                    options={params.options} 
-                    type={params.type}  
-                    responsiveOptions={params.responsiveOptions} 
-                />
+            <div className="container">
+                <div className={params.chartClass}>
+                    {empty}
+                    <ChartistGraphExt
+                        className={'ct-octave'} 
+                        data={params.data} 
+                        options={params.options} 
+                        type={params.type}  
+                        responsiveOptions={params.responsiveOptions} 
+                    />
+                </div>
             </div>
         );
     }
