@@ -17,18 +17,21 @@ class ResendConfirmation extends Component {
 
         return (<div className="container main-section">
                     <div className="row">
-                        <div className="col-md-8 col-md-offset-2 col-xs-12 animated fadeIn">
-                            <p>Hello there,<br>
+                        <div className="col-md-6 col-md-offset-3 col-xs-12 animated fadeIn">
+                            <h2>Activate Your Account</h2>
+                            <hr />
+                            <p>Hello there, 
                             You need to activate your account before you can continue. If you 
-                            haven't received an activation email, you can request another activation
-                            email.
+                            haven't received an activation email, you can request one by clicking
+                            the link below.
                             </p>
+                            <br />
                             <button onClick={resendConfirmationEmail}
                             disabled={sending}
                             className={classnames('btn btn-primary btn-lg', {
                                 'btn-wating': sending
                             })}>
-                                Resend Email
+                                Resend Activation Email
                             </button>
                         {error && !sending && (
                             <div className="alert alert-danger" role="alert">
