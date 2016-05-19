@@ -6,7 +6,7 @@ import * as TARGETING from '../enums/targeting';
 import classnames from 'classnames';
 
 function value(field) {
-    return field.visited ? field.value : field.initialValue;
+    return field.value || field.initialValue;
 }
 
 class EditTargeting extends Component {

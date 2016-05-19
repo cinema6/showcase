@@ -28,7 +28,7 @@ class SignUp extends Component {
         return (<div className="bg-dark-wrap">
             <div className="container main-section">
                 <div className="row">
-                    <div className="login-form col-md-4 col-md-offset-4 col-xs-12
+                    <div className="pre-login-form col-md-4 col-md-offset-4 col-xs-12
                         animated fadeIn card-item">
                         <h1 className="text-center">Signup</h1>
                         <SignUpForm onSubmit={this.signUp} />

@@ -48,7 +48,8 @@ export default class CampaignDetailBar extends Component {
                         </div>
                         <div className="pull-right campaign-menu col-md-1">
                           <Dropdown id={'campaign-detail-dropdown-' + campaignId} pullRight >
-                              <Dropdown.Toggle useAnchor={true} noCaret>
+                              <Dropdown.Toggle useAnchor={true} noCaret className="btn btn-link 
+                                btn-lg">
                                 <i className="fa fa-ellipsis-v" aria-hidden="true"> </i>
                               </Dropdown.Toggle>
                               <Dropdown.Menu className="dropdown-menu" >
