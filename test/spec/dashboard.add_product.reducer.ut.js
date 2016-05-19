@@ -129,8 +129,7 @@ describe('dashboardAddProductReducer()', function() {
             it('should update the productData and targeting and move to step 3', function() {
                 expect(newState).toEqual(assign({}, state, {
                     productData: assign({}, state.productData, productData),
-                    targeting,
-                    step: 3
+                    targeting
                 }));
             });
 

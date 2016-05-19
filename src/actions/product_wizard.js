@@ -32,10 +32,12 @@ export const wizardComplete = createThunk(({ productData, targeting }) => {
         return Promise.resolve(
             method || dispatch(paymentMethod.list()).then(([method]) => method)
         ).then(paymentMethod => {
+            dispatch(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+
             if (paymentMethod) {
                 return dispatch(createCampaign({ productData, targeting }));
             } else {
-                return dispatch(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+                return dispatch(goToStep(3));
             }
         });
     };

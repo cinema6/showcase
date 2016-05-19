@@ -732,6 +732,10 @@ describe('product wizard actions', function() {
                         setTimeout(done);
                     });
 
+                    it('should dispatch WIZARD_COMPLETE', function() {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+                    });
+
                     it('should dispatch createCampaign()', function() {
                         expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
                     });
@@ -747,6 +751,10 @@ describe('product wizard actions', function() {
 
                     it('should dispatch WIZARD_COMPLETE', function() {
                         expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+                    });
+
+                    it('should dispatch GO_TO_STEP', function() {
+                        expect(dispatch).toHaveBeenCalledWith(goToStep(3));
                     });
                 });
             });
@@ -771,8 +779,8 @@ describe('product wizard actions', function() {
                     setTimeout(done);
                 });
 
-                it('should not dispatch WIZARD_COMPLETE', function() {
-                    expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ type: WIZARD_COMPLETE }));
+                it('should dispatch WIZARD_COMPLETE', function() {
+                    expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
                 });
 
                 it('should dispatch createCampaign()', function() {

@@ -53,7 +53,10 @@ describe('AddProduct', function() {
                         step: 0,
                         productData: {
                             name: 'Awesome App',
-                            description: 'It is the best.'
+                            description: 'It is the best.',
+                            images: [
+                                { type: 'thumbnail', uri: 'foo.jpg' }
+                            ]
                         },
                         targeting: { age: 'foo', gender: 'foo' }
                     }
@@ -132,8 +135,7 @@ describe('AddProduct', function() {
                 });
 
                 it('should dispatch wizardComplete()', function() {
-                    expect(productWizardActions.wizardComplete).toHaveBeenCalledWith({ targeting, productData });
-                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.wizardComplete.calls.mostRecent().returnValue);
+                    expect(store.dispatch).toHaveBeenCalledWith(wizardComplete({ targeting, productData: assign({}, state.page['dashboard.add_product'].productData, productData) }));
                     expect(result).toBe(store.dispatch.calls.mostRecent().returnValue);
                 });
             });
