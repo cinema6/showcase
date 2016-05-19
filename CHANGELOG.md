@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.1.0-rc8]*
+  * [FIX]: Fixed resend confirmation page styles
+  * [FIX]: Fixed tracking modal styles
+
 * *[v0.1.0-rc7]*
   * [FEATURE]: Add ability to delete campaigns
   * [FEATURE]: Add ability to display instructions for setting-up
