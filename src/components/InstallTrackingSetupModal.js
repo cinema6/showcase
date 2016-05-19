@@ -26,13 +26,18 @@ export default class InstallTrackingSetupModal extends Component {
                         <form>
                             <div className="form-group">
                                 <label htmlFor="tracking-id">Product ID</label>
-                                <input type="text" className="form-control text-center" id="tracking-id" value={campaignId} readOnly />
+                                <input type="text"
+                                    className="form-control text-center"
+                                    id="tracking-id"
+                                    value={campaignId}
+                                    readOnly />
                             </div>
                             <CopyButton copyText={campaignId}
                                 onCopySuccess={onCopyCampaignIdSuccess}
                                 onCopyError={onCopyCampaignIdError}
                                 bsSize="lg"
-                                bsStyle="primary" className="btn-block">
+                                bsStyle="primary"
+                                block>
                                 Copy
                             </CopyButton>
                         </form>
