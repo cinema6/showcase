@@ -16,7 +16,7 @@ module.exports = function(config) {
 
         // test results reporter to use
         // possible values: dots || progress || growl
-        reporters: ['progress', 'junit'],
+        reporters: ['progress' ],
 
         browserify: {
             debug: true,

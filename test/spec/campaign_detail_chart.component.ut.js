@@ -11,7 +11,7 @@ import CampaignDetailChart, {
     }
     from '../../src/components/CampaignDetailChart';
 
-describe('CampaignDetailChart', function() {
+fdescribe('CampaignDetailChart', function() {
     describe('CampaignDetailChartComponent', function() {
         let props;
         let component;
@@ -44,59 +44,59 @@ describe('CampaignDetailChart', function() {
             labelFormatter = jasmine.createSpy('formatter').and.returnValue('foo');
             data = {
                 'today' : [
-                    { 'hour'  : '2016-05-12T00:00:00.000Z',
+                    { 'hour'  : '2016-05-12T00:00:00.000Z', 'installs': 0,
                       'views' : 250, 'users' : 200, 'clicks' : 13 },
-                    { 'hour'  : '2016-05-12T01:00:00.000Z',
+                    { 'hour'  : '2016-05-12T01:00:00.000Z', 'installs': 0,
                       'views' : 125, 'users' : 175, 'clicks': 3 },
-                    { 'hour'  : '2016-05-12T02:00:00.000Z',
+                    { 'hour'  : '2016-05-12T02:00:00.000Z', 'installs': 0,
                       'views' : 433, 'users' : 395, 'clicks': 50 }
                 ],
                 'daily_7' : [
-                    {   'date': '2016-05-06',
+                    {   'date': '2016-05-06', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-07',
+                    {   'date': '2016-05-07', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08',
+                    {   'date': '2016-05-08', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09',
+                    {   'date': '2016-05-09', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10',
+                    {   'date': '2016-05-10', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11',
+                    {   'date': '2016-05-11', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12',
+                    {   'date': '2016-05-12', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 }
                 ],
                 'daily_30' : [
-                    {   'date': '2016-04-28',
+                    {   'date': '2016-04-28', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-04-29',
+                    {   'date': '2016-04-29', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-04-30',
+                    {   'date': '2016-04-30', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-01',
+                    {   'date': '2016-05-01', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-02',
+                    {   'date': '2016-05-02', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-03',
+                    {   'date': '2016-05-03', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-04',
+                    {   'date': '2016-05-04', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-05',
+                    {   'date': '2016-05-05', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-06',
+                    {   'date': '2016-05-06', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-07',
+                    {   'date': '2016-05-07', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08',
+                    {   'date': '2016-05-08', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09',
+                    {   'date': '2016-05-09', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10',
+                    {   'date': '2016-05-10', 'installs': 0,
                         'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11',
+                    {   'date': '2016-05-11', 'installs': 0,
                         'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12',
+                    {   'date': '2016-05-12', 'installs': 0,
                         'views': 433, 'users': 395, 'clicks': 50 }
                 ]
             };
@@ -111,6 +111,7 @@ describe('CampaignDetailChart', function() {
                 expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 250, 125, 433 ] ]
                 }));
+                expect(chartParams.isEmpty).toEqual(false);
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_USERS',function(){
@@ -121,6 +122,7 @@ describe('CampaignDetailChart', function() {
                 expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 200, 175, 395 ] ]
                 }));
+                expect(chartParams.isEmpty).toEqual(false);
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_CLICKS',function(){
@@ -131,6 +133,7 @@ describe('CampaignDetailChart', function() {
                 expect(chartParams.data).toEqual(jasmine.objectContaining({
                     series : [ [ 13, 3, 50 ] ]
                 }));
+                expect(chartParams.isEmpty).toEqual(false);
             });
 
             it('should initialize with CAMPAIGN_DETAIL_SERIES_INSTALLS',function(){
@@ -139,8 +142,9 @@ describe('CampaignDetailChart', function() {
                     data : data.today });
                 expect(labelFormatter.calls.count()).toEqual(3);
                 expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ undefined, undefined, undefined ] ]
+                    series : [ [ null, null, null ] ]
                 }));
+                expect(chartParams.isEmpty).toEqual(true);
             });
 
             it('should throw an exception with a bad series',function(){
