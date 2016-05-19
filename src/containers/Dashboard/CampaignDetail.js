@@ -83,8 +83,8 @@ class CampaignDetail extends Component {
                         <div className="col-md-5">
                             <Nav bsStyle="pills" className="nav-justified"
                                 activeKey={page.activeSeries} onSelect={selectSeries}>
-                                <NavItem eventKey={SERIES_USERS}> Users </NavItem>
                                 <NavItem eventKey={SERIES_VIEWS}> Views </NavItem>
+                                <NavItem eventKey={SERIES_USERS}> Reach </NavItem>
                                 <NavItem eventKey={SERIES_CLICKS}> Clicks </NavItem>
                                 <NavItem eventKey={SERIES_INSTALLS}> Installs </NavItem>
                             </Nav>
@@ -116,6 +116,7 @@ class CampaignDetail extends Component {
                     campaignId={campaign.id}
                     title={campaign.name}
                     logoUrl={logoUrl}
+                    users={get(analytics,'summary.users')}
                     views={get(analytics,'summary.views')}
                     clicks={get(analytics,'summary.clicks')}
                     installs={get(analytics,'summary.installs')}

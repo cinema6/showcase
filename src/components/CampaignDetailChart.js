@@ -82,13 +82,17 @@ export class ChartistParameters {
         this._options            = options || defaultOptions;
         this._responsiveOptions  = responsiveOptions || defaultRespOpts;
       
-        this._data.series.push( data.map((datum) => datum[field]) );
+        this._data.series.push( data.map((d) => (d[field] === 0 ? null : d[field])) );
         this._data.labels = data.map((datum) => labelFormatter(datum) );
+        this._isEmpty = ((data.map((d)=>d[field]).reduce((p,c)=>p+c,0)) === 0);
+        this._chartClass = `chart-${field === 'users' ? 'reach' : field}`; 
     }
 
-    get data()      { return this._data; }
-    get options()   { return this._options; }
-    get type()      { return this._type; }
+    get chartClass() { return this._chartClass; }
+    get isEmpty()    { return this._isEmpty; }
+    get data()       { return this._data; }
+    get options()    { return this._options; }
+    get type()       { return this._type; }
     get responsiveOptions() { return this._responsiveOptions; }
 }
 
@@ -105,7 +109,7 @@ export class Daily7ChartParameters extends ChartistParameters {
         let labelFormatter = (datum) => moment(datum.date).format('dddd M/D');
         
         let options = {
-            axisX   : { showGrid: false, labelOffset: { x: -30}  },
+            axisX   : { showGrid: false/*, labelOffset: { x: -30} */ },
             axisY   : { labelInterpolationFnc: (value) => format(value) },
             lineSmooth  : false,
             showArea    : true,
@@ -163,10 +167,15 @@ export function createChartParameters({ chart, series, data }) {
 
 export default class CampaignDetailChart extends Component {
     render() {
-        let params = createChartParameters(this.props);
+        let params = createChartParameters(this.props), empty;
 
+        if (params.isEmpty){
+            empty = ( <div className="empty-chart"></div> );
+        }
+        
         return (
-            <div>
+            <div className={params.chartClass}>
+                {empty}
                 <ChartistGraphExt
                     className={'ct-octave'} 
                     data={params.data} 
