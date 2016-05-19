@@ -315,6 +315,14 @@
             color: lighten($link-color, 15%);
         }
  /***
+ CSS Variables
+ ----------------------------
+ ***/
+    $stats-views:         #0496FF;
+    $stats-reach:         #AB6FC5;
+    $stats-clicks:        #25ab27;
+    $stats-installs:      #353A47;
+ /***
  Navigation
  ----------------------------
  ***/
@@ -768,6 +776,25 @@
         .tracking-modal .btn-group {
             margin-bottom: 30px;
         }
+/***stats colors***/
+    .stats-list h4 {
+        font-weight: 400;
+    }
+    .stats-col-views {
+        color: $stats-views;
+    }
+    .stats-col-reach {
+        color: $stats-reach;
+    }
+    .stats-col-clicks {
+        color: $stats-clicks;
+    }
+    .stats-col-installs {
+        color: $stats-installs;
+    }
+    .ct-label {
+        
+    }
  /***
  Billing & Payments
  ----------------------------
