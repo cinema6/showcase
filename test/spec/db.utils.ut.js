@@ -14,6 +14,7 @@ import { createAction } from 'redux-actions';
 import { CALL_API } from 'redux-api-middleware';
 import defer from 'promise-defer';
 import { format as formatURL } from 'url';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 describe('utils/db', function() {
     describe('createDbActions({ type, endpoint, queries })', function() {
@@ -42,7 +43,7 @@ describe('utils/db', function() {
             let queries, id;
 
             function getCall(action) {
-                if (typeof action === 'function') {
+                if (action.type === createThunk()().type) {
                     let result;
                     let dispatch = data => {
                         result = data;
@@ -55,8 +56,9 @@ describe('utils/db', function() {
                             }
                         }
                     });
+                    let thunk = getThunk(action);
 
-                    action(dispatch, getState);
+                    thunk(dispatch, getState);
                     return result[CALL_API];
                 }
 
@@ -122,7 +124,7 @@ describe('utils/db', function() {
             let thunk;
 
             beforeEach(function() {
-                thunk = actions.list();
+                thunk = getThunk(actions.list());
             });
 
             it('should return a thunk', function() {
@@ -225,7 +227,7 @@ describe('utils/db', function() {
                         key = 'token';
                         dispatch.calls.reset();
 
-                        createDbActions({ type, endpoint, key }).list()(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).list())(dispatch, getState).then(success, failure);
                         setTimeout(done);
                     });
 
@@ -242,7 +244,7 @@ describe('utils/db', function() {
 
             beforeEach(function() {
                 id = 'cam-' + createUuid();
-                thunk = actions.get({ id });
+                thunk = getThunk(actions.get({ id }));
             });
 
             it('should return a thunk', function() {
@@ -345,7 +347,7 @@ describe('utils/db', function() {
                         key = 'token';
                         dispatch.calls.reset();
 
-                        createDbActions({ type, endpoint, key }).get({ id })(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).get({ id }))(dispatch, getState).then(success, failure);
                         setTimeout(done);
                     });
 
@@ -362,7 +364,7 @@ describe('utils/db', function() {
 
             beforeEach(function() {
                 params = { foo: 'bar', limit: 1 };
-                thunk = actions.query(params);
+                thunk = getThunk(actions.query(params));
             });
 
             it('should return a thunk', function() {
@@ -475,7 +477,7 @@ describe('utils/db', function() {
                         key = 'token';
                         dispatch.calls.reset();
 
-                        createDbActions({ type, endpoint, key }).query(params)(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).query(params))(dispatch, getState).then(success, failure);
                         setTimeout(done);
                     });
 
@@ -495,7 +497,7 @@ describe('utils/db', function() {
                     foo: 'bar',
                     hello: 'world'
                 };
-                thunk = actions.create({ data });
+                thunk = getThunk(actions.create({ data }));
             });
 
             it('should return a thunk', function() {
@@ -599,7 +601,7 @@ describe('utils/db', function() {
                         key = 'token';
                         dispatch.calls.reset();
 
-                        createDbActions({ type, endpoint, key }).create({ data })(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).create({ data }))(dispatch, getState).then(success, failure);
                     });
 
                     it('should call the api with that key in the meta', function() {
@@ -619,7 +621,7 @@ describe('utils/db', function() {
                     foo: 'bar',
                     hello: 'world'
                 };
-                thunk = actions.update({ data });
+                thunk = getThunk(actions.update({ data }));
             });
 
             it('should return a thunk', function() {
@@ -739,7 +741,7 @@ describe('utils/db', function() {
                         dispatch.calls.reset();
                         dispatchDeferred.resolve(fullData);
 
-                        createDbActions({ type, endpoint, key }).update({ data })(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).update({ data }))(dispatch, getState).then(success, failure);
                         setTimeout(done);
                     });
 
@@ -756,7 +758,7 @@ describe('utils/db', function() {
                 describe('if the data has no id', function() {
                     beforeEach(function(done) {
                         delete data.id;
-                        thunk = actions.update({ data });
+                        thunk = getThunk(actions.update({ data }));
 
                         success.calls.reset();
                         failure.calls.reset();
@@ -783,7 +785,7 @@ describe('utils/db', function() {
                 describe('if there is no existing object', function() {
                     beforeEach(function(done) {
                         data.id = 'cam-' + createUuid();
-                        thunk = actions.update({ data });
+                        thunk = getThunk(actions.update({ data }));
 
                         success.calls.reset();
                         failure.calls.reset();
@@ -815,7 +817,7 @@ describe('utils/db', function() {
 
             beforeEach(function() {
                 id = 'cam-' + createUuid();
-                thunk = actions.remove({ id });
+                thunk = getThunk(actions.remove({ id }));
             });
 
             it('should include action names', function() {
@@ -912,7 +914,7 @@ describe('utils/db', function() {
                     beforeEach(function(done) {
                         key = 'token';
 
-                        createDbActions({ type, endpoint, key }).remove({ id })(dispatch, getState).then(success, failure);
+                        getThunk(createDbActions({ type, endpoint, key }).remove({ id }))(dispatch, getState).then(success, failure);
                         setTimeout(done);
                     });
 

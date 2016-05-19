@@ -13,6 +13,7 @@ import {
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { replace } from 'react-router-redux';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -45,7 +46,7 @@ describe('actions: login', function() {
             password = 'banana';
             redirect = '/dashboard';
 
-            thunk = loginUser({ email, password, redirect });
+            thunk = getThunk(loginUser({ email, password, redirect }));
         });
 
         it('should return a thunk', function() {

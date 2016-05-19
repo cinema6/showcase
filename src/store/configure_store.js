@@ -8,9 +8,11 @@ import { routerMiddleware } from 'react-router-redux';
 import promisify from '../middleware/promisify';
 import history from '../history';
 import promiseMiddleware from 'redux-promise-middleware';
+import { middleware as fsaThunk } from '../middleware/fsa_thunk';
 
 const middlewares = [
     promisify,
+    fsaThunk,
     thunk,
     promiseMiddleware(),
     routerMiddleware(history),

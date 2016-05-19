@@ -24,6 +24,7 @@ import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
 import { CALL_API } from 'redux-api-middleware';
 import { format as formatURL } from 'url';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -74,7 +75,7 @@ describe('user actions', function() {
             email = 'new@email.com';
             password = 'banana';
 
-            thunk = changeEmail({ id, email, password });
+            thunk = getThunk(changeEmail({ id, email, password }));
         });
 
         it('should return a thunk', function() {
@@ -141,7 +142,7 @@ describe('user actions', function() {
             describe('if the id is for an unknown user', function() {
                 beforeEach(function(done) {
                     id = 'u-' + createUuid();
-                    thunk = changeEmail({ id, email, password });
+                    thunk = getThunk(changeEmail({ id, email, password }));
                     dispatch.calls.reset();
 
                     thunk(dispatch, getState).then(success, failure);
@@ -168,7 +169,7 @@ describe('user actions', function() {
             newPassword = 'Banana!';
             oldPassword = 'banana';
 
-            thunk = changePassword({ id, newPassword, oldPassword });
+            thunk = getThunk(changePassword({ id, newPassword, oldPassword }));
         });
 
         it('should return a thunk', function() {
@@ -221,7 +222,7 @@ describe('user actions', function() {
             describe('if the id is for an unknown user', function() {
                 beforeEach(function(done) {
                     id = 'u-' + createUuid();
-                    thunk = changePassword({ id, newPassword, oldPassword });
+                    thunk = getThunk(changePassword({ id, newPassword, oldPassword }));
                     dispatch.calls.reset();
 
                     thunk(dispatch, getState).then(success, failure);

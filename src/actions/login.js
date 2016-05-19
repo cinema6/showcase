@@ -9,6 +9,7 @@ import {
 import { replace } from 'react-router-redux';
 import { createAction } from 'redux-actions';
 import { noop } from 'lodash';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function loginType(type) {
     return `LOGIN/${type}`;
@@ -17,7 +18,7 @@ function loginType(type) {
 export const LOGIN_START = loginType('LOGIN_START');
 export const LOGIN_SUCCESS = loginType('LOGIN_SUCCESS');
 export const LOGIN_FAILURE = loginType('LOGIN_FAILURE');
-export function loginUser({ email, password, redirect }) {
+export const loginUser = createThunk(({ email, password, redirect }) => {
     return function doLoginUser(dispatch) {
         dispatch(createAction(LOGIN_START)());
 
@@ -29,4 +30,4 @@ export function loginUser({ email, password, redirect }) {
             ])))
             .catch(reason => dispatch(createAction(LOGIN_FAILURE)(reason)));
     };
-}
+});

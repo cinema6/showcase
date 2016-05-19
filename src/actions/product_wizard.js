@@ -9,22 +9,23 @@ import { TYPE  as NOTIFICATION_TYPE } from '../enums/notification';
 import { notify } from './notification';
 import { replace, push, goBack } from 'react-router-redux';
 import { campaignFromData } from '../utils/campaign';
+import { createThunk } from '../../src/middleware/fsa_thunk';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
 }
 
 export const PRODUCT_SELECTED = prefix('PRODUCT_SELECTED');
-export function productSelected({ product }) {
+export const productSelected = createThunk(({ product }) => {
     return function thunk(dispatch) {
         return dispatch(createAction(PRODUCT_SELECTED)(
             dispatch(getProductData({ uri: product.uri }))
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});
 
 export const WIZARD_COMPLETE = prefix('WIZARD_COMPLETE');
-export function wizardComplete({ productData, targeting }) {
+export const wizardComplete = createThunk(({ productData, targeting }) => {
     return function thunk(dispatch, getState) {
         const [method] = getState().session.paymentMethods;
 
@@ -38,7 +39,7 @@ export function wizardComplete({ productData, targeting }) {
             }
         });
     };
-}
+});
 
 export const GO_TO_STEP = prefix('GO_TO_STEP');
 export const goToStep = createAction(GO_TO_STEP);
@@ -47,7 +48,7 @@ export const WIZARD_DESTROYED = prefix('WIZARD_DESTROYED');
 export const wizardDestroyed = createAction(WIZARD_DESTROYED);
 
 export const CREATE_CAMPAIGN = prefix('CREATE_CAMPAIGN');
-export function createCampaign({ payment, productData, targeting }) {
+export const createCampaign = createThunk(({ payment, productData, targeting }) => {
     return function thunk(dispatch, getState) {
         const state = getState();
         const user = state.db.user[state.session.user];
@@ -80,10 +81,10 @@ export function createCampaign({ payment, productData, targeting }) {
             })
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});
 
 export const LOAD_CAMPAIGN = prefix('LOAD_CAMPAIGN');
-export function loadCampaign({ id }) {
+export const loadCampaign = createThunk(({ id }) => {
     return function thunk(dispatch, getState) {
         return dispatch(createAction(LOAD_CAMPAIGN)(
             dispatch(campaign.get({ id })).catch(reason => {
@@ -107,10 +108,10 @@ export function loadCampaign({ id }) {
             })
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});
 
 export const UPDATE_CAMPAIGN = prefix('UPDATE_CAMPAIGN');
-export function updateCampaign({ id, productData, targeting }) {
+export const updateCampaign = createThunk(({ id, productData, targeting }) => {
     return function thunk(dispatch, getState) {
         let currentCampaign = getState().db.campaign[id];
 
@@ -142,4 +143,4 @@ export function updateCampaign({ id, productData, targeting }) {
             })
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});

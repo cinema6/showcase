@@ -9,6 +9,7 @@ import {
 import {
     format as formatURL
 } from 'url';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -37,7 +38,7 @@ describe('search actions', function() {
         beforeEach(function() {
             uri = 'https://itunes.apple.com/us/app/photo-coin-counter-photocoin/id763388830?mt=8&uo=4';
 
-            thunk = getProductData({ uri });
+            thunk = getThunk(getProductData({ uri }));
         });
 
         it('should return a thunk', function() {

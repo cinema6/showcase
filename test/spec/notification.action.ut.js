@@ -5,6 +5,7 @@ import {
     ADD_NOTIFICATION,
     REMOVE_NOTIFICATION
 } from '../../src/actions/notification';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -83,7 +84,7 @@ describe('notification actions', function() {
             type = TYPE.DANGER;
             time = 10000;
 
-            thunk = notify({ message, type, time });
+            thunk = getThunk(notify({ message, type, time }));
         });
 
         afterEach(function() {

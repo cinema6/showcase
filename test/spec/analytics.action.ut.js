@@ -1,3 +1,5 @@
+import { getThunk } from '../../src/middleware/fsa_thunk';
+
 const proxyquire = require('proxyquire');
 
 describe('analytics-actions',function(){
@@ -17,7 +19,7 @@ describe('analytics-actions',function(){
     describe('getCampaignAnalytics(campaignId)', function() {
         let thunk;
         beforeEach(function(){
-            thunk = lib.getCampaignAnalytics('xyz'); 
+            thunk = getThunk(lib.getCampaignAnalytics('xyz'));
         });
 
         it('should return a thunk', function() {
