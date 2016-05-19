@@ -5,6 +5,8 @@
   * [FIX]: Fixed tracking modal styles
   * [FEATURE]: Add CampaignDetailTable component
   * [FIX]: Added junit reporter + config to use it
+  * Added error handling for data-loading on the campaign detail page
+  * Added a 404 page
 
 * *[v0.1.0-rc7]*
   * [FEATURE]: Add ability to delete campaigns

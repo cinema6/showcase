@@ -36,6 +36,12 @@ class CampaignDetail extends Component {
         return this.props.loadPageData(this.props.params.campaignId);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.campaignId !== this.props.params.campaignId) {
+            return this.props.loadPageData(nextProps.params.campaignId);
+        }
+    }
+
     render() {
         const {
             page,
@@ -117,7 +123,8 @@ class CampaignDetail extends Component {
                     onShowInstallTrackingInstructions={() => showInstallTrackingInstructions(true)}
                 />
                 {inner}
-                <InstallTrackingSetupModal show={page.showInstallTrackingInstructions}
+                {campaign.id && (<InstallTrackingSetupModal
+                    show={page.showInstallTrackingInstructions}
                     campaignId={campaign.id}
                     onClose={() => showInstallTrackingInstructions(false)}
                     onCopyCampaignIdSuccess={() => notify({
@@ -127,7 +134,8 @@ class CampaignDetail extends Component {
                     onCopyCampaignIdError={() => notify({
                         type: NOTIFICATION.WARNING,
                         message: 'Unable to copy.'
-                    })} />
+                    })}
+                />)}
             </div>
         );
     }
