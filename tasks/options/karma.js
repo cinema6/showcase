@@ -41,7 +41,8 @@ module.exports = {
             configFile: 'test/karma.conf.js',
             reporters: ['progress', 'junit'],
             junitReporter: {
-                outputFile: 'reports/unit--<%= grunt.task.current.args[0] %>.xml'
+                useBrowserName : false,
+                outputFile: 'reports/unit.xml'
             },
             singleRun: true
         }

@@ -40,3 +40,4 @@ build
 .bundle
 .sass-cache
 static/scss
+reports/
