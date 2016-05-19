@@ -17,6 +17,7 @@ import {
     notify
 } from '../../actions/notification';
 import CampaignDetailBar from '../../components/CampaignDetailBar';
+import CampaignDetailTable from '../../components/CampaignDetailTable';
 import CampaignDetailChart, {
    CHART_TODAY,
    CHART_7DAY,
@@ -94,6 +95,10 @@ class CampaignDetail extends Component {
                     <div className="row">
                         <CampaignDetailChart data={analytics || {}}
                             chart={page.activeChart} series={page.activeSeries} />
+                    </div>
+                    <div className="row">
+                        <CampaignDetailTable data={analytics || {}}
+                            chart={page.activeChart} />
                     </div>
                 </div>
             );
