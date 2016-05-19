@@ -24,7 +24,12 @@ export default class CampaignDetailTable extends Component {
         } else
         if (chart === CHART_7DAY) {
             activeSet = data.daily_7;
-            timeFormatter = (datum) => moment(datum.date).format('dddd M/D');
+            timeFormatter = (datum) => {
+                return ([
+                    <span> {moment(datum.date).format('dddd')} </span> ,
+                    <span> {moment(datum.date).format('M/D')} </span>
+                ]);
+            };
         } else
         if (chart === CHART_30DAY) {
             activeSet = data.daily_30;
@@ -39,6 +44,7 @@ export default class CampaignDetailTable extends Component {
                     <thead>
                         <tr>
                             <th> <h4> Timeline </h4> </th>
+                            <th className="text-center"> <h4> Views </h4> </th>
                             <th className="text-center"> <h4> Reach </h4> </th>
                             <th className="text-center"> <h4> Clicks </h4> </th>
                             <th className="text-center"> <h4> Installs </h4> </th>
@@ -49,6 +55,7 @@ export default class CampaignDetailTable extends Component {
                             return (
                                 <tr key={i}>
                                     <th> <h4>{timeFormatter(row)} </h4></th> 
+                                    <td> <h4>{numsFormatter(row.views)} </h4></td> 
                                     <td> <h4>{numsFormatter(row.users)} </h4></td> 
                                     <td> <h4>{numsFormatter(row.clicks)} </h4></td> 
                                     <td> <h4>{numsFormatter(row.installs)} </h4></td> 

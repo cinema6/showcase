@@ -10,6 +10,7 @@ export default class CampaignDetailBar extends Component {
             campaignId,
             logoUrl,
             title,
+            users,
             views,
             clicks,
             installs,
@@ -18,7 +19,7 @@ export default class CampaignDetailBar extends Component {
             onShowInstallTrackingInstructions
         } = this.props;
 
-        let format = (n) => numeral(n).format('0,0');
+        let format = (n) => n === 0 ? '-' : numeral(n).format('0,0');
 
         return (
             <div className="row">
@@ -35,8 +36,12 @@ export default class CampaignDetailBar extends Component {
                       </div>
                       <div className="campaign-mini-stats col-md-6">
                         <div className="campaign-reach data-inline col-md-4">
-                          <p>Reach</p>
+                          <p>Views</p>
                           <h3>{format(views)}</h3>
+                        </div>
+                        <div className="campaign-reach data-inline col-md-4">
+                          <p>Reach</p>
+                          <h3>{format(users)}</h3>
                         </div>
                         <div className="campaign-clicks data-inline col-md-3">
                           <p>Clicks</p>
@@ -83,6 +88,7 @@ CampaignDetailBar.propTypes = {
     campaignId:                         PropTypes.string,
     logoUrl:                            PropTypes.string,
     title:                              PropTypes.string,
+    users:                              PropTypes.number,
     views:                              PropTypes.number,
     clicks:                             PropTypes.number,
     installs:                           PropTypes.number,
