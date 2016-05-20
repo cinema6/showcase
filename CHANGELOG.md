@@ -10,6 +10,7 @@
   * Updated DetailCharts and such for Dhaval
   * [FIX]: Fix for an issue that caused malformed campaigns to be
     created if the user already had a payment method
+* *[/v0.1.0-rc8]*
 
 * *[v0.1.0-rc7]*
   * [FEATURE]: Add ability to delete campaigns
