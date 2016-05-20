@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { assign } from 'lodash';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function prefix(type) {
     return `@@notification/${type}`;
@@ -22,10 +23,10 @@ export const addNotification = createAction(ADD_NOTIFICATION, data => assign({},
 export const REMOVE_NOTIFICATION = prefix('REMOVE_NOTIFICATION');
 export const removeNotification = createAction(REMOVE_NOTIFICATION);
 
-export function notify({ type, message, time = 3500 }) {
+export const notify = createThunk(({ type, message, time = 3500 }) => {
     return function thunk(dispatch) {
         return dispatch(addNotification({ type, message }))
             .then(delay(time))
             .then(({ id }) => dispatch(removeNotification(id)));
     };
-}
+});

@@ -7,6 +7,7 @@ import {
     FIND_APPS_FAILURE
 } from '../../src/actions/search';
 import { format as formatURL } from 'url';
+import { CALL_API } from 'redux-api-middleware';
 
 const proxyquire = require('proxyquire');
 
@@ -29,48 +30,27 @@ describe('search actions', function() {
 
     describe('findApps({ query, limit })', function() {
         let query, limit;
-        let thunk;
+        let result;
 
         beforeEach(function() {
             query = 'my app';
             limit = 15;
 
-            thunk = findApps({ query, limit });
+            result = findApps({ query, limit });
         });
 
-        it('should return a Function', function() {
-            expect(thunk).toEqual(jasmine.any(Function));
-        });
-
-        describe('when expected', function() {
-            let dispatch, getState;
-            let success, failure;
-
-            beforeEach(function(done) {
-                dispatch = jasmine.createSpy('dispatch()').and.returnValue(new Promise(() => {}));
-                getState = jasmine.createSpy('getState()').and.returnValue({});
-
-                success = jasmine.createSpy('success()');
-                failure = jasmine.createSpy('failure()');
-
-                thunk(dispatch, getState).then(success, failure);
-                setTimeout(done);
-            });
-
-            it('should make a request to the search service', function() {
-                expect(apiActions.callAPI).toHaveBeenCalledWith({
-                    types: [FIND_APPS_START, FIND_APPS_SUCCESS, FIND_APPS_FAILURE],
-                    endpoint: formatURL({
-                        pathname: '/api/search/apps',
-                        query: {
-                            query,
-                            limit
-                        }
-                    }),
-                    method: 'GET'
-                });
-                expect(dispatch.calls.mostRecent().args[0]).toBe(apiActions.callAPI.calls.mostRecent().returnValue);
-            });
+        it('should make a request to the search service', function() {
+            expect(result[CALL_API]).toEqual(callAPI({
+                types: [FIND_APPS_START, FIND_APPS_SUCCESS, FIND_APPS_FAILURE],
+                endpoint: formatURL({
+                    pathname: '/api/search/apps',
+                    query: {
+                        query,
+                        limit
+                    }
+                }),
+                method: 'GET'
+            })[CALL_API]);
         });
     });
 });

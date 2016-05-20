@@ -10,12 +10,13 @@ import {
     TOGGLE_NAV
 } from '../../src/actions/dashboard';
 import { replace } from 'react-router-redux';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 describe('logoutUser()', function() {
     let thunk;
 
     beforeEach(function() {
-        thunk = logoutUser();
+        thunk = getThunk(logoutUser());
     });
 
     it('should return a thunk', function() {

@@ -8,6 +8,7 @@ import { cancel as cancelCampaign } from './campaign';
 import { replace } from 'react-router-redux';
 import { notify } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function prefix(type) {
     return `CAMPAIGN_DETAIL/${type}`;
@@ -18,7 +19,7 @@ export const updateChartSelection = createAction(UPDATE_CHART_SELECTION,
     (activeChart, activeSeries) => { return { activeChart, activeSeries }; });
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
-export function loadPageData(campaignId) {
+export const loadPageData = createThunk(campaignId => {
     return function thunk(dispatch, getState) {
         return dispatch(createAction(LOAD_PAGE_DATA)(
             Promise.all([
@@ -55,9 +56,9 @@ export function loadPageData(campaignId) {
             ])
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});
 
-export function removeCampaign(campaignId) {
+export const removeCampaign = createThunk(campaignId => {
     return function thunk(dispatch) {
         return dispatch(showAlert({
             title: 'Woah There!',
@@ -88,7 +89,7 @@ export function removeCampaign(campaignId) {
             ]
         }));
     };
-}
+});
 
 export const SHOW_INSTALL_TRACKING_INSTRUCTIONS = prefix('SHOW_INSTALL_TRACKING_INSTRUCTIONS');
 export const showInstallTrackingInstructions = createAction(SHOW_INSTALL_TRACKING_INSTRUCTIONS);

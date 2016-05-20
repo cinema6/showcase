@@ -1,5 +1,6 @@
 import { createDbActions } from '../utils/db';
 import { createAction } from 'redux-actions';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function prefix(type) {
     return `CAMPAIGN/${type}`;
@@ -22,10 +23,10 @@ const campaign = createDbActions({
 export default campaign;
 
 export const CANCEL = prefix('CANCEL');
-export function cancel(id) {
+export const cancel = createThunk(id => {
     return function thunk(dispatch) {
         return dispatch(createAction(CANCEL)(
             dispatch(campaign.update({ data: { id, status: 'canceled' } }))
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
-}
+});

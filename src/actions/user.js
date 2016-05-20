@@ -4,6 +4,7 @@ import { createAction } from 'redux-actions';
 import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
 import { format as formatURL } from 'url';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function userPrefix(type) {
     return `USER/${type}`;
@@ -17,7 +18,7 @@ export default createDbActions({
 export const CHANGE_EMAIL_START = userPrefix('CHANGE_EMAIL_START');
 export const CHANGE_EMAIL_SUCCESS = userPrefix('CHANGE_EMAIL_SUCCESS');
 export const CHANGE_EMAIL_FAILURE = userPrefix('CHANGE_EMAIL_FAILURE');
-export function changeEmail({ id, email, password }) {
+export const changeEmail = createThunk(({ id, email, password }) => {
     const meta = () => ({ email, id });
 
     return function thunk(dispatch, getState) {
@@ -53,12 +54,12 @@ export function changeEmail({ id, email, password }) {
             }
         })).then(() => email);
     };
-}
+});
 
 export const CHANGE_PASSWORD_START = userPrefix('CHANGE_PASSWORD_START');
 export const CHANGE_PASSWORD_SUCCESS = userPrefix('CHANGE_PASSWORD_SUCCESS');
 export const CHANGE_PASSWORD_FAILURE = userPrefix('CHANGE_PASSWORD_FAILURE');
-export function changePassword({ id, oldPassword, newPassword }) {
+export const changePassword = createThunk(({ id, oldPassword, newPassword }) => {
     return function thunk(dispatch, getState) {
         const user = getState().db.user[id];
 
@@ -82,7 +83,7 @@ export function changePassword({ id, oldPassword, newPassword }) {
             }
         }));
     };
-}
+});
 
 export const SIGN_UP_START = userPrefix('SIGN_UP_START');
 export const SIGN_UP_SUCCESS = userPrefix('SIGN_UP_SUCCESS');
