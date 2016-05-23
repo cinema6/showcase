@@ -5,7 +5,6 @@ import {
     renderIntoDocument,
     findAllInRenderedTree,
     findRenderedDOMComponentWithTag,
-    scryRenderedDOMComponentsWithTag,
     Simulate
 } from 'react-addons-test-utils';
 import React from 'react';
@@ -63,51 +62,6 @@ describe('EditTargeting', function() {
                 }),
                 name: jasmine.any(Object),
                 description: jasmine.any(Object)
-            });
-        });
-
-        describe('age selection', function() {
-            let radiogroup;
-
-            beforeEach(function() {
-                radiogroup = scryRenderedDOMComponentsWithTag(component, 'radiogroup')[0];
-            });
-
-            it('should change values', function() {
-                let [all, zeroTo12, thirteenPlus, eitghteenPlus] = radiogroup.querySelectorAll('input');
-
-                Simulate.focus(all);
-                expect(all.checked).toBeTruthy('all');
-
-                Simulate.change(zeroTo12);
-                expect(zeroTo12.checked).toBeTruthy(AGE.ZERO_TO_TWELVE);
-
-                Simulate.change(thirteenPlus);
-                expect(thirteenPlus.checked).toBeTruthy(AGE.THIRTEEN_PLUS);
-
-                Simulate.change(eitghteenPlus);
-                expect(eitghteenPlus.checked).toBeTruthy(AGE.EIGHTEEN_PLUS);
-            });
-        });
-
-        describe('gender selection', function() {
-            let radiogroup;
-
-            beforeEach(function() {
-                radiogroup = scryRenderedDOMComponentsWithTag(component, 'radiogroup')[1];
-            });
-
-            it('should change values', function() {
-                let [all, female, male] = radiogroup.querySelectorAll('input');
-
-                Simulate.focus(all);
-                expect(all.checked).toBeTruthy('all');
-
-                Simulate.change(female);
-                expect(female.checked).toBeTruthy(GENDER.FEMALE);
-
-                Simulate.change(male);
-                expect(male.checked).toBeTruthy(GENDER.MALE);
             });
         });
 

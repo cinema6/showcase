@@ -241,7 +241,7 @@ EditTargeting.propTypes = {
         age: PropTypes.object.isRequired,
         gender: PropTypes.object.isRequired
     }).isRequired,
-    submitting: PropTypes.bool.isRequred,
+    submitting: PropTypes.bool.isRequired,
 
     handleSubmit: PropTypes.func.isRequired
 };
