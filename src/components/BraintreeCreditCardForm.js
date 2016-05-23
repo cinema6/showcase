@@ -66,11 +66,53 @@ export default class BraintreeCreditCardForm extends Component {
                 id: id,
                 onReady: api => this.setState({ loading: false, braintree: api }),
                 hostedFields: HOSTED_FIELDS.reduce((hostedFields, field) => {
-                    hostedFields[field] = {
+                    hostedFields[field] = assign({
                         selector: `[data-braintree="${id}_${field}"]`
-                    };
+                    }, hostedFields[field]);
                     return hostedFields;
                 }, {
+                    number: {
+                        placeholder: 'Card Number'
+                    },
+                    expirationDate: {
+                        placeholder: 'Expiration (MM/YY)'
+                    },
+                    cvv: {
+                        placeholder: 'CVV'
+                    },
+                    postalCode: {
+                        placeholder: 'Zip Code'
+                    },
+                    styles: {
+                        '.number': {
+                            'color': '#555555',
+                            'font-family': 'sans-serif',
+                            'font-size': '18px',
+                            'height': '40px',
+                            'line-height': '40px'
+                        },
+                        '.expirationDate': {
+                            'color': '#555555',
+                            'font-family': 'sans-serif',
+                            'font-size': '18px',
+                            'height': '40px',
+                            'line-height': '40px'
+                        },
+                        '.cvv': {
+                            'color': '#555555',
+                            'font-family': 'sans-serif',
+                            'font-size': '18px',
+                            'height': '40px',
+                            'line-height': '40px'
+                        },
+                        '.postalCode': {
+                            'color': '#555555',
+                            'font-family': 'sans-serif',
+                            'font-size': '18px',
+                            'height': '40px',
+                            'line-height': '40px'
+                        }
+                    },
                     onFieldEvent: ({
                         isEmtpy,
                         isFocused,
@@ -183,9 +225,9 @@ export default class BraintreeCreditCardForm extends Component {
                         hidden: type !== PAYMENT_TYPE.CREDIT_CARD
                     })}>
                     <div className="form-group">
-                        <label htmlFor="cardholderName-input">Name On Card</label>
+                    {/*<!--<label htmlFor="cardholderName-input">Name On Card</label>*/}
                         <input type="text"
-                            id="cardholderName-input"
+                            id="cardholderName-input" placeholder="Name On Card"
                             className="form-control"
                             onChange={({ target }) => this.setState({
                                 cardholderName: target.value
@@ -193,14 +235,14 @@ export default class BraintreeCreditCardForm extends Component {
                             data-test="cardholderName" />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="cardNumber-input">Card Number</label>
-                        <div id="cardNumber-input"
+                    {/*<label htmlFor="cardNumber-input">Card Number</label>*/}
+                        <div id="cardNumber-input" placeholder="Card Number"
                             data-braintree={`${id}_number`}
                             className={this.getHostedFieldClassNames('number', 'form-control')}>
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="cardExpiration-input">Expiration</label>
+                    {/*<label htmlFor="cardExpiration-input">Expiration</label>*/}
                         <div id="cardExpiration-input"
                             data-braintree={`${id}_expirationDate`}
                             className={this.getHostedFieldClassNames(
@@ -209,7 +251,7 @@ export default class BraintreeCreditCardForm extends Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="cardCVV-input">CVV</label>
+                    {/*<label htmlFor="cardCVV-input">CVV</label>*/}
                         <div id="cardCVV-input"
                             data-braintree={`${id}_cvv`}
                             className={this.getHostedFieldClassNames(
@@ -218,7 +260,7 @@ export default class BraintreeCreditCardForm extends Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="cardZip-input">Zip Code</label>
+                    {/*<label htmlFor="cardZip-input">Zip Code</label>*/}
                         <div id="cardZip-input"
                             data-braintree={`${id}_postalCode`}
                             className={this.getHostedFieldClassNames(

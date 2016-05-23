@@ -32,7 +32,7 @@ export default class ChangePaymentMethodModal extends Component {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <p>Your information is 128-bit SSL encrypted</p>
+                        <p>Your information is secured with 256-bit RSA encryption</p>
                     </div>
                 </div>
             </div>

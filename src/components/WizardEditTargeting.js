@@ -22,7 +22,7 @@ export default class WizardEditTargeting extends Component {
             </div>);
         }
 
-        return (<div className="col-md-5 col-sm-6 col-xs-12 col-middle animated fadeIn">
+        return (<div className="col-md-6 col-sm-6 col-xs-12 col-middle animated fadeIn">
             <h1>Who is your app for?</h1>
             <EditTargetingForm initialValues={targeting} onSubmit={values => onFinish(values)} />
         </div>);
