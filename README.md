@@ -63,20 +63,24 @@ Redux middleware changes the way the `store`'s `dispatch()` method functions, so
 
 `showcase` uses the following redux middleware:
 
-### 1. [`redux-thunk`](https://github.com/gaearon/redux-thunk)
-This middleware allows you to call `dispatch()` with a `Function`. Your `Function` will be invoked with two arguments: `dispatch` (`Function`, so that you can dispatch other actions) and `getState` (`Function` so that you can use the store's `state` in your logic.)
+### 1. [`fsa-thunk`](https://github.com/cinema6/showcase/blob/master/src/middleware/fsa_thunk.js)
+This middleware allows you to pass a `Function` (or thunk) to `dispatch()` that it will call execute. Your `Function` will be invoked with two arguments: `dispatch` (`Function`, so that you can dispatch other actions) and `getState` (`Function` so that you can use the store's `state` in your logic.)
 
-**Most importantly**, the `return` value of your `Function` will become the `return` value of `dispatch()`. This is very important as it allows the chaining of `Promise`es.
+To create a thunk, you must wrap your action creator `Function` in `createThunk()`. Your action creator `Function` should return a `Function` (the thunk.)
+
+**Most importantly**, the `return` value of your thunk `Function` will become the `return` value of `dispatch()`. This is very important as it allows the chaining of `Promise`es.
 
 Example:
 
 ```javascript
-function doStuff() {
-    return function thunk(dispatch, getState) {
+import { createThunk } from 'src/middleware/fsa_thunk';
+
+export const doStuff = createThunk(function() { // The action creator
+    return function thunk(dispatch, getState) { // The thunk
         return dispatch(doAsyncStuff())
             .then(dispatch(doMoreAsyncStuff());
     };
-}
+});
 
 store.dispatch(doStuff()).then(() => console.log('Stuff is done!'));
 ```

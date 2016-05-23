@@ -3,6 +3,7 @@ import ProductWizard from './ProductWizard';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
 import { wizardComplete } from '../../actions/product_wizard';
+import { assign } from 'lodash';
 
 function mapStateToProps(state, props) {
     return {
@@ -13,14 +14,17 @@ function mapStateToProps(state, props) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, props) {
     return {
         loadData() {
             return Promise.resolve(undefined);
         },
 
         onFinish({ targeting, productData }) {
-            return dispatch(wizardComplete({ targeting, productData }));
+            return dispatch(wizardComplete({
+                targeting,
+                productData: assign({}, props.page.productData, productData)
+            }));
         }
     };
 }

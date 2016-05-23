@@ -3,6 +3,7 @@ import defer from 'promise-defer';
 import {
     CANCEL
 } from '../../src/actions/campaign';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -65,7 +66,7 @@ describe('campaign actions', function() {
         beforeEach(function() {
             id = `cam-${createUuid()}`;
 
-            thunk = cancel(id);
+            thunk = getThunk(cancel(id));
         });
 
         it('should return a thunk', function() {
@@ -83,7 +84,7 @@ describe('campaign actions', function() {
 
                 dispatchDeferred = defer();
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') {
+                    if (action.type === createThunk()().type) {
                         return dispatchDeferred.promise;
                     }
 

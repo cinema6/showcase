@@ -10,6 +10,7 @@ import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { replace } from 'react-router-redux';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -45,7 +46,7 @@ describe('confirm account actions', function() {
             id = `u-${createUuid()}`;
             token = createUuid();
 
-            thunk = confirmAccount({ id, token });
+            thunk = getThunk(confirmAccount({ id, token }));
         });
 
         it('should return a thunk', function() {

@@ -4,6 +4,7 @@ import {
     GET_CLIENT_TOKEN_SUCCESS,
     GET_CLIENT_TOKEN_FAILURE
 } from '../../src/actions/payment';
+import { CALL_API } from 'redux-api-middleware';
 
 const proxyquire = require('proxyquire');
 
@@ -59,10 +60,10 @@ describe('payment actions', function() {
         });
 
         it('should call the api for the token', function() {
-            expect(result).toEqual(callAPI({
+            expect(result[CALL_API]).toEqual(callAPI({
                 types: [GET_CLIENT_TOKEN_START, GET_CLIENT_TOKEN_SUCCESS, GET_CLIENT_TOKEN_FAILURE],
                 endpoint: '/api/payments/clientToken'
-            }));
+            })[CALL_API]);
         });
     });
 });

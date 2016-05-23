@@ -5,13 +5,14 @@ import { confirmUser } from './user';
 import { replace } from 'react-router-redux';
 import { notify } from './notification';
 import { TYPE as NOTIFICATION_TYPE } from '../enums/notification';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function prefix(type) {
     return `CONFIRM_ACCOUNT/${type}`;
 }
 
 export const CONFIRM_ACCOUNT = prefix('CONFIRM_ACCOUNT');
-export function confirmAccount({ id, token }) {
+export const confirmAccount = createThunk(({ id, token }) => {
     return function thunk(dispatch) {
         return dispatch(createAction(CONFIRM_ACCOUNT)(
             dispatch(confirmUser({ id, token }))
@@ -36,4 +37,4 @@ export function confirmAccount({ id, token }) {
             return Promise.reject(reason);
         });
     };
-}
+});

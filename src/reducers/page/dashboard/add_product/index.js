@@ -30,7 +30,6 @@ export default handleActions({
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
     [WIZARD_COMPLETE]: (state, { payload: { productData, targeting } }) => assign({}, state, {
         productData: assign({}, state.productData, productData),
-        targeting: defaults({}, targeting, DEFAULT_TARGETING),
-        step: 3
+        targeting: defaults({}, targeting, DEFAULT_TARGETING)
     })
 }, INITIAL_STATE);

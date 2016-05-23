@@ -11,6 +11,7 @@ import {
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { format as formatURL } from 'url';
+import { createThunk } from '../middleware/fsa_thunk';
 
 export const LIST = getActionNames('LIST');
 export const GET = getActionNames('GET');
@@ -56,7 +57,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
         });
     }
 
-    function list() {
+    const list = createThunk(() => {
         return function thunk(dispatch) {
             return wrap(list, dispatch, () => dispatch(call({
                 types: [LIST.START, LIST.SUCCESS, LIST.FAILURE],
@@ -67,10 +68,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 method: 'GET'
             })).then(items => map(items, key)));
         };
-    }
+    });
     assign(list, getTypedActionNames('LIST'));
 
-    function get({ id }) {
+    const get = createThunk(({ id }) => {
         return function thunk(dispatch) {
             return wrap(get, dispatch, () =>  dispatch(call({
                 types: [GET.START, GET.SUCCESS, GET.FAILURE],
@@ -81,10 +82,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 method: 'GET'
             }, id)).then(item => [item[key]]));
         };
-    }
+    });
     assign(get, getTypedActionNames('GET'));
 
-    function query(params) {
+    const query = createThunk(params => {
         return function thunk(dispatch) {
             return wrap(query, dispatch, () => dispatch(call({
                 types: [QUERY.START, QUERY.SUCCESS, QUERY.FAILURE],
@@ -95,10 +96,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 method: 'GET'
             })).then(items => map(items, key)));
         };
-    }
+    });
     assign(query, getTypedActionNames('QUERY'));
 
-    function create({ data }) {
+    const create = createThunk(({ data }) => {
         return function thunk(dispatch) {
             return wrap(create, dispatch, () => dispatch(call({
                 types: [CREATE.START, CREATE.SUCCESS, CREATE.FAILURE],
@@ -110,10 +111,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 body: data
             })).then(item => [item[key]]));
         };
-    }
+    });
     assign(create, getTypedActionNames('CREATE'));
 
-    function update({ data }) {
+    const update = createThunk(({ data }) => {
         const id = data[key];
 
         return function thunk(dispatch, getState) {
@@ -141,10 +142,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 body: assign({}, current, data)
             }, id)).then(item => [item[key]]));
         };
-    }
+    });
     assign(update, getTypedActionNames('UPDATE'));
 
-    function remove({ id }) {
+    const remove = createThunk(({ id }) => {
         return function thunk(dispatch) {
             return wrap(remove, dispatch, () => dispatch(call({
                 types: [REMOVE.START, REMOVE.SUCCESS, REMOVE.FAILURE],
@@ -155,7 +156,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 method: 'DELETE'
             }, id)).then(() => [id]));
         };
-    }
+    });
     assign(remove, getTypedActionNames('REMOVE'));
 
     return { list, get, query, create, update, remove };

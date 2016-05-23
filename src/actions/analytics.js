@@ -1,6 +1,7 @@
 'use strict';
 
 import { callAPI } from './api';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function prefix(type) {
     return `ANALYTICS/${type}`;
@@ -10,7 +11,7 @@ export const GET_CAMPAIGN_ANALYTICS_START   = prefix('GET_CAMPAIGN_ANALYTICS_STA
 export const GET_CAMPAIGN_ANALYTICS_SUCCESS = prefix('GET_CAMPAIGN_ANALYTICS_SUCCESS');
 export const GET_CAMPAIGN_ANALYTICS_FAILURE = prefix('GET_CAMPAIGN_ANALYTICS_FAILURE');
 
-export function getCampaignAnalytics(campaignId) {
+export const getCampaignAnalytics = createThunk(campaignId => {
     return function thunk(dispatch) {
         return dispatch(callAPI({ 
             types: [
@@ -22,4 +23,4 @@ export function getCampaignAnalytics(campaignId) {
             endpoint: `/api/analytics/campaigns/showcase/apps/${campaignId}`
         }));
     };
-}
+});

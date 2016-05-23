@@ -2,6 +2,7 @@
 
 import { callAPI } from './api';
 import { format as formatURL } from 'url';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function authType(type) {
     return `AUTH/${type}`;
@@ -10,7 +11,7 @@ function authType(type) {
 export const STATUS_CHECK_START = authType('STATUS_CHECK_START');
 export const STATUS_CHECK_SUCCESS = authType('STATUS_CHECK_SUCCESS');
 export const STATUS_CHECK_FAILURE = authType('STATUS_CHECK_FAILURE');
-export function checkAuthStatus() {
+export const checkAuthStatus = createThunk(() => {
     return function check(dispatch, getState) {
         const state = getState();
         const userID = state.session.user;
@@ -24,7 +25,7 @@ export function checkAuthStatus() {
             types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE]
         }));
     };
-}
+});
 
 export const LOGIN_START = authType('LOGIN_START');
 export const LOGIN_SUCCESS = authType('LOGIN_SUCCESS');

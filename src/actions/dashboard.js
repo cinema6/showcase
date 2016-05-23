@@ -5,6 +5,7 @@ import {
 } from './auth';
 import { createAction } from 'redux-actions';
 import { replace } from 'react-router-redux';
+import { createThunk } from '../middleware/fsa_thunk';
 
 function dashboardType(type) {
     return `DASHBOARD/${type}`;
@@ -13,7 +14,7 @@ function dashboardType(type) {
 export const LOGOUT_START = dashboardType('LOGOUT_START');
 export const LOGOUT_SUCCESS = dashboardType('LOGOUT_SUCCESS');
 export const LOGOUT_FAILURE = dashboardType('LOGOUT_FAILURE');
-export function logoutUser() {
+export const logoutUser = createThunk(() => {
     return function thunk(dispatch) {
         dispatch(createAction(LOGOUT_START)());
 
@@ -26,7 +27,7 @@ export function logoutUser() {
             throw reason;
         }).then(() => undefined);
     };
-}
+});
 
 export const SHOW_NAV = dashboardType('SHOW_NAV');
 export const showNav = createAction(SHOW_NAV);

@@ -7,6 +7,7 @@ import {
 } from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -29,7 +30,7 @@ describe('session actions', function() {
         let thunk;
 
         beforeEach(function() {
-            thunk = getCampaigns();
+            thunk = getThunk(getCampaigns());
         });
 
         it('should return a thunk', function() {
@@ -50,7 +51,7 @@ describe('session actions', function() {
                 };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+                    if (action.type === createThunk()().type) { return dispatchDeferred.promise; }
 
                     if (!(action.payload instanceof Promise)) {
                         return Promise.resolve(action.payload);
