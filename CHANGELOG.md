@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.1.0-rc9]*
+  * [FEATURE]: Show categories on targeting screen
+  * [FEATURE]: Added trial information modal
+
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles
   * [FIX]: Fixed tracking modal styles
