@@ -192,7 +192,7 @@ ProductWizard.propTypes = {
     }),
     targeting: PropTypes.shape({
         gender: PropTypes.string,
-        age: PropTypes.string
+        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     })
 };
 

@@ -4,6 +4,8 @@ import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import * as TARGETING from '../enums/targeting';
 import classnames from 'classnames';
+import { includes } from 'lodash';
+import MultiCheckbox from '../components/MultiCheckbox';
 
 function value(field) {
     return field.value || field.initialValue;
@@ -112,73 +114,83 @@ class EditTargeting extends Component {
             */}
             <div className="form-group">
                 <label htmlFor="targetAge-radio">Age</label>
-                <radiogroup className="select-target-options
+                <div className="select-target-options
                     hidden-sm hidden-xs" data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ALL
+                        active: includes(value(age), TARGETING.AGE.ALL)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ALL}
-                            checked={value(age) === TARGETING.AGE.ALL} /> Everyone
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ZERO_TO_TWELVE
+                        active: includes(value(age), TARGETING.AGE.ZERO_TO_TWELVE)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ZERO_TO_TWELVE}
-                            checked={value(age) === TARGETING.AGE.ZERO_TO_TWELVE} /> Kids
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ZERO_TO_TWELVE}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.THIRTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.THIRTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.THIRTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.THIRTEEN_PLUS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
                     </label>
-                </radiogroup>
+                </div>
                 {/*swapping mobile with vertical class*/}
-                <radiogroup className="select-target-options-vertical visible-sm visible-xs" 
+                <div className="select-target-options-vertical visible-sm visible-xs" 
                     data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ALL
+                        active: includes(value(age), TARGETING.AGE.ALL)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ALL}
-                            checked={value(age) === TARGETING.AGE.ALL} /> Everyone
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ZERO_TO_TWELVE
+                        active: includes(value(age), TARGETING.AGE.ZERO_TO_TWELVE)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ZERO_TO_TWELVE}
-                            checked={value(age) === TARGETING.AGE.ZERO_TO_TWELVE} /> Kids
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ZERO_TO_TWELVE}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.THIRTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.THIRTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.THIRTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.THIRTEEN_PLUS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
                     </label>
-                </radiogroup>
+                </div>
             </div>
             <div className="form-group">
                 <label htmlFor="targetGender-radio">Gender</label>

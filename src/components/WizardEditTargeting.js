@@ -31,7 +31,7 @@ export default class WizardEditTargeting extends Component {
 
 WizardEditTargeting.propTypes = {
     targeting: PropTypes.shape({
-        age: PropTypes.string.isRequired,
+        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
         gender: PropTypes.string.isRequired
     }),
 

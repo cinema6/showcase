@@ -15,8 +15,8 @@ describe('dashboardAddProductReducer()', function() {
             step: 0,
             productData: null,
             targeting: {
-                age: TARGETING.AGE.ALL,
-                gender: TARGETING.GENDER.ALL
+                age: [TARGETING.AGE.ALL],
+                gender: [TARGETING.GENDER.ALL]
             }
         });
     });
@@ -56,8 +56,8 @@ describe('dashboardAddProductReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     productData: null,
                     targeting: {
-                        age: TARGETING.AGE.ALL,
-                        gender: TARGETING.GENDER.ALL
+                        age: [TARGETING.AGE.ALL],
+                        gender: [TARGETING.GENDER.ALL]
                     }
                 }));
             });
@@ -144,8 +144,8 @@ describe('dashboardAddProductReducer()', function() {
                 it('should use targeting defaults', function() {
                     expect(newState).toEqual(jasmine.objectContaining({
                         targeting: {
-                            age: TARGETING.AGE.ALL,
-                            gender: TARGETING.GENDER.ALL
+                            age: [TARGETING.AGE.ALL],
+                            gender: [TARGETING.GENDER.ALL]
                         }
                     }));
                 });
