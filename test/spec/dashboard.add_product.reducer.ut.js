@@ -44,7 +44,7 @@ describe('dashboardAddProductReducer()', function() {
                     description: 'It rules!'
                 };
                 state.targeting = {
-                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    age: TARGETING.AGE.TEENS,
                     gender: TARGETING.GENDER.MALE
                 };
 
@@ -111,7 +111,7 @@ describe('dashboardAddProductReducer()', function() {
                     description: 'A description of my app'
                 };
                 targeting = {
-                    age: [TARGETING.AGE.THIRTEEN_PLUS],
+                    age: [TARGETING.AGE.TEENS],
                     gender: TARGETING.GENDER.FEMALE
                 };
 

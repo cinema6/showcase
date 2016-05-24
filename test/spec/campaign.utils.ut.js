@@ -42,7 +42,7 @@ describe('campaign utils', function() {
             };
             targeting = {
                 gender: TARGETING.GENDER.MALE,
-                age: [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS]
+                age: [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS]
             };
 
             result = campaignFromData({ productData, targeting });
@@ -269,7 +269,7 @@ describe('campaign utils', function() {
                 description: 'This is a great app!'
             };
             targeting = {
-                age: [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS],
+                age: [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS],
                 gender: TARGETING.GENDER.FEMALE
             };
 

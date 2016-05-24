@@ -367,7 +367,7 @@ describe('ProductWizard', function() {
                     price: 'Free'
                 };
                 props.targeting = {
-                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    age: TARGETING.AGE.KIDS,
                     gender: TARGETING.GENDER.FEMALE
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
@@ -403,7 +403,7 @@ describe('ProductWizard', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
+                            values = { age: TARGETING.AGE.YOUNG_ADULTS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
                             targeting.props.onFinish(values);
                         });
 
@@ -430,7 +430,7 @@ describe('ProductWizard', function() {
 
                 component.props.page.step = 3;
                 props.targeting = {
-                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    age: TARGETING.AGE.KIDS,
                     gender: TARGETING.GENDER.FEMALE
                 };
                 props.productData = {

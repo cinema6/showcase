@@ -124,32 +124,32 @@ class EditTargeting extends Component {
                             option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.ZERO_TO_TWELVE)
+                        active: includes(value(age), TARGETING.AGE.KIDS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.ZERO_TO_TWELVE}/> Kids
+                            option={TARGETING.AGE.KIDS}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.THIRTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.TEENS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                            option={TARGETING.AGE.TEENS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                            option={TARGETING.AGE.ADULTS} /> Adults
                     </label>
                 </div>
                 {/*swapping mobile with vertical class*/}
@@ -163,32 +163,32 @@ class EditTargeting extends Component {
                             option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.ZERO_TO_TWELVE)
+                        active: includes(value(age), TARGETING.AGE.KIDS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.ZERO_TO_TWELVE}/> Kids
+                            option={TARGETING.AGE.KIDS}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.THIRTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.TEENS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                            option={TARGETING.AGE.TEENS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: includes(value(age), TARGETING.AGE.EIGHTEEN_PLUS)
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                            option={TARGETING.AGE.ADULTS} /> Adults
                     </label>
                 </div>
             </div>

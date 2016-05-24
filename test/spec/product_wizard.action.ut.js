@@ -82,7 +82,7 @@ describe('product wizard actions', function() {
             };
             targeting = {
                 gender: TARGETING.GENDER.FEMALE,
-                age: TARGETING.AGE.ZERO_TO_TWELVE
+                age: TARGETING.AGE.KIDS
             };
 
             thunk = getThunk(updateCampaign({ id, productData, targeting }));
@@ -375,7 +375,7 @@ describe('product wizard actions', function() {
                 categories: ['Games', 'Strategy']
             };
             targeting = {
-                age: TARGETING.AGE.ZERO_TO_TWELVE,
+                age: TARGETING.AGE.KIDS,
                 gender: TARGETING.GENDER.FEMALE
             };
             payment = {
@@ -652,7 +652,7 @@ describe('product wizard actions', function() {
                 description: 'App description.'
             };
             targeting = {
-                age: TARGETING.AGE.EIGHTEEN_PLUS,
+                age: TARGETING.AGE.YOUNG_ADULTS,
                 gender: TARGETING.GENDER.MALE
             };
 

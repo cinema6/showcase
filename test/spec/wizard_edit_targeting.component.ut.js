@@ -68,7 +68,7 @@ describe('WizardEditTargeting', function() {
 
                 beforeEach(function() {
                     values = {
-                        age: TARGETING.AGE.THIRTEEN_PLUS,
+                        age: TARGETING.AGE.TEENS,
                         gender: TARGETING.AGE.MALE
                     };
 

@@ -87,19 +87,19 @@ describe('productWizard plugin', function() {
 
         describe('when a value is first selected', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.ALL, TARGETING.AGE.THIRTEEN_PLUS];
+                this.value = [TARGETING.AGE.ALL, TARGETING.AGE.TEENS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
 
             it('should return the value', function() {
-                expect(this.result).toEqual([TARGETING.AGE.THIRTEEN_PLUS]);
+                expect(this.result).toEqual([TARGETING.AGE.TEENS]);
             });
         });
 
         describe('when ALL is first selected', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.ALL];
+                this.value = [TARGETING.AGE.TEENS, TARGETING.AGE.ALL];
                 this.previousValue = undefined;
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
@@ -113,7 +113,7 @@ describe('productWizard plugin', function() {
         describe('when the form is destroyed', function() {
             beforeEach(function() {
                 this.value = undefined;
-                this.previousValue = [TARGETING.AGE.THIRTEEN_PLUS];
+                this.previousValue = [TARGETING.AGE.TEENS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
@@ -125,8 +125,8 @@ describe('productWizard plugin', function() {
 
         describe('when normal values are added', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS];
-                this.previousValue = [TARGETING.AGE.THIRTEEN_PLUS];
+                this.value = [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS];
+                this.previousValue = [TARGETING.AGE.TEENS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
@@ -151,8 +151,8 @@ describe('productWizard plugin', function() {
 
         describe('when normal values are removed', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.THIRTEEN_PLUS];
-                this.previousValue = [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS];
+                this.value = [TARGETING.AGE.TEENS];
+                this.previousValue = [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
@@ -165,7 +165,7 @@ describe('productWizard plugin', function() {
         describe('when all options are removed', function() {
             beforeEach(function() {
                 this.value = [];
-                this.previousValue = [TARGETING.AGE.ZERO_TO_TWELVE];
+                this.previousValue = [TARGETING.AGE.KIDS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
@@ -177,8 +177,8 @@ describe('productWizard plugin', function() {
 
         describe('when ALL is added', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS, TARGETING.AGE.ALL];
-                this.previousValue = [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS];
+                this.value = [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS, TARGETING.AGE.ALL];
+                this.previousValue = [TARGETING.AGE.TEENS, TARGETING.AGE.YOUNG_ADULTS];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
@@ -190,14 +190,14 @@ describe('productWizard plugin', function() {
 
         describe('when ALL is removed', function() {
             beforeEach(function() {
-                this.value = [TARGETING.AGE.ALL, TARGETING.AGE.THIRTEEN_PLUS];
+                this.value = [TARGETING.AGE.ALL, TARGETING.AGE.TEENS];
                 this.previousValue = [TARGETING.AGE.ALL];
 
                 this.result = plugin.age(this.value, this.previousValue, this.allValues, this.previousAllValues);
             });
 
             it('should remove ALL from the Array', function() {
-                expect(this.result).toEqual([TARGETING.AGE.THIRTEEN_PLUS]);
+                expect(this.result).toEqual([TARGETING.AGE.TEENS]);
             });
         });
     });
