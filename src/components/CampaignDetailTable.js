@@ -35,10 +35,11 @@ export default class CampaignDetailTable extends Component {
             activeSet = data.daily_30;
             timeFormatter = (datum) => {
                 return ([
-                    <span className="text-block"> {moment(datum.date).format('MMMM D, YYYY')} </span> ,
+                    <span className="text-block"> {moment(datum.date).format('MMMM D, YYYY')} 
+                    </span> ,
                     <span className="small text-block"> {moment(datum.date).format('dddd')} </span>
                 ]);
-            }
+            };
             {/*timeFormatter = (datum) => moment(datum.date).format('M/D/Y');*/}
         }
 
@@ -61,7 +62,8 @@ export default class CampaignDetailTable extends Component {
                             {activeSet.map(function(row,i){
                                 return (
                                     <tr key={i}>
-                                        <th> <h4 className="timeline-stacked">{timeFormatter(row)} </h4></th> 
+                                        <th> <h4 className="timeline-stacked">{timeFormatter(row)} 
+                                        </h4></th> 
                                         <td> <h4 className="stats-value stats-col-views">
                                             {numsFormatter(row.views)} </h4>
                                             <span className="small">Views</span>
