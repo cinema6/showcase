@@ -9,5 +9,6 @@ export default createDbReducer({
     payment: identity,
     paymentMethod: identity,
     campaign: identity,
-    advertiser: identity
+    advertiser: identity,
+    org: identity
 });

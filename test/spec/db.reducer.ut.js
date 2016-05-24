@@ -10,7 +10,8 @@ describe('dbReducer()', function() {
             payment: identity,
             paymentMethod: identity,
             campaign: identity,
-            advertiser: identity
+            advertiser: identity,
+            org: identity
         })(undefined, 'INIT'));
     });
 });
