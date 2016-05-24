@@ -11,7 +11,8 @@ describe('dbReducer()', function() {
             paymentMethod: identity,
             campaign: identity,
             advertiser: identity,
-            org: identity
+            org: identity,
+            promotion: identity
         })(undefined, 'INIT'));
     });
 });
