@@ -21,6 +21,9 @@ export class Login extends Component {
         return (<div className="bg-dark-wrap">
             <div className="container main-section">
                 <div className="row">
+                    <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">
+                        <img src="images/rc-logo-white.png" />
+                    </div>
                     <div className="pre-login-form
                         col-md-4
                         col-md-offset-4
@@ -28,7 +31,7 @@ export class Login extends Component {
                         animated
                         fadeIn
                         card-item">
-                        <h1 className="text-center">Please Login</h1>
+                        <h1 className="text-center">Login</h1>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="usernameInput">Email address</label>
@@ -70,13 +73,21 @@ export class Login extends Component {
                                 )}>
                                 Login
                             </button>
-
                         </form>
                         <br />
-                        <Link to="forgot-password" className="text-center">Forgot Password?</Link>
-                        <span className="pull-right">
+                        <div className="text-center">
+                            <Link to="forgot-password" className="text-center">
+                                Forgot Password?
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="clearfix"></div>
+                    <br />
+                    <div className="light-text col-md-4 col-md-offset-4 col-xs-12">
+                        
+                        <div className="text-center">
                             New User? <Link to="/sign-up">Sign up now</Link>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
