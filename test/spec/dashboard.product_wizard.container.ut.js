@@ -23,6 +23,7 @@ import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 import { getClientToken } from '../../src/actions/payment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const proxyquire = require('proxyquire');
 
@@ -31,8 +32,6 @@ describe('ProductWizard', function() {
     let ProductWizard;
 
     beforeEach(function() {
-        jasmine.clock().install();
-
         paymentActions = {
             getClientToken: jasmine.createSpy('getClientToken()').and.callFake(getClientToken),
 
@@ -93,16 +92,15 @@ describe('ProductWizard', function() {
         }).default;
     });
 
-    afterEach(function() {
-        jasmine.clock().uninstall();
-    });
-
     describe('when rendered', function() {
         let store, state;
         let props;
         let component;
 
         beforeEach(function() {
+            jasmine.clock().install();
+            jasmine.clock().mockDate();
+
             state = {
                 form: {
                     productWizard: {
@@ -140,12 +138,22 @@ describe('ProductWizard', function() {
                     step: 0,
                     productData: null,
                     targeting: {
-                        age: TARGETING.AGE.ALL,
+                        age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
                     }
                 },
 
                 steps: [0, 1, 2, 3],
+
+                promotions: [
+                    {
+                        id: `pro-${createUuid()}`,
+                        type: 'freeTrial',
+                        data: {
+                            trialLength: 10
+                        }
+                    }
+                ],
 
                 loadData: jasmine.createSpy('loadData()').and.returnValue(Promise.resolve(undefined)),
                 onFinish: jasmine.createSpy('onFinish()').and.returnValue(Promise.resolve(3))
@@ -160,6 +168,10 @@ describe('ProductWizard', function() {
             ), ProductWizard.WrappedComponent);
 
             spyOn(component, 'setState').and.callThrough();
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
         });
 
         it('should exist', function() {
@@ -367,7 +379,7 @@ describe('ProductWizard', function() {
                     price: 'Free'
                 };
                 props.targeting = {
-                    age: TARGETING.AGE.KIDS,
+                    age: [TARGETING.AGE.KIDS],
                     gender: TARGETING.GENDER.FEMALE
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
@@ -430,7 +442,7 @@ describe('ProductWizard', function() {
 
                 component.props.page.step = 3;
                 props.targeting = {
-                    age: TARGETING.AGE.KIDS,
+                    age: [TARGETING.AGE.KIDS],
                     gender: TARGETING.GENDER.FEMALE
                 };
                 props.productData = {
@@ -467,6 +479,30 @@ describe('ProductWizard', function() {
                 });
 
                 describe('props', function() {
+                    describe('startDate', function() {
+                        it('should be computed from the promotions', function() {
+                            const expected = getPaymentPlanStart(props.promotions);
+
+                            expect(modal.props.startDate.isSame(expected)).toBe(true, `Expected: ${expected.format()}; got: ${modal.props.startDate.format()}`);
+                        });
+
+                        describe('if there are no promotions', function() {
+                            beforeEach(function() {
+                                props.promotions = null;
+                                component = findRenderedComponentWithType(renderIntoDocument(
+                                    <Provider store={store}>
+                                        <ProductWizard {...props} />
+                                    </Provider>
+                                ), ProductWizard.WrappedComponent);
+                                modal = findRenderedComponentWithType(component, WizardConfirmationModal);
+                            });
+
+                            it('should be null', function() {
+                                expect(modal.props.startDate).toBeNull();
+                            });
+                        });
+                    });
+
                     describe('getToken()', function() {
                         it('should be the getClientToken action', function() {
                             expect(modal.props.getToken).toBe(component.props.getClientToken);

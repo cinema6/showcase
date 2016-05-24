@@ -19,6 +19,7 @@ import classnames from 'classnames';
 import { pick, includes, assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -73,6 +74,7 @@ class ProductWizard extends Component {
             productData,
             targeting,
             formValues,
+            promotions,
 
             page: { step }
         } = this.props;
@@ -160,7 +162,8 @@ class ProductWizard extends Component {
                 })()}
             </div>
             {step === 3 && (
-                <WizardConfirmationModal getToken={getClientToken}
+                <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
+                    getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({ payment, productData, targeting })} />
             )}
@@ -193,7 +196,10 @@ ProductWizard.propTypes = {
     targeting: PropTypes.shape({
         gender: PropTypes.string,
         age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
-    })
+    }),
+    promotions: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired
+    }).isRequired)
 };
 
 function mapStateToProps(state) {

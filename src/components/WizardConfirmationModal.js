@@ -6,10 +6,14 @@ import BraintreeCreditCardForm from './BraintreeCreditCardForm';
 export default class WizardConfirmationModal extends Component {
     render() {
         const {
+            startDate,
+
             getToken,
             onSubmit,
             handleClose
         } = this.props;
+
+        const start = (startDate && startDate.format('MM/DD/YYYY')) || '...';
 
         return (<div className="modal payment-modal fade in show" id="pmtModal" role="dialog">
             <div className="modal-dialog" role="document">
@@ -22,7 +26,7 @@ export default class WizardConfirmationModal extends Component {
                             <span aria-hidden="true">×</span>
                         </button>
                         <h1 className="modal-title" id="myPaymentModal">Start Your FREE Trial</h1>
-                        <h4>You will not be charged until after your free trial ends on 06/04/2016.
+                        <h4>You will not be charged until after your free trial ends on {start}.
                             Cancel anytime.</h4>
                     </div>
                     <div className="modal-body text-center">
@@ -56,5 +60,8 @@ export default class WizardConfirmationModal extends Component {
 WizardConfirmationModal.propTypes = {
     getToken: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    handleClose: PropTypes.func.isRequired
+    handleClose: PropTypes.func.isRequired,
+    startDate: PropTypes.shape({
+        format: PropTypes.func.isRequired
+    })
 };
