@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.1.0-rc9]*
+  * [FIX]: Fixed styles for pre-login screens, added logo
+  * [FIX]: Added message for stats page when no stats available
+
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles
   * [FIX]: Fixed tracking modal styles
