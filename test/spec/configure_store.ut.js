@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import promisify from '../../src/middleware/promisify';
 import rootReducer from '../../src/reducers';
 import history from '../../src/history';
+import { middleware as fsaThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -30,6 +31,12 @@ describe('configureStore(initialState)', function() {
 
             '../middleware/promisify': {
                 default: require('../../src/middleware/promisify').default,
+
+                __esModule: true
+            },
+
+            '../middleware/fsa_thunk': {
+                middleware: fsaThunk,
 
                 __esModule: true
             },
@@ -111,6 +118,7 @@ describe('configureStore(initialState)', function() {
         it('should configure a middleware stack', function() {
             expect(redux.applyMiddleware).toHaveBeenCalledWith(
                 promisify,
+                fsaThunk,
                 thunk,
                 reduxPromiseMiddleware.default.calls.mostRecent().returnValue,
                 reactRouterRedux.routerMiddleware.calls.mostRecent().returnValue,

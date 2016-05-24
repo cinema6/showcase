@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { assign, find } from 'lodash';
+import { createThunk } from '../../src/middleware/fsa_thunk';
 
 function prefix(type) {
     return `@@alert/${type}`;
@@ -25,7 +26,7 @@ export const startSubmit = createAction(START_SUBMIT);
 export const STOP_SUBMIT = prefix('STOP_SUBMIT');
 export const stopSubmit = createAction(STOP_SUBMIT);
 
-export function submit({ alert: alertId, button: buttonId }) {
+export const submit = createThunk(({ alert: alertId, button: buttonId }) => {
     return function thunk(dispatch, getState) {
         const alert = find(getState().alert.alerts, alert => alert.id === alertId);
         const button = find(alert.buttons, button => button.id === buttonId);
@@ -37,4 +38,4 @@ export function submit({ alert: alertId, button: buttonId }) {
             .then(() => button.onSelect(dismiss))
             .then(done, done);
     };
-}
+});

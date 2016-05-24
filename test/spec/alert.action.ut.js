@@ -7,6 +7,7 @@ import {
 import { createUuid } from 'rc-uuid';
 import { assign } from 'lodash';
 import defer from 'promise-defer';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -124,7 +125,7 @@ describe('alert actions', function() {
             this.alert = createUuid();
             this.button = createUuid();
 
-            this.thunk = this.submit({ alert: this.alert, button: this.button });
+            this.thunk = getThunk(this.submit({ alert: this.alert, button: this.button }));
         });
 
         it('should return a thunk', function() {

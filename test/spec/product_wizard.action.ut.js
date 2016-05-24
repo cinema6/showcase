@@ -22,6 +22,7 @@ import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import { campaignFromData } from '../../src/utils/campaign';
 import { push, goBack } from 'react-router-redux';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -84,7 +85,7 @@ describe('product wizard actions', function() {
                 age: TARGETING.AGE.ZERO_TO_TWELVE
             };
 
-            thunk = updateCampaign({ id, productData, targeting });
+            thunk = getThunk(updateCampaign({ id, productData, targeting }));
         });
 
         it('should return a thunk', function() {
@@ -125,7 +126,7 @@ describe('product wizard actions', function() {
                 };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+                    if (action.type === createThunk()().type) { return dispatchDeferred.promise; }
 
                     if (!(action.payload instanceof Promise)) {
                         return Promise.resolve(action.payload);
@@ -243,7 +244,7 @@ describe('product wizard actions', function() {
         beforeEach(function() {
             id = `cam-${createUuid()}`;
 
-            thunk = loadCampaign({ id });
+            thunk = getThunk(loadCampaign({ id }));
         });
 
         it('should return a thunk', function() {
@@ -264,7 +265,7 @@ describe('product wizard actions', function() {
                 };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+                    if (action.type === createThunk()().type) { return dispatchDeferred.promise; }
 
                     if (!(action.payload instanceof Promise)) {
                         return Promise.resolve(action.payload);
@@ -382,7 +383,7 @@ describe('product wizard actions', function() {
                 nonce: createUuid()
             };
 
-            thunk = createCampaign({ productData, targeting, payment });
+            thunk = getThunk(createCampaign({ productData, targeting, payment }));
         });
 
         it('should return a thunk', function() {
@@ -414,7 +415,7 @@ describe('product wizard actions', function() {
                 };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') { return dispatchDeferred.promise; }
+                    if (action.type === createThunk()().type) { return dispatchDeferred.promise; }
 
                     if (!(action.payload instanceof Promise)) {
                         return Promise.resolve(action.payload);
@@ -550,7 +551,7 @@ describe('product wizard actions', function() {
 
                     spyOn(advertiser, 'query').and.callThrough();
 
-                    createCampaign({ productData, targeting })(dispatch, getState).then(success, failure);
+                    getThunk(createCampaign({ productData, targeting }))(dispatch, getState).then(success, failure);
                     setTimeout(done);
                 });
 
@@ -578,7 +579,7 @@ describe('product wizard actions', function() {
                 uri: 'https://itunes.apple.com/us/app/photo-coin-counter-photocoin/id763388830?mt=8&uo=4'
             };
 
-            thunk = productSelected({ product });
+            thunk = getThunk(productSelected({ product }));
         });
 
         it('should return a thunk', function() {
@@ -655,7 +656,7 @@ describe('product wizard actions', function() {
                 gender: TARGETING.GENDER.MALE
             };
 
-            thunk = wizardComplete({ productData, targeting });
+            thunk = getThunk(wizardComplete({ productData, targeting }));
         });
 
         it('should return a thunk', function() {
@@ -688,7 +689,7 @@ describe('product wizard actions', function() {
                 };
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') {
+                    if (action.type === createThunk()().type) {
                         return dispatchDeferred.promise;
                     }
 
@@ -717,7 +718,7 @@ describe('product wizard actions', function() {
                         dispatch.calls.reset();
                         dispatchDeferred.resolve([createUuid()]);
                         dispatch.and.callFake(action => {
-                            if (typeof action === 'function') {
+                            if (action.type === createThunk()().type) {
                                 return Promise.resolve(action(dispatch, getState));
                             }
 
@@ -731,8 +732,12 @@ describe('product wizard actions', function() {
                         setTimeout(done);
                     });
 
+                    it('should dispatch WIZARD_COMPLETE', function() {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+                    });
+
                     it('should dispatch createCampaign()', function() {
-                        expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ type: CREATE_CAMPAIGN, payload: jasmine.any(Promise) }));
+                        expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
                     });
                 });
 
@@ -747,6 +752,10 @@ describe('product wizard actions', function() {
                     it('should dispatch WIZARD_COMPLETE', function() {
                         expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
                     });
+
+                    it('should dispatch GO_TO_STEP', function() {
+                        expect(dispatch).toHaveBeenCalledWith(goToStep(3));
+                    });
                 });
             });
 
@@ -754,7 +763,7 @@ describe('product wizard actions', function() {
                 beforeEach(function(done) {
                     dispatch.calls.reset();
                     dispatch.and.callFake(action => {
-                        if (typeof action === 'function') {
+                        if (action.type === createThunk()().type) {
                             return Promise.resolve(action(dispatch, getState));
                         }
 
@@ -770,12 +779,12 @@ describe('product wizard actions', function() {
                     setTimeout(done);
                 });
 
-                it('should not dispatch WIZARD_COMPLETE', function() {
-                    expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ type: WIZARD_COMPLETE }));
+                it('should dispatch WIZARD_COMPLETE', function() {
+                    expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
                 });
 
                 it('should dispatch createCampaign()', function() {
-                    expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ type: CREATE_CAMPAIGN, payload: jasmine.any(Promise) }));
+                    expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
                 });
             });
         });

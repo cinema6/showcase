@@ -32,13 +32,14 @@ import {
 import { CALL_API } from 'redux-api-middleware';
 import { createUuid } from 'rc-uuid';
 import { format as formatURL } from 'url';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 describe('actions: auth', function() {
     describe('checkAuthStatus()', function() {
         let result;
 
         beforeEach(function() {
-            result = checkAuthStatus();
+            result = getThunk(checkAuthStatus());
         });
 
         it('should return a thunk', function() {
@@ -133,11 +134,11 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result).toEqual(callAPI({
+            expect(result[CALL_API]).toEqual(callAPI({
                 endpoint: '/api/auth/logout',
                 method: 'POST',
                 types: [LOGOUT_START, LOGOUT_SUCCESS, LOGOUT_FAILURE]
-            }));
+            })[CALL_API]);
         });
     });
 

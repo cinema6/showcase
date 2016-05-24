@@ -9,6 +9,7 @@ import { createAction } from 'redux-actions';
 import { assign, find } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -34,7 +35,7 @@ describe('billing actions', function() {
         let thunk;
 
         beforeEach(function() {
-            thunk = getPayments();
+            thunk = getThunk(getPayments());
         });
 
         it('should return a thunk', function() {
@@ -73,7 +74,7 @@ describe('billing actions', function() {
         let thunk;
 
         beforeEach(function() {
-            thunk = getPaymentMethods();
+            thunk = getThunk(getPaymentMethods());
         });
 
         it('should return a thunk', function() {
@@ -112,7 +113,7 @@ describe('billing actions', function() {
         let thunk;
 
         beforeEach(function() {
-            thunk = loadPageData();
+            thunk = getThunk(loadPageData());
         });
 
         it('should return a thunk', function() {
@@ -128,7 +129,7 @@ describe('billing actions', function() {
                 spyOn(paymentActions.default, 'list').and.callThrough();
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') { return action(dispatch, getState); }
+                    if (action.type === createThunk()().type) { return getThunk(action)(dispatch, getState); }
 
                     return new Promise(() => {});
                 });
@@ -141,14 +142,12 @@ describe('billing actions', function() {
                 setTimeout(done);
             });
 
-            it('should get a list of payments', function() {
-                expect(paymentActions.default.list).toHaveBeenCalledWith();
-                expect(dispatch).toHaveBeenCalledWith(paymentActions.default.list.calls.all()[0].returnValue);
+            it('should get payments', function() {
+                expect(dispatch).toHaveBeenCalledWith(getPayments());
             });
 
-            it('should get a list of payment methods', function() {
-                expect(paymentActions.paymentMethod.list).toHaveBeenCalledWith();
-                expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list.calls.all()[0].returnValue);
+            it('should get payment methods', function() {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentMethods());
             });
 
             it('should dispatch LOAD_PAGE_DATA', function() {
@@ -174,7 +173,7 @@ describe('billing actions', function() {
                 nonce: createUuid()
             };
 
-            thunk = changePaymentMethod(newMethod);
+            thunk = getThunk(changePaymentMethod(newMethod));
         });
 
         it('should return a thunk', function() {
@@ -206,7 +205,7 @@ describe('billing actions', function() {
                 state.db.paymentMethod[Object.keys(state.db.paymentMethod)[2]].default = true;
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') {
+                    if (action.type === createThunk()().type) {
                         return (dispatchDeferred = defer()).promise;
                     } else {
                         return (actionDeferred = defer()).promise;

@@ -16,6 +16,7 @@ import {
 import { createAction } from 'redux-actions';
 import defer from 'promise-defer';
 import userActions from '../../src/actions/user';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -37,7 +38,7 @@ describe('updateUser(data)', function() {
 
         spyOn(userActions, 'update').and.callThrough();
 
-        thunk = updateUser(data);
+        thunk = getThunk(updateUser(data));
     });
 
     it('should return a thunk', function() {
@@ -133,7 +134,7 @@ describe('changeEmail({ email, password })', function() {
         email = 'email@me.com';
         password = 'banana';
 
-        thunk = changeEmail({ email, password });
+        thunk = getThunk(changeEmail({ email, password }));
     });
 
     it('should return a thunk', function() {
@@ -229,7 +230,7 @@ describe('changePassword({ newPassword, oldPassword })', function() {
         newPassword = 'Banana!';
         oldPassword = 'banana';
 
-        thunk = changePassword({ newPassword, oldPassword });
+        thunk = getThunk(changePassword({ newPassword, oldPassword }));
     });
 
     it('should return a thunk', function() {

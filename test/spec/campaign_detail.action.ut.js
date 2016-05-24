@@ -16,6 +16,7 @@ import {
 import {
     getCampaignAnalytics
 } from '../../src/actions/analytics';
+import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 
 const proxyquire = require('proxyquire');
 
@@ -81,7 +82,7 @@ describe('campaign-detail-actions',function(){
 
         beforeEach(function(){
             campaignId = `cam-${createUuid()}`;
-            thunk = lib.loadPageData(campaignId);
+            thunk = getThunk(lib.loadPageData(campaignId));
         });
 
         it('should return a thunk', function() {
@@ -99,7 +100,7 @@ describe('campaign-detail-actions',function(){
 
                 dispatchDeferreds = new WeakMap();
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') {
+                    if (action.type === createThunk()().type || typeof action === 'function') {
                         let deferred = defer();
                         dispatchDeferreds.set(action, deferred);
                         return deferred.promise;
@@ -270,7 +271,7 @@ describe('campaign-detail-actions',function(){
         beforeEach(function() {
             campaignId = `cam-${createUuid()}`;
 
-            thunk = lib.removeCampaign(campaignId);
+            thunk = getThunk(lib.removeCampaign(campaignId));
         });
 
         it('should return a thunk', function() {
@@ -285,7 +286,7 @@ describe('campaign-detail-actions',function(){
                 dispatchDeferred = defer();
 
                 dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (typeof action === 'function') {
+                    if (action.type === createThunk()().type) {
                         return dispatchDeferred.promise;
                     }
 
