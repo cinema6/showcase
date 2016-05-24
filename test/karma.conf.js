@@ -1,7 +1,5 @@
 'use strict';
 
-var babelConfig = require('../tasks/resources/babel.config');
-
 module.exports = function(config) {
     config.set({
         frameworks: ['browserify', 'jasmine'],
@@ -22,7 +20,7 @@ module.exports = function(config) {
             debug: true,
             configure: function(bundle) {
                 bundle.once('prebundle', function() {
-                    bundle.transform('babelify', babelConfig)
+                    bundle.transform('babelify')
                         .plugin('proxyquire-universal');
                 });
             }
