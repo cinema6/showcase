@@ -191,7 +191,7 @@ module.exports = function(http) {
      * Org Endpoints
      **********************************************************************************************/
 
-    http.whenGET('/api/account/org/**', function(request) {
+    http.whenGET('/api/account/orgs/**', function(request) {
         var id = request.pathname.match(/[^\/]+$/)[0],
             org = grunt.file.readJSON(path.resolve(__dirname, './orgs/' + id + '.json'));
 
@@ -204,7 +204,7 @@ module.exports = function(http) {
         }
     });
 
-    http.whenPUT('/api/account/org/**', function(request) {
+    http.whenPUT('/api/account/orgs/**', function(request) {
         var id = idFromPath(request.pathname),
             filePath = objectPath('orgs', id),
             current = grunt.file.readJSON(filePath),
