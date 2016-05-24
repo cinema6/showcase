@@ -3,27 +3,127 @@
 import campaign from '../../src/actions/campaign';
 import defer from 'promise-defer';
 import {
-    GET_CAMPAIGNS
+    GET_CAMPAIGNS,
+    GET_ORG
 } from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-
-const proxyquire = require('proxyquire');
+import { getCampaigns, getOrg } from '../../src/actions/session';
+import { dispatch } from '../helpers/stubs';
+import org from '../../src/actions/org';
+import { assign } from 'lodash';
 
 describe('session actions', function() {
-    let actions;
-    let getCampaigns;
-
-    beforeEach(function() {
-        actions = proxyquire('../../src/actions/session', {
-            './campaign': {
-                default: campaign,
-
-                __esModule: true
-            }
+    describe('getOrg()', function() {
+        beforeEach(function() {
+            this.thunk = getThunk(getOrg());
         });
-        getCampaigns = actions.getCampaigns;
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.user = {
+                    id: `u-${createUuid()}`,
+                    org: `o-${createUuid()}`
+                };
+                this.state = {
+                    session: {
+                        user: this.user.id
+                    },
+                    db: {
+                        user: {
+                            [this.user.id]: this.user
+                        },
+                        org: {}
+                    }
+                };
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.returnValue(this.state);
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                setTimeout(done);
+            });
+
+            it('should dispatch GET_ORG', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(GET_ORG)(jasmine.any(Promise)));
+            });
+
+            it('should get the org', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(org.get({ id: this.user.org }));
+            });
+
+            describe('when the org is fetched', function() {
+                beforeEach(function(done) {
+                    this.org = {
+                        id: this.user.org,
+                        user: this.user.id
+                    };
+                    this.state = assign({}, this.state, {
+                        db: assign({}, this.state.db, {
+                            org: assign({}, this.state.db.org, {
+                                [this.org.id]: this.org
+                            })
+                        })
+                    });
+                    this.getState.and.returnValue(this.state);
+
+                    this.dispatch.getDeferred(org.get({ id: this.org.id })).resolve([this.org.id]);
+                    setTimeout(done);
+                });
+
+                it('should fulfill with the org\'s id', function() {
+                    expect(this.success).toHaveBeenCalledWith([this.org.id]);
+                });
+            });
+
+            describe('if there is a problem fetching the org', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('I failed!');
+                    this.dispatch.getDeferred(org.get({ id: this.user.org })).reject(this.reason);
+                    setTimeout(done);
+                });
+
+                it('should reject with the reason', function() {
+                    expect(this.failure).toHaveBeenCalledWith(this.reason);
+                });
+            });
+
+            describe('if the org is already cached', function() {
+                beforeEach(function(done) {
+                    this.org = {
+                        id: this.user.org,
+                        user: this.user.id
+                    };
+                    this.state.db.org[this.org.id] = this.org;
+                    this.dispatch.calls.reset();
+
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should dispatch GET_ORG', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(createAction(GET_ORG)(jasmine.any(Promise)));
+                });
+
+                it('should not get the org', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(org.get({ id: this.user.org }));
+                });
+
+                it('should fulfill with the org\'s id', function() {
+                    expect(this.success).toHaveBeenCalledWith([this.org.id]);
+                });
+            });
+        });
     });
 
     describe('getCampaigns()', function() {
@@ -76,8 +176,7 @@ describe('session actions', function() {
             });
 
             it('should get all the campaigns', function() {
-                expect(campaign.list).toHaveBeenCalledWith();
-                expect(dispatch).toHaveBeenCalledWith(campaign.list.calls.mostRecent().returnValue);
+                expect(dispatch).toHaveBeenCalledWith(campaign.list());
             });
 
             describe('when the campaigns are fetched', function() {
@@ -125,7 +224,7 @@ describe('session actions', function() {
                 });
 
                 it('should not get any campaigns', function() {
-                    expect(campaign.list).not.toHaveBeenCalled();
+                    expect(dispatch).not.toHaveBeenCalledWith(campaign.list());
                 });
 
                 it('should fulfill with the campaigns', function() {
