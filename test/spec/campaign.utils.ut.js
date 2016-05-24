@@ -42,7 +42,7 @@ describe('campaign utils', function() {
             };
             targeting = {
                 gender: TARGETING.GENDER.MALE,
-                age: TARGETING.AGE.THIRTEEN_PLUS
+                age: [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS]
             };
 
             result = campaignFromData({ productData, targeting });
@@ -57,7 +57,7 @@ describe('campaign utils', function() {
                 product: productData,
                 targeting: {
                     demographics: {
-                        age: [targeting.age],
+                        age: targeting.age,
                         gender: [targeting.gender]
                     },
                     appStoreCategory: productData.categories
@@ -67,7 +67,7 @@ describe('campaign utils', function() {
 
         describe('if there is no targeting', function() {
             beforeEach(function() {
-                targeting.age = TARGETING.AGE.ALL;
+                targeting.age = [TARGETING.AGE.ALL];
                 targeting.gender = TARGETING.GENDER.ALL;
 
                 result = campaignFromData({ productData, targeting });
@@ -140,7 +140,7 @@ describe('campaign utils', function() {
                     targeting: {
                         demographics: {
                             gender: [targeting.gender],
-                            age: [targeting.age]
+                            age: targeting.age
                         },
                         appStoreCategory: clone(productData.categories)
                     }
@@ -180,7 +180,7 @@ describe('campaign utils', function() {
             describe('if the targeting is removed', function() {
                 beforeEach(function() {
                     targeting.gender = TARGETING.GENDER.ALL;
-                    targeting.age = TARGETING.AGE.ALL;
+                    targeting.age = [TARGETING.AGE.ALL];
 
                     result = campaignFromData({ productData, targeting }, campaign);
                 });
@@ -269,7 +269,7 @@ describe('campaign utils', function() {
                 description: 'This is a great app!'
             };
             targeting = {
-                age: TARGETING.AGE.THIRTEEN_PLUS,
+                age: [TARGETING.AGE.THIRTEEN_PLUS, TARGETING.AGE.EIGHTEEN_PLUS],
                 gender: TARGETING.GENDER.FEMALE
             };
 
@@ -284,7 +284,7 @@ describe('campaign utils', function() {
 
         describe('if there is no targeting', function() {
             beforeEach(function() {
-                targeting.age = TARGETING.AGE.ALL;
+                targeting.age = [TARGETING.AGE.ALL];
                 targeting.gender = TARGETING.GENDER.ALL;
 
                 campaign = campaignFromData({ productData, targeting });

@@ -9,7 +9,7 @@ import * as TARGETING from '../../../../enums/targeting';
 
 const DEFAULT_TARGETING = {
     age: [TARGETING.AGE.ALL],
-    gender: [TARGETING.GENDER.ALL]
+    gender: TARGETING.GENDER.ALL
 };
 
 const INITIAL_STATE = {

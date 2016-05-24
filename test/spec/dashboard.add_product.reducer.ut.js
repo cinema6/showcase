@@ -16,7 +16,7 @@ describe('dashboardAddProductReducer()', function() {
             productData: null,
             targeting: {
                 age: [TARGETING.AGE.ALL],
-                gender: [TARGETING.GENDER.ALL]
+                gender: TARGETING.GENDER.ALL
             }
         });
     });
@@ -30,7 +30,7 @@ describe('dashboardAddProductReducer()', function() {
                 step: 0,
                 productData: null,
                 targeting: {
-                    age: TARGETING.AGE.ALL,
+                    age: [TARGETING.AGE.ALL],
                     gender: TARGETING.GENDER.ALL
                 }
             };
@@ -57,7 +57,7 @@ describe('dashboardAddProductReducer()', function() {
                     productData: null,
                     targeting: {
                         age: [TARGETING.AGE.ALL],
-                        gender: [TARGETING.GENDER.ALL]
+                        gender: TARGETING.GENDER.ALL
                     }
                 }));
             });
@@ -111,7 +111,7 @@ describe('dashboardAddProductReducer()', function() {
                     description: 'A description of my app'
                 };
                 targeting = {
-                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    age: [TARGETING.AGE.THIRTEEN_PLUS],
                     gender: TARGETING.GENDER.FEMALE
                 };
 
@@ -145,7 +145,7 @@ describe('dashboardAddProductReducer()', function() {
                     expect(newState).toEqual(jasmine.objectContaining({
                         targeting: {
                             age: [TARGETING.AGE.ALL],
-                            gender: [TARGETING.GENDER.ALL]
+                            gender: TARGETING.GENDER.ALL
                         }
                     }));
                 });
