@@ -4,17 +4,233 @@ import campaign from '../../src/actions/campaign';
 import defer from 'promise-defer';
 import {
     GET_CAMPAIGNS,
-    GET_ORG
+    GET_ORG,
+    GET_PROMOTIONS
 } from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-import { getCampaigns, getOrg } from '../../src/actions/session';
+import { getCampaigns, getOrg, getPromotions } from '../../src/actions/session';
 import { dispatch } from '../helpers/stubs';
 import org from '../../src/actions/org';
+import promotion from '../../src/actions/promotion';
 import { assign } from 'lodash';
 
 describe('session actions', function() {
+    describe('getPromotions()', function() {
+        beforeEach(function() {
+            this.thunk = getThunk(getPromotions());
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.state = {
+                    session: {
+                        promotions: null
+                    },
+                    db: {
+                        user: {},
+                        promotion: {}
+                    }
+                };
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.returnValue(this.state);
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                setTimeout(done);
+            });
+
+            it('should dispatch GET_PROMOTIONS', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(GET_PROMOTIONS)(jasmine.any(Promise)));
+            });
+
+            it('should get the org', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getOrg());
+            });
+
+            describe('when the org is fetched', function() {
+                beforeEach(function() {
+                    this.org = {
+                        id: `o-${createUuid()}`
+                    };
+                });
+
+                describe('if org has promotions', function() {
+                    beforeEach(function(done) {
+                        this.org.promotions = Array.apply([], new Array(3)).map(() => ({
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial'
+                        }));
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+
+                        this.dispatch.calls.reset();
+                        setTimeout(done);
+                    });
+
+                    it('should get the orgs promotions', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(promotion.query({
+                            ids: this.org.promotions.map(promotion => promotion.id).join(',')
+                        }));
+                    });
+
+                    describe('when the promotions are fetched', function() {
+                        beforeEach(function(done) {
+                            this.promotions = this.org.promotions.map(promotion => ({
+                                id: promotion.id,
+                                type: 'freeTrial',
+                                data: {
+                                    trialLength: 5
+                                }
+                            }));
+                            this.state = assign({}, this.state, {
+                                db: assign({}, this.state.db, {
+                                    promotion: assign({}, this.state.db.promotion, this.promotions.reduce((result, promotion) => {
+                                        result[promotion.id] = promotion;
+                                        return result;
+                                    }, {}))
+                                })
+                            });
+                            this.getState.and.returnValue(this.state);
+
+                            this.dispatch.getDeferred(promotion.query({
+                                ids: this.promotions.map(promotion => promotion.id).join(',')
+                            })).resolve(this.promotions.map(promotion => promotion.id));
+                            setTimeout(done);
+                        });
+
+                        it('should fulfill with the promotion ids', function() {
+                            expect(this.success).toHaveBeenCalledWith(this.promotions.map(promotion => promotion.id));
+                        });
+                    });
+
+                    describe('if there is a problem fetching the promotions', function() {
+                        beforeEach(function(done) {
+                            this.reason = new Error('Things failed!');
+                            this.dispatch.getDeferred(promotion.query({
+                                ids: this.org.promotions.map(promotion => promotion.id).join(',')
+                            })).reject(this.reason);
+                            setTimeout(done);
+                        });
+
+                        it('should reject with the reason', function() {
+                            expect(this.failure).toHaveBeenCalledWith(this.reason);
+                        });
+                    });
+                });
+
+                describe('if the org has no promotions', function() {
+                    beforeEach(function(done) {
+                        this.org.promotions = [];
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+
+                        this.dispatch.calls.reset();
+                        setTimeout(done);
+                    });
+
+                    it('should not get any promotions', function() {
+                        expect(this.dispatch).not.toHaveBeenCalledWith(promotion.query(jasmine.any(Object)));
+                    });
+
+                    it('should fulfill with an empty Array', function() {
+                        expect(this.success).toHaveBeenCalledWith([]);
+                    });
+                });
+
+                describe('if the org has no promotions Array', function() {
+                    beforeEach(function(done) {
+                        delete this.org.promotions;
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+
+                        this.dispatch.calls.reset();
+                        setTimeout(done);
+                    });
+
+                    it('should not get any promotions', function() {
+                        expect(this.dispatch).not.toHaveBeenCalledWith(promotion.query(jasmine.any(Object)));
+                    });
+
+                    it('should fulfill with an empty Array', function() {
+                        expect(this.success).toHaveBeenCalledWith([]);
+                    });
+                });
+            });
+
+            describe('if the promotions are already fetched', function() {
+                beforeEach(function(done) {
+                    this.promotions = Array.apply([], new Array(3)).map(() => ({
+                        id: `pro-${createUuid()}`,
+                        type: 'freeTrial',
+                        data: {
+                            trialLength: 10
+                        }
+                    }));
+                    this.state.session.promotions = this.promotions.map(promotion => promotion.id);
+                    this.state.db.promotion = this.promotions.reduce((result, promotion) => {
+                        result[promotion.id] = promotion;
+                        return result;
+                    }, {});
+                    this.dispatch.calls.reset();
+
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should dispatch GET_PROMOTIONS', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(createAction(GET_PROMOTIONS)(jasmine.any(Promise)));
+                });
+
+                it('should not get the org', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(getOrg());
+                });
+
+                it('should not get any promotions', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(promotion.query(jasmine.any(Object)));
+                });
+
+                it('should fulfill with the promotions', function() {
+                    expect(this.success).toHaveBeenCalledWith(this.state.session.promotions);
+                });
+            });
+        });
+    });
+
     describe('getOrg()', function() {
         beforeEach(function() {
             this.thunk = getThunk(getOrg());
