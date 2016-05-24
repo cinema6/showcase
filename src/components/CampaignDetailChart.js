@@ -170,7 +170,10 @@ export default class CampaignDetailChart extends Component {
         let params = createChartParameters(this.props), empty;
 
         if (params.isEmpty){
-            empty = ( <div className="empty-chart"></div> );
+            empty = ( <div className="empty-chart">Not enough data to show stats. Your stats will 
+            be available soon.
+            <div className="tracking-pixel-message"><p><a href="#">Click here</a> to setup your 
+            tracking pixel</p></div></div> );
         }
         
         return (

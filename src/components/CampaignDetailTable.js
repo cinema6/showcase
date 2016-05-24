@@ -26,14 +26,20 @@ export default class CampaignDetailTable extends Component {
             activeSet = data.daily_7;
             timeFormatter = (datum) => {
                 return ([
-                    <span> {moment(datum.date).format('dddd')} </span> ,
-                    <span> {moment(datum.date).format('M/D')} </span>
+                    <span className="text-block"> {moment(datum.date).format('MMMM D')} </span> ,
+                    <span className="small text-block"> {moment(datum.date).format('dddd')} </span>
                 ]);
             };
         } else
         if (chart === CHART_30DAY) {
             activeSet = data.daily_30;
-            timeFormatter = (datum) => moment(datum.date).format('M/D/Y');
+            timeFormatter = (datum) => {
+                return ([
+                    <span className="text-block"> {moment(datum.date).format('MMMM D, YYYY')} </span> ,
+                    <span className="small text-block"> {moment(datum.date).format('dddd')} </span>
+                ]);
+            }
+            {/*timeFormatter = (datum) => moment(datum.date).format('M/D/Y');*/}
         }
 
         const numsFormatter = (n) => n === 0 ? '-' : numeral(n).format('0,0');
@@ -55,7 +61,7 @@ export default class CampaignDetailTable extends Component {
                             {activeSet.map(function(row,i){
                                 return (
                                     <tr key={i}>
-                                        <th> <h4>{timeFormatter(row)} </h4></th> 
+                                        <th> <h4 className="timeline-stacked">{timeFormatter(row)} </h4></th> 
                                         <td> <h4 className="stats-value stats-col-views">
                                             {numsFormatter(row.views)} </h4>
                                             <span className="small">Views</span>

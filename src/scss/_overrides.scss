@@ -305,7 +305,18 @@
     .card-item {
         background: #fff;
         border-radius: 4px;
-        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        -webkit-box-shadow: 0 2px 2px 0 
+            rgba(0,0,0,.14),0 3px 1px -2px 
+            rgba(0,0,0,.2),0 1px 5px 0 
+            rgba(0,0,0,.12);
+        -moz-box-shadow: 0 2px 2px 0 
+            rgba(0,0,0,.14),0 3px 1px -2px 
+            rgba(0,0,0,.2),0 1px 5px 0 
+            rgba(0,0,0,.12);
+        box-shadow: 0 2px 2px 0 
+            rgba(0,0,0,.14),0 3px 1px -2px 
+            rgba(0,0,0,.2),0 1px 5px 0 
+            rgba(0,0,0,.12);
     }
     .light-text {
         color: #fff;
@@ -314,12 +325,15 @@
         a.light-text:hover {
             color: lighten($link-color, 15%);
         }
+    .text-block {
+        display: block;
+    }
  /***
  CSS Variables
  ----------------------------
  ***/
-    $stats-views:         #0496FF;
-    $stats-reach:         #09E40D;
+    $stats-views:         #26ADE4;
+    $stats-reach:         #7AB317;
     $stats-clicks:        #FAA916;
     $stats-installs:      #353A47;
  /***
@@ -703,7 +717,7 @@
             /*overflow: hidden;*/
         }
     .campaign-overview {
-        margin-bottom: 20px;
+        display: block;
     }
         .campaign-overview .advertiser-logo {
             height: 80px;
@@ -711,6 +725,7 @@
             display: inline-block;
             margin-right: 15px;
             margin-top: 10px;
+            margin-bottom: 10px;
             vertical-align: top;
             float: left;
         }
@@ -718,6 +733,7 @@
                 width: 80px;
                 height: auto;
                 max-height: 80px;
+                border-radius: 20px;
             }
         .campaign-overview .campaign-title {
             overflow: hidden;
@@ -725,20 +741,57 @@
             text-overflow: ellipsis;
             word-break: break-all;
             word-wrap: break-word;
+            margin-top: 10px;
         }
             .campaign-overview .campaign-title h2 {
                 display: inline;
-                line-height: 100px;
+                line-height: 60px;
+            }
+            .campaign-stats .campaign-overview .campaign-preview-link {
+                display: block;
+                vertical-align: top;
+                margin-bottom: 10px;
+                margin-top: -8px;
+                padding-top: 0;
             }
         .campaign-mini-stats {
             padding-top: 25px;
             padding-bottom: 25px;
+            overflow: hidden;
         }
             .campaign-mini-stats p,
-            .campaign-mini-stats h3 {
+            .campaign-mini-stats h1 {
                 margin: 0;
                 text-align: center;
             }
+            .campaign-mini-stats .data-inline {
+                margin-bottom: 20px;
+                width: 100%;
+                border: 1px solid #CCC;
+                background: #fff;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+                .campaign-views.data-inline {
+                    background: $stats-views;
+                    color: #fff;
+                    border: none;
+                }
+                .campaign-reach.data-inline {
+                    background: $stats-reach;
+                    color: #fff;
+                    border: none;
+                }
+                .campaign-clicks.data-inline {
+                    background: $stats-clicks;
+                    color: #fff;
+                    border: none;
+                }
+                .campaign-installs.data-inline {
+                    background: $stats-installs;
+                    color: #fff;
+                    border: none;
+                }
         .campaign-stats .campaign-menu li a .fa {
             margin-right: 10px;
             text-align: center;
@@ -749,11 +802,21 @@
         }
     .campaign-stats .nav-justified {
         margin-bottom: 10px;
+        border: 1px solid $brand-primary;
+        border-radius: 6px;
     }
         .campaign-stats .nav-justified > li > a,
         .campaign-stats .nav-tabs.nav-justified > li > a {
             border-radius: 0;
+            background: #fff;
+            padding: 10px 5px;
         }
+        .campaign-stats .nav-pills > li.active > a,
+        .campaign-stats .nav-pills > li.active > a:hover,
+        .campaign-stats .nav-pills > li.active > a:focus {
+            background: $brand-primary;
+        }
+        
             .campaign-stats .nav-justified > li:first-child > a,
             .campaign-stats .nav-tabs.nav-justified > li:first-child > a {
                 border-top-left-radius: 5px;
@@ -771,6 +834,13 @@
         .data-stacked h4 {
             margin: 0;
         }
+    .timeline-stacked .text-block {
+        margin: 5px 0;
+    }
+/*** Chartist styles ***/
+    .ct-label {
+        font-size: 12px;
+    }
 /***tracking modal***/
     .tracking-modal .modal-body {
         overflow: auto;
@@ -820,6 +890,7 @@
     .chart-installs {
         margin-top: 20px;
         margin-bottom: 20px;
+        position: relative;
     }
         .ct-area {
             fill-opacity: 0.5;
@@ -847,6 +918,33 @@
         }
         .chart-installs .ct-series-a .ct-area {
             fill: $stats-installs;
+        }
+        .chart-views .empty-chart,
+        .chart-reach .empty-chart,
+        .chart-clicks .empty-chart,
+        .chart-installs .empty-chart {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 18px;
+            line-height: 30px;
+            background: rgba(255,255,255,0.7);
+            z-index: 1;
+            padding: 65px 20px;
+        }
+        .chart-installs .empty-chart:after {
+            content: 'Stats unvailable';
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            display: block;
+            top: 10px;
+            font-size: 20px;
+            line-height: 24px;
+            position: relative;
         }
  /***
  Billing & Payments
@@ -1021,20 +1119,62 @@
             .campaign-stats .campaign-overview .advertiser-logo img {
                 max-width: 50px;
                 max-height: 50px;
+                border-radius: 15px;
             }
         .campaign-stats .campaign-overview .campaign-title {
             max-width: 70%;
         }
             .campaign-stats .campaign-overview .campaign-title h2 {
                 display: inline;
-                line-height: 60px;
+                font-size: 20px;
+                line-height: 40px;
+            }
+            .campaign-stats .campaign-overview .campaign-preview-link {
+                display: block;
+                vertical-align: top;
+                margin-bottom: 10px;
+                margin-top: -8px;
+                padding-top: 0;
             }
         .campaign-stats .campaign-mini-stats .data-inline p {
             font-size: 13px;
         }
         .campaign-stats .campaign-mini-stats .data-inline h3 {
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 400;
+        }
+        .chart-views .empty-chart,
+        .chart-reach .empty-chart,
+        .chart-clicks .empty-chart,
+        .chart-installs .empty-chart {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            line-height: 28px;
+            background: rgba(255,255,255,0.7);
+            z-index: 1;
+            padding: 12px;
+        }
+        .chart-installs .empty-chart:after {
+            content: 'Tracking Pixel Not Found';
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            display: block;
+            top: 10px;
+            font-size: 20px;
+            line-height: 24px;
+            position: relative;
+        }
+        .tracking-pixel-message {
+            display: none;
+        }
+        .chart-installs .empty-chart .tracking-pixel-message {
+            display: block;
         }
         
     }
