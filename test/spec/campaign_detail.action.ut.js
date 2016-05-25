@@ -11,7 +11,8 @@ import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import {
     LOAD_PAGE_DATA,
-    SHOW_INSTALL_TRACKING_INSTRUCTIONS
+    SHOW_INSTALL_TRACKING_INSTRUCTIONS,
+    SHOW_AD_PREVIEW
 } from '../../src/actions/campaign_detail';
 import {
     getCampaignAnalytics
@@ -71,6 +72,21 @@ describe('campaign-detail-actions',function(){
         it('should return an FSA', function() {
             expect(result).toEqual({
                 type: SHOW_INSTALL_TRACKING_INSTRUCTIONS,
+                payload: false
+            });
+        });
+    });
+
+    describe('showAdPreview(show)', function() {
+        let result;
+
+        beforeEach(function() {
+            result = lib.showAdPreview(false);
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual({
+                type: SHOW_AD_PREVIEW,
                 payload: false
             });
         });

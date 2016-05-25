@@ -93,3 +93,6 @@ export const removeCampaign = createThunk(campaignId => {
 
 export const SHOW_INSTALL_TRACKING_INSTRUCTIONS = prefix('SHOW_INSTALL_TRACKING_INSTRUCTIONS');
 export const showInstallTrackingInstructions = createAction(SHOW_INSTALL_TRACKING_INSTRUCTIONS);
+
+export const SHOW_AD_PREVIEW = prefix('SHOW_AD_PREVIEW');
+export const showAdPreview = createAction(SHOW_AD_PREVIEW);

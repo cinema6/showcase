@@ -2,7 +2,8 @@ import dashboardCampaignDetailReducer
     from '../../src/reducers/page/dashboard/campaign_detail';
 import {
     LOAD_PAGE_DATA,
-    SHOW_INSTALL_TRACKING_INSTRUCTIONS
+    SHOW_INSTALL_TRACKING_INSTRUCTIONS,
+    SHOW_AD_PREVIEW
 } from '../../src/actions/campaign_detail';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
@@ -12,6 +13,7 @@ describe('dashboardCampaignDetailReducer()', function() {
         expect(dashboardCampaignDetailReducer(undefined, 'INIT')).toEqual({
             loading: true,
             showInstallTrackingInstructions: false,
+            showAdPreview: false,
             activeChart: 'CAMPAIGN_DETAIL_CHART_TODAY',
             activeSeries: 'CAMPAIGN_DETAIL_SERIES_USERS'
         });
@@ -24,7 +26,8 @@ describe('dashboardCampaignDetailReducer()', function() {
         beforeEach(function() {
             state = {
                 loading: false,
-                showInstallTrackingInstructions: false
+                showInstallTrackingInstructions: false,
+                showAdPreview: false
             };
         });
 
@@ -83,6 +86,20 @@ describe('dashboardCampaignDetailReducer()', function() {
             it('should set showInstallTrackingInstructions', function() {
                 expect(newState).toEqual(assign({}, state, {
                     showInstallTrackingInstructions: true
+                }));
+            });
+        });
+
+        describe(SHOW_AD_PREVIEW, function() {
+            beforeEach(function() {
+                action = createAction(SHOW_AD_PREVIEW)(true);
+
+                newState = dashboardCampaignDetailReducer(state, action);
+            });
+
+            it('should set showAdPreview', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    showAdPreview: true
                 }));
             });
         });

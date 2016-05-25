@@ -6,7 +6,8 @@ import CampaignDetailBar from '../../src/components/CampaignDetailBar';
 import {
     loadPageData,
     removeCampaign,
-    showInstallTrackingInstructions
+    showInstallTrackingInstructions,
+    showAdPreview
 } from '../../src/actions/campaign_detail';
 import {
     notify
@@ -15,6 +16,7 @@ import InstallTrackingSetupModal from '../../src/components/InstallTrackingSetup
 import { TYPE as NOTIFICATION } from '../../src/enums/notification';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
+import AdPreviewModal from '../../src/components/AdPreviewModal';
 
 const proxyquire = require('proxyquire');
 
@@ -72,6 +74,11 @@ describe('Campaign Detail', function() {
                 default: InstallTrackingSetupModal,
 
                 __esModule: true
+            },
+            '../../components/AdPreviewModal': {
+                default: AdPreviewModal,
+
+                __esModule: true
             }
         }).default;
 
@@ -92,7 +99,8 @@ describe('Campaign Detail', function() {
             page: {
                 'dashboard.campaign_detail': {
                     loading: true,
-                    showInstallTrackingInstructions: false
+                    showInstallTrackingInstructions: false,
+                    showAdPreview: false
                 }
             }
         };
@@ -198,6 +206,18 @@ describe('Campaign Detail', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.showInstallTrackingInstructions.calls.mostRecent().returnValue);
                 });
             });
+
+            describe('onShowAdPreview()', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    bar.props.onShowAdPreview();
+                });
+
+                it('should dispatch() showAdPreview(true)', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(showAdPreview(true));
+                });
+            });
         });
 
         describe('the InstallTrackingSetupModal', function() {
@@ -261,6 +281,34 @@ describe('Campaign Detail', function() {
                         message: 'Unable to copy.'
                     });
                     expect(store.dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                });
+            });
+        });
+
+        describe('the AdPreviewModal', function() {
+            beforeEach(function() {
+                this.modal = findRenderedComponentWithType(component, AdPreviewModal);
+            });
+
+            it('should exist', function() {
+                expect(this.modal).toEqual(jasmine.any(Object));
+            });
+
+            it('should pass the show property', function() {
+                expect(this.modal.props.show).toBe(component.props.page.showAdPreview);
+            });
+
+            it('should pass the campaign', function() {
+                expect(this.modal.props.campaign).toEqual(component.props.campaign);
+            });
+
+            describe('onClose()', function() {
+                beforeEach(function() {
+                    this.modal.props.onClose();
+                });
+
+                it('should hide the modal', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(showAdPreview(false));
                 });
             });
         });
