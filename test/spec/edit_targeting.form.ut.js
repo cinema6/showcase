@@ -33,6 +33,7 @@ describe('EditTargeting', function() {
                     gender: GENDER.ALL,
                     age: AGE.ALL
                 },
+                categories: [],
 
                 onSubmit: jasmine.createSpy('onSubmit()')
             };
