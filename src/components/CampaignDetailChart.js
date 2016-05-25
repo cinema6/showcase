@@ -110,11 +110,11 @@ export class Daily7ChartParameters extends ChartistParameters {
         
         let options = {
             axisX   : { 
-                          showGrid: false,
-                          labelInterpolationFnc: (value, index) =>  {
-                            return (index === 6) ? '' : value;
-                          }
-                          /*, labelOffset: { x: -30} */ 
+                showGrid: false,
+                labelInterpolationFnc: (value, index) =>  {
+                    return (index === 6) ? '' : value;
+                }
+               /*, labelOffset: { x: -30} */ 
             },
             axisY   : { labelInterpolationFnc: (value) => format(value) },
             lineSmooth  : false,
