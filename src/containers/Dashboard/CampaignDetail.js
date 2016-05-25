@@ -107,7 +107,7 @@ class CampaignDetail extends Component {
                     </div>
                     <div className="row">
                         <CampaignDetailTable data={analytics || {}}
-                            chart={page.activeChart} />
+                            chart={page.activeChart} series={page.activeSeries} />
                     </div>
                 </div>
             );

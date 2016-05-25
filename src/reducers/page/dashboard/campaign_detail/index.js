@@ -10,7 +10,7 @@ import {
 
 import {
     CHART_TODAY,
-    SERIES_USERS
+    SERIES_VIEWS
 } from '../../../../components/CampaignDetailChart';
 
 import { assign } from 'lodash';
@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     showInstallTrackingInstructions : false,
     showAdPreview                   : false,
     activeChart                     : CHART_TODAY,
-    activeSeries                    : SERIES_USERS
+    activeSeries                    : SERIES_VIEWS
 };
 
 export default handleActions({
