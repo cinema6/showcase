@@ -1,5 +1,7 @@
 'use strict';
 
+var grunt = require('grunt');
+
 module.exports = {
     server: {
         options: {
@@ -28,7 +30,8 @@ module.exports = {
                 ['babelify'],
                 ['envify', {
                     global: true,
-                    NODE_ENV: 'production'
+                    NODE_ENV: 'production',
+                    RC_ENV: grunt.option('rc-env') || 'production'
                 }],
                 ['uglifyify', { global: true }]
             ]
