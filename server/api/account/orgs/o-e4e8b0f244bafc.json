@@ -32,5 +32,11 @@
                 "size": null
             }
         }
-    }
+    },
+    "promotions": [
+        {
+            "id": "promo-9dc14002b4bc23",
+            "status": "active"
+        }
+    ]
 }

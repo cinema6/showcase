@@ -3,11 +3,19 @@ import ProductWizard from './ProductWizard';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
 import { wizardComplete } from '../../actions/product_wizard';
+import { getPromotions } from '../../actions/session';
 import { assign } from 'lodash';
 
 function mapStateToProps(state, props) {
+    const {
+        session: { promotions },
+        db
+    } = state;
+
     return {
         steps: [0, 1, 2, 3],
+
+        promotions: promotions && promotions.map(id => db.promotion[id]),
 
         productData: props.page.productData,
         targeting: props.page.targeting
@@ -17,7 +25,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch, props) {
     return {
         loadData() {
-            return Promise.resolve(undefined);
+            return dispatch(getPromotions());
         },
 
         onFinish({ targeting, productData }) {

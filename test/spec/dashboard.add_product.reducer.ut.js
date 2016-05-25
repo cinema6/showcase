@@ -15,7 +15,7 @@ describe('dashboardAddProductReducer()', function() {
             step: 0,
             productData: null,
             targeting: {
-                age: TARGETING.AGE.ALL,
+                age: [TARGETING.AGE.ALL],
                 gender: TARGETING.GENDER.ALL
             }
         });
@@ -30,7 +30,7 @@ describe('dashboardAddProductReducer()', function() {
                 step: 0,
                 productData: null,
                 targeting: {
-                    age: TARGETING.AGE.ALL,
+                    age: [TARGETING.AGE.ALL],
                     gender: TARGETING.GENDER.ALL
                 }
             };
@@ -44,7 +44,7 @@ describe('dashboardAddProductReducer()', function() {
                     description: 'It rules!'
                 };
                 state.targeting = {
-                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    age: TARGETING.AGE.TEENS,
                     gender: TARGETING.GENDER.MALE
                 };
 
@@ -56,7 +56,7 @@ describe('dashboardAddProductReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     productData: null,
                     targeting: {
-                        age: TARGETING.AGE.ALL,
+                        age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
                     }
                 }));
@@ -111,7 +111,7 @@ describe('dashboardAddProductReducer()', function() {
                     description: 'A description of my app'
                 };
                 targeting = {
-                    age: TARGETING.AGE.THIRTEEN_PLUS,
+                    age: [TARGETING.AGE.TEENS],
                     gender: TARGETING.GENDER.FEMALE
                 };
 
@@ -144,7 +144,7 @@ describe('dashboardAddProductReducer()', function() {
                 it('should use targeting defaults', function() {
                     expect(newState).toEqual(jasmine.objectContaining({
                         targeting: {
-                            age: TARGETING.AGE.ALL,
+                            age: [TARGETING.AGE.ALL],
                             gender: TARGETING.GENDER.ALL
                         }
                     }));

@@ -11,11 +11,15 @@ import campaign, {
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
+import {
+    GET_PROMOTIONS
+} from '../../src/actions/session';
 
 describe('sessionReducer()', function() {
     it('should return some initial state', function() {
         expect(sessionReducer(undefined, 'INIT')).toEqual({
             user: null,
+            promotions: null,
             payments: [],
             paymentMethods: [],
             campaigns: null
@@ -29,6 +33,8 @@ describe('sessionReducer()', function() {
         beforeEach(function() {
             state = {
                 user: null,
+
+                promotions: null,
 
                 payments: Array.apply([], new Array(5)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
@@ -67,6 +73,20 @@ describe('sessionReducer()', function() {
 
             it('should restore the initial state', function() {
                 expect(newState).toEqual(sessionReducer(undefined, {}));
+            });
+        });
+
+        describe(`${GET_PROMOTIONS}_FULFILLED`, function() {
+            beforeEach(function() {
+                this.promotions = Array.apply([], new Array(3)).map(() => `pro-${createUuid()}`);
+
+                newState = sessionReducer(state, createAction(`${GET_PROMOTIONS}_FULFILLED`)(this.promotions));
+            });
+
+            it('should update the promotions', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    promotions: this.promotions
+                }));
             });
         });
 

@@ -7,9 +7,10 @@ describe('targeting enums', function() {
         it('should exist', function() {
             expect(AGE).toEqual({
                 ALL: 'ALL',
-                ZERO_TO_TWELVE: '0-12',
-                THIRTEEN_PLUS: '13+',
-                EIGHTEEN_PLUS: '18+'
+                KIDS: '0-12',
+                TEENS: '13-18',
+                YOUNG_ADULTS: '19-35',
+                ADULTS: '36+'
             });
         });
     });

@@ -4,6 +4,9 @@ import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import * as TARGETING from '../enums/targeting';
 import classnames from 'classnames';
+import _, { includes } from 'lodash';
+import MultiCheckbox from '../components/MultiCheckbox';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 function value(field) {
     return field.value || field.initialValue;
@@ -14,171 +17,118 @@ class EditTargeting extends Component {
         const {
             fields: { age, gender },
             handleSubmit,
-            submitting
+            submitting,
+
+            categories
         } = this.props;
 
         return (<form onSubmit={handleSubmit}>
-            {/*
-            <div class="form-group">
-                <label for="adTitle-input">
-                    Categories
-                    <span data-toggle="tooltip" data-placement="bottom" title="These are the 
-                        categories you selected for your app on the app store.">
-                        <i class="fa fa-question-circle" aria-hidden="true"></i>
-                    </span>
+            <div className="form-group">
+                <label htmlFor="adTitle-input">
+                    Categories&nbsp;
+                    <OverlayTrigger
+                        placement="bottom"
+                        overlay={<Tooltip>
+                            These are the categories you selected 
+                            for your app on the app store
+                        </Tooltip>}>
+                        <i className="fa fa-question-circle" aria-hidden="true" />
+                    </OverlayTrigger>
                 </label>
                 <div>
-                    <h4 class="app-categories">
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-books"></span> Books
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-food-drinks"></span> Food and Drink
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-medical"></span> Medical
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-reference"></span> Reference
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-business"></span> Business
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-games"></span> Games
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-music"></span> Music
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-shopping"></span> Shopping
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-catalogs"></span> Catalogs
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-health-fitness"></span> 
-                            Health &amp; Fitness
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-navigation"></span> Navigation
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-social-networking"></span> 
-                            Social Networking
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-education"></span> Education
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-lifestyle"></span> Lifestyle
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-news"></span> News
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-sports"></span> Sports
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-entertainment"></span> Entertainment
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-kids"></span> Kids
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-photo-video"></span> Photo &amp; Video
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-travel"></span> Travel
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-finance"></span> Finance
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-magazines-newspapers"></span> 
-                            Magazines &amp; Newspapers
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-productivity"></span> Productivity
-                        </span>
-                        <span class="label label-primary">
-                            <span class="custom-icon icon-utilities"></span> Utilities
-                        </span>
+                    <h4 className="app-categories">
+                        {categories.map(category => {
+                            const iconClass = `icon-${_(category.split(/\W/))
+                                .filter()
+                                .join('-')
+                                .toLowerCase()}`;
+
+                            return <span key={category} className="label label-primary">
+                                <span className={classnames('custom-icon', iconClass)} /> {category}
+                            </span>;
+                        })}
                     </h4>
                 </div>
-                <!--<span id="helpBlock" class="help-block">A block of help text that breaks 
-                onto a new line and may extend beyond one line.</span>-->
             </div>
-            */}
             <div className="form-group">
                 <label htmlFor="targetAge-radio">Age</label>
-                <radiogroup className="select-target-options
+                <div className="select-target-options
                     hidden-sm hidden-xs" data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ALL
+                        active: includes(value(age), TARGETING.AGE.ALL)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ALL}
-                            checked={value(age) === TARGETING.AGE.ALL} /> Everyone
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ZERO_TO_TWELVE
+                        active: includes(value(age), TARGETING.AGE.KIDS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ZERO_TO_TWELVE}
-                            checked={value(age) === TARGETING.AGE.ZERO_TO_TWELVE} /> Kids
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.KIDS}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.THIRTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.TEENS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.THIRTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.TEENS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ADULTS} /> Adults
                     </label>
-                </radiogroup>
+                </div>
                 {/*swapping mobile with vertical class*/}
-                <radiogroup className="select-target-options-vertical visible-sm visible-xs" 
+                <div className="select-target-options-vertical visible-sm visible-xs" 
                     data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ALL
+                        active: includes(value(age), TARGETING.AGE.ALL)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ALL}
-                            checked={value(age) === TARGETING.AGE.ALL} /> Everyone
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ZERO_TO_TWELVE
+                        active: includes(value(age), TARGETING.AGE.KIDS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ZERO_TO_TWELVE}
-                            checked={value(age) === TARGETING.AGE.ZERO_TO_TWELVE} /> Kids
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.KIDS}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.THIRTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.TEENS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.THIRTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.THIRTEEN_PLUS} /> Teens
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.TEENS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Young Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> Adults
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ADULTS} /> Adults
                     </label>
-                </radiogroup>
+                </div>
             </div>
             <div className="form-group">
                 <label htmlFor="targetGender-radio">Gender</label>
@@ -241,7 +191,9 @@ EditTargeting.propTypes = {
         age: PropTypes.object.isRequired,
         gender: PropTypes.object.isRequired
     }).isRequired,
-    submitting: PropTypes.bool.isRequred,
+    submitting: PropTypes.bool.isRequired,
+
+    categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 
     handleSubmit: PropTypes.func.isRequired
 };

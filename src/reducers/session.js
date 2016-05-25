@@ -11,10 +11,15 @@ import campaign from '../actions/campaign';
 import {
     CANCEL as CANCEL_CAMPAIGN
 } from '../actions/campaign';
+import {
+    GET_PROMOTIONS
+} from '../actions/session';
 import { assign, reject, includes } from 'lodash';
 
 const DEFAULT_STATE = {
     user: null,
+
+    promotions: null,
 
     payments: [],
     paymentMethods: [],
@@ -31,6 +36,10 @@ function addUserToSession(state, { payload: user }) {
 export default handleActions({
     [LOGIN_SUCCESS]: addUserToSession,
     [STATUS_CHECK_SUCCESS]: addUserToSession,
+
+    [`${GET_PROMOTIONS}_FULFILLED`]: (state, { payload: promotions }) => assign({}, state, {
+        promotions
+    }),
 
     [payment.list.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
         payments
