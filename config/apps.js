@@ -5,5 +5,5 @@ export default {
             price: 50
         }
     ],
-    defaultPromotion: null
+    defaultPromotion: 'pro-0iv5Zh06XFRpmZF_'
 };
