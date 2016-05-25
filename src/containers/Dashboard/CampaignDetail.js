@@ -11,7 +11,8 @@ import {
     loadPageData,
     updateChartSelection,
     removeCampaign,
-    showInstallTrackingInstructions
+    showInstallTrackingInstructions,
+    showAdPreview
 } from '../../actions/campaign_detail';
 import {
     notify
@@ -29,6 +30,7 @@ import CampaignDetailChart, {
    SERIES_INSTALLS
 } from '../../components/CampaignDetailChart';
 import InstallTrackingSetupModal from '../../components/InstallTrackingSetupModal';
+import AdPreviewModal from '../../components/AdPreviewModal';
 import { TYPE as NOTIFICATION } from '../../enums/notification';
 
 class CampaignDetail extends Component {
@@ -52,7 +54,8 @@ class CampaignDetail extends Component {
             updateChartSelection,
             removeCampaign,
             showInstallTrackingInstructions,
-            notify
+            notify,
+            showAdPreview
         } = this.props;
 
         let inner, logoUrl;
@@ -122,6 +125,7 @@ class CampaignDetail extends Component {
                     installs={get(analytics,'summary.installs')}
                     onDeleteCampaign={() => removeCampaign(campaign.id)}
                     onShowInstallTrackingInstructions={() => showInstallTrackingInstructions(true)}
+                    onShowAdPreview={() => showAdPreview(true)}
                 />
                 {inner}
                 {campaign.id && (<InstallTrackingSetupModal
@@ -137,6 +141,9 @@ class CampaignDetail extends Component {
                         message: 'Unable to copy.'
                     })}
                 />)}
+                <AdPreviewModal show={page.showAdPreview}
+                    campaign={campaign}
+                    onClose={() => showAdPreview(false)} />
             </div>
         );
     }
@@ -144,9 +151,11 @@ class CampaignDetail extends Component {
 
 CampaignDetail.propTypes = {
     page: PropTypes.shape({
-        loading         : PropTypes.bool.isRequired,
-        activeChart     : PropTypes.number.isRequred,
-        activeSeries    : PropTypes.number.isRequred
+        loading                         : PropTypes.bool.isRequired,
+        activeChart                     : PropTypes.number.isRequired,
+        activeSeries                    : PropTypes.number.isRequired,
+        showInstallTrackingInstructions : PropTypes.bool.isRequired,
+        showAdPreview                   : PropTypes.bool.isRequired
     }).isRequired,
     params: PropTypes.shape({
         campaignId      : PropTypes.string.isRequired
@@ -159,7 +168,8 @@ CampaignDetail.propTypes = {
     updateChartSelection: PropTypes.func.isRequired,
     removeCampaign: PropTypes.func.isRequired,
     showInstallTrackingInstructions: PropTypes.func.isRequired,
-    notify: PropTypes.func.isRequired
+    notify: PropTypes.func.isRequired,
+    showAdPreview: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, props) {
@@ -177,6 +187,7 @@ export default compose(
         updateChartSelection,
         removeCampaign,
         showInstallTrackingInstructions,
-        notify
+        notify,
+        showAdPreview
     })
 )(CampaignDetail);
