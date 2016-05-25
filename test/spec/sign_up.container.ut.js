@@ -6,45 +6,13 @@ import SignUp from '../../src/containers/SignUp';
 import { createStore } from 'redux';
 import { signUp } from '../../src/actions/user';
 import { Provider } from 'react-redux';
-import defer from 'promise-defer';
 import { cloneDeep as clone, assign } from 'lodash';
 import SignUpForm from '../../src/forms/SignUp';
 import APP_CONFIG from '../../config';
 import { createUuid } from 'rc-uuid';
-
-const proxyquire = require('proxyquire');
+import { CALL_API } from 'redux-api-middleware';
 
 describe('SignUp', function() {
-    let userActions;
-    let SignUp;
-
-    beforeEach(function() {
-        APP_CONFIG.defaultPromotion = `pro-${createUuid()}`;
-
-        userActions = {
-            signUp: jasmine.createSpy('signUp()').and.callFake(signUp),
-
-            __esModule: true
-        };
-
-        SignUp = proxyquire('../../src/containers/SignUp', {
-            'react': React,
-
-            '../../config': {
-                default: APP_CONFIG,
-
-                __esModule: true
-            },
-
-            '../forms/SignUp': {
-                default: SignUpForm,
-
-                __esModule: true
-            },
-            '../actions/user': userActions
-        }).default;
-    });
-
     describe('when rendered', function() {
         let store, state;
         let props;
@@ -67,7 +35,9 @@ describe('SignUp', function() {
             spyOn(store, 'dispatch').and.callThrough();
 
             props = {
-
+                location: {
+                    query: {}
+                }
             };
 
             component = findRenderedComponentWithType(renderIntoDocument(
@@ -117,38 +87,29 @@ describe('SignUp', function() {
                     });
 
                     it('should call signUp()', function() {
-                        expect(userActions.signUp).toHaveBeenCalledWith(assign({}, values, {
+                        expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
+                            company: `${values.firstName} ${values.lastName}`,
                             paymentPlanId: APP_CONFIG.paymentPlans[0].id,
                             promotion: APP_CONFIG.defaultPromotion
-                        }));
+                        }))[CALL_API]);
                     });
-                });
-            });
-        });
 
-        describe('dispatch props', function() {
-            let dispatchDeferred;
+                    describe('with a promotion in the query param', function() {
+                        beforeEach(function() {
+                            props.location.query.promotion = `pro-${createUuid()}`;
+                            store.dispatch.calls.reset();
 
-            beforeEach(function() {
-                store.dispatch.and.returnValue((dispatchDeferred = defer()).promise);
-            });
+                            form.props.onSubmit(values);
+                        });
 
-            describe('signUp(data)', function() {
-                let data;
-                let result;
-
-                beforeEach(function() {
-                    data = {
-                        foo: 'bar'
-                    };
-
-                    result = component.props.signUp(data);
-                });
-
-                it('should dispatch the signUp() action', function() {
-                    expect(userActions.signUp).toHaveBeenCalledWith(data);
-                    expect(store.dispatch).toHaveBeenCalledWith(userActions.signUp.calls.mostRecent().returnValue);
-                    expect(result).toBe(dispatchDeferred.promise);
+                        it('should use the specified promotion', function() {
+                            expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
+                                company: `${values.firstName} ${values.lastName}`,
+                                paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+                                promotion: props.location.query.promotion
+                            }))[CALL_API]);
+                        });
+                    });
                 });
             });
         });

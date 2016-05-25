@@ -1,3 +1,7 @@
+/* global process */
+
+const PRODUCTION = 'production';
+
 export default {
     paymentPlans: [
         {
@@ -5,5 +9,6 @@ export default {
             price: 50
         }
     ],
-    defaultPromotion: null
+    defaultPromotion: process.env.RC_ENV === PRODUCTION ?
+        'pro-0aa4Kr06XTg8IexU' : 'pro-0iv5Zh06XFRpmZF_'
 };
