@@ -20,7 +20,8 @@ describe('CampaignDetailChart', function() {
             props = {
                 chart: 'CAMPAIGN_DETAIL_CHART_TODAY',
                 series: 'CAMPAIGN_DETAIL_SERIES_VIEWS',
-                data: { 'today' : [] }
+                data: { 'today' : [] },
+                onShowInstallTrackingInstructions: jasmine.createSpy('onShowInstallTrackingInstructions()')
             };
 
             component = renderIntoDocument(<CampaignDetailChart {...props} />);
@@ -33,6 +34,7 @@ describe('CampaignDetailChart', function() {
         it('should have the expected properties',function(){
             expect(component.props.chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
             expect(component.props.series).toEqual('CAMPAIGN_DETAIL_SERIES_VIEWS');
+            expect(component.props.onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
         });
     });
 

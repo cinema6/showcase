@@ -103,6 +103,9 @@ class CampaignDetail extends Component {
                     </div>
                     <div className="row">
                         <CampaignDetailChart data={analytics || {}}
+                            onShowInstallTrackingInstructions={() => {
+                                showInstallTrackingInstructions(true);
+                            }}
                             chart={page.activeChart} series={page.activeSeries} />
                     </div>
                     <div className="row">

@@ -1,5 +1,6 @@
 # Showcase
 
+## v0.1.0 (May 25, 2016)
 * *[v0.1.0-rc9]*
   * [FIX]: Fixed styles for pre-login screens, added logo
   * [FIX]: Added message for stats page when no stats available
@@ -9,6 +10,7 @@
   * [FIX]: Added styles for braintree and preview modal
   * [FEATURE]: Added ad preview loading animation
   * Bumped up showcase-core version to 1.3.0
+* *[/v0.1.0-rc9]*
 
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles

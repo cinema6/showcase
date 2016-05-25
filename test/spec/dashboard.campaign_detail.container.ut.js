@@ -17,6 +17,7 @@ import { TYPE as NOTIFICATION } from '../../src/enums/notification';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import AdPreviewModal from '../../src/components/AdPreviewModal';
+import CampaignDetailChart from '../../src/components/CampaignDetailChart';
 
 const proxyquire = require('proxyquire');
 
@@ -67,6 +68,11 @@ describe('Campaign Detail', function() {
             '../../actions/notification': notificationActions,
             '../../components/CampaignDetailBar': {
                 default: CampaignDetailBar,
+
+                __esModule: true
+            },
+            '../../components/CampaignDetailChart': {
+                default: CampaignDetailChart,
 
                 __esModule: true
             },
