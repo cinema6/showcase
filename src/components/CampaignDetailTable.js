@@ -6,17 +6,28 @@ import moment from 'moment';
 import {
    CHART_TODAY,
    CHART_7DAY,
-   CHART_30DAY
+   CHART_30DAY,
+
+   SERIES_USERS,
+   SERIES_VIEWS,
+   SERIES_CLICKS,
+   SERIES_INSTALLS
+
 } from './CampaignDetailChart';
 
 export default class CampaignDetailTable extends Component {
     render() {
         const {
             data,
-            chart
+            chart,
+            series
         } = this.props;
         let activeSet = [],
-            timeFormatter = () => 'unknown';
+            timeFormatter = () => 'unknown',
+            classUsers    = `${series === SERIES_USERS ? '' : 'hidden-xs'}`,
+            classViews    = `${series === SERIES_VIEWS ? '' : 'hidden-xs'}`,
+            classClicks   = `${series === SERIES_CLICKS ? '' : 'hidden-xs'}`,
+            classInstalls = `${series === SERIES_INSTALLS ? '' : 'hidden-xs'}`;
 
         if (chart === CHART_TODAY) {
             activeSet = data.today;
@@ -52,31 +63,40 @@ export default class CampaignDetailTable extends Component {
                         <thead>
                             <tr>
                                 <th> <h4> Timeline </h4> </th>
-                                <th className="text-center"> <h4> Views </h4> </th>
-                                <th className="text-center"> <h4> Reach </h4> </th>
-                                <th className="text-center"> <h4> Clicks </h4> </th>
-                                <th className="text-center"> <h4> Installs </h4> </th>
+                                <th className={`text-center ${classViews}`}> 
+                                    <h4> Views </h4> </th>
+                                <th className={`text-center ${classUsers}`}> 
+                                    <h4> Reach </h4> </th>
+                                <th className={`text-center ${classClicks}`}> 
+                                    <h4> Clicks </h4> </th>
+                                <th className={`text-center ${classInstalls}`}> 
+                                    <h4> Installs </h4> </th>
                             </tr>
                         </thead>
                         <tbody>
                             {activeSet.map(function(row,i){
                                 return (
                                     <tr key={i}>
-                                        <th> <h4 className="timeline-stacked">{timeFormatter(row)} 
+                                        <th> 
+                                            <h4 className="timeline-stacked">{timeFormatter(row)} 
                                         </h4></th> 
-                                        <td> <h4 className="stats-value stats-col-views">
+                                        <td className={classViews}> 
+                                            <h4 className="stats-value stats-col-views">
                                             {numsFormatter(row.views)} </h4>
                                             <span className="small">Views</span>
                                         </td> 
-                                        <td> <h4 className="stats-value stats-col-reach">
+                                        <td className={classUsers}> 
+                                            <h4 className="stats-value stats-col-reach">
                                             {numsFormatter(row.users)} </h4>
                                             <span className="small">Reach</span>
                                         </td> 
-                                        <td> <h4 className="stats-value stats-col-clicks">
+                                        <td className={classClicks}> 
+                                            <h4 className="stats-value stats-col-clicks">
                                             {numsFormatter(row.clicks)} </h4>
                                             <span className="small">Clicks</span>
                                         </td> 
-                                        <td> <h4 className="stats-value stats-col-installs">
+                                        <td className={classInstalls}> 
+                                            <h4 className="stats-value stats-col-installs">
                                             {numsFormatter(row.installs)} </h4>
                                             <span className="small">Installs</span>
                                         </td> 
@@ -93,5 +113,6 @@ export default class CampaignDetailTable extends Component {
 
 CampaignDetailTable.propTypes = {
     data: PropTypes.object.isRequired,
-    chart: PropTypes.string.isRequired
+    chart: PropTypes.string.isRequired,
+    series: PropTypes.string.isRequired
 };

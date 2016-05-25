@@ -5,8 +5,10 @@
   * [FIX]: Added message for stats page when no stats available
   * [FEATURE]: Show categories on targeting screen
   * [FEATURE]: Added trial information modal
+  * [FEATURE]: Hide some columns if looking at stats table on small screen
   * [FIX]: Added styles for braintree and preview modal
   * [FEATURE]: Added ad preview loading animation
+  * Bumped up showcase-core version to 1.3.0
 
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles
