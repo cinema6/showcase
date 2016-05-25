@@ -807,6 +807,14 @@
                 left: 4% !important;
             }
     }
+    .ad-preview-modal .create-ad {
+        width: 100%;
+        padding: 0;
+        margin-top: -10px;
+    }
+    .ad-preview-modal .phone-frame {
+        top: 0;
+    }
     /***targeting***/
     .app-categories span {
         display: inline-block;
@@ -1090,12 +1098,12 @@
             text-align: center;
             font-size: 18px;
             line-height: 30px;
-            background: rgba(255,255,255,0.7);
+            background: rgba(214, 252, 255,0.7);
             z-index: 1;
             padding: 65px 20px;
         }
         .chart-installs .empty-chart:after {
-            content: 'Stats unvailable';
+            content: 'Not enough data';
             width: 100%;
             height: 100%;
             text-align: center;
@@ -1241,6 +1249,22 @@
  Responsive styles
  ----------------------------
  ***/
+    @media (min-width: 998px) {
+        .chart-views .empty-chart, 
+        .chart-reach .empty-chart,
+        .chart-clicks .empty-chart,
+        .chart-installs .empty-chart {
+            padding: 155px 20px;
+        }
+    }
+    @media (min-width: 998px) {
+        .chart-views .empty-chart, 
+        .chart-reach .empty-chart,
+        .chart-clicks .empty-chart,
+        .chart-installs .empty-chart {
+            padding: 125px 20px;
+        }
+    }
     @media (min-width: 768px) {
         .nav-justified>li {
             display: table-cell;
@@ -1369,12 +1393,12 @@
             text-align: center;
             font-size: 14px;
             line-height: 28px;
-            background: rgba(255,255,255,0.7);
+            background: #D6FCFF;
             z-index: 1;
             padding: 12px;
         }
         .chart-installs .empty-chart:after {
-            content: 'Tracking Pixel Not Found';
+            content: 'Not enough data';
             width: 100%;
             height: 100%;
             text-align: center;
@@ -1744,77 +1768,6 @@
         transform: matrix3d(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
     }
 }
-/***preview loading animation***/
-.text-animation-wrap {
-    width: 300px;
-    height: 40px;
-    position: relative;
-    background: #fff;
-    clear: both;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid #0dbeb2;
-    padding: 0;
-    margin-top: 20px;
-    clear: both;
-    display: block;
-}
-.animation-container {
-    position: absolute;
-    top: 0;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
-.animate-content {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0px;
-    top: 0px;
-    z-index: 1000;
-}
-.animation-container p {
-    position: absolute;
-    line-height: 36px;
-    height: 36px;
-    font-size: 18px;
-    width: 100%;
-    text-align: center;
-    color: transparent;
-    -webkit-animation: blurFadeInOut 3s ease-in backwards;
-    -moz-animation: blurFadeInOut 3s ease-in backwards;
-    -ms-animation: blurFadeInOut 3s ease-in backwards;
-    animation: blurFadeInOut 3s ease-in backwards;
-}
-.animation-container p.frame-1 {
-    -webkit-animation-delay: 0s;
-    -moz-animation-delay: 0s;
-    -ms-animation-delay: 0s;
-    animation-delay: 0s;
-}
-.animation-container p.frame-2 {
-    -webkit-animation-delay: 3s;
-    -moz-animation-delay: 3s;
-    -ms-animation-delay: 3s;
-    animation-delay: 3s;
-}
-.animation-container p.frame-3 {
-    -webkit-animation-delay: 6s;
-    -moz-animation-delay: 6s;
-    -ms-animation-delay: 6s;
-    animation-delay: 6s;
-}
-.animation-container p.frame-4 span {
-    -webkit-animation: blurFadeIn 3s ease-in 9s backwards;
-    -moz-animation: blurFadeIn 1s ease-in 9s backwards;
-    -ms-animation: blurFadeIn 3s ease-in 9s backwards;
-    animation: blurFadeIn 3s ease-in 9s backwards;
-    color: transparent;
-    text-shadow: 0 0 0px #08766f;
-}
-
 
 /**/
 @-webkit-keyframes blurFadeInOut{
@@ -1964,18 +1917,32 @@
     0% {
         width: 0%;
     }
+    25% {
+        width: 25%;
+    }
+    50% {
+        width: 50%;
+    }
+    75% {
+        width: 75%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
 /***preview loading animation***/
     .text-animation-wrap {
         width: 300px;
         height: 40px;
         position: relative;
         background-color:#171738;
-        /*background-image: linear-gradient(#144A72 2px, transparent 2px),
+        background-image: linear-gradient(#144A72 2px, transparent 2px),
         linear-gradient(90deg, #144A72 2px, transparent 2px),
         linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
         background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
-        background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;*/
+        background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
         clear: both;
         border: 1px solid #0dbeb2;
         padding: 0;
@@ -2007,6 +1974,7 @@
         height: 36px;
         font-size: 18px;
         width: 100%;
+        margin: 0;
         text-align: center;
         color: transparent;
         -webkit-animation: blurFadeInOut 3s ease-in backwards;
