@@ -35,7 +35,9 @@ describe('SignUp', function() {
             spyOn(store, 'dispatch').and.callThrough();
 
             props = {
-
+                location: {
+                    query: {}
+                }
             };
 
             component = findRenderedComponentWithType(renderIntoDocument(
@@ -92,13 +94,22 @@ describe('SignUp', function() {
                         }))[CALL_API]);
                     });
 
-                    result = component.props.signUp(data);
-                });
+                    describe('with a promotion in the query param', function() {
+                        beforeEach(function() {
+                            props.location.query.promotion = `pro-${createUuid()}`;
+                            store.dispatch.calls.reset();
 
-                it('should dispatch the signUp() action', function() {
-                    expect(userActions.signUp).toHaveBeenCalledWith(data);
-                    expect(store.dispatch).toHaveBeenCalledWith(userActions.signUp.calls.mostRecent().returnValue);
-                    expect(result).toBe(dispatchDeferred.promise);
+                            form.props.onSubmit(values);
+                        });
+
+                        it('should use the specified promotion', function() {
+                            expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
+                                company: `${values.firstName} ${values.lastName}`,
+                                paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+                                promotion: props.location.query.promotion
+                            }))[CALL_API]);
+                        });
+                    });
                 });
             });
         });

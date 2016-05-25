@@ -18,11 +18,17 @@ class SignUp extends Component {
     }
 
     signUp(formValues) {
+        const {
+            location: {
+                query: { promotion }
+            }
+        } = this.props;
+
         return this.props.signUp(assign({}, formValues, {
             company: `${formValues.firstName} ${formValues.lastName}`,
 
             paymentPlanId: APP_CONFIG.paymentPlans[0].id,
-            promotion: APP_CONFIG.defaultPromotion
+            promotion: promotion || APP_CONFIG.defaultPromotion
         }));
     }
 
@@ -54,7 +60,12 @@ class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-    signUp: PropTypes.func.isRequired
+    signUp: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+        query: PropTypes.shape({
+            promotion: PropTypes.string
+        }).isRequired
+    }).isRequired
 };
 
 export default compose(
