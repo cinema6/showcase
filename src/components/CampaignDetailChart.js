@@ -109,7 +109,13 @@ export class Daily7ChartParameters extends ChartistParameters {
         let labelFormatter = (datum) => moment(datum.date).format('dddd M/D');
         
         let options = {
-            axisX   : { showGrid: false/*, labelOffset: { x: -30} */ },
+            axisX   : { 
+                          showGrid: false,
+                          labelInterpolationFnc: (value, index) =>  {
+                            return (index === 6) ? '' : value;
+                          }
+                          /*, labelOffset: { x: -30} */ 
+            },
             axisY   : { labelInterpolationFnc: (value) => format(value) },
             lineSmooth  : false,
             showArea    : true,
@@ -121,13 +127,17 @@ export class Daily7ChartParameters extends ChartistParameters {
             ['screen and (max-width: 700px)',{
                 axisX: {
                     labelOffset: { x: 0} ,
-                    labelInterpolationFnc: (value) =>  value.split(' ')[0].substr(0,2)
+                    labelInterpolationFnc: (value, index) =>  {
+                        return (index === 6) ? '' : value.split(' ')[0].substr(0,2);
+                    }
                 }
             }],
             ['screen and (min-width: 701px) and (max-width: 1285px)',{
                 axisX: {
                     labelOffset: { x: -18} ,
-                    labelInterpolationFnc: (value) =>  value.split(' ')[0]
+                    labelInterpolationFnc: (value, index) =>  {
+                        return (index === 6) ? '' : value.split(' ')[0];
+                    }
                 }
             }]
         ];

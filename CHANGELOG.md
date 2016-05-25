@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.3.0-rc1]*
+  * [FIX]: Fixed x-axis label on 7 day charts (removed last label from far right)
+
 ## v0.2.0 (May 27, 2016)
 * *[v0.2.0-rc1]*
   * [FEATURE]: Add a loading animation in the ad preview
