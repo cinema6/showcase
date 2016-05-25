@@ -11,32 +11,11 @@ import ProductWizard from '../../src/containers/Dashboard/ProductWizard';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
 import { wizardComplete } from '../../src/actions/product_wizard';
-
-const proxyquire = require('proxyquire');
+import { getPromotions } from '../../src/actions/session';
+import AddProduct from '../../src/containers/Dashboard/AddProduct';
+import { createUuid } from 'rc-uuid';
 
 describe('AddProduct', function() {
-    let productWizardActions;
-    let AddProduct;
-
-    beforeEach(function() {
-        productWizardActions = {
-            wizardComplete: jasmine.createSpy('wizardComplete()').and.callFake(wizardComplete),
-
-            __esModule: true
-        };
-
-        AddProduct = proxyquire('../../src/containers/Dashboard/AddProduct', {
-            'react': React,
-
-            '../../actions/product_wizard': productWizardActions,
-            './ProductWizard': {
-                default: ProductWizard,
-
-                __esModule: true
-            }
-        }).default;
-    });
-
     it('should wrap the ProductWizard component', function() {
         expect(AddProduct.WrappedComponent.WrappedComponent).toBe(ProductWizard.WrappedComponent);
     });
@@ -48,6 +27,10 @@ describe('AddProduct', function() {
 
         beforeEach(function() {
             state = {
+                session: {
+                    promotions: [`pro-${createUuid()}`, `pro-${createUuid()}`]
+                },
+                db: {},
                 page: {
                     'dashboard.add_product': {
                         step: 0,
@@ -62,6 +45,16 @@ describe('AddProduct', function() {
                     }
                 }
             };
+            state.db.promotion = state.session.promotions.reduce((result, id) => {
+                result[id] = {
+                    id,
+                    type: 'freeTrial',
+                    data: {
+                        trialLength: 10
+                    }
+                };
+                return result;
+            }, {});
             store = createStore(compose(
                 (s, action) => assign({}, s, {
                     form: formReducer(s.form, action)
@@ -90,9 +83,28 @@ describe('AddProduct', function() {
             expect(component.props).toEqual(jasmine.objectContaining({
                 steps: [0, 1, 2, 3],
 
+                promotions: state.session.promotions.map(id => state.db.promotion[id]),
+
                 productData: state.page['dashboard.add_product'].productData,
                 targeting: state.page['dashboard.add_product'].targeting
             }));
+        });
+
+        describe('if no promotions have been fetched', function() {
+            beforeEach(function() {
+                state.session.promotions = null;
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <AddProduct {...props} />
+                    </Provider>
+                ), ProductWizard);
+            });
+
+            it('should pass in promotions as null', function() {
+                expect(component.props).toEqual(jasmine.objectContaining({
+                    promotions: null
+                }));
+            });
         });
 
         describe('dispatch props', function() {
@@ -103,18 +115,16 @@ describe('AddProduct', function() {
             });
 
             describe('loadData()', function() {
-                let success, failure;
+                let result;
 
                 beforeEach(function(done) {
-                    success = jasmine.createSpy('success()');
-                    failure = jasmine.createSpy('failure()');
-
-                    component.props.loadData().then(success, failure);
+                    result = component.props.loadData();
                     setTimeout(done);
                 });
 
-                it('should fulfill with undefined', function() {
-                    expect(success).toHaveBeenCalledWith(undefined);
+                it('should get the promotions', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(getPromotions());
+                    expect(result).toBe(store.dispatch.calls.mostRecent().returnValue);
                 });
             });
 

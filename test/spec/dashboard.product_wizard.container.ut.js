@@ -23,6 +23,8 @@ import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 import { getClientToken } from '../../src/actions/payment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+import { getPaymentPlanStart } from 'showcase-core/dist/billing';
+import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
 
 const proxyquire = require('proxyquire');
 
@@ -31,8 +33,6 @@ describe('ProductWizard', function() {
     let ProductWizard;
 
     beforeEach(function() {
-        jasmine.clock().install();
-
         paymentActions = {
             getClientToken: jasmine.createSpy('getClientToken()').and.callFake(getClientToken),
 
@@ -77,6 +77,11 @@ describe('ProductWizard', function() {
 
                 __esModule: true
             },
+            '../../components/WizardPlanInfoModal': {
+                default: WizardPlanInfoModal,
+
+                __esModule: true
+            },
             '../../components/WizardConfirmationModal': {
                 default: WizardConfirmationModal,
 
@@ -93,16 +98,15 @@ describe('ProductWizard', function() {
         }).default;
     });
 
-    afterEach(function() {
-        jasmine.clock().uninstall();
-    });
-
     describe('when rendered', function() {
         let store, state;
         let props;
         let component;
 
         beforeEach(function() {
+            jasmine.clock().install();
+            jasmine.clock().mockDate();
+
             state = {
                 form: {
                     productWizard: {
@@ -140,12 +144,22 @@ describe('ProductWizard', function() {
                     step: 0,
                     productData: null,
                     targeting: {
-                        age: TARGETING.AGE.ALL,
+                        age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
                     }
                 },
 
                 steps: [0, 1, 2, 3],
+
+                promotions: [
+                    {
+                        id: `pro-${createUuid()}`,
+                        type: 'freeTrial',
+                        data: {
+                            trialLength: 10
+                        }
+                    }
+                ],
 
                 loadData: jasmine.createSpy('loadData()').and.returnValue(Promise.resolve(undefined)),
                 onFinish: jasmine.createSpy('onFinish()').and.returnValue(Promise.resolve(3))
@@ -160,6 +174,10 @@ describe('ProductWizard', function() {
             ), ProductWizard.WrappedComponent);
 
             spyOn(component, 'setState').and.callThrough();
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
         });
 
         it('should exist', function() {
@@ -183,6 +201,44 @@ describe('ProductWizard', function() {
 
             it('should dispatch wizardDestroyed()', function() {
                 expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
+        describe('WizardPlanInfoModal', function() {
+            beforeEach(function() {
+                this.planInfoModal = findRenderedComponentWithType(component, WizardPlanInfoModal);
+            });
+
+            it('should exist', function() {
+                expect(this.planInfoModal).toEqual(jasmine.any(Object));
+            });
+
+            describe('props', function() {
+                describe('show', function() {
+                    it('should be false', function() {
+                        expect(this.planInfoModal.props.show).toBe(false);
+                    });
+                });
+
+                describe('onClose()', function() {
+                    beforeEach(function() {
+                        this.planInfoModal.props.onClose();
+                    });
+
+                    it('should go to step 2', function() {
+                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
+                    });
+                });
+
+                describe('onContinue()', function() {
+                    beforeEach(function() {
+                        this.planInfoModal.props.onContinue();
+                    });
+
+                    it('should go to step 4', function() {
+                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(4));
+                    });
+                });
             });
         });
 
@@ -364,10 +420,11 @@ describe('ProductWizard', function() {
                     images: [
                         { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
                     ],
-                    price: 'Free'
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
                 };
                 props.targeting = {
-                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    age: [TARGETING.AGE.KIDS],
                     gender: TARGETING.GENDER.FEMALE
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
@@ -399,11 +456,33 @@ describe('ProductWizard', function() {
                         });
                     });
 
+                    describe('categories', function() {
+                        it('should be the categories', function() {
+                            expect(targeting.props.categories).toEqual(props.productData.categories);
+                        });
+
+                        describe('if there is no productData', function() {
+                            beforeEach(function() {
+                                props.productData = null;
+                                component = findRenderedComponentWithType(renderIntoDocument(
+                                    <Provider store={store}>
+                                        <ProductWizard {...props} />
+                                    </Provider>
+                                ), ProductWizard.WrappedComponent);
+                                targeting = findRenderedComponentWithType(component, WizardEditTargeting);
+                            });
+
+                            it('should be an empty Array', function() {
+                                expect(targeting.props.categories).toEqual([]);
+                            });
+                        });
+                    });
+
                     describe('onFinish()', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { age: TARGETING.AGE.EIGHTEEN_PLUS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
+                            values = { age: TARGETING.AGE.YOUNG_ADULTS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
                             targeting.props.onFinish(values);
                         });
 
@@ -426,11 +505,9 @@ describe('ProductWizard', function() {
 
         describe('on step 3', function() {
             beforeEach(function() {
-                store.dispatch.and.returnValue(new Promise(() => {}));
-
-                component.props.page.step = 3;
+                props.page.step = 3;
                 props.targeting = {
-                    age: TARGETING.AGE.ZERO_TO_TWELVE,
+                    age: [TARGETING.AGE.KIDS],
                     gender: TARGETING.GENDER.FEMALE
                 };
                 props.productData = {
@@ -440,7 +517,40 @@ describe('ProductWizard', function() {
                     images: [
                         { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
                     ],
-                    price: 'Free'
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
+                };
+                this.component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
+                this.planInfoModal = findRenderedComponentWithType(this.component, WizardPlanInfoModal);
+            });
+
+            it('should show the WizardPlanInfoModal', function() {
+                expect(this.planInfoModal.props.show).toBe(true);
+            });
+        });
+
+        describe('on step 4', function() {
+            beforeEach(function() {
+                store.dispatch.and.returnValue(new Promise(() => {}));
+
+                component.props.page.step = 4;
+                props.targeting = {
+                    age: [TARGETING.AGE.KIDS],
+                    gender: TARGETING.GENDER.FEMALE
+                };
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
                     <Provider store={store}>
@@ -467,6 +577,30 @@ describe('ProductWizard', function() {
                 });
 
                 describe('props', function() {
+                    describe('startDate', function() {
+                        it('should be computed from the promotions', function() {
+                            const expected = getPaymentPlanStart(props.promotions);
+
+                            expect(modal.props.startDate.isSame(expected)).toBe(true, `Expected: ${expected.format()}; got: ${modal.props.startDate.format()}`);
+                        });
+
+                        describe('if there are no promotions', function() {
+                            beforeEach(function() {
+                                props.promotions = null;
+                                component = findRenderedComponentWithType(renderIntoDocument(
+                                    <Provider store={store}>
+                                        <ProductWizard {...props} />
+                                    </Provider>
+                                ), ProductWizard.WrappedComponent);
+                                modal = findRenderedComponentWithType(component, WizardConfirmationModal);
+                            });
+
+                            it('should be null', function() {
+                                expect(modal.props.startDate).toBeNull();
+                            });
+                        });
+                    });
+
                     describe('getToken()', function() {
                         it('should be the getClientToken action', function() {
                             expect(modal.props.getToken).toBe(component.props.getClientToken);
