@@ -22,7 +22,7 @@ module.exports = function(grunt) {
                 app: ''
             },
             production: {
-                bucket: 'com.cinema6.portal.showcase.apps',
+                bucket: 'com.cinema6.showcase.apps',
                 app: ''
             }
         }
