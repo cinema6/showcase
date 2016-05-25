@@ -73,6 +73,18 @@ export default class AdPreview extends Component {
             className="create-ad step-2 col-md-6 col-sm-12 col-xs-12 col-middle text-center">
             <div className="phone-wrap">
                 <div ref="root" className="phone-frame">
+                {/*add hidden class to the div below after when iframe loads*/}
+                    <div className="text-animation-wrap">
+                        <h3 className="light-text">Generating Preview</h3>
+                        <div className="animation-container">
+                            <div className="animate-content">
+                                <p className="frame-1">Connecting to app store...</p>
+                                <p className="frame-2">Collecting information...</p>
+                                <p className="frame-3">Importing Screenshots...</p>
+                                <p className="frame-4"><span>All set!</span></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>);
