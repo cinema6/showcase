@@ -16,10 +16,10 @@
  * Forms
  * Create Campaign
  * Campaign Stats
- * Plans 
+ * Plans
  * Payment Modals
  */
- 
+
  /***
  Resets
  ----------------------------
@@ -61,7 +61,7 @@
         @extend .btn-group-vertical;
     }
 
-    
+
  /***
  overrides
  ----------------------------
@@ -104,14 +104,14 @@
         margin-right: 10px;
         font-size: 18px;
     }
-    
+
     .nav-justified>li {
         float: none;
     }
         .nav-justified>li>button,
         .nav-justified>li>button:disabled:hover,
         .nav-justified>li>button:disabled:focus {
-            background: #bef2f6;            
+            background: #bef2f6;
             color: #0dbeb2;
             display: block;
             position: relative;
@@ -128,7 +128,7 @@
             .nav-justified>li>button:focus {
                 color: #08766f;
             }
-            .nav-justified>li.active>button { 
+            .nav-justified>li.active>button {
                 color: #fff;
                 background-color: #0dbeb2;
             }
@@ -212,7 +212,7 @@
         }
         .alert-dismissable .close,
         .alert-dismissible .close {
-            top: 0;            
+            top: 0;
         }
     .close {
         text-shadow: none;
@@ -320,17 +320,17 @@
     .card-item {
         background: #fff;
         border-radius: 4px;
-        -webkit-box-shadow: 0 2px 2px 0 
-            rgba(0,0,0,.14),0 3px 1px -2px 
-            rgba(0,0,0,.2),0 1px 5px 0 
+        -webkit-box-shadow: 0 2px 2px 0
+            rgba(0,0,0,.14),0 3px 1px -2px
+            rgba(0,0,0,.2),0 1px 5px 0
             rgba(0,0,0,.12);
-        -moz-box-shadow: 0 2px 2px 0 
-            rgba(0,0,0,.14),0 3px 1px -2px 
-            rgba(0,0,0,.2),0 1px 5px 0 
+        -moz-box-shadow: 0 2px 2px 0
+            rgba(0,0,0,.14),0 3px 1px -2px
+            rgba(0,0,0,.2),0 1px 5px 0
             rgba(0,0,0,.12);
-        box-shadow: 0 2px 2px 0 
-            rgba(0,0,0,.14),0 3px 1px -2px 
-            rgba(0,0,0,.2),0 1px 5px 0 
+        box-shadow: 0 2px 2px 0
+            rgba(0,0,0,.14),0 3px 1px -2px
+            rgba(0,0,0,.2),0 1px 5px 0
             rgba(0,0,0,.12);
     }
     .light-text {
@@ -355,7 +355,7 @@
  Navigation
  ----------------------------
  ***/
- 
+
     .navbar-brand {
         padding: 0;
     }
@@ -403,7 +403,7 @@
                 text-align: center;
                 width: 2rem;
                 margin-right: 1rem;
-            
+
             }
  /***
  Icons
@@ -485,7 +485,7 @@
  Forms
  ----------------------------
  ***/
-    
+
  /***
  Pre-Login Screens
  ----------------------------
@@ -621,7 +621,7 @@
         .app-search-results li.app-results.app-searching {
             font-size: 1.75rem;
             text-align: center;
-            line-height: 60px;            
+            line-height: 60px;
         }
             .app-search-results li.app-results.app-item.active {
                 background: #f5f5f5;
@@ -699,7 +699,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            right: 0;            
+            right: 0;
         }
     .phone-frame {
         position: absolute;
@@ -821,7 +821,7 @@
  Campaign Stats
  ----------------------------
  ***/
- 
+
     .campaign-stats {
         display: block;
     }
@@ -929,7 +929,7 @@
         .campaign-stats .nav-pills > li.active > a:focus {
             background: $brand-primary;
         }
-        
+
             .campaign-stats .nav-justified > li:first-child > a,
             .campaign-stats .nav-tabs.nav-justified > li:first-child > a {
                 border-top-left-radius: 5px;
@@ -1006,7 +1006,6 @@
                 display: inline-block;
                 margin: 0 0 0 10px;
             }
-=======
 /***stats colors***/
     .stats-list h4 {
         font-weight: 400;
@@ -1058,7 +1057,7 @@
         }
         .chart-views .ct-series-a .ct-area {
             fill: $stats-views;
-        }        
+        }
         .chart-reach .ct-series-a .ct-line {
             stroke: $stats-reach;
         }
@@ -1295,7 +1294,7 @@
             .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
                 color: #d6fcff;
                 padding: 20px;
-                text-align: center;                
+                text-align: center;
             }
             .nav-justified > li, .nav-tabs.nav-justified > li {
                 display: table-cell;
@@ -1389,7 +1388,7 @@
         .chart-installs .empty-chart .tracking-pixel-message {
             display: block;
         }
-        
+
     }
     @media (max-width: 992px) {
         .phone-wrap {
@@ -1759,205 +1758,205 @@
     display: block;
 }
 .animation-container {
-	position: absolute;
-	top: 0;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 .animate-content {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0px;
-	top: 0px;
-	z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    z-index: 1000;
 }
 .animation-container p {
-	position: absolute;
-	line-height: 36px;
-	height: 36px;
-	font-size: 18px;
-	width: 100%;
-	text-align: center;
-	color: transparent;
-	-webkit-animation: blurFadeInOut 3s ease-in backwards;
-	-moz-animation: blurFadeInOut 3s ease-in backwards;
-	-ms-animation: blurFadeInOut 3s ease-in backwards;
-	animation: blurFadeInOut 3s ease-in backwards;
+    position: absolute;
+    line-height: 36px;
+    height: 36px;
+    font-size: 18px;
+    width: 100%;
+    text-align: center;
+    color: transparent;
+    -webkit-animation: blurFadeInOut 3s ease-in backwards;
+    -moz-animation: blurFadeInOut 3s ease-in backwards;
+    -ms-animation: blurFadeInOut 3s ease-in backwards;
+    animation: blurFadeInOut 3s ease-in backwards;
 }
 .animation-container p.frame-1 {
-	-webkit-animation-delay: 0s;
-	-moz-animation-delay: 0s;
-	-ms-animation-delay: 0s;
-	animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    -moz-animation-delay: 0s;
+    -ms-animation-delay: 0s;
+    animation-delay: 0s;
 }
 .animation-container p.frame-2 {
-	-webkit-animation-delay: 3s;
-	-moz-animation-delay: 3s;
-	-ms-animation-delay: 3s;
-	animation-delay: 3s;
+    -webkit-animation-delay: 3s;
+    -moz-animation-delay: 3s;
+    -ms-animation-delay: 3s;
+    animation-delay: 3s;
 }
 .animation-container p.frame-3 {
-	-webkit-animation-delay: 6s;
-	-moz-animation-delay: 6s;
-	-ms-animation-delay: 6s;
-	animation-delay: 6s;
+    -webkit-animation-delay: 6s;
+    -moz-animation-delay: 6s;
+    -ms-animation-delay: 6s;
+    animation-delay: 6s;
 }
 .animation-container p.frame-4 span {
-	-webkit-animation: blurFadeIn 3s ease-in 9s backwards;
-	-moz-animation: blurFadeIn 1s ease-in 9s backwards;
-	-ms-animation: blurFadeIn 3s ease-in 9s backwards;
-	animation: blurFadeIn 3s ease-in 9s backwards;
-	color: transparent;
-	text-shadow: 0 0 0px #08766f;
+    -webkit-animation: blurFadeIn 3s ease-in 9s backwards;
+    -moz-animation: blurFadeIn 1s ease-in 9s backwards;
+    -ms-animation: blurFadeIn 3s ease-in 9s backwards;
+    animation: blurFadeIn 3s ease-in 9s backwards;
+    color: transparent;
+    text-shadow: 0 0 0px #08766f;
 }
 
 
 /**/
 @-webkit-keyframes blurFadeInOut{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(1.3);
-	}
-	20%,75%{
-		opacity: 1;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(1);
-	}
-	100%{
-		opacity: 0;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(0);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(1.3);
+    }
+    20%,75%{
+        opacity: 1;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(0);
+    }
 }
 @-webkit-keyframes blurFadeIn{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(1.3);
-	}
-	50%{
-		opacity: 0.5;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(1.1);
-	}
-	100%{
-		opacity: 1;
-		text-shadow: 0px 0px 0px #08766f;
-		-webkit-transform: scale(1);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(1.3);
+    }
+    50%{
+        opacity: 0.5;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(1.1);
+    }
+    100%{
+        opacity: 1;
+        text-shadow: 0px 0px 0px #08766f;
+        -webkit-transform: scale(1);
+    }
 }
 @-webkit-keyframes fadeInBack{
-	0%{
-		opacity: 0;
-		-webkit-transform: scale(0);
-	}
-	50%{
-		opacity: 0.4;
-		-webkit-transform: scale(2);
-	}
-	100%{
-		opacity: 0.2;
-		-webkit-transform: scale(5);
-	}
+    0%{
+        opacity: 0;
+        -webkit-transform: scale(0);
+    }
+    50%{
+        opacity: 0.4;
+        -webkit-transform: scale(2);
+    }
+    100%{
+        opacity: 0.2;
+        -webkit-transform: scale(5);
+    }
 }
 
 /**/
 @-moz-keyframes blurFadeInOut{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 1px #08766f;
-		-moz-transform: scale(1.3);
-	}
-	20%,75%{
-		opacity: 1;
-		text-shadow: 0px 0px 1px #08766f;
-		-moz-transform: scale(1);
-	}
-	100%{
-		opacity: 0;
-		text-shadow: 0px 0px 0px #08766f;
-		-moz-transform: scale(0);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 1px #08766f;
+        -moz-transform: scale(1.3);
+    }
+    20%,75%{
+        opacity: 1;
+        text-shadow: 0px 0px 1px #08766f;
+        -moz-transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        text-shadow: 0px 0px 0px #08766f;
+        -moz-transform: scale(0);
+    }
 }
 @-moz-keyframes blurFadeIn{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 1px #08766f;
-		-moz-transform: scale(1.3);
-	}
-	100%{
-		opacity: 1;
-		text-shadow: 0px 0px 0px #08766f;
-		-moz-transform: scale(1);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 1px #08766f;
+        -moz-transform: scale(1.3);
+    }
+    100%{
+        opacity: 1;
+        text-shadow: 0px 0px 0px #08766f;
+        -moz-transform: scale(1);
+    }
 }
 @-moz-keyframes fadeInBack{
-	0%{
-		opacity: 0;
-		-moz-transform: scale(0);
-	}
-	50%{
-		opacity: 0.4;
-		-moz-transform: scale(2);
-	}
-	100%{
-		opacity: 0.2;
-		-moz-transform: scale(5);
-	}
+    0%{
+        opacity: 0;
+        -moz-transform: scale(0);
+    }
+    50%{
+        opacity: 0.4;
+        -moz-transform: scale(2);
+    }
+    100%{
+        opacity: 0.2;
+        -moz-transform: scale(5);
+    }
 }
 
 /**/
 @keyframes blurFadeInOut{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 1px #08766f;
-		transform: scale(1.3);
-	}
-	20%,75%{
-		opacity: 1;
-		text-shadow: 0px 0px 1px #08766f;
-		transform: scale(1);
-	}
-	100%{
-		opacity: 0;
-		text-shadow: 0px 0px 0px #08766f;
-		transform: scale(0);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 1px #08766f;
+        transform: scale(1.3);
+    }
+    20%,75%{
+        opacity: 1;
+        text-shadow: 0px 0px 1px #08766f;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        text-shadow: 0px 0px 0px #08766f;
+        transform: scale(0);
+    }
 }
 @keyframes blurFadeIn{
-	0%{
-		opacity: 0;
-		text-shadow: 0px 0px 1px #08766f;
-		transform: scale(1.3);
-	}
-	50%{
-		opacity: 0.5;
-		text-shadow: 0px 0px 1px #08766f;
-		transform: scale(1.1);
-	}
-	100%{
-		opacity: 1;
-		text-shadow: 0px 0px 0px #08766f;
-		transform: scale(1);
-	}
+    0%{
+        opacity: 0;
+        text-shadow: 0px 0px 1px #08766f;
+        transform: scale(1.3);
+    }
+    50%{
+        opacity: 0.5;
+        text-shadow: 0px 0px 1px #08766f;
+        transform: scale(1.1);
+    }
+    100%{
+        opacity: 1;
+        text-shadow: 0px 0px 0px #08766f;
+        transform: scale(1);
+    }
 }
 @keyframes fadeInBack{
-	0%{
-		opacity: 0;
-		transform: scale(0);
-	}
-	50%{
-		opacity: 0.4;
-		transform: scale(2);
-	}
-	100%{
-		opacity: 0.2;
-		transform: scale(5);
-	}
+    0%{
+        opacity: 0;
+        transform: scale(0);
+    }
+    50%{
+        opacity: 0.4;
+        transform: scale(2);
+    }
+    100%{
+        opacity: 0.2;
+        transform: scale(5);
+    }
 }
 @keyframes fullWidthBar {
     0% {
