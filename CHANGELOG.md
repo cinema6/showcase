@@ -1,6 +1,11 @@
 # Showcase
 
 ## v0.1.0 (May 25, 2016)
+* *[v0.1.0-rc10]*
+  * Give new users a company
+  * Setup default promotions in staging and production
+* *[/v0.1.0-rc10]*
+
 * *[v0.1.0-rc9]*
   * [FIX]: Fixed styles for pre-login screens, added logo
   * [FIX]: Added message for stats page when no stats available
