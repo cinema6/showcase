@@ -1,7 +1,5 @@
 'use strict';
 
-var babelConfig = require('../resources/babel.config.js');
-
 module.exports = {
     server: {
         options: {
@@ -11,7 +9,7 @@ module.exports = {
                 debug: true
             },
             transform: [
-                ['babelify', babelConfig]
+                ['babelify']
             ]
         },
         files: [
@@ -27,7 +25,7 @@ module.exports = {
                 debug: false
             },
             transform: [
-                ['babelify', babelConfig],
+                ['babelify'],
                 ['envify', {
                     global: true,
                     NODE_ENV: 'production'
