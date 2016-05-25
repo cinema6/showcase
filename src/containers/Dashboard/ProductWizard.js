@@ -155,6 +155,7 @@ class ProductWizard extends Component {
                     case 2:
                     case 4:
                         return <WizardEditTargeting targeting={targeting}
+                            categories={(productData && productData.categories) || []}
                             onFinish={values => onFinish({
                                 targeting: pick(values, ['age', 'gender']),
                                 productData: pick(values, ['name', 'description'])

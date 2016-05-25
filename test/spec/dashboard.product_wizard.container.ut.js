@@ -420,7 +420,8 @@ describe('ProductWizard', function() {
                     images: [
                         { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
                     ],
-                    price: 'Free'
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
                 };
                 props.targeting = {
                     age: [TARGETING.AGE.KIDS],
@@ -452,6 +453,28 @@ describe('ProductWizard', function() {
                     describe('targeting', function() {
                         it('should be the targeting', function() {
                             expect(targeting.props.targeting).toEqual(props.targeting);
+                        });
+                    });
+
+                    describe('categories', function() {
+                        it('should be the categories', function() {
+                            expect(targeting.props.categories).toEqual(props.productData.categories);
+                        });
+
+                        describe('if there is no productData', function() {
+                            beforeEach(function() {
+                                props.productData = null;
+                                component = findRenderedComponentWithType(renderIntoDocument(
+                                    <Provider store={store}>
+                                        <ProductWizard {...props} />
+                                    </Provider>
+                                ), ProductWizard.WrappedComponent);
+                                targeting = findRenderedComponentWithType(component, WizardEditTargeting);
+                            });
+
+                            it('should be an empty Array', function() {
+                                expect(targeting.props.categories).toEqual([]);
+                            });
                         });
                     });
 
@@ -494,7 +517,8 @@ describe('ProductWizard', function() {
                     images: [
                         { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
                     ],
-                    price: 'Free'
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
                 };
                 this.component = findRenderedComponentWithType(renderIntoDocument(
                     <Provider store={store}>
@@ -525,7 +549,8 @@ describe('ProductWizard', function() {
                     images: [
                         { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
                     ],
-                    price: 'Free'
+                    price: 'Free',
+                    categories: ['Games', 'Food & Drink']
                 };
                 component = findRenderedComponentWithType(renderIntoDocument(
                     <Provider store={store}>
