@@ -67,7 +67,7 @@ describe('EditProduct', function() {
                 },
                 targeting: {
                     demographics: {
-                        age: [TARGETING.AGE.ZERO_TO_TWELVE],
+                        age: [TARGETING.AGE.KIDS],
                         gender: [TARGETING.GENDER.MALE]
                     }
                 }

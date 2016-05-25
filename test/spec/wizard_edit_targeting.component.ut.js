@@ -28,6 +28,7 @@ describe('WizardEditTargeting', function() {
                     age: TARGETING.AGE.ALL,
                     gender: TARGETING.GENDER.ALL
                 },
+                categories: ['Food & Drink', 'Games'],
 
                 onFinish: jasmine.createSpy('onFinish()')
             };
@@ -63,12 +64,16 @@ describe('WizardEditTargeting', function() {
                 });
             });
 
+            it('should be passed the categories', function() {
+                expect(form.props.categories).toEqual(props.categories);
+            });
+
             describe('when submit', function() {
                 let values;
 
                 beforeEach(function() {
                     values = {
-                        age: TARGETING.AGE.THIRTEEN_PLUS,
+                        age: TARGETING.AGE.TEENS,
                         gender: TARGETING.AGE.MALE
                     };
 

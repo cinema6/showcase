@@ -3,6 +3,8 @@
 * *[v0.1.0-rc9]*
   * [FIX]: Fixed styles for pre-login screens, added logo
   * [FIX]: Added message for stats page when no stats available
+  * [FEATURE]: Show categories on targeting screen
+  * [FEATURE]: Added trial information modal
 
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles

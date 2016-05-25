@@ -4,6 +4,9 @@ import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import * as TARGETING from '../enums/targeting';
 import classnames from 'classnames';
+import _, { includes } from 'lodash';
+import MultiCheckbox from '../components/MultiCheckbox';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 function value(field) {
     return field.value || field.initialValue;
@@ -14,42 +17,123 @@ class EditTargeting extends Component {
         const {
             fields: { age, gender },
             handleSubmit,
-            submitting
+            submitting,
+
+            categories
         } = this.props;
 
         return (<form onSubmit={handleSubmit}>
             <div className="form-group">
+                <label htmlFor="adTitle-input">
+                    Categories&nbsp;
+                    <OverlayTrigger
+                        placement="bottom"
+                        overlay={<Tooltip>
+                            These are the categories you selected 
+                            for your app on the app store
+                        </Tooltip>}>
+                        <i className="fa fa-question-circle" aria-hidden="true" />
+                    </OverlayTrigger>
+                </label>
+                <div>
+                    <h4 className="app-categories">
+                        {categories.map(category => {
+                            const iconClass = `icon-${_(category.split(/\W/))
+                                .filter()
+                                .join('-')
+                                .toLowerCase()}`;
+
+                            return <span key={category} className="label label-primary">
+                                <span className={classnames('custom-icon', iconClass)} /> {category}
+                            </span>;
+                        })}
+                    </h4>
+                </div>
+            </div>
+            <div className="form-group">
                 <label htmlFor="targetAge-radio">Age</label>
-                <radiogroup className="btn-group btn-group-justified" data-toggle="buttons">
+                <div className="select-target-options
+                    hidden-sm hidden-xs" data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ALL
+                        active: includes(value(age), TARGETING.AGE.ALL)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ALL}
-                            checked={value(age) === TARGETING.AGE.ALL} /> Everyone
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.ZERO_TO_TWELVE
+                        active: includes(value(age), TARGETING.AGE.KIDS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.ZERO_TO_TWELVE}
-                            checked={value(age) === TARGETING.AGE.ZERO_TO_TWELVE} /> Under 12
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.KIDS}/> Kids
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.THIRTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.TEENS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.THIRTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.THIRTEEN_PLUS} /> 13+
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.TEENS} /> Teens
                     </label>
                     <label className={classnames('btn btn-default', {
-                        active: value(age) === TARGETING.AGE.EIGHTEEN_PLUS
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
                     })}>
-                        <input type="radio" {...age} value={TARGETING.AGE.EIGHTEEN_PLUS}
-                            checked={value(age) === TARGETING.AGE.EIGHTEEN_PLUS} /> 18+
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
                     </label>
-                </radiogroup>
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ADULTS} /> Adults
+                    </label>
+                </div>
+                {/*swapping mobile with vertical class*/}
+                <div className="select-target-options-vertical visible-sm visible-xs" 
+                    data-toggle="buttons">
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.ALL)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ALL} /> Everyone
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.KIDS)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.KIDS}/> Kids
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.TEENS)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.TEENS} /> Teens
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.YOUNG_ADULTS)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: includes(value(age), TARGETING.AGE.ADULTS)
+                    })}>
+                        <MultiCheckbox value={value(age)}
+                            onChange={age.onChange}
+                            option={TARGETING.AGE.ADULTS} /> Adults
+                    </label>
+                </div>
             </div>
             <div className="form-group">
                 <label htmlFor="targetGender-radio">Gender</label>
-                <radiogroup className="btn-group btn-group-justified" data-toggle="buttons">
+                <radiogroup className="select-target-options 
+                    hidden-sm hidden-xs" data-toggle="buttons">
                     <label className={classnames('btn btn-default', {
                         active: value(gender) === TARGETING.GENDER.ALL
                     })}>
@@ -60,13 +144,35 @@ class EditTargeting extends Component {
                         active: value(gender) === TARGETING.GENDER.FEMALE
                     })}>
                         <input type="radio" {...gender} value={TARGETING.GENDER.FEMALE}
-                            checked={value(gender) === TARGETING.GENDER.FEMALE} /> Female
+                            checked={value(gender) === TARGETING.GENDER.FEMALE} /> Women
                     </label>
                     <label className={classnames('btn btn-default', {
                         active: value(gender) === TARGETING.GENDER.MALE
                     })}>
                         <input type="radio" {...gender} value={TARGETING.GENDER.MALE}
-                            checked={value(gender) === TARGETING.GENDER.MALE} /> Male
+                            checked={value(gender) === TARGETING.GENDER.MALE} /> Men
+                    </label>
+                </radiogroup>
+                {/*swapping mobile with vertical class*/}
+                <radiogroup className="select-target-options-vertical visible-sm visible-xs" 
+                    data-toggle="buttons">
+                    <label className={classnames('btn btn-default', {
+                        active: value(gender) === TARGETING.GENDER.ALL
+                    })}>
+                        <input type="radio" {...gender} value={TARGETING.GENDER.ALL}
+                            checked={value(gender) === TARGETING.GENDER.ALL} /> Everyone
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: value(gender) === TARGETING.GENDER.FEMALE
+                    })}>
+                        <input type="radio" {...gender} value={TARGETING.GENDER.FEMALE}
+                            checked={value(gender) === TARGETING.GENDER.FEMALE} /> Women
+                    </label>
+                    <label className={classnames('btn btn-default', {
+                        active: value(gender) === TARGETING.GENDER.MALE
+                    })}>
+                        <input type="radio" {...gender} value={TARGETING.GENDER.MALE}
+                            checked={value(gender) === TARGETING.GENDER.MALE} /> Men
                     </label>
                 </radiogroup>
             </div>
@@ -85,7 +191,9 @@ EditTargeting.propTypes = {
         age: PropTypes.object.isRequired,
         gender: PropTypes.object.isRequired
     }).isRequired,
-    submitting: PropTypes.bool.isRequred,
+    submitting: PropTypes.bool.isRequired,
+
+    categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 
     handleSubmit: PropTypes.func.isRequired
 };

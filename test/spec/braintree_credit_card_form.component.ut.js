@@ -86,24 +86,24 @@ describe('BraintreeCreditCardForm', function() {
             });
 
             it('should setup braintree', function() {
-                expect(braintree.setup).toHaveBeenCalledWith(token, 'custom', {
+                expect(braintree.setup).toHaveBeenCalledWith(token, 'custom', jasmine.objectContaining({
                     id: component.id,
                     onReady: jasmine.any(Function),
-                    hostedFields: {
-                        number: {
+                    hostedFields: jasmine.objectContaining({
+                        number: jasmine.objectContaining({
                             selector: `[data-braintree="${component.id}_number"]`
-                        },
-                        cvv: {
+                        }),
+                        cvv: jasmine.objectContaining({
                             selector: `[data-braintree="${component.id}_cvv"]`
-                        },
-                        expirationDate: {
+                        }),
+                        expirationDate: jasmine.objectContaining({
                             selector: `[data-braintree="${component.id}_expirationDate"]`
-                        },
-                        postalCode: {
+                        }),
+                        postalCode: jasmine.objectContaining({
                             selector: `[data-braintree="${component.id}_postalCode"]`
-                        },
+                        }),
                         onFieldEvent: jasmine.any(Function)
-                    },
+                    }),
                     onError: jasmine.any(Function),
                     onPaymentMethodReceived: jasmine.any(Function),
                     paypal: {
@@ -111,7 +111,7 @@ describe('BraintreeCreditCardForm', function() {
                         headless: true,
                         onSuccess: jasmine.any(Function)
                     }
-                });
+                }));
             });
 
             describe('when braintree', function() {

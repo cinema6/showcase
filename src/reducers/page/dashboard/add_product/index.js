@@ -8,7 +8,7 @@ import {
 import * as TARGETING from '../../../../enums/targeting';
 
 const DEFAULT_TARGETING = {
-    age: TARGETING.AGE.ALL,
+    age: [TARGETING.AGE.ALL],
     gender: TARGETING.GENDER.ALL
 };
 

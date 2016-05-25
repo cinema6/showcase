@@ -13,12 +13,14 @@ import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
+import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
 import classnames from 'classnames';
 import { pick, includes, assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -73,6 +75,7 @@ class ProductWizard extends Component {
             productData,
             targeting,
             formValues,
+            promotions,
 
             page: { step }
         } = this.props;
@@ -150,8 +153,9 @@ class ProductWizard extends Component {
                         return <WizardEditProduct productData={productData}
                             onFinish={() => goToStep(2)} />;
                     case 2:
-                    case 3:
+                    case 4:
                         return <WizardEditTargeting targeting={targeting}
+                            categories={(productData && productData.categories) || []}
                             onFinish={values => onFinish({
                                 targeting: pick(values, ['age', 'gender']),
                                 productData: pick(values, ['name', 'description'])
@@ -159,8 +163,12 @@ class ProductWizard extends Component {
                     }
                 })()}
             </div>
-            {step === 3 && (
-                <WizardConfirmationModal getToken={getClientToken}
+            <WizardPlanInfoModal show={step === 3}
+                onClose={() => goToStep(2)}
+                onContinue={() => goToStep(4)} />
+            {step === 4 && (
+                <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
+                    getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({ payment, productData, targeting })} />
             )}
@@ -192,8 +200,11 @@ ProductWizard.propTypes = {
     }),
     targeting: PropTypes.shape({
         gender: PropTypes.string,
-        age: PropTypes.string
-    })
+        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
+    }),
+    promotions: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired
+    }).isRequired)
 };
 
 function mapStateToProps(state) {

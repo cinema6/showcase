@@ -5,7 +5,7 @@ import accountEmail from './account_email';
 import accountPassword from './account_password';
 import forgotPassword from './forgot_password';
 import resetPassword from './reset_password';
-import productWizard from './product_wizard';
+import productWizard, { plugin as productWizardPlugin } from './product_wizard';
 import signUp from './sign_up';
 
 export default reducer.plugin({
@@ -15,4 +15,6 @@ export default reducer.plugin({
     resetPassword,
     productWizard,
     signUp
+}).normalize({
+    productWizard: productWizardPlugin
 });

@@ -42,7 +42,7 @@ class WizardSearch extends Component {
 
         return (<div className="create-ad step-1 col-md-6 col-md-offset-3 col-xs-12 text-center
             animated fadeIn">
-            <h1 className="text-center">Promote your app</h1>
+            <h1 className="text-center">Find Your App on iTunes</h1>
             <form onSubmit={handleSubmit(this.onSubmit)}>
                 <div className="app-search form-group text-center">
                     <TokenTextField {...search}
@@ -51,7 +51,8 @@ class WizardSearch extends Component {
                         SuggestionComponent={AppSearchItem}
                         getSuggestions={text => findProducts(this.props.findProducts, text)}
                         value={search.value || []}/>
-                    <span id="helpBlock" className="help-block">Search for your app on iTunes</span>
+                    <span id="helpBlock" className="help-block">We’ll import your app details from 
+                        the store</span>
                     <br />
                     {error && !submitting && (<div className="alert alert-danger" role="alert">
                         <strong>Yikes...</strong> {error.response || error.message}.

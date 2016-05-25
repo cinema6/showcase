@@ -7,6 +7,7 @@ export default class WizardEditTargeting extends Component {
     render() {
         const {
             targeting,
+            categories,
 
             onFinish
         } = this.props;
@@ -22,18 +23,21 @@ export default class WizardEditTargeting extends Component {
             </div>);
         }
 
-        return (<div className="col-md-5 col-sm-6 col-xs-12 col-middle animated fadeIn">
+        return (<div className="col-md-6 col-sm-6 col-xs-12 col-middle animated fadeIn">
             <h1>Who is your app for?</h1>
-            <EditTargetingForm initialValues={targeting} onSubmit={values => onFinish(values)} />
+            <EditTargetingForm initialValues={targeting}
+                categories={categories}
+                onSubmit={values => onFinish(values)} />
         </div>);
     }
 }
 
 WizardEditTargeting.propTypes = {
     targeting: PropTypes.shape({
-        age: PropTypes.string.isRequired,
+        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
         gender: PropTypes.string.isRequired
     }),
+    categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 
     onFinish: PropTypes.func.isRequired
 };
