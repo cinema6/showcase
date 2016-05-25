@@ -24,6 +24,7 @@ import { getClientToken } from '../../src/actions/payment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
+import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
 
 const proxyquire = require('proxyquire');
 
@@ -73,6 +74,11 @@ describe('ProductWizard', function() {
             },
             '../../components/WizardEditTargeting': {
                 default: WizardEditTargeting,
+
+                __esModule: true
+            },
+            '../../components/WizardPlanInfoModal': {
+                default: WizardPlanInfoModal,
 
                 __esModule: true
             },
@@ -195,6 +201,44 @@ describe('ProductWizard', function() {
 
             it('should dispatch wizardDestroyed()', function() {
                 expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
+        describe('WizardPlanInfoModal', function() {
+            beforeEach(function() {
+                this.planInfoModal = findRenderedComponentWithType(component, WizardPlanInfoModal);
+            });
+
+            it('should exist', function() {
+                expect(this.planInfoModal).toEqual(jasmine.any(Object));
+            });
+
+            describe('props', function() {
+                describe('show', function() {
+                    it('should be false', function() {
+                        expect(this.planInfoModal.props.show).toBe(false);
+                    });
+                });
+
+                describe('onClose()', function() {
+                    beforeEach(function() {
+                        this.planInfoModal.props.onClose();
+                    });
+
+                    it('should go to step 2', function() {
+                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
+                    });
+                });
+
+                describe('onContinue()', function() {
+                    beforeEach(function() {
+                        this.planInfoModal.props.onContinue();
+                    });
+
+                    it('should go to step 4', function() {
+                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(4));
+                    });
+                });
             });
         });
 
@@ -438,9 +482,38 @@ describe('ProductWizard', function() {
 
         describe('on step 3', function() {
             beforeEach(function() {
+                props.page.step = 3;
+                props.targeting = {
+                    age: [TARGETING.AGE.KIDS],
+                    gender: TARGETING.GENDER.FEMALE
+                };
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
+                };
+                this.component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
+                this.planInfoModal = findRenderedComponentWithType(this.component, WizardPlanInfoModal);
+            });
+
+            it('should show the WizardPlanInfoModal', function() {
+                expect(this.planInfoModal.props.show).toBe(true);
+            });
+        });
+
+        describe('on step 4', function() {
+            beforeEach(function() {
                 store.dispatch.and.returnValue(new Promise(() => {}));
 
-                component.props.page.step = 3;
+                component.props.page.step = 4;
                 props.targeting = {
                     age: [TARGETING.AGE.KIDS],
                     gender: TARGETING.GENDER.FEMALE

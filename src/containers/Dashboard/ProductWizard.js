@@ -13,6 +13,7 @@ import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
+import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
 import classnames from 'classnames';
@@ -152,7 +153,7 @@ class ProductWizard extends Component {
                         return <WizardEditProduct productData={productData}
                             onFinish={() => goToStep(2)} />;
                     case 2:
-                    case 3:
+                    case 4:
                         return <WizardEditTargeting targeting={targeting}
                             onFinish={values => onFinish({
                                 targeting: pick(values, ['age', 'gender']),
@@ -161,7 +162,10 @@ class ProductWizard extends Component {
                     }
                 })()}
             </div>
-            {step === 3 && (
+            <WizardPlanInfoModal show={step === 3}
+                onClose={() => goToStep(2)}
+                onContinue={() => goToStep(4)} />
+            {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
@@ -216,71 +220,3 @@ export default connect(mapStateToProps, {
     getClientToken,
     createCampaign
 })(ProductWizard);
-{/* trial offer modal to show before payment screen
-        <div class="modal trial-modal fade" id="trialModal" tabindex="-1" role="dialog" 
-            aria-labelledby="mytrialModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title" id="myPaymentModal">Get 2 Weeks FREE Trial</h1>
-                        <p>and reach 1,000 people at no cost</p>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="row">
-                            <div class="trail-wrap">
-                                <div class="col-sm-12 col-xs-12 col-middle">
-                                    <div class="plan-info-box">
-                                        <div class="plan-box-header">
-                                            <h3>Start now</h3>
-                                        </div>
-                                        <div class="plan-box-content">
-                                            <div class="plan-box-item stacked-item">
-                                                <span>Reach</span>
-                                                <h2>2,000</h2>
-                                                <span>people each month</span>
-                                            </div>
-                                            <hr>
-                                            <div class="plan-box-item stacked-item">
-                                                <span>Only</span>
-                                                <h2>$49.99</h2>
-                                                <span>per month</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!--
-                             --><div class="col-sm-12 col-middle text-left">
-                                    <h3>We Give Your App The Royal Treatment With:</h4>
-                                    <ul class="checked-feature-list">
-                                        <li>
-                                            <h4>Stunning ad formats</h4>
-                                        </li>
-                                        <li>
-                                            <h4>Intelligent self-optimizing ads</h4>
-                                        </li>
-                                        <li>
-                                            <h4>Weekly performance reports</h4>
-                                        </li>
-                                        <li>
-                                            <h4>Insights into views, clicks, installs &amp; more
-                                            </h4>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="clearfix">
-                                </div>
-                                <div class="col-md-12 text-center">
-                                    <br>
-                                    <button type="submit" class="col-xs-12 btn btn-danger btn-lg">
-                                        Continue
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-*/}
