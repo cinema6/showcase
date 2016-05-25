@@ -5,6 +5,8 @@
   * [FIX]: Added message for stats page when no stats available
   * [FEATURE]: Show categories on targeting screen
   * [FEATURE]: Added trial information modal
+  * [FIX]: Added styles for braintree and preview modal
+  * [FEATURE]: Added ad preview loading animation
 
 * *[v0.1.0-rc8]*
   * [FIX]: Fixed resend confirmation page styles

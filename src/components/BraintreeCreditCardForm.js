@@ -84,28 +84,7 @@ export default class BraintreeCreditCardForm extends Component {
                         placeholder: 'Zip Code'
                     },
                     styles: {
-                        '.number': {
-                            'color': '#555555',
-                            'font-family': 'sans-serif',
-                            'font-size': '18px',
-                            'height': '40px',
-                            'line-height': '40px'
-                        },
-                        '.expirationDate': {
-                            'color': '#555555',
-                            'font-family': 'sans-serif',
-                            'font-size': '18px',
-                            'height': '40px',
-                            'line-height': '40px'
-                        },
-                        '.cvv': {
-                            'color': '#555555',
-                            'font-family': 'sans-serif',
-                            'font-size': '18px',
-                            'height': '40px',
-                            'line-height': '40px'
-                        },
-                        '.postalCode': {
+                        'input': {
                             'color': '#555555',
                             'font-family': 'sans-serif',
                             'font-size': '18px',

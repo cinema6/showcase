@@ -21,7 +21,7 @@ export default class AdPreviewModal extends Component {
             onClose
         } = this.props;
 
-        return (<Modal show={show} onHide={onClose}>
+        return (<Modal className="ad-preview-modal" show={show} onHide={onClose}>
             <Modal.Header closeButton>
             </Modal.Header>
             <Modal.Body>
