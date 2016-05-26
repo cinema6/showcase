@@ -11,6 +11,7 @@ describe('dashboardEditProductReducer()', function() {
     it('should return some initial state for the page', function() {
         expect(dashboardEditProductReducer(undefined, 'INIT')).toEqual({
             step: 1,
+            previewLoaded: true,
             loading: false
         });
     });
@@ -22,6 +23,7 @@ describe('dashboardEditProductReducer()', function() {
         beforeEach(function() {
             state = {
                 step: 1,
+                previewLoaded: true,
                 loading: false
             };
         });

@@ -7,7 +7,8 @@ import {
     productSelected,
     goToStep,
     wizardDestroyed,
-    createCampaign
+    createCampaign,
+    previewLoaded
 } from '../../actions/product_wizard';
 import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
@@ -29,7 +30,8 @@ const PREVIEW = {
     PLACEMENT_OPTIONS: {
         type: 'mobile-card',
         branding: 'showcase-app--interstitial'
-    }
+    },
+    LOAD_DELAY: 12500
 };
 
 class ProductWizard extends Component {
@@ -68,6 +70,7 @@ class ProductWizard extends Component {
             getClientToken,
             goToStep,
             createCampaign,
+            previewLoaded: previewWasLoaded,
 
             onFinish,
 
@@ -77,7 +80,7 @@ class ProductWizard extends Component {
             formValues,
             promotions,
 
-            page: { step }
+            page: { step, previewLoaded }
         } = this.props;
 
         return (<div className="container main-section">
@@ -142,7 +145,10 @@ class ProductWizard extends Component {
                         productData={productData && assign({}, productData, pick(formValues, [
                             'name', 'description'
                         ]))}
-                        factory={createInterstitialFactory}/>
+                        factory={createInterstitialFactory}
+                        showLoadingAnimation={!previewLoaded}
+                        loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
+                        onLoadComplete={() => previewWasLoaded()} />
                 )}
                 {(() => {
                     switch (step) {
@@ -183,11 +189,13 @@ ProductWizard.propTypes = {
     wizardDestroyed: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
+    previewLoaded: PropTypes.func.isRequired,
 
     formValues: PropTypes.object,
 
     page: PropTypes.shape({
-        step: PropTypes.number.isRequired
+        step: PropTypes.number.isRequired,
+        previewLoaded: PropTypes.bool.isRequired
     }).isRequired,
 
     loadData: PropTypes.func.isRequired,
@@ -219,5 +227,6 @@ export default connect(mapStateToProps, {
     goToStep,
     wizardDestroyed,
     getClientToken,
-    createCampaign
+    createCampaign,
+    previewLoaded
 })(ProductWizard);

@@ -14,6 +14,12 @@ import {
 
 const proxyquire = require('proxyquire');
 
+function wait(ticks = 5) {
+    return Array.apply([], new Array(ticks)).reduce(promise => {
+        return promise.then(() => {});
+    }, Promise.resolve());
+}
+
 describe('AdPreview', function() {
     class Renderer extends Component {
         constructor(props) {
@@ -152,7 +158,10 @@ describe('AdPreview', function() {
                 productData: this.productData,
                 placementOptions: this.placementOptions,
                 cardOptions: this.cardOptions,
-                factory: createInterstitialFactory
+                factory: createInterstitialFactory,
+                showLoadingAnimation: false,
+                loadDelay: 0,
+                onLoadComplete: jasmine.createSpy('onLoadComplete()')
             }} />
         );
         this.component = findRenderedComponentWithType(this.renderer, this.AdPreview);
@@ -170,12 +179,17 @@ describe('AdPreview', function() {
         expect(this.component.refs.root.tagName).toBe('DIV');
     });
 
+    it('should not render the loading animation', function() {
+        expect(this.component.refs.root.querySelector('[data-test="animation"]')).toBeNull();
+    });
+
     it('should create a Player', function() {
         expect(this.Player).toHaveBeenCalledWith('/api/public/players/mobile-card', defaults({
             mobileType: this.placementOptions.type,
             preview: true,
             container: 'showcase',
-            context: 'showcase'
+            context: 'showcase',
+            autoLaunch: false
         }, this.placementOptions), {
             experience: {
                 id: 'e-showcase_preview',
@@ -202,16 +216,156 @@ describe('AdPreview', function() {
         });
     });
 
+    describe('if there is a loadDelay', function() {
+        beforeEach(function() {
+            this.Player.calls.reset();
+            this.renderer = renderIntoDocument(
+                <Renderer AdPreview={this.AdPreview} childProps={{
+                    productData: this.productData,
+                    placementOptions: this.placementOptions,
+                    cardOptions: this.cardOptions,
+                    factory: createInterstitialFactory,
+                    showLoadingAnimation: true,
+                    loadDelay: 4000,
+                    onLoadComplete: jasmine.createSpy('onLoadComplete()')
+                }} />
+            );
+            this.component = findRenderedComponentWithType(this.renderer, this.AdPreview);
+            this.animation = this.component.refs.root.querySelector('[data-test="animation"]');
+        });
+
+        describe('when the player is bootstrapped', function() {
+            beforeEach(function(done) {
+                spyOn(this.component.player, 'show').and.returnValue((this.showDeferred = defer()).promise);
+
+                jasmine.clock().tick(2000);
+                this.bootstrapDeferred.resolve(this.component.player);
+                wait().then(done);
+            });
+
+            it('should not show the player', function() {
+                expect(this.component.player.show).not.toHaveBeenCalled();
+            });
+
+            describe('before the delay is reached', function() {
+                beforeEach(function(done) {
+                    this.renderer.state.childProps.onLoadComplete.calls.reset();
+
+                    jasmine.clock().tick(1999);
+                    wait().then(done);
+                });
+
+                it('should not show the player', function() {
+                    expect(this.component.player.show).not.toHaveBeenCalled();
+                });
+
+                it('should not hide the animation', function() {
+                    expect(this.animation.classList).not.toContain('hidden');
+                });
+
+                it('should not call onLoadComplete()', function() {
+                    expect(this.renderer.state.childProps.onLoadComplete).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('after the delay is reached', function() {
+                beforeEach(function(done) {
+                    this.renderer.state.childProps.onLoadComplete.calls.reset();
+
+                    jasmine.clock().tick(2000);
+                    wait().then(done);
+                });
+
+                it('should show the player', function() {
+                    expect(this.component.player.show).toHaveBeenCalledWith();
+                });
+
+                describe('when the player is shown', function() {
+                    beforeEach(function(done) {
+                        this.showDeferred.resolve(this.component.player);
+                        wait().then(done);
+                    });
+
+                    it('should hide the animation', function() {
+                        expect(this.animation.classList).toContain('hidden');
+                    });
+
+                    it('should call onLoadComplete()', function() {
+                        expect(this.renderer.state.childProps.onLoadComplete).toHaveBeenCalledWith();
+                    });
+                });
+            });
+        });
+    });
+
+    describe('if showLoadingAnimation is true', function() {
+        beforeEach(function() {
+            this.renderer.setState({
+                childProps: assign({}, this.renderer.state.childProps, {
+                    showLoadingAnimation: true
+                })
+            });
+            this.animation = this.component.refs.root.querySelector('[data-test="animation"]');
+        });
+
+        it('should render the loading animation', function() {
+            expect(this.animation).toEqual(jasmine.any(Object));
+        });
+
+        it('should show the animation', function() {
+            expect(this.animation.classList).not.toContain('hidden');
+        });
+
+        describe('when the player is bootstrapped', function() {
+            beforeEach(function(done) {
+                spyOn(this.component.player, 'show').and.returnValue((this.showDeferred = defer()).promise);
+
+                this.bootstrapDeferred.resolve(this.component.player);
+                wait().then(done);
+            });
+
+            it('should show the player', function() {
+                expect(this.component.player.show).toHaveBeenCalledWith();
+            });
+
+            it('should not hide the animation', function() {
+                expect(this.animation.classList).not.toContain('hidden');
+            });
+
+            describe('when the player is shown', function() {
+                beforeEach(function(done) {
+                    this.showDeferred.resolve(this.component.player);
+                    wait().then(done);
+                });
+
+                it('should hide the animation', function() {
+                    expect(this.animation.classList).toContain('hidden');
+                });
+            });
+        });
+    });
+
     describe('when the player is bootstraped', function() {
         beforeEach(function(done) {
-            spyOn(this.component.player, 'show').and.returnValue(Promise.resolve(this.component.player));
+            spyOn(this.component.player, 'show').and.returnValue((this.showDeferred = defer()).promise);
 
             this.bootstrapDeferred.resolve(this.component.player);
-            Promise.resolve().then(done);
+            wait().then(done);
         });
 
         it('should show the player', function() {
             expect(this.component.player.show).toHaveBeenCalledWith();
+        });
+
+        describe('when the player is shown', function() {
+            beforeEach(function(done) {
+                this.showDeferred.resolve(this.component.player);
+                wait().then(done);
+            });
+
+            it('should call onLoadComplete()', function() {
+                expect(this.renderer.state.childProps.onLoadComplete).toHaveBeenCalledWith();
+            });
         });
     });
 
@@ -242,7 +396,8 @@ describe('AdPreview', function() {
                 mobileType: this.placementOptions.type,
                 preview: true,
                 container: 'showcase',
-                context: 'showcase'
+                context: 'showcase',
+                autoLaunch: false
             }, this.placementOptions), {
                 experience: {
                     id: 'e-showcase_preview',
@@ -270,7 +425,7 @@ describe('AdPreview', function() {
                 spyOn(this.component.player, 'show').and.returnValue(Promise.resolve(this.component.player));
 
                 this.bootstrapDeferred.resolve(this.component.player);
-                Promise.resolve().then(done);
+                wait().then(done);
             });
 
             it('should show the player', function() {
@@ -323,14 +478,6 @@ describe('AdPreview', function() {
 
         it('should not create a new Player', function() {
             expect(this.Player).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('methods:', function() {
-        describe('shouldComponentUpdate()', function() {
-            it('should return false', function() {
-                expect(this.component.shouldComponentUpdate()).toBe(false);
-            });
         });
     });
 
