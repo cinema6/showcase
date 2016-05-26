@@ -216,6 +216,29 @@ describe('AdPreview', function() {
         });
     });
 
+    describe('if there is an apiRoot', function() {
+        beforeEach(function() {
+            this.Player.calls.reset();
+            this.renderer = renderIntoDocument(
+                <Renderer AdPreview={this.AdPreview} childProps={{
+                    productData: this.productData,
+                    placementOptions: this.placementOptions,
+                    cardOptions: this.cardOptions,
+                    factory: createInterstitialFactory,
+                    showLoadingAnimation: true,
+                    loadDelay: 4000,
+                    onLoadComplete: jasmine.createSpy('onLoadComplete()'),
+                    apiRoot: 'https://dev.reelcontent.com/'
+                }} />
+            );
+            this.component = findRenderedComponentWithType(this.renderer, this.AdPreview);
+        });
+
+        it('should be used when creating the Player', function() {
+            expect(this.Player).toHaveBeenCalledWith('https://dev.reelcontent.com/api/public/players/mobile-card', jasmine.any(Object), jasmine.any(Object));
+        });
+    });
+
     describe('if there is a loadDelay', function() {
         beforeEach(function() {
             this.Player.calls.reset();

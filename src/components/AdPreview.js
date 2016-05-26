@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Player } from 'c6embed';
 import { defaults, debounce, isEqual, noop } from 'lodash';
 import classnames from 'classnames';
+import { resolve as resolveURL } from 'url';
 
 const PLAYER_STYLES = {
     position: 'absolute',
@@ -35,6 +36,7 @@ export default class AdPreview extends Component {
             player
         } = this;
         const {
+            apiRoot,
             cardOptions,
             placementOptions,
             productData,
@@ -48,7 +50,7 @@ export default class AdPreview extends Component {
 
         if (!productData) { return this.player = null; }
 
-        this.player = new Player(`/api/public/players/${type}`, defaults({
+        this.player = new Player(resolveURL(apiRoot, `/api/public/players/${type}`), defaults({
             mobileType: type,
             preview: true,
             container: 'showcase',
@@ -135,11 +137,13 @@ AdPreview.propTypes = {
     productData: PropTypes.object,
     factory: PropTypes.func.isRequired,
 
+    apiRoot: PropTypes.string.isRequired,
     loadDelay: PropTypes.number.isRequired,
     showLoadingAnimation: PropTypes.bool.isRequired,
     onLoadComplete: PropTypes.func.isRequired
 };
 AdPreview.defaultProps = {
+    apiRoot: '/',
     showLoadingAnimation: false,
     onLoadComplete: noop,
     loadDelay: 0
