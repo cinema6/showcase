@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.2.0-rc1]*
+  * [FEATURE]: Add a loading animation in the ad preview
+
 ## v0.1.0 (May 25, 2016)
 * *[v0.1.0-rc10]*
   * Give new users a company

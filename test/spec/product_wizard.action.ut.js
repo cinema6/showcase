@@ -9,7 +9,8 @@ import {
     CREATE_CAMPAIGN,
     WIZARD_COMPLETE,
     LOAD_CAMPAIGN,
-    UPDATE_CAMPAIGN
+    UPDATE_CAMPAIGN,
+    PREVIEW_LOADED
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -29,7 +30,7 @@ const proxyquire = require('proxyquire');
 describe('product wizard actions', function() {
     let collateralActions, notificationActions;
     let actions;
-    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign, loadCampaign, updateCampaign;
+    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign, loadCampaign, updateCampaign, previewLoaded;
 
     beforeEach(function() {
         notificationActions = {
@@ -68,6 +69,7 @@ describe('product wizard actions', function() {
         createCampaign = actions.createCampaign;
         loadCampaign = actions.loadCampaign;
         updateCampaign = actions.updateCampaign;
+        previewLoaded = actions.previewLoaded;
     });
 
     describe('updateCampaign({ id, productData, targeting })', function() {
@@ -814,6 +816,19 @@ describe('product wizard actions', function() {
 
         it('should return an FSA', function() {
             expect(result).toEqual(createAction(WIZARD_DESTROYED)());
+        });
+    });
+
+    describe('previewLoaded()', function() {
+        beforeEach(function() {
+            this.result = previewLoaded();
+        });
+
+        it('should return an FSA', function() {
+            expect(this.result).toEqual({
+                type: PREVIEW_LOADED,
+                payload: undefined
+            });
         });
     });
 });

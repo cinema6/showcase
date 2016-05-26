@@ -10,7 +10,15 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
-import { productSelected, productEdited, targetingEdited, goToStep, wizardDestroyed, createCampaign } from '../../src/actions/product_wizard';
+import {
+    productSelected,
+    productEdited,
+    targetingEdited,
+    goToStep,
+    wizardDestroyed,
+    createCampaign,
+    previewLoaded
+} from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
 import WizardEditTargeting from '../../src/components/WizardEditTargeting';
@@ -143,6 +151,7 @@ describe('ProductWizard', function() {
                 page: {
                     step: 0,
                     productData: null,
+                    previewLoaded: false,
                     targeting: {
                         age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
@@ -375,6 +384,49 @@ describe('ProductWizard', function() {
                     describe('factory', function() {
                         it('should be the interstitial factory', function() {
                             expect(preview.props.factory).toBe(createInterstitialFactory);
+                        });
+                    });
+
+                    describe('showLoadingAnimation', function() {
+                        it('should be true', function() {
+                            expect(preview.props.showLoadingAnimation).toBe(true);
+                        });
+                    });
+
+                    describe('loadDelay', function() {
+                        it('should be some number above 0', function() {
+                            expect(preview.props.loadDelay).toBeGreaterThan(0);
+                        });
+                    });
+
+                    describe('onLoadComplete()', function() {
+                        beforeEach(function() {
+                            store.dispatch.calls.reset();
+
+                            preview.props.onLoadComplete();
+                        });
+
+                        it('should dispatch() previewLoaded()', function() {
+                            expect(store.dispatch).toHaveBeenCalledWith(previewLoaded());
+                        });
+                    });
+
+                    describe('when the preview is loaded', function() {
+                        beforeEach(function() {
+                            component.props.page.previewLoaded = true;
+                            component.forceUpdate();
+                        });
+
+                        describe('showLoadingAnimation', function() {
+                            it('should be false', function() {
+                                expect(preview.props.showLoadingAnimation).toBe(false);
+                            });
+                        });
+
+                        describe('loadDelay', function() {
+                            it('should be 0', function() {
+                                expect(preview.props.loadDelay).toBe(0);
+                            });
                         });
                     });
                 });

@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Player } from 'c6embed';
-import { defaults, debounce, isEqual } from 'lodash';
+import { defaults, debounce, isEqual, noop } from 'lodash';
+import classnames from 'classnames';
+import { resolve as resolveURL } from 'url';
 
 const PLAYER_STYLES = {
     position: 'absolute',
@@ -11,9 +13,19 @@ const PLAYER_STYLES = {
     zIndex: 'auto'
 };
 
+function delay(time) {
+    if (!time) { return Promise.resolve(); }
+
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 export default class AdPreview extends Component {
     constructor() {
         super(...arguments);
+
+        this.state = {
+            loading: false
+        };
 
         this.createPlayerDebounced = debounce(this.createPlayer.bind(this), 250);
     }
@@ -24,6 +36,7 @@ export default class AdPreview extends Component {
             player
         } = this;
         const {
+            apiRoot,
             cardOptions,
             placementOptions,
             productData,
@@ -37,11 +50,12 @@ export default class AdPreview extends Component {
 
         if (!productData) { return this.player = null; }
 
-        this.player = new Player(`/api/public/players/${type}`, defaults({
+        this.player = new Player(resolveURL(apiRoot, `/api/public/players/${type}`), defaults({
             mobileType: type,
             preview: true,
             container: 'showcase',
-            context: 'showcase'
+            context: 'showcase',
+            autoLaunch: false
         }, placementOptions), {
             experience: {
                 id: 'e-showcase_preview',
@@ -55,7 +69,14 @@ export default class AdPreview extends Component {
             }
         });
 
-        this.player.bootstrap(root, PLAYER_STYLES).then(player => player.show());
+        Promise.all([
+            this.player.bootstrap(root, PLAYER_STYLES),
+            delay(this.props.loadDelay)
+        ]).then(([player]) => player.show())
+            .then(() => this.setState({ loading: false }))
+            .then(() => this.props.onLoadComplete());
+
+        this.setState({ loading: true });
     }
 
     componentDidMount() {
@@ -69,30 +90,38 @@ export default class AdPreview extends Component {
     }
 
     render() {
+        const {
+            showLoadingAnimation
+        } = this.props;
+        const {
+            loading
+        } = this.state;
+
         return (<div
-            className="create-ad step-2 col-md-6 col-sm-6 col-xs-12 col-middle text-center">
+            className="create-ad step-2 col-md-6 col-sm-6 col-xs-12 col-middle text-center"
+        >
             <div className="phone-wrap">
                 <div ref="root" className="phone-frame">
-                {/*add hidden class to the div below when iframe loads*/}
-                    <div className="text-animation-wrap hidden">
-                        <h3 className="light-text">Generating Preview</h3>
-                        <div className="animation-container">
-                            <div className="animate-content">
-                                <p className="frame-1">Connecting to app store...</p>
-                                <p className="frame-2">Collecting information...</p>
-                                <p className="frame-3">Importing Screenshots...</p>
-                                <p className="frame-4"><span>All set!</span></p>
+                    {showLoadingAnimation && (
+                        <div data-test="animation"
+                            className={classnames('text-animation-wrap', {
+                                hidden: !loading
+                            })}>
+                            <h3 className="light-text">Generating Preview</h3>
+                            <div className="animation-container">
+                                <div className="animate-content">
+                                    <p className="frame-1">Connecting to app store...</p>
+                                    <p className="frame-2">Collecting information...</p>
+                                    <p className="frame-3">Importing Screenshots...</p>
+                                    <p className="frame-4"><span>All set!</span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
                 <p>This is how your ad will appear</p>
             </div>
         </div>);
-    }
-
-    shouldComponentUpdate() {
-        return false;
     }
 
     componentWillUnmount() {
@@ -106,5 +135,16 @@ AdPreview.propTypes = {
         type: PropTypes.string.isRequired
     }).isRequired,
     productData: PropTypes.object,
-    factory: PropTypes.func.isRequired
+    factory: PropTypes.func.isRequired,
+
+    apiRoot: PropTypes.string.isRequired,
+    loadDelay: PropTypes.number.isRequired,
+    showLoadingAnimation: PropTypes.bool.isRequired,
+    onLoadComplete: PropTypes.func.isRequired
+};
+AdPreview.defaultProps = {
+    apiRoot: '/',
+    showLoadingAnimation: false,
+    onLoadComplete: noop,
+    loadDelay: 0
 };

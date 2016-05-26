@@ -146,3 +146,6 @@ export const updateCampaign = createThunk(({ id, productData, targeting }) => {
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     };
 });
+
+export const PREVIEW_LOADED = prefix('PREVIEW_LOADED');
+export const previewLoaded = createAction(PREVIEW_LOADED);

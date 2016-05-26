@@ -7,6 +7,7 @@ import {
 
 const INITIAL_STATE = {
     step: 1,
+    previewLoaded: true,
     loading: false
 };
 
