@@ -1,5 +1,6 @@
 # Showcase
 
+## v0.2.0 (May 27, 2016)
 * *[v0.2.0-rc1]*
   * [FEATURE]: Add a loading animation in the ad preview
   * [FIX]: Make sure the user can see their free trial length after
@@ -8,6 +9,7 @@
     end up not being set
   * [FEATURE]: Add support for free trials that do not require a credit
     card
+* *[/v0.2.0-rc1]*
 
 ## v0.1.0 (May 25, 2016)
 * *[v0.1.0-rc10]*
