@@ -29,7 +29,7 @@ export default class NotificationItem extends Component {
 NotificationItem.propTypes = {
     notification: PropTypes.shape({
         type: PropTypes.string.isRequired,
-        message: PropTypes.string.isRequired
+        message: PropTypes.node.isRequired
     }).isRequired,
 
     onClose: PropTypes.func.isRequired

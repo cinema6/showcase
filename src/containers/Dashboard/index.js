@@ -2,12 +2,20 @@ import React, { PropTypes, Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { pageify } from '../../utils/page';
-import { logoutUser, toggleNav } from '../../actions/dashboard';
+import {
+    logoutUser,
+    toggleNav,
+    checkIfPaymentMethodRequired
+} from '../../actions/dashboard';
 import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
 
 class Dashboard extends Component {
+    componentDidMount() {
+        this.props.checkIfPaymentMethodRequired();
+    }
+
     render() {
         const {
             children,
@@ -90,7 +98,8 @@ Dashboard.propTypes = {
     }).isRequired,
 
     logoutUser: PropTypes.func.isRequired,
-    toggleNav: PropTypes.func.isRequired
+    toggleNav: PropTypes.func.isRequired,
+    checkIfPaymentMethodRequired: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -105,6 +114,7 @@ export default compose(
     pageify({ path: 'dashboard' }),
     connect(mapStateToProps, {
         logoutUser,
-        toggleNav
+        toggleNav,
+        checkIfPaymentMethodRequired
     })
 )(Dashboard);
