@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import classnames from 'classnames';
 
 export default class WizardPlanInfoModal extends Component {
     render() {
         const {
             show,
+            actionPending,
 
             onClose,
             onContinue
@@ -61,7 +63,10 @@ export default class WizardPlanInfoModal extends Component {
                         <div className="col-md-12 text-center">
                             <br />
                             <Button onClick={onContinue}
-                                className="col-xs-12"
+                                disabled={actionPending}
+                                className={classnames('col-xs-12', {
+                                    'btn-waiting': actionPending
+                                })}
                                 bsSize="lg"
                                 bsStyle="danger">
                                 Continue
@@ -75,7 +80,11 @@ export default class WizardPlanInfoModal extends Component {
 }
 WizardPlanInfoModal.propTypes = {
     show: PropTypes.bool.isRequired,
+    actionPending: PropTypes.bool.isRequired,
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired
+};
+WizardPlanInfoModal.defaultProps = {
+    actionPending: false
 };

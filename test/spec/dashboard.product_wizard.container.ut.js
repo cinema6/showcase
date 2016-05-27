@@ -17,7 +17,8 @@ import {
     goToStep,
     wizardDestroyed,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 } from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
@@ -53,6 +54,7 @@ describe('ProductWizard', function() {
             goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
             wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
             createCampaign: jasmine.createSpy('createCampaign()').and.callFake(createCampaign),
+            collectPayment,
 
             __esModule: true
         };
@@ -152,6 +154,7 @@ describe('ProductWizard', function() {
                     step: 0,
                     productData: null,
                     previewLoaded: false,
+                    checkingIfPaymentRequired: false,
                     targeting: {
                         age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
@@ -229,6 +232,12 @@ describe('ProductWizard', function() {
                     });
                 });
 
+                describe('actionPending', function() {
+                    it('should be the value of page.checkingIfPaymentRequired', function() {
+                        expect(this.planInfoModal.props.actionPending).toBe(props.page.checkingIfPaymentRequired);
+                    });
+                });
+
                 describe('onClose()', function() {
                     beforeEach(function() {
                         this.planInfoModal.props.onClose();
@@ -236,16 +245,6 @@ describe('ProductWizard', function() {
 
                     it('should go to step 2', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
-                    });
-                });
-
-                describe('onContinue()', function() {
-                    beforeEach(function() {
-                        this.planInfoModal.props.onContinue();
-                    });
-
-                    it('should go to step 4', function() {
-                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(4));
                     });
                 });
             });
@@ -582,6 +581,18 @@ describe('ProductWizard', function() {
 
             it('should show the WizardPlanInfoModal', function() {
                 expect(this.planInfoModal.props.show).toBe(true);
+            });
+
+            describe('the WizardPlanInfoModal onContinue() prop', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    this.planInfoModal.props.onContinue();
+                });
+
+                it('should dispatch() collectPayment()', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(collectPayment({ productData: props.productData, targeting: props.targeting }));
+                });
             });
         });
 

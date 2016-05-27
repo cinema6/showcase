@@ -5,7 +5,8 @@ import {
     PRODUCT_SELECTED,
     WIZARD_COMPLETE,
     GO_TO_STEP,
-    PREVIEW_LOADED
+    PREVIEW_LOADED,
+    COLLECT_PAYMENT
 } from '../../src/actions/product_wizard';
 import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
@@ -15,6 +16,7 @@ describe('dashboardAddProductReducer()', function() {
         expect(dashboardAddProductReducer(undefined, 'INIT')).toEqual({
             step: 0,
             previewLoaded: false,
+            checkingIfPaymentRequired: false,
             productData: null,
             targeting: {
                 age: [TARGETING.AGE.ALL],
@@ -32,6 +34,7 @@ describe('dashboardAddProductReducer()', function() {
                 step: 0,
                 productData: null,
                 previewLoaded: false,
+                checkingIfPaymentRequired: false,
                 targeting: {
                     age: [TARGETING.AGE.ALL],
                     gender: TARGETING.GENDER.ALL
@@ -168,6 +171,50 @@ describe('dashboardAddProductReducer()', function() {
             it('should set previewLoaded to true', function() {
                 expect(this.newState).toEqual(assign({}, state, {
                     previewLoaded: true
+                }));
+            });
+        });
+
+        describe(`${COLLECT_PAYMENT}_PENDING`, function() {
+            beforeEach(function() {
+                this.action = createAction(`${COLLECT_PAYMENT}_PENDING`)();
+
+                this.newState = dashboardAddProductReducer(state, this.action);
+            });
+
+            it('should set checkingIfPaymentRequired to true', function() {
+                expect(this.newState).toEqual(assign({}, state, {
+                    checkingIfPaymentRequired: true
+                }));
+            });
+        });
+
+        describe(`${COLLECT_PAYMENT}_FULFILLED`, function() {
+            beforeEach(function() {
+                this.action = createAction(`${COLLECT_PAYMENT}_FULFILLED`)();
+                state.checkingIfPaymentRequired = true;
+
+                this.newState = dashboardAddProductReducer(state, this.action);
+            });
+
+            it('should set checkingIfPaymentRequired to false', function() {
+                expect(this.newState).toEqual(assign({}, state, {
+                    checkingIfPaymentRequired: false
+                }));
+            });
+        });
+
+        describe(`${COLLECT_PAYMENT}_REJECTED`, function() {
+            beforeEach(function() {
+                this.action = createAction(`${COLLECT_PAYMENT}_REJECTED`)();
+                state.checkingIfPaymentRequired = true;
+
+                this.newState = dashboardAddProductReducer(state, this.action);
+            });
+
+            it('should make checkingIfPaymentRequired to false', function() {
+                expect(this.newState).toEqual(assign({}, state, {
+                    checkingIfPaymentRequired: false
                 }));
             });
         });

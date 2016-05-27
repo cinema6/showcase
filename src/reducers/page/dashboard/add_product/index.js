@@ -4,7 +4,8 @@ import {
     PRODUCT_SELECTED,
     GO_TO_STEP,
     WIZARD_COMPLETE,
-    PREVIEW_LOADED
+    PREVIEW_LOADED,
+    COLLECT_PAYMENT
 } from '../../../../actions/product_wizard';
 import * as TARGETING from '../../../../enums/targeting';
 
@@ -16,6 +17,7 @@ const DEFAULT_TARGETING = {
 const INITIAL_STATE = {
     step: 0,
     previewLoaded: false,
+    checkingIfPaymentRequired: false,
     productData: null,
     targeting: DEFAULT_TARGETING
 };
@@ -30,12 +32,25 @@ export default handleActions({
         step: 1,
         productData
     }),
+
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
+
     [WIZARD_COMPLETE]: (state, { payload: { productData, targeting } }) => assign({}, state, {
         productData: assign({}, state.productData, productData),
         targeting: defaults({}, targeting, DEFAULT_TARGETING)
     }),
+
     [PREVIEW_LOADED]: state => assign({}, state, {
         previewLoaded: true
+    }),
+
+    [`${COLLECT_PAYMENT}_PENDING`]: state => assign({}, state, {
+        checkingIfPaymentRequired: true
+    }),
+    [`${COLLECT_PAYMENT}_FULFILLED`]: state => assign({}, state, {
+        checkingIfPaymentRequired: false
+    }),
+    [`${COLLECT_PAYMENT}_REJECTED`]: state => assign({}, state, {
+        checkingIfPaymentRequired: false
     })
 }, INITIAL_STATE);

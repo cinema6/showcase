@@ -10,7 +10,8 @@ import {
     WIZARD_COMPLETE,
     LOAD_CAMPAIGN,
     UPDATE_CAMPAIGN,
-    PREVIEW_LOADED
+    PREVIEW_LOADED,
+    COLLECT_PAYMENT
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -24,6 +25,11 @@ import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import { campaignFromData } from '../../src/utils/campaign';
 import { push, goBack } from 'react-router-redux';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import { collectPayment } from '../../src/actions/product_wizard';
+import { dispatch } from '../helpers/stubs';
+import { getPromotions, getOrg } from '../../src/actions/session';
+import { assign } from 'lodash';
+import moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
@@ -58,6 +64,12 @@ describe('product wizard actions', function() {
             },
             './advertiser': {
                 default: advertiser,
+
+                __esModule: true
+            },
+            './session': {
+                getPromotions,
+                getOrg,
 
                 __esModule: true
             }
@@ -714,6 +726,10 @@ describe('product wizard actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(paymentMethod.list.calls.mostRecent().returnValue);
             });
 
+            it('should dispatch WIZARD_COMPLETE', function() {
+                expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
+            });
+
             describe('when the paymentMethods are fetched', function() {
                 describe('if there is one', function() {
                     beforeEach(function(done) {
@@ -734,10 +750,6 @@ describe('product wizard actions', function() {
                         setTimeout(done);
                     });
 
-                    it('should dispatch WIZARD_COMPLETE', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
-                    });
-
                     it('should dispatch createCampaign()', function() {
                         expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
                     });
@@ -749,10 +761,6 @@ describe('product wizard actions', function() {
                         dispatchDeferred.resolve([]);
 
                         setTimeout(done);
-                    });
-
-                    it('should dispatch WIZARD_COMPLETE', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
                     });
 
                     it('should dispatch GO_TO_STEP', function() {
@@ -779,10 +787,6 @@ describe('product wizard actions', function() {
 
                     thunk(dispatch, getState).then(success, failure);
                     setTimeout(done);
-                });
-
-                it('should dispatch WIZARD_COMPLETE', function() {
-                    expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
                 });
 
                 it('should dispatch createCampaign()', function() {
@@ -828,6 +832,385 @@ describe('product wizard actions', function() {
             expect(this.result).toEqual({
                 type: PREVIEW_LOADED,
                 payload: undefined
+            });
+        });
+    });
+
+    describe('collectPayment({ productData, targeting })', function() {
+        beforeEach(function() {
+            createCampaign = require('../../src/actions/product_wizard').createCampaign;
+            this.productData = {
+                name: 'My Awesome App',
+                description: 'It really is the best.'
+            };
+            this.targeting = {
+                age: [TARGETING.AGE.ALL],
+                gender: []
+            };
+            this.thunk = getThunk(collectPayment({ productData: this.productData, targeting: this.targeting }));
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.state = {
+                    db: {
+                        promotion: {},
+                        org: {}
+                    }
+                };
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.returnValue(this.state);
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                setTimeout(done);
+            });
+
+            it('should dispatch COLLECT_PAYMENT', function() {
+                expect(this.dispatch).toHaveBeenCalledWith({
+                    type: COLLECT_PAYMENT,
+                    payload: jasmine.any(Promise)
+                });
+            });
+
+            it('should get the user\'s promotions', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getPromotions());
+            });
+
+            describe('if the promotions cannot be fetched', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('I failed!');
+                    this.dispatch.getDeferred(getPromotions()).reject(this.reason);
+                    setTimeout(done);
+                });
+
+                it('should show a notification', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(notify({
+                        type: NOTIFICATION_TYPE.DANGER,
+                        message: `Unexpected error: ${this.reason.message}`,
+                        time: 10000
+                    }));
+                });
+
+                it('should reject the promise', function() {
+                    expect(this.failure).toHaveBeenCalledWith(this.reason);
+                });
+            });
+
+            describe('if the user has no promotions', function() {
+                beforeEach(function(done) {
+                    this.promotions = [];
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
+                    setTimeout(done);
+                });
+
+                it('should go to step 4', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(goToStep(4));
+                });
+
+                it('should fulfill with undefined', function() {
+                    expect(this.success).toHaveBeenCalledWith(undefined);
+                });
+            });
+
+            describe('if the user has a promotion that does not require a payment method', function() {
+                beforeEach(function(done) {
+                    this.promotions = [
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 30,
+                                paymentMethodRequired: true
+                            }
+                        },
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 10,
+                                paymentMethodRequired: false
+                            }
+                        },
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 11,
+                                paymentMethodRequired: true
+                            }
+                        }
+                    ];
+                    this.state = assign({}, this.state, {
+                        db: assign({}, this.state.db, {
+                            promotion: assign({}, this.state.db.promotion, this.promotions.reduce((result, promotion) => {
+                                result[promotion.id] = promotion;
+                                return result;
+                            }, {}))
+                        })
+                    });
+                    this.getState.and.returnValue(this.state);
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
+                    setTimeout(done);
+                });
+
+                it('should not go to a different page', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(goToStep(jasmine.anything()));
+                });
+
+                it('should fetch the org', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(getOrg());
+                });
+
+                describe('if the org cannot be fetched', function() {
+                    beforeEach(function(done) {
+                        this.reason = new Error('I failed!');
+                        this.dispatch.getDeferred(getOrg()).reject(this.reason);
+                        setTimeout(done);
+                    });
+
+                    it('should show a notification', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION_TYPE.DANGER,
+                            message: `Unexpected error: ${this.reason.message}`,
+                            time: 10000
+                        }));
+                    });
+
+                    it('should reject the promise', function() {
+                        expect(this.failure).toHaveBeenCalledWith(this.reason);
+                    });
+                });
+
+                describe('if the org has no payment plan', function() {
+                    beforeEach(function(done) {
+                        this.org = {
+                            id: `o-${createUuid()}`
+                        };
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        setTimeout(done);
+                    });
+
+                    it('should not ask for a payment method', function() {
+                        expect(this.dispatch).not.toHaveBeenCalledWith(goToStep(jasmine.anything()));
+                    });
+
+                    it('should create the campaign', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting }));
+                    });
+
+                    describe('if the campaign cannot be created', function() {
+                        beforeEach(function(done) {
+                            this.reason = new Error('I failed!');
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).reject(this.reason);
+                            setTimeout(done);
+                        });
+
+                        it('should show a notification', function() {
+                            expect(this.dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION_TYPE.DANGER,
+                                message: `Unexpected error: ${this.reason.message}`,
+                                time: 10000
+                            }));
+                        });
+
+                        it('should reject the promise', function() {
+                            expect(this.failure).toHaveBeenCalledWith(this.reason);
+                        });
+                    });
+
+                    describe('when the campaign is created', function() {
+                        beforeEach(function(done) {
+                            this.campaign = {
+                                id: `cam-${createUuid()}`,
+                                product: this.productData
+                            };
+                            this.state = assign({}, this.state, {
+                                db: assign({}, this.state.db, {
+                                    campaign: assign({}, this.state.db.campaign, {
+                                        [this.campaign.id]: this.campaign
+                                    })
+                                })
+                            });
+                            this.getState.and.returnValue(this.state);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).resolve([this.campaign.id]);
+                            setTimeout(done);
+                        });
+
+                        it('should fulfill with undefined', function() {
+                            expect(this.success).toHaveBeenCalledWith(undefined);
+                        });
+                    });
+                });
+
+                describe('if the org has a paymentPlanStart in the future', function() {
+                    beforeEach(function(done) {
+                        this.org = {
+                            id: `o-${createUuid()}`,
+                            paymentPlanStart: moment().add(2, 'days').format()
+                        };
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        setTimeout(done);
+                    });
+
+                    it('should not ask for a payment method', function() {
+                        expect(this.dispatch).not.toHaveBeenCalledWith(goToStep(jasmine.anything()));
+                    });
+
+                    it('should create the campaign', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting }));
+                    });
+
+                    describe('if the campaign cannot be created', function() {
+                        beforeEach(function(done) {
+                            this.reason = new Error('I failed!');
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).reject(this.reason);
+                            setTimeout(done);
+                        });
+
+                        it('should show a notification', function() {
+                            expect(this.dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION_TYPE.DANGER,
+                                message: `Unexpected error: ${this.reason.message}`,
+                                time: 10000
+                            }));
+                        });
+
+                        it('should reject the promise', function() {
+                            expect(this.failure).toHaveBeenCalledWith(this.reason);
+                        });
+                    });
+
+                    describe('when the campaign is created', function() {
+                        beforeEach(function(done) {
+                            this.campaign = {
+                                id: `cam-${createUuid()}`,
+                                product: this.productData
+                            };
+                            this.state = assign({}, this.state, {
+                                db: assign({}, this.state.db, {
+                                    campaign: assign({}, this.state.db.campaign, {
+                                        [this.campaign.id]: this.campaign
+                                    })
+                                })
+                            });
+                            this.getState.and.returnValue(this.state);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).resolve([this.campaign.id]);
+                            setTimeout(done);
+                        });
+
+                        it('should fulfill with undefined', function() {
+                            expect(this.success).toHaveBeenCalledWith(undefined);
+                        });
+                    });
+                });
+
+                describe('if the org has a paymentPlanStart in the past', function() {
+                    beforeEach(function(done) {
+                        this.org = {
+                            id: `o-${createUuid()}`,
+                            paymentPlanStart: moment().subtract(2, 'days').format()
+                        };
+                        this.state = assign({}, this.state, {
+                            db: assign({}, this.state.db, {
+                                org: assign({}, this.state.db.org, {
+                                    [this.org.id]: this.org
+                                })
+                            })
+                        });
+                        this.getState.and.returnValue(this.state);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        setTimeout(done);
+                    });
+
+                    it('should not create the campaign', function() {
+                        expect(this.dispatch).not.toHaveBeenCalledWith(createCampaign(jasmine.any(Object)));
+                    });
+
+                    it('should ask for a credit card', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(goToStep(4));
+                    });
+
+                    it('should fulfill with undefined', function() {
+                        expect(this.success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+            });
+
+            describe('if the promotions all require a paymentMethod', function() {
+                beforeEach(function(done) {
+                    this.promotions = [
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 30,
+                                paymentMethodRequired: true
+                            }
+                        },
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 10,
+                                paymentMethodRequired: true
+                            }
+                        },
+                        {
+                            id: `pro-${createUuid()}`,
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: 11,
+                                paymentMethodRequired: true
+                            }
+                        }
+                    ];
+                    this.state = assign({}, this.state, {
+                        db: assign({}, this.state.db, {
+                            promotion: assign({}, this.state.db.promotion, this.promotions.reduce((result, promotion) => {
+                                result[promotion.id] = promotion;
+                                return result;
+                            }, {}))
+                        })
+                    });
+                    this.getState.and.returnValue(this.state);
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
+                    setTimeout(done);
+                });
+
+                it('should not get the org', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(getOrg());
+                });
+
+                it('should ask for a credit card', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(goToStep(4));
+                });
+
+                it('should fulfill with undefined', function() {
+                    expect(this.success).toHaveBeenCalledWith(undefined);
+                });
             });
         });
     });

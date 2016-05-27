@@ -8,7 +8,8 @@ import {
     goToStep,
     wizardDestroyed,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 } from '../../actions/product_wizard';
 import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
@@ -71,6 +72,7 @@ class ProductWizard extends Component {
             goToStep,
             createCampaign,
             previewLoaded: previewWasLoaded,
+            collectPayment,
 
             onFinish,
 
@@ -80,7 +82,7 @@ class ProductWizard extends Component {
             formValues,
             promotions,
 
-            page: { step, previewLoaded }
+            page: { step, previewLoaded, checkingIfPaymentRequired }
         } = this.props;
 
         return (<div className="container main-section">
@@ -170,8 +172,9 @@ class ProductWizard extends Component {
                 })()}
             </div>
             <WizardPlanInfoModal show={step === 3}
+                actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
-                onContinue={() => goToStep(4)} />
+                onContinue={() => collectPayment({ productData, targeting })} />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}
@@ -190,6 +193,7 @@ ProductWizard.propTypes = {
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
     previewLoaded: PropTypes.func.isRequired,
+    collectPayment: PropTypes.func.isRequired,
 
     formValues: PropTypes.object,
 
@@ -228,5 +232,6 @@ export default connect(mapStateToProps, {
     wizardDestroyed,
     getClientToken,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 })(ProductWizard);
