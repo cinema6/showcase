@@ -27,7 +27,7 @@ NotificationCenter.propTypes = {
     notifications: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
-        message: PropTypes.string.isRequired
+        message: PropTypes.node.isRequired
     }).isRequired).isRequired,
 
     removeNotification: PropTypes.func.isRequired

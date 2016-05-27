@@ -4,7 +4,7 @@ import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
-import { logoutUser, toggleNav } from '../../src/actions/dashboard';
+import { logoutUser, toggleNav, checkIfPaymentMethodRequired } from '../../src/actions/dashboard';
 import { Provider } from 'react-redux';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
@@ -20,6 +20,7 @@ describe('Dashboard', function() {
         dashboardActions = {
             logoutUser: jasmine.createSpy('logoutUser()').and.callFake(logoutUser),
             toggleNav: jasmine.createSpy('toggleNav()').and.callFake(toggleNav),
+            checkIfPaymentMethodRequired,
 
             __esModule: true
         };
@@ -87,6 +88,10 @@ describe('Dashboard', function() {
             expect(component.props).toEqual(jasmine.objectContaining({
                 user: user
             }));
+        });
+
+        it('should dispatch checkIfPaymentMethodRequired()', function() {
+            expect(store.dispatch).toHaveBeenCalledWith(checkIfPaymentMethodRequired());
         });
 
         describe('if no user is logged in', function() {

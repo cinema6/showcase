@@ -6,14 +6,26 @@ import {
 import { createAction } from 'redux-actions';
 import { replace } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
+import { paymentMethod } from './payment';
+import { getOrg } from './session';
+import moment from 'moment';
+import { addNotification } from './notification';
+import { TYPE as NOTIFICATION } from '../enums/notification';
+import React from 'react';
+import { Link } from 'react-router';
 
-function dashboardType(type) {
+const ADD_PAYMENT_METHOD_MESSAGE = (<span>
+    Your trial period has expired. Please <Link to="/dashboard/billing">add a 
+    payment method</Link> to continue your service.
+</span>);
+
+function prefix(type) {
     return `DASHBOARD/${type}`;
 }
 
-export const LOGOUT_START = dashboardType('LOGOUT_START');
-export const LOGOUT_SUCCESS = dashboardType('LOGOUT_SUCCESS');
-export const LOGOUT_FAILURE = dashboardType('LOGOUT_FAILURE');
+export const LOGOUT_START = prefix('LOGOUT_START');
+export const LOGOUT_SUCCESS = prefix('LOGOUT_SUCCESS');
+export const LOGOUT_FAILURE = prefix('LOGOUT_FAILURE');
 export const logoutUser = createThunk(() => {
     return function thunk(dispatch) {
         dispatch(createAction(LOGOUT_START)());
@@ -29,8 +41,30 @@ export const logoutUser = createThunk(() => {
     };
 });
 
-export const SHOW_NAV = dashboardType('SHOW_NAV');
+export const SHOW_NAV = prefix('SHOW_NAV');
 export const showNav = createAction(SHOW_NAV);
 
-export const TOGGLE_NAV = dashboardType('TOGGLE_NAV');
+export const TOGGLE_NAV = prefix('TOGGLE_NAV');
 export const toggleNav = createAction(TOGGLE_NAV);
+
+export const CHECK_IF_PAYMENT_METHOD_REQUIRED = prefix('CHECK_IF_PAYMENT_METHOD_REQUIRED');
+export const checkIfPaymentMethodRequired = createThunk(() => (dispatch, getState) => {
+    return dispatch(createAction(CHECK_IF_PAYMENT_METHOD_REQUIRED)(
+        dispatch(paymentMethod.list()).then(([paymentMethodId]) => {
+            if (paymentMethodId) { return; }
+
+            return dispatch(getOrg()).then(([orgId]) => {
+                const org = getState().db.org[orgId];
+                const paymentPlanStart = org.paymentPlanStart && moment(org.paymentPlanStart);
+                const now = moment();
+
+                if (!paymentPlanStart || paymentPlanStart.isAfter(now)) { return; }
+
+                return dispatch(addNotification({
+                    type: NOTIFICATION.WARNING,
+                    message: ADD_PAYMENT_METHOD_MESSAGE
+                }));
+            });
+        }).then(() => undefined)
+    )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
+});

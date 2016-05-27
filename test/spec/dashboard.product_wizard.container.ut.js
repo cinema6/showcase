@@ -17,7 +17,8 @@ import {
     goToStep,
     wizardDestroyed,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 } from '../../src/actions/product_wizard';
 import WizardSearch from '../../src/components/WizardSearch';
 import WizardEditProduct from '../../src/components/WizardEditProduct';
@@ -53,6 +54,7 @@ describe('ProductWizard', function() {
             goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
             wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
             createCampaign: jasmine.createSpy('createCampaign()').and.callFake(createCampaign),
+            collectPayment,
 
             __esModule: true
         };
@@ -130,7 +132,7 @@ describe('ProductWizard', function() {
                         },
                         age: {
                             _isFieldValue: true,
-                            value: '13+'
+                            value: ['13+']
                         },
                         gender: {
                             _isFieldValue: true,
@@ -152,6 +154,7 @@ describe('ProductWizard', function() {
                     step: 0,
                     productData: null,
                     previewLoaded: false,
+                    checkingIfPaymentRequired: false,
                     targeting: {
                         age: [TARGETING.AGE.ALL],
                         gender: TARGETING.GENDER.ALL
@@ -213,6 +216,62 @@ describe('ProductWizard', function() {
             });
         });
 
+        describe('methods:', function() {
+            beforeEach(function() {
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
+                };
+                props.targeting = {
+                    age: [TARGETING.AGE.TEENS, TARGETING.AGE.ADULTS],
+                    gender: TARGETING.GENDER.MALE
+                };
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
+            });
+
+            describe('getProductData()', function() {
+                it('should combine the productData with the appropriate form values', function() {
+                    expect(component.getProductData()).toEqual(assign({}, component.props.productData, {
+                        name: component.props.formValues.name,
+                        description: component.props.formValues.description
+                    }));
+                });
+
+                describe('if there is no productData', function() {
+                    beforeEach(function() {
+                        props.productData = null;
+                        component = findRenderedComponentWithType(renderIntoDocument(
+                            <Provider store={store}>
+                                <ProductWizard {...props} />
+                            </Provider>
+                        ), ProductWizard.WrappedComponent);
+                    });
+
+                    it('should return null', function() {
+                        expect(component.getProductData()).toBeNull();
+                    });
+                });
+            });
+
+            describe('getTargeting()', function() {
+                it('should return the appropriate form values', function() {
+                    expect(component.getTargeting()).toEqual({
+                        age: component.props.formValues.age,
+                        gender: component.props.formValues.gender
+                    });
+                });
+            });
+        });
+
         describe('WizardPlanInfoModal', function() {
             beforeEach(function() {
                 this.planInfoModal = findRenderedComponentWithType(component, WizardPlanInfoModal);
@@ -229,6 +288,12 @@ describe('ProductWizard', function() {
                     });
                 });
 
+                describe('actionPending', function() {
+                    it('should be the value of page.checkingIfPaymentRequired', function() {
+                        expect(this.planInfoModal.props.actionPending).toBe(props.page.checkingIfPaymentRequired);
+                    });
+                });
+
                 describe('onClose()', function() {
                     beforeEach(function() {
                         this.planInfoModal.props.onClose();
@@ -236,16 +301,6 @@ describe('ProductWizard', function() {
 
                     it('should go to step 2', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
-                    });
-                });
-
-                describe('onContinue()', function() {
-                    beforeEach(function() {
-                        this.planInfoModal.props.onContinue();
-                    });
-
-                    it('should go to step 4', function() {
-                        expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(4));
                     });
                 });
             });
@@ -374,10 +429,7 @@ describe('ProductWizard', function() {
 
                     describe('productData', function() {
                         it('should be the stored productData and the state of the form merged together', function() {
-                            expect(preview.props.productData).toEqual(assign({}, props.productData, {
-                                name: component.props.formValues.name,
-                                description: component.props.formValues.description
-                            }));
+                            expect(preview.props.productData).toEqual(component.getProductData());
                         });
                     });
 
@@ -534,20 +586,14 @@ describe('ProductWizard', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { age: TARGETING.AGE.YOUNG_ADULTS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
+                            values = { age: component.props.formValues.age, gender: component.props.formValues.gender };
                             targeting.props.onFinish(values);
                         });
 
                         it('should call onFinish()', function() {
                             expect(props.onFinish).toHaveBeenCalledWith({
-                                targeting: {
-                                    age: values.age,
-                                    gender: values.gender
-                                },
-                                productData: {
-                                    name: values.name,
-                                    description: values.description
-                                }
+                                targeting: component.getTargeting(),
+                                productData: component.getProductData()
                             });
                         });
                     });
@@ -582,6 +628,21 @@ describe('ProductWizard', function() {
 
             it('should show the WizardPlanInfoModal', function() {
                 expect(this.planInfoModal.props.show).toBe(true);
+            });
+
+            describe('the WizardPlanInfoModal onContinue() prop', function() {
+                beforeEach(function() {
+                    store.dispatch.calls.reset();
+
+                    this.planInfoModal.props.onContinue();
+                });
+
+                it('should dispatch() collectPayment()', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(collectPayment({
+                        productData: this.component.getProductData(),
+                        targeting: this.component.getTargeting()
+                    }));
+                });
             });
         });
 
@@ -680,8 +741,11 @@ describe('ProductWizard', function() {
                         });
 
                         it('should create a campaign', function() {
-                            expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData: props.productData, targeting: props.targeting });
-                            expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.createCampaign.calls.mostRecent().returnValue);
+                            expect(store.dispatch).toHaveBeenCalledWith(createCampaign({
+                                payment,
+                                productData: component.getProductData(),
+                                targeting: component.getTargeting()
+                            }));
                         });
                     });
                 });
