@@ -1,9 +1,8 @@
 import { handleActions } from 'redux-actions';
-import { assign, defaults } from 'lodash';
+import { assign } from 'lodash';
 import {
     PRODUCT_SELECTED,
     GO_TO_STEP,
-    WIZARD_COMPLETE,
     PREVIEW_LOADED,
     COLLECT_PAYMENT
 } from '../../../../actions/product_wizard';
@@ -34,11 +33,6 @@ export default handleActions({
     }),
 
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
-
-    [WIZARD_COMPLETE]: (state, { payload: { productData, targeting } }) => assign({}, state, {
-        productData: assign({}, state.productData, productData),
-        targeting: defaults({}, targeting, DEFAULT_TARGETING)
-    }),
 
     [PREVIEW_LOADED]: state => assign({}, state, {
         previewLoaded: true

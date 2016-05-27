@@ -7,7 +7,6 @@ import {
     GO_TO_STEP,
     WIZARD_DESTROYED,
     CREATE_CAMPAIGN,
-    WIZARD_COMPLETE,
     LOAD_CAMPAIGN,
     UPDATE_CAMPAIGN,
     PREVIEW_LOADED,
@@ -724,10 +723,6 @@ describe('product wizard actions', function() {
             it('should list the paymentMethods', function() {
                 expect(paymentMethod.list).toHaveBeenCalledWith();
                 expect(dispatch).toHaveBeenCalledWith(paymentMethod.list.calls.mostRecent().returnValue);
-            });
-
-            it('should dispatch WIZARD_COMPLETE', function() {
-                expect(dispatch).toHaveBeenCalledWith(createAction(WIZARD_COMPLETE)({ productData, targeting }));
             });
 
             describe('when the paymentMethods are fetched', function() {

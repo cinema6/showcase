@@ -26,12 +26,9 @@ export const productSelected = createThunk(({ product }) => {
     };
 });
 
-export const WIZARD_COMPLETE = prefix('WIZARD_COMPLETE');
 export const wizardComplete = createThunk(({ productData, targeting }) => {
     return function thunk(dispatch, getState) {
         const [method] = getState().session.paymentMethods;
-
-        dispatch(createAction(WIZARD_COMPLETE)({ productData, targeting }));
 
         return Promise.resolve(
             method || dispatch(paymentMethod.list()).then(([method]) => method)

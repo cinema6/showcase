@@ -61,6 +61,25 @@ class ProductWizard extends Component {
         return productSelected({ product });
     }
 
+    getProductData() {
+        const {
+            productData,
+            formValues
+        } = this.props;
+
+        return productData && assign({}, productData, pick(formValues, [
+            'name', 'description'
+        ]));
+    }
+
+    getTargeting() {
+        const {
+            formValues
+        } = this.props;
+
+        return pick(formValues, ['age', 'gender']);
+    }
+
     componentWillUnmount() {
         return this.props.wizardDestroyed();
     }
@@ -79,7 +98,6 @@ class ProductWizard extends Component {
             steps,
             productData,
             targeting,
-            formValues,
             promotions,
 
             page: { step, previewLoaded, checkingIfPaymentRequired }
@@ -144,9 +162,7 @@ class ProductWizard extends Component {
                 {step > 0 && (
                     <AdPreview cardOptions={PREVIEW.CARD_OPTIONS}
                         placementOptions={PREVIEW.PLACEMENT_OPTIONS}
-                        productData={productData && assign({}, productData, pick(formValues, [
-                            'name', 'description'
-                        ]))}
+                        productData={this.getProductData()}
                         factory={createInterstitialFactory}
                         showLoadingAnimation={!previewLoaded}
                         loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
@@ -164,9 +180,9 @@ class ProductWizard extends Component {
                     case 4:
                         return <WizardEditTargeting targeting={targeting}
                             categories={(productData && productData.categories) || []}
-                            onFinish={values => onFinish({
-                                targeting: pick(values, ['age', 'gender']),
-                                productData: pick(values, ['name', 'description'])
+                            onFinish={() => onFinish({
+                                targeting: this.getTargeting(),
+                                productData: this.getProductData()
                             })} />;
                     }
                 })()}
@@ -174,12 +190,19 @@ class ProductWizard extends Component {
             <WizardPlanInfoModal show={step === 3}
                 actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
-                onContinue={() => collectPayment({ productData, targeting })} />
+                onContinue={() => collectPayment({
+                    productData: this.getProductData(),
+                    targeting: this.getTargeting()
+                })} />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
-                    onSubmit={payment => createCampaign({ payment, productData, targeting })} />
+                    onSubmit={payment => createCampaign({
+                        payment,
+                        productData: this.getProductData(),
+                        targeting: this.getTargeting()
+                    })} />
             )}
         </div>);
     }

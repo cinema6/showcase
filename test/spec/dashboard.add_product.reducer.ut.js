@@ -3,7 +3,6 @@ import { assign } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
     PRODUCT_SELECTED,
-    WIZARD_COMPLETE,
     GO_TO_STEP,
     PREVIEW_LOADED,
     COLLECT_PAYMENT
@@ -107,56 +106,6 @@ describe('dashboardAddProductReducer()', function() {
                 expect(newState).toEqual(assign({}, state, {
                     step
                 }));
-            });
-        });
-
-        describe(WIZARD_COMPLETE, function() {
-            let productData, targeting;
-
-            beforeEach(function() {
-                productData = {
-                    name: 'The name of my app',
-                    description: 'A description of my app'
-                };
-                targeting = {
-                    age: [TARGETING.AGE.TEENS],
-                    gender: TARGETING.GENDER.FEMALE
-                };
-
-                state.productData = {
-                    name: 'Default name',
-                    description: 'default description',
-                    categories: ['Games', 'Action'],
-                    images: []
-                };
-
-                action = createAction(WIZARD_COMPLETE)({ productData, targeting });
-                newState = dashboardAddProductReducer(state, action);
-            });
-
-            it('should update the productData and targeting and move to step 3', function() {
-                expect(newState).toEqual(assign({}, state, {
-                    productData: assign({}, state.productData, productData),
-                    targeting
-                }));
-            });
-
-            describe('if the targeting options are not defined', function() {
-                beforeEach(function() {
-                    targeting.age = undefined;
-                    targeting.gender = undefined;
-
-                    newState = dashboardAddProductReducer(state, action);
-                });
-
-                it('should use targeting defaults', function() {
-                    expect(newState).toEqual(jasmine.objectContaining({
-                        targeting: {
-                            age: [TARGETING.AGE.ALL],
-                            gender: TARGETING.GENDER.ALL
-                        }
-                    }));
-                });
             });
         });
 

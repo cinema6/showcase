@@ -132,7 +132,7 @@ describe('ProductWizard', function() {
                         },
                         age: {
                             _isFieldValue: true,
-                            value: '13+'
+                            value: ['13+']
                         },
                         gender: {
                             _isFieldValue: true,
@@ -213,6 +213,62 @@ describe('ProductWizard', function() {
 
             it('should dispatch wizardDestroyed()', function() {
                 expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
+        describe('methods:', function() {
+            beforeEach(function() {
+                props.productData = {
+                    extID: createUuid(),
+                    name: 'My Awesome Product',
+                    description: 'This is why it is awesome',
+                    images: [
+                        { uri: 'http://www.thumbs.com/foo', type: 'thumbnail' }
+                    ],
+                    price: 'Free'
+                };
+                props.targeting = {
+                    age: [TARGETING.AGE.TEENS, TARGETING.AGE.ADULTS],
+                    gender: TARGETING.GENDER.MALE
+                };
+                component = findRenderedComponentWithType(renderIntoDocument(
+                    <Provider store={store}>
+                        <ProductWizard {...props} />
+                    </Provider>
+                ), ProductWizard.WrappedComponent);
+            });
+
+            describe('getProductData()', function() {
+                it('should combine the productData with the appropriate form values', function() {
+                    expect(component.getProductData()).toEqual(assign({}, component.props.productData, {
+                        name: component.props.formValues.name,
+                        description: component.props.formValues.description
+                    }));
+                });
+
+                describe('if there is no productData', function() {
+                    beforeEach(function() {
+                        props.productData = null;
+                        component = findRenderedComponentWithType(renderIntoDocument(
+                            <Provider store={store}>
+                                <ProductWizard {...props} />
+                            </Provider>
+                        ), ProductWizard.WrappedComponent);
+                    });
+
+                    it('should return null', function() {
+                        expect(component.getProductData()).toBeNull();
+                    });
+                });
+            });
+
+            describe('getTargeting()', function() {
+                it('should return the appropriate form values', function() {
+                    expect(component.getTargeting()).toEqual({
+                        age: component.props.formValues.age,
+                        gender: component.props.formValues.gender
+                    });
+                });
             });
         });
 
@@ -373,10 +429,7 @@ describe('ProductWizard', function() {
 
                     describe('productData', function() {
                         it('should be the stored productData and the state of the form merged together', function() {
-                            expect(preview.props.productData).toEqual(assign({}, props.productData, {
-                                name: component.props.formValues.name,
-                                description: component.props.formValues.description
-                            }));
+                            expect(preview.props.productData).toEqual(component.getProductData());
                         });
                     });
 
@@ -533,20 +586,14 @@ describe('ProductWizard', function() {
                         let values;
 
                         beforeEach(function() {
-                            values = { age: TARGETING.AGE.YOUNG_ADULTS, gender: TARGETING.GENDER.MALE, name: 'The name', description: 'My app rules!' };
+                            values = { age: component.props.formValues.age, gender: component.props.formValues.gender };
                             targeting.props.onFinish(values);
                         });
 
                         it('should call onFinish()', function() {
                             expect(props.onFinish).toHaveBeenCalledWith({
-                                targeting: {
-                                    age: values.age,
-                                    gender: values.gender
-                                },
-                                productData: {
-                                    name: values.name,
-                                    description: values.description
-                                }
+                                targeting: component.getTargeting(),
+                                productData: component.getProductData()
                             });
                         });
                     });
@@ -591,7 +638,10 @@ describe('ProductWizard', function() {
                 });
 
                 it('should dispatch() collectPayment()', function() {
-                    expect(store.dispatch).toHaveBeenCalledWith(collectPayment({ productData: props.productData, targeting: props.targeting }));
+                    expect(store.dispatch).toHaveBeenCalledWith(collectPayment({
+                        productData: this.component.getProductData(),
+                        targeting: this.component.getTargeting()
+                    }));
                 });
             });
         });
@@ -691,8 +741,11 @@ describe('ProductWizard', function() {
                         });
 
                         it('should create a campaign', function() {
-                            expect(productWizardActions.createCampaign).toHaveBeenCalledWith({ payment, productData: props.productData, targeting: props.targeting });
-                            expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.createCampaign.calls.mostRecent().returnValue);
+                            expect(store.dispatch).toHaveBeenCalledWith(createCampaign({
+                                payment,
+                                productData: component.getProductData(),
+                                targeting: component.getTargeting()
+                            }));
                         });
                     });
                 });
