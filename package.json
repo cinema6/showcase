@@ -1,6 +1,6 @@
 {
   "name": "showcase",
-  "version": "0.1.0-rc10",
+  "version": "0.3.0-rc1",
   "description": "Reelcontent Showcase app.",
   "main": "src/index.js",
   "scripts": {
@@ -103,11 +103,11 @@
     "redux": "^3.5.2",
     "redux-actions": "^0.9.1",
     "redux-api-middleware": "^1.0.2",
-    "redux-form": "^5.2.0",
+    "redux-form": "5.2.4",
     "redux-logger": "^2.6.1",
     "redux-promise-middleware": "^3.0.0",
     "redux-thunk": "^2.0.1",
-    "showcase-core": "^1.3.0"
+    "showcase-core": "^1.4.0"
   },
   "browserify": {
     "transform": [

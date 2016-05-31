@@ -8,7 +8,8 @@ import {
     goToStep,
     wizardDestroyed,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 } from '../../actions/product_wizard';
 import { getClientToken } from'../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
@@ -25,7 +26,11 @@ import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const PREVIEW = {
     CARD_OPTIONS: {
-        cardType: 'showcase-app'
+        cardType: 'showcase-app',
+        description: {
+            show: true,
+            autoHide: 3
+        }
     },
     PLACEMENT_OPTIONS: {
         type: 'mobile-card',
@@ -60,6 +65,25 @@ class ProductWizard extends Component {
         return productSelected({ product });
     }
 
+    getProductData() {
+        const {
+            productData,
+            formValues
+        } = this.props;
+
+        return productData && assign({}, productData, pick(formValues, [
+            'name', 'description'
+        ]));
+    }
+
+    getTargeting() {
+        const {
+            formValues
+        } = this.props;
+
+        return pick(formValues, ['age', 'gender']);
+    }
+
     componentWillUnmount() {
         return this.props.wizardDestroyed();
     }
@@ -71,16 +95,16 @@ class ProductWizard extends Component {
             goToStep,
             createCampaign,
             previewLoaded: previewWasLoaded,
+            collectPayment,
 
             onFinish,
 
             steps,
             productData,
             targeting,
-            formValues,
             promotions,
 
-            page: { step, previewLoaded }
+            page: { step, previewLoaded, checkingIfPaymentRequired }
         } = this.props;
 
         return (<div className="container main-section">
@@ -142,9 +166,7 @@ class ProductWizard extends Component {
                 {step > 0 && (
                     <AdPreview cardOptions={PREVIEW.CARD_OPTIONS}
                         placementOptions={PREVIEW.PLACEMENT_OPTIONS}
-                        productData={productData && assign({}, productData, pick(formValues, [
-                            'name', 'description'
-                        ]))}
+                        productData={this.getProductData()}
                         factory={createInterstitialFactory}
                         showLoadingAnimation={!previewLoaded}
                         loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
@@ -162,21 +184,29 @@ class ProductWizard extends Component {
                     case 4:
                         return <WizardEditTargeting targeting={targeting}
                             categories={(productData && productData.categories) || []}
-                            onFinish={values => onFinish({
-                                targeting: pick(values, ['age', 'gender']),
-                                productData: pick(values, ['name', 'description'])
+                            onFinish={() => onFinish({
+                                targeting: this.getTargeting(),
+                                productData: this.getProductData()
                             })} />;
                     }
                 })()}
             </div>
             <WizardPlanInfoModal show={step === 3}
+                actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
-                onContinue={() => goToStep(4)} />
+                onContinue={() => collectPayment({
+                    productData: this.getProductData(),
+                    targeting: this.getTargeting()
+                })} />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
-                    onSubmit={payment => createCampaign({ payment, productData, targeting })} />
+                    onSubmit={payment => createCampaign({
+                        payment,
+                        productData: this.getProductData(),
+                        targeting: this.getTargeting()
+                    })} />
             )}
         </div>);
     }
@@ -190,6 +220,7 @@ ProductWizard.propTypes = {
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
     previewLoaded: PropTypes.func.isRequired,
+    collectPayment: PropTypes.func.isRequired,
 
     formValues: PropTypes.object,
 
@@ -228,5 +259,6 @@ export default connect(mapStateToProps, {
     wizardDestroyed,
     getClientToken,
     createCampaign,
-    previewLoaded
+    previewLoaded,
+    collectPayment
 })(ProductWizard);

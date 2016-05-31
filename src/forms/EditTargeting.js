@@ -200,9 +200,6 @@ EditTargeting.propTypes = {
 
 export default reduxForm({
     form: 'productWizard',
-    fields: [
-        'gender', 'age',
-        'name', 'description' // This is the last form of the wizard. Inject all form fields.
-    ],
+    fields: ['gender', 'age'],
     destroyOnUnmount: false
 })(EditTargeting);

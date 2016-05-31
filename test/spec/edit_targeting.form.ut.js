@@ -60,9 +60,7 @@ describe('EditTargeting', function() {
                 }),
                 age: jasmine.objectContaining({
                     value: props.initialValues.age
-                }),
-                name: jasmine.any(Object),
-                description: jasmine.any(Object)
+                })
             });
         });
 
@@ -74,9 +72,7 @@ describe('EditTargeting', function() {
             it('should call onSubmit() with the values', function() {
                 expect(props.onSubmit).toHaveBeenCalledWith({
                     gender: jasmine.anything(),
-                    age: jasmine.anything(),
-                    name: undefined,
-                    description: undefined
+                    age: jasmine.anything()
                 }, jasmine.any(Function));
             });
         });

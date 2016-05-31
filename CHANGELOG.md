@@ -1,9 +1,23 @@
 # Showcase
 
+## v0.3.0 (May 31, 2016)
+* *[v0.3.0-rc1]*
+  * [FIX]: Fixed x-axis label on 7 day charts (removed last label from far right)
+  * [FEATURE]: Add the description to the creative preview
+  * [FIX]: For for an issue that caused forms not to be cleared-out
+    properly in the app
+* *[/v0.3.0-rc1]*
+
+## v0.2.0 (May 27, 2016)
 * *[v0.2.0-rc1]*
   * [FEATURE]: Add a loading animation in the ad preview
   * [FIX]: Make sure the user can see their free trial length after
     signing up
+  * [FIX]: Fix an issue where the name + description of a campaign could
+    end up not being set
+  * [FEATURE]: Add support for free trials that do not require a credit
+    card
+* *[/v0.2.0-rc1]*
 
 ## v0.1.0 (May 25, 2016)
 * *[v0.1.0-rc10]*

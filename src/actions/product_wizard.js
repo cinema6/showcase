@@ -10,6 +10,8 @@ import { notify } from './notification';
 import { replace, push, goBack } from 'react-router-redux';
 import { campaignFromData } from '../utils/campaign';
 import { createThunk } from '../../src/middleware/fsa_thunk';
+import { getPromotions, getOrg } from './session';
+import moment from 'moment';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -24,7 +26,6 @@ export const productSelected = createThunk(({ product }) => {
     };
 });
 
-export const WIZARD_COMPLETE = prefix('WIZARD_COMPLETE');
 export const wizardComplete = createThunk(({ productData, targeting }) => {
     return function thunk(dispatch, getState) {
         const [method] = getState().session.paymentMethods;
@@ -32,8 +33,6 @@ export const wizardComplete = createThunk(({ productData, targeting }) => {
         return Promise.resolve(
             method || dispatch(paymentMethod.list()).then(([method]) => method)
         ).then(paymentMethod => {
-            dispatch(createAction(WIZARD_COMPLETE)({ productData, targeting }));
-
             if (paymentMethod) {
                 return dispatch(createCampaign({ productData, targeting }));
             } else {
@@ -149,3 +148,38 @@ export const updateCampaign = createThunk(({ id, productData, targeting }) => {
 
 export const PREVIEW_LOADED = prefix('PREVIEW_LOADED');
 export const previewLoaded = createAction(PREVIEW_LOADED);
+
+export const COLLECT_PAYMENT = prefix('COLLECT_PAYMENT');
+export const collectPayment = createThunk(({ productData, targeting }) => (dispatch, getState) => {
+    const collectPaymentMethod = () => goToStep(4);
+
+    return dispatch(createAction(COLLECT_PAYMENT)(dispatch(getPromotions()).then(promotionIds => {
+        const promotions = promotionIds.map(id => getState().db.promotion[id]);
+        const paymentMethodRequired = promotions.every(promotion => {
+            return promotion.data.paymentMethodRequired;
+        });
+
+        if (paymentMethodRequired) { return dispatch(collectPaymentMethod()); }
+
+        return dispatch(getOrg()).then(([orgId]) => {
+            const org = getState().db.org[orgId];
+            const paymentPlanStart = (org.paymentPlanStart || null) &&
+                moment(org.paymentPlanStart);
+            const now = moment();
+
+            if (!paymentPlanStart || paymentPlanStart.isAfter(now)) {
+                return dispatch(createCampaign({ productData, targeting }));
+            }
+
+            return dispatch(collectPaymentMethod());
+        });
+    }).then(() => undefined).catch(reason => {
+        dispatch(notify({
+            type: NOTIFICATION_TYPE.DANGER,
+            message: `Unexpected error: ${reason.response || reason.message}`,
+            time: 10000
+        }));
+
+        throw reason;
+    }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
+});
