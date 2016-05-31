@@ -413,7 +413,11 @@ describe('ProductWizard', function() {
                     describe('cardOptions', function() {
                         it('should exist', function() {
                             expect(preview.props.cardOptions).toEqual({
-                                cardType: 'showcase-app'
+                                cardType: 'showcase-app',
+                                description: {
+                                    show: true,
+                                    autoHide: 3
+                                }
                             });
                         });
                     });
