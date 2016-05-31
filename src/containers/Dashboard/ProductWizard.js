@@ -26,7 +26,11 @@ import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const PREVIEW = {
     CARD_OPTIONS: {
-        cardType: 'showcase-app'
+        cardType: 'showcase-app',
+        description: {
+            show: true,
+            autoHide: 3
+        }
     },
     PLACEMENT_OPTIONS: {
         type: 'mobile-card',

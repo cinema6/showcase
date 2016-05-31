@@ -1,7 +1,12 @@
 # Showcase
 
+## v0.3.0 (May 31, 2016)
 * *[v0.3.0-rc1]*
   * [FIX]: Fixed x-axis label on 7 day charts (removed last label from far right)
+  * [FEATURE]: Add the description to the creative preview
+  * [FIX]: For for an issue that caused forms not to be cleared-out
+    properly in the app
+* *[/v0.3.0-rc1]*
 
 ## v0.2.0 (May 27, 2016)
 * *[v0.2.0-rc1]*
