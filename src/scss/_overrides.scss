@@ -418,8 +418,9 @@
     position: fixed;
     text-align: center;
     z-index: 1000;
-    /*background: #E54B4B;*/
-    background: #757780;
+    /*background: #E54B4B;
+    background: #757780;*/
+    background: #353A47;
     top: 80px;
     left: 0;
     bottom: 0;
@@ -440,7 +441,7 @@
             display: block;
             width: 100%;
             /*border-bottom: 1px solid #d82632;*/
-            border-bottom: 1px solid #5C5F69;
+            border-bottom: 1px solid #24272F;
         }
             .vertical-menu-bar .menu-item a:hover,
             .vertical-menu-bar .menu-item button.btn-link:hover {
