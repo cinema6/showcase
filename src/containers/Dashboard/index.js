@@ -28,9 +28,12 @@ class Dashboard extends Component {
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header pull-left">
-                        <a className="navbar-brand" onClick={toggleNav}>
-                            <i className="fa fa-bars"></i><img src="images/rc-logo-square.png" />
+                        <a className="navbar-brand-link btn btn-default pull-left" onClick={toggleNav}>
+                            <i className="fa fa-bars"></i>
                         </a>
+                        <Link to="/dashboard" className="navbar-brand">
+                            <img src="images/rc-logo-square.png" />
+                        </Link>
                     </div>
                     <div id="navbar" className="pull-right">
                         <ul className="nav navbar-nav navbar-right text-right">
@@ -51,8 +54,9 @@ class Dashboard extends Component {
                     </div>
                 </div>
             </nav>
-            {/* vertical menu */} {/*hidden until triggered */}
-            <nav id="sidePanel" className={classnames('slideout-menu animated slideInLeft', {
+            {/* vertical mobile menu */} {/*hidden until triggered */}
+            <nav id="sidePanel" 
+                className={classnames('slideout-menu animated slideInLeft', {
                 hidden: !showNav
             })}>
                 <ul className="menu-item-list">
@@ -73,7 +77,32 @@ class Dashboard extends Component {
                     </li>
                 </ul>
             </nav>
-            {/* vertical menu ends */}
+            {/* vertical mobile menu ends */}
+            {/* vertical desktop menu */} {/*visible on >768px */}
+            <nav id="sidePanelDesktop" 
+                className={classnames('vertical-menu-bar')}>
+                <ul className="menu-item-list">
+                    <li className="menu-item">
+                        <Link to="/dashboard"><i className="fa fa-th-large" /> 
+                        <span className="menu-item-label">Dashboard</span></Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard/billing"><i className="fa fa-usd" /> 
+                        <span className="menu-item-label">Billing</span></Link>
+                    </li>                    
+                    <li className="menu-item">
+                        <Link to="/dashboard/account"><i className="fa fa-user" /> 
+                        <span className="menu-item-label">Profile</span></Link>
+                    </li>
+                    <li className="menu-item">
+                        <button className="btn btn-link" onClick={logoutUser}>
+                            <i className="fa fa-power-off" /> 
+                            <span className="menu-item-label">Logout</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            {/* vertical desktop menu ends */}
             {children}
         </div>);
     }

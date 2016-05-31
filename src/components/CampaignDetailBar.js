@@ -24,7 +24,7 @@ export default class CampaignDetailBar extends Component {
 
         return (<div className="row">
             <div className="container">
-                <div className="campaign-overview col-md-12 col-sm-12 card-item">
+                <div className="campaign-overview col-md-12 col-sm-12">
                     <div className="row">
                         <div className="campaign-app col-xs-10">
                             <div className="advertiser-logo">
@@ -32,37 +32,45 @@ export default class CampaignDetailBar extends Component {
                             </div>
                             <div className="campaign-title">
                                 <h2>{title}</h2>
+                                <div className="clearfix"> </div>
                                 <span className="campaign-preview-link">
-                                    <a href="#"
+                                    <a href="#" className="btn btn-default btn-xs"
                                         onClick={event => {
                                             event.preventDefault();
                                             onShowAdPreview();
                                         }}>
-                                        Preview Your Ad
+                                        <i className="fa fa-external-link"></i> Preview Your Ad
+                                    </a>
+                                </span>
+                                <span className="edit-campaign-link">
+                                    <a href="#" className="btn btn-default btn-xs">
+                                        <i className="fa fa-pencil-square-o"></i> Edit
                                     </a>
                                 </span>
                             </div>
                         </div>
-                        <div className="pull-right campaign-menu col-xs-2 text-right">
+                        <div className="campaign-menu col-xs-2 text-right">
                             <Dropdown id={'campaign-detail-dropdown-' + campaignId} pullRight >
-                                <Dropdown.Toggle useAnchor={true} noCaret className="btn btn-link 
+                                <Dropdown.Toggle useAnchor={true} noCaret className="btn btn-default 
                                     btn-lg">
-                                    <i className="fa fa-ellipsis-v" aria-hidden="true"> </i>
+                                    {/*<span className="hidden-xs">Menu</span>*/}
+                                    <i className="fa fa-ellipsis-v" aria-hidden="true">
+                                    </i>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu" >
-                                    <MenuItem href={`/#/dashboard/campaigns/${campaignId}/edit`} >
+                                {/*<MenuItem href={`/#/dashboard/campaigns/${campaignId}/edit`} >
                                         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        Edit Campaign
-                                    </MenuItem>
+                                        Edit
+                                </MenuItem>*/}
                                     <MenuItem divider />
                                     <MenuItem onSelect={() => onDeleteCampaign()}>
                                         <i className="fa fa-trash-o" aria-hidden="true"></i>
-                                        Delete Campaign
+                                        Delete
                                     </MenuItem>
                                     <MenuItem divider />
                                     <MenuItem onSelect={() => onShowInstallTrackingInstructions()}>
                                         <i className="fa fa-mouse-pointer" aria-hidden="true"></i>
-                                        Tracking Pixel
+                                        Add Tracking Pixel
                                     </MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
