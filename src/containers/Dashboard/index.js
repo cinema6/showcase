@@ -36,7 +36,8 @@ class Dashboard extends Component {
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header pull-left">
-                        <a className="navbar-brand-link btn btn-default pull-left" onClick={toggleNav}>
+                        <a className="navbar-brand-link btn btn-default pull-left"
+                            onClick={toggleNav}>
                             <i className="fa fa-bars"></i>
                         </a>
                         <Link to="/dashboard" className="navbar-brand">
@@ -63,10 +64,10 @@ class Dashboard extends Component {
                 </div>
             </nav>
             {/* vertical mobile menu */} {/*hidden until triggered */}
-            <nav id="sidePanel" 
+            <nav id="sidePanel"
                 className={classnames('slideout-menu animated slideInLeft', {
-                hidden: !showNav
-            })}>
+                    hidden: !showNav
+                })}>
                 <ul className="menu-item-list">
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
