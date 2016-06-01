@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Link } from 'react-router';
 import numeral from 'numeral';
 
 export default class CampaignDetailBar extends Component {
@@ -43,9 +44,10 @@ export default class CampaignDetailBar extends Component {
                                     </a>
                                 </span>
                                 <span className="edit-campaign-link">
-                                    <a href="#" className="btn btn-default btn-xs">
+                                    <Link to={`/dashboard/campaigns/${campaignId}/edit`}
+                                        className="btn btn-default btn-xs">
                                         <i className="fa fa-pencil-square-o"></i> Edit
-                                    </a>
+                                    </Link>
                                 </span>
                             </div>
                         </div>
