@@ -25,7 +25,7 @@ import CampaignDetailChart, {
    CHART_30DAY,
 
    SERIES_USERS,
-   SERIES_VIEWS,
+//   SERIES_VIEWS,
    SERIES_CLICKS,
    SERIES_INSTALLS
 } from '../../components/CampaignDetailChart';
@@ -86,8 +86,7 @@ class CampaignDetail extends Component {
                         <div className="col-md-5">
                             <Nav bsStyle="pills" className="switch-chart"
                                 activeKey={page.activeSeries} onSelect={selectSeries}>
-                                <NavItem eventKey={SERIES_VIEWS}> Views </NavItem>
-                                <NavItem eventKey={SERIES_USERS}> Reach </NavItem>
+                                <NavItem eventKey={SERIES_USERS}> Views </NavItem>
                                 <NavItem eventKey={SERIES_CLICKS}> Clicks </NavItem>
                                 <NavItem eventKey={SERIES_INSTALLS}> Installs </NavItem>
                             </Nav>

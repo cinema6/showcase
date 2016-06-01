@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import numeral from 'numeral';
 
@@ -12,12 +11,11 @@ export default class CampaignDetailBar extends Component {
             logoUrl,
             title,
             users,
-            views,
             clicks,
             installs,
 
             onDeleteCampaign,
-            onShowInstallTrackingInstructions,
+//            onShowInstallTrackingInstructions,
             onShowAdPreview
         } = this.props;
 
@@ -49,33 +47,16 @@ export default class CampaignDetailBar extends Component {
                                         <i className="fa fa-pencil-square-o"></i> Edit
                                     </Link>
                                 </span>
+                                <span className="trash-campaign-link">
+                                    <a href="#" className="btn btn-default btn-xs"
+                                        onClick={event => {
+                                            event.preventDefault();
+                                            onDeleteCampaign(); 
+                                        }}>
+                                        <i className="fa fa-trash-o"></i> Replace
+                                    </a>
+                                </span>
                             </div>
-                        </div>
-                        <div className="campaign-menu col-xs-2 text-right">
-                            <Dropdown id={'campaign-detail-dropdown-' + campaignId} pullRight >
-                                <Dropdown.Toggle useAnchor={true}
-                                    noCaret
-                                    className="btn btn-default btn-lg">
-                                    {/*<span className="hidden-xs">Menu</span>*/}
-                                    <i className="fa fa-ellipsis-v" aria-hidden="true" />
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu className="dropdown-menu" >
-                                {/*<MenuItem href={`/#/dashboard/campaigns/${campaignId}/edit`} >
-                                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        Edit
-                                </MenuItem>*/}
-                                    <MenuItem divider />
-                                    <MenuItem onSelect={() => onDeleteCampaign()}>
-                                        <i className="fa fa-trash-o" aria-hidden="true"></i>
-                                        Delete
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem onSelect={() => onShowInstallTrackingInstructions()}>
-                                        <i className="fa fa-mouse-pointer" aria-hidden="true"></i>
-                                        Add Tracking Pixel
-                                    </MenuItem>
-                                </Dropdown.Menu>
-                            </Dropdown>
                         </div>
                     </div>
                 </div>
@@ -83,14 +64,8 @@ export default class CampaignDetailBar extends Component {
                 <div className="campaign-mini-stats">
                     <div className="row">
                         <div className="col-sm-3 col-xs-6 text-center">
-                            <div className="campaign-views data-inline">
-                                <p>Views</p>
-                                <h1>{format(views)}</h1>
-                            </div>
-                        </div>
-                        <div className="col-sm-3 col-xs-6 text-center">
                             <div className="campaign-reach data-inline">
-                                <p>Reach</p>
+                                <p>Views</p>
                                 <h1>{format(users)}</h1>
                             </div>
                         </div>
