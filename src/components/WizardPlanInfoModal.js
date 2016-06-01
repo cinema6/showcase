@@ -14,28 +14,79 @@ export default class WizardPlanInfoModal extends Component {
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
-                <h1 className="modal-title">Get 2 Weeks FREE Trial</h1>
-                <p>and reach 1,000 people at no cost</p>
+                <h1 className="modal-title">Reach 1,000 people for FREE</h1>
+                <p>Your first 2 weeks of advertising is on us</p>
             </Modal.Header>
             <Modal.Body className="text-center">
                 <div className="row">
                     <div className="trail-wrap">
-                        <div className="col-sm-12 col-xs-12 col-middle">
-                            <div className="plan-info-box">
-                                <div className="plan-box-header">
-                                    <h3>Start now</h3>
-                                </div>
-                                <div className="plan-box-content">
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Reach</span>
-                                        <h2>2,000</h2>
-                                        <span>people each month</span>
+                        <div className="row">
+                            <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
+                                <div className="plan-info-box plan-starter">
+                                    <div className="plan-box-header">
+                                        <h3>Starter</h3>
                                     </div>
-                                    <hr />
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Only</span>
-                                        <h2>$49.99</h2>
-                                        <span>per month</span>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Reach</span>
+                                            <h2>2,000</h2>
+                                            <span>people each month</span>
+                                        </div>
+                                        <hr />
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Only</span>
+                                            <h3>$49.99</h3>
+                                            <span>per month</span>
+                                        </div>
+                                    </div>
+                                    <div className="plan-box-footer plan-selected">
+                                        <h4>Selected</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
+                                <div className="plan-info-box plan-pro">
+                                    <div className="plan-box-header">
+                                        <h3>Pro</h3>
+                                    </div>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Reach</span>
+                                            <h2>7,500</h2>
+                                            <span>people each month</span>
+                                        </div>
+                                        <hr />
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Only</span>
+                                            <h3>$149.99</h3>
+                                            <span>per month</span>
+                                        </div>
+                                    </div>
+                                    <div className="plan-box-footer plan-coming-soon">
+                                        <h4>coming soon</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
+                                <div className="plan-info-box plan-business">
+                                    <div className="plan-box-header">
+                                        <h3>Business</h3>
+                                    </div>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Reach</span>
+                                            <h2>25,000</h2>
+                                            <span>people each month</span>
+                                        </div>
+                                        <hr />
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Only</span>
+                                            <h3>$499.99</h3>
+                                            <span>per month</span>
+                                        </div>
+                                    </div>
+                                    <div className="plan-box-footer plan-coming-soon">
+                                        <h4>coming soon</h4>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +120,7 @@ export default class WizardPlanInfoModal extends Component {
                                 })}
                                 bsSize="lg"
                                 bsStyle="danger">
-                                Continue
+                                Get 2 weeks FREE trial
                             </Button>
                         </div>
                     </div>
