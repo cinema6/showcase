@@ -26,7 +26,7 @@ $brand-danger:          #f2414d;
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-$body-bg:               #d6fcff;
+$body-bg:               #f5efe6;
 //** Global text color on `<body>`.
 $text-color:            #171738;
 
@@ -410,10 +410,10 @@ $navbar-inverse-toggle-border-color:        darken($navbar-inverse-bg, 10%);
 
 //=== Shared nav styles
 $nav-link-padding:                          10px 15px;
-$nav-link-hover-bg:                         #BEF2F6;
+$nav-link-hover-bg:                         #E1DDD7;
 
-$nav-disabled-link-color:                   #BEF2F6;
-$nav-disabled-link-hover-color:             #BEF2F6;
+$nav-disabled-link-color:                   #E1DDD7;
+$nav-disabled-link-hover-color:             #E1DDD7;
 
 //== Tabs
 $nav-tabs-border-color:                     $brand-primary;

@@ -84,7 +84,7 @@ class CampaignDetail extends Component {
                 <div>
                     <div className="row">
                         <div className="col-md-5">
-                            <Nav bsStyle="pills" className="nav-justified"
+                            <Nav bsStyle="pills" className="switch-chart"
                                 activeKey={page.activeSeries} onSelect={selectSeries}>
                                 <NavItem eventKey={SERIES_VIEWS}> Views </NavItem>
                                 <NavItem eventKey={SERIES_USERS}> Reach </NavItem>
@@ -93,7 +93,7 @@ class CampaignDetail extends Component {
                             </Nav>
                         </div>
                         <div className="col-md-5 col-md-offset-2">
-                            <Nav bsStyle="pills" className="nav-justified"
+                            <Nav bsStyle="pills" className="switch-chart-range"
                                 activeKey={page.activeChart} onSelect={selectChart}>
                                 <NavItem eventKey={CHART_TODAY}> Today </NavItem>
                                 <NavItem eventKey={CHART_7DAY}> Past 7 Days </NavItem>

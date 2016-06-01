@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.4.0-rc1]*
+  * [FEATURE]: Added persistent navigation
+  * Updated styles for app based on the feedback
+
 ## v0.3.0 (May 31, 2016)
 * *[v0.3.0-rc1]*
   * [FIX]: Fixed x-axis label on 7 day charts (removed last label from far right)

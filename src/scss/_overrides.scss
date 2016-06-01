@@ -111,7 +111,7 @@
         .nav-justified>li>button,
         .nav-justified>li>button:disabled:hover,
         .nav-justified>li>button:disabled:focus {
-            background: #bef2f6;
+            background: #E1DDD7;/*#bef2f6*/
             color: #0dbeb2;
             display: block;
             position: relative;
@@ -170,7 +170,7 @@
             overflow: hidden;
         }
             .form-control {
-                border-width: 2px;
+                border-width: 1px;
                 font-size: 18px;
                 height: 40px;
                 line-height: 40px;
@@ -186,7 +186,7 @@
     }
     .nav-justified>li>a {
         margin-bottom: 0;
-        background: #bef2f6;
+        background: #E1DDD7;
     }
     .alert-fixed {
         position: fixed;
@@ -255,7 +255,7 @@
     }
         .btn-default:hover {
             color: #08766f;
-            background-color: #bef2f6;
+            background-color: #E1DDD7;
             border-color: #0dbeb2;
         }
         .btn-default:active,
@@ -355,7 +355,14 @@
  Navigation
  ----------------------------
  ***/
-
+    .navbar-brand-link {
+        margin-top: 23px;
+    }
+        .navbar-brand-link:hover,
+        .navbar-brand-link:focus {
+            background: #0dbeb2;
+            color: #fff;
+        }
     .navbar-brand {
         padding: 0;
     }
@@ -404,6 +411,51 @@
                 width: 2rem;
                 margin-right: 1rem;
 
+            }
+/***Vertical Menu Bar***/
+.vertical-menu-bar {
+    width: 80px;
+    position: fixed;
+    text-align: center;
+    z-index: 1000;
+    /*background: #E54B4B;
+    background: #757780;*/
+    background: #353A47;
+    top: 80px;
+    left: 0;
+    bottom: 0;
+}
+    .vertical-menu-bar .menu-item-list {
+        font-size: 0.875em;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+        .vertical-menu-bar .menu-item a,
+        .vertical-menu-bar .menu-item button.btn-link {
+            /*color: #d6fcff;*/
+            color: #E3E3E3;
+            text-align: center;
+            font-size: 12px;
+            padding: 20px 0;
+            display: block;
+            width: 100%;
+            /*border-bottom: 1px solid #d82632;*/
+            border-bottom: 1px solid #24272F;
+        }
+            .vertical-menu-bar .menu-item a:hover,
+            .vertical-menu-bar .menu-item button.btn-link:hover {
+                text-decoration: none;
+                background: #5C5F69;
+            }
+        .vertical-menu-bar .menu-item a i.fa,
+        .vertical-menu-bar .menu-item button.btn-link i.fa {
+            display: block;
+            margin: 0;
+            width: auto;
+        }
+            .vertical-menu-bar .menu-item i.fa:before {
+                font-size: 24px;
             }
  /***
  Icons
@@ -529,7 +581,7 @@
         display: block;
     }
         .campaign-progress-bar .nav-pills {
-            background: #bef2f6;
+            background: #E1DDD7;
         }
             .campaign-progress-bar .nav-pills>li.active {
                 background: #0dbeb2;
@@ -549,6 +601,10 @@
             .create-ad img{
                 max-width: 100%;
             }
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+        margin-left: 0;
+    }
+    
 /***App Search Form***/
     .app-search {
         padding: 0 5px;
@@ -824,9 +880,13 @@
         top: 0;
     }
     /***targeting***/
+    .app-categories .label.label-primary {
+        padding: 5px 10px;
+        line-height: 20px;
+        font-weight: normal;
+    }
     .app-categories span {
         display: inline-block;
-        margin-bottom: 5px;
         margin-right: 5px;
     }
         .app-categories span i.fa {
@@ -846,10 +906,28 @@
         .campaign-stats .campaign-overview {
             display: block;
             /*overflow: hidden;*/
+            border-bottom: 1px dotted $brand-primary;
+            padding-left: 0;
         }
     .campaign-overview {
         display: block;
     }
+        .campaign-overview .campaign-app {
+            display: inline-block;
+            float: none;
+            vertical-align: middle;
+        }
+        .campaign-overview .campaign-menu {
+            display: inline-block;
+            float: none;
+            vertical-align: middle;
+        }
+            .campaign-overview .campaign-menu .dropdown-toggle {
+                height: 40px;
+                line-height: 40px;
+                padding: 0;
+                width: 40px;
+            }
         .campaign-overview .advertiser-logo {
             height: 80px;
             width: 80px;
@@ -865,6 +943,7 @@
                 height: auto;
                 max-height: 80px;
                 border-radius: 20px;
+                border: 1px solid #ddd;
             }
         .campaign-overview .campaign-title {
             overflow: hidden;
@@ -879,11 +958,18 @@
                 line-height: 60px;
             }
             .campaign-stats .campaign-overview .campaign-preview-link {
-                display: block;
+                display: inline-block;
                 vertical-align: top;
                 margin-bottom: 10px;
                 margin-top: -8px;
+                margin-right: 10px;
                 padding-top: 0;
+            }
+            .campaign-stats .campaign-overview .edit-campaign-link {
+                display: inline-block;
+                vertical-align: top;
+                margin-bottom: 10px;
+                margin-top: -8px;
             }
         .campaign-mini-stats {
             padding-top: 25px;
@@ -931,6 +1017,9 @@
         .campaign-stats .stats-list td{
             text-align: center;
         }
+            .campaign-stats .stats-list td.text-right {
+                text-align: right;
+            }
     .campaign-stats .nav-justified {
         margin-bottom: 10px;
         border: 1px solid $brand-primary;
@@ -1106,7 +1195,7 @@
             text-align: center;
             font-size: 18px;
             line-height: 30px;
-            background: rgba(214, 252, 255,0.7);
+            background: rgba(245, 239, 230,0.7);
             z-index: 1;
             padding: 65px 20px;
         }
@@ -1120,6 +1209,9 @@
             font-size: 20px;
             line-height: 24px;
             position: relative;
+        }
+        .empty-chart ~ .ct-octave .ct-label {
+            display: none;
         }
 
  /***
@@ -1274,6 +1366,12 @@
         }
     }
     @media (min-width: 768px) {
+        body {
+            padding-left: 80px;
+        }
+        .container {
+            max-width: 100%;
+        }
         .nav-justified>li {
             display: table-cell;
             width: 1%;
@@ -1292,6 +1390,18 @@
             .navbar.navbar-inverse .dropdown-menu > li > a:focus {
                 background-color: #0DBEB2;
             }
+        .navbar-brand-link {
+            display: none;
+        }            
+        .navbar-brand i.fa-bars {
+            display: none;
+        }
+        .navbar > .container-fluid .navbar-brand {
+            margin-left: -15px;
+        }
+        .campaign-stats .switch-chart-range {
+            float: right;
+        }
     }
     @media (max-width: 767px) {
         .bg-dark-wrap .main-section {
@@ -1308,6 +1418,9 @@
             }
         .main-section.campaign-stats {
             margin-top: 100px;
+        }
+        .navbar-inverse .container-fluid > .navbar-header {
+            margin-left: 0;
         }
         .navbar-nav .open .dropdown-menu {
             position: fixed;
@@ -1339,22 +1452,31 @@
             .nav-justified>li>button:disabled:focus {
                 padding: 5px 8px;
             }
-            .payment-modal .modal-dialog,
-            .trial-modal .modal-dialog {
-                max-width: 90%;
-                margin: 5% auto;
-                overflow-y: auto;
-                position: relative;
-                max-height: 95%;
+        .vertical-menu-bar {
+            display: none;
+        }
+        .navbar-brand i.fa-bars {
+            display: inline;
+        }
+        .navbar > .container-fluid .navbar-brand {
+            margin-left: 0;
+        }
+        .payment-modal .modal-dialog,
+        .trial-modal .modal-dialog {
+            max-width: 90%;
+            margin: 5% auto;
+            overflow-y: auto;
+            position: relative;
+            max-height: 95%;
+        }
+            .payment-modal .modal-title,
+            .trial-modal .modal-title {
+                font-size: 1.75em;
+                font-weight: 400;
             }
-                .payment-modal .modal-title,
-                .trial-modal .modal-title {
-                    font-size: 1.75em;
-                    font-weight: 400;
-                }
-                .payment-modal .modal-header h4 {
-                    font-size: 18px;
-                }
+            .payment-modal .modal-header h4 {
+                font-size: 18px;
+            }
         .campaign-stats .nav-justified {
             margin-bottom: 10px;
         }
@@ -1376,12 +1498,26 @@
                 line-height: 40px;
             }
             .campaign-stats .campaign-overview .campaign-preview-link {
-                display: block;
+                display: inline-block;
                 vertical-align: top;
                 margin-bottom: 10px;
                 margin-top: -8px;
                 padding-top: 0;
+                margin-right: 10px;
             }
+            .campaign-stats .campaign-overview .edit-campaign-link {
+                display: inline-block;
+                vertical-align: top;
+                margin-bottom: 10px;
+                margin-top: -8px;
+            }
+        .campaign-stats .switch-chart,
+        .campaign-stats .switch-chart-range {
+            margin-bottom: 10px;
+        }
+        .campaign-stats .switch-chart-range {
+            float: left;
+        }
         .campaign-stats .campaign-mini-stats .data-inline p {
             font-size: 13px;
         }
@@ -1401,7 +1537,7 @@
             text-align: center;
             font-size: 14px;
             line-height: 28px;
-            background: #D6FCFF;
+            background: $body-bg;
             z-index: 1;
             padding: 12px;
         }
@@ -2182,7 +2318,7 @@
     .animate-content:after {
         content: '';
         bottom: -10px;
-        background: #bef2f6;
+        background: #E1DDD7;
         float: left;
         line-height: 38px;
         height: 38px;

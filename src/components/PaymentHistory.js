@@ -29,10 +29,10 @@ export default class PaymentHistory extends Component {
                     <th className="text-center">
                         <h4>Billing Period</h4>
                     </th>
-                    <th className="text-center">
+                    <th className="text-center hidden-xs">
                         <h4>Payment Method</h4>
                     </th>
-                    <th className="text-center">
+                    <th className="text-right">
                         <h4>Amount</h4>
                     </th>
                 </tr>
@@ -58,7 +58,7 @@ export default class PaymentHistory extends Component {
                     <td>
                         <h4>{getBillingPeriod(payment)}</h4>
                     </td>
-                    <td>
+                    <td className="hidden-xs">
                         <h4>{(method => {
                             switch (method.type) {
                             case 'creditCard':
@@ -68,7 +68,7 @@ export default class PaymentHistory extends Component {
                             }
                         })(payment.method)}</h4>
                     </td>
-                    <td>
+                    <td className="text-right">
                         <h4>{formatMoney(payment.amount)}</h4>
                     </td>
                 </tr>)}
