@@ -15,7 +15,6 @@ export default class WizardPlanInfoModal extends Component {
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
                 <h1 className="modal-title">Reach 1,000 people for FREE</h1>
-                <p>Try 2 weeks at no cost</p>
             </Modal.Header>
             <Modal.Body className="text-center">
                 <div className="row">
