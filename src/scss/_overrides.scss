@@ -620,6 +620,7 @@
                 padding: 0 5px;
                 vertical-align: top;
                 outline: 0;
+                border-radius: 5px;
             }
         .app-search-input ul {
             display: flex;
@@ -1083,6 +1084,13 @@
         background: #fff;
         border: 1px solid #0dbeb2/*$brand-primary*/;
     }
+    .plan-info-box.plan-starter {
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .plan-info-box.plan-pro,
+    .plan-info-box.plan-business {
+        opacity: 0.6;
+    }
         .plan-box-header {
             background: #0dbeb2/*$brand-primary*/;
         }
@@ -1097,6 +1105,31 @@
         .plan-box-content {
             padding: 0 30px;
         }
+            .plan-box-content h2 {
+                color: $brand-danger;
+                margin: 0;
+            }
+            .plan-box-content h3 {
+                color: #0dbeb2;
+                margin: 0;
+            }
+        .plan-box-footer {
+            padding: 5px 0;
+            margin: 5px -1px -1px -1px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+        .plan-box-footer.plan-selected {
+            background: #777;
+            color: #fff;
+        }
+        .plan-box-footer.plan-coming-soon {
+            background: #bbb;
+            color: #fff;
+        }
+            .plan-box-footer h4 {
+                margin: 0;
+            }
     .checked-feature-list {
         list-style-type: none;
         padding: 0;
@@ -1311,6 +1344,8 @@
     .plan-info-box {
         background: #fff;
         border: 1px solid #0dbeb2/*$brand-primary*/;
+        margin-bottom: 20px;
+        border-radius: 4px;
     }
         .plan-box-header {
             background: #0dbeb2/*$brand-primary*/;
@@ -1326,6 +1361,7 @@
         .plan-box-content {
             padding: 0 30px;
         }
+        
     .checked-feature-list {
         list-style-type: none;
         padding: 0;
