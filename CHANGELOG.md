@@ -1,8 +1,10 @@
 # Showcase
 
+## v0.4.0 (June 1, 2016)
 * *[v0.4.0-rc1]*
   * [FEATURE]: Added persistent navigation
   * Updated styles for app based on the feedback
+* *[/v0.4.0-rc1]*
 
 ## v0.3.0 (May 31, 2016)
 * *[v0.3.0-rc1]*
