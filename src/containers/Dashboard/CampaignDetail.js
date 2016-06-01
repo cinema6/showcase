@@ -83,7 +83,7 @@ class CampaignDetail extends Component {
             inner = (
                 <div>
                     <div className="row">
-                        <div className="col-md-5">
+                        <div className="col-md-5 col-sm-5">
                             <Nav bsStyle="pills" className="switch-chart"
                                 activeKey={page.activeSeries} onSelect={selectSeries}>
                                 <NavItem eventKey={SERIES_USERS}> Views </NavItem>
@@ -91,7 +91,7 @@ class CampaignDetail extends Component {
                                 <NavItem eventKey={SERIES_INSTALLS}> Installs </NavItem>
                             </Nav>
                         </div>
-                        <div className="col-md-5 col-md-offset-2">
+                        <div className="col-md-5 col-md-offset-2 col-sm-6 col-sm-offset-1">
                             <Nav bsStyle="pills" className="switch-chart-range"
                                 activeKey={page.activeChart} onSelect={selectChart}>
                                 <NavItem eventKey={CHART_TODAY}> Today </NavItem>
