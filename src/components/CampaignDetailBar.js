@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Link } from 'react-router';
 import numeral from 'numeral';
 
 export default class CampaignDetailBar extends Component {
@@ -43,19 +44,20 @@ export default class CampaignDetailBar extends Component {
                                     </a>
                                 </span>
                                 <span className="edit-campaign-link">
-                                    <a href="#" className="btn btn-default btn-xs">
+                                    <Link to={`/dashboard/campaigns/${campaignId}/edit`}
+                                        className="btn btn-default btn-xs">
                                         <i className="fa fa-pencil-square-o"></i> Edit
-                                    </a>
+                                    </Link>
                                 </span>
                             </div>
                         </div>
                         <div className="campaign-menu col-xs-2 text-right">
                             <Dropdown id={'campaign-detail-dropdown-' + campaignId} pullRight >
-                                <Dropdown.Toggle useAnchor={true} noCaret className="btn btn-default 
-                                    btn-lg">
+                                <Dropdown.Toggle useAnchor={true}
+                                    noCaret
+                                    className="btn btn-default btn-lg">
                                     {/*<span className="hidden-xs">Menu</span>*/}
-                                    <i className="fa fa-ellipsis-v" aria-hidden="true">
-                                    </i>
+                                    <i className="fa fa-ellipsis-v" aria-hidden="true" />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu" >
                                 {/*<MenuItem href={`/#/dashboard/campaigns/${campaignId}/edit`} >
