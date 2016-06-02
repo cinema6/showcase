@@ -15,7 +15,7 @@ describe('dashboardCampaignDetailReducer()', function() {
             showInstallTrackingInstructions: false,
             showAdPreview: false,
             activeChart: 'CAMPAIGN_DETAIL_CHART_TODAY',
-            activeSeries: 'CAMPAIGN_DETAIL_SERIES_VIEWS'
+            activeSeries: 'CAMPAIGN_DETAIL_SERIES_USERS'
         });
     });
 
