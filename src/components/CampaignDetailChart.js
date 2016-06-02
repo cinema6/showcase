@@ -183,13 +183,18 @@ export default class CampaignDetailChart extends Component {
         let params = createChartParameters(this.props), empty;
 
         if (params.isEmpty){
-            empty = ( <div className="empty-chart">Not enough data to show stats. Your stats will 
-            be available soon.
-            <div className="tracking-pixel-message"><p><a href="#" onClick={event => {
+            empty = ( <div className="empty-chart">
+            <div className="no-data-message">
+                We don’t have enough data on your ad to show you these stats yet. Your ad is 
+                working hard. Check back soon to see how it’s doing.
+            </div>
+            <div className="tracking-pixel-message"><p>You haven’t installed our install tracking 
+                pixel so we can’t report on installs. 
+                <a href="#" onClick={event => {
                 event.preventDefault();
                 onShowInstallTrackingInstructions();
-            }}>Click here</a> to setup your 
-            tracking pixel</p></div></div> );
+            }}> Click here</a> to setup your 
+            tracking pixel.</p></div></div> );
         }
         
         return (

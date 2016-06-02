@@ -68,7 +68,9 @@ export const createCampaign = createThunk(({ payment, productData, targeting }) 
                 dispatch(replace(`/dashboard/campaigns/${id}`));
                 dispatch(notify({
                     type: NOTIFICATION_TYPE.SUCCESS,
-                    message: 'Your app has been added!'
+                    message: 'Your ad is ready to go and we’ll start promoting it soon.' + 
+                    'You’ll get first stat update in a few days so keep a look out.',
+                    time: 6000
                 }));
 
                 return [id];
