@@ -12,6 +12,7 @@ import { campaignFromData } from '../utils/campaign';
 import { createThunk } from '../../src/middleware/fsa_thunk';
 import { getPromotions, getOrg } from './session';
 import moment from 'moment';
+import { find } from 'lodash';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -185,3 +186,39 @@ export const collectPayment = createThunk(({ productData, targeting }) => (dispa
         throw reason;
     }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
 });
+
+export const AUTOFILL = prefix('AUTOFILL');
+export const autofill = createThunk(() => (dispatch) => {
+    const URI = localStorage.getItem('appURI');
+    if(URI){
+        dispatch(getProductData({uri: URI})).then((response) => {
+            response.id = response.uri;
+            response.title = response.name;
+            response.thumbnail = getThumbnail(response); 
+            dispatch(completeAutofill(response));
+                            
+        }).catch(reason => {
+            dispatch(notify({
+                type: NOTIFICATION_TYPE.DANGER,
+                message: `There was a problem: ${reason.response || reason.message}`
+            }));
+            return Promise.reject(reason);
+        });
+    }
+});
+
+export const AUTOFILL_COMPLETE = prefix('COMPLETE_AUTOFILL');
+function completeAutofill(productData) {
+    return {
+        type: AUTOFILL_COMPLETE,
+        payload: productData
+    };
+}
+
+function getThumbnail(obj){
+    try{
+        return (find(obj.images, (i) => i.type === 'thumbnail' ).uri);
+    }catch(e){
+        return '';
+    }
+}

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ProductWizard from './ProductWizard';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { wizardComplete } from '../../actions/product_wizard';
+import { wizardComplete, autofill } from '../../actions/product_wizard';
 import { getPromotions } from '../../actions/session';
 import { assign } from 'lodash';
 
@@ -25,7 +25,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch, props) {
     return {
         loadData() {
-            return dispatch(getPromotions());
+            return Promise.all([dispatch(getPromotions()), dispatch((autofill()) )]);
         },
 
         onFinish({ targeting, productData }) {
