@@ -189,9 +189,9 @@ export const collectPayment = createThunk(({ productData, targeting }) => (dispa
 
 export const AUTOFILL = prefix('AUTOFILL');
 export const autofill = createThunk(() => (dispatch) => {
-    const URI = localStorage.getItem('appURI');
-    if(URI){
-        dispatch(getProductData({uri: URI})).then((response) => {
+    const uri = localStorage.getItem('appURI');
+    if(uri){
+        dispatch(getProductData({uri: uri})).then((response) => {
             response.id = response.uri;
             response.title = response.name;
             response.thumbnail = getThumbnail(response); 
