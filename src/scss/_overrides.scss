@@ -347,9 +347,9 @@
  CSS Variables
  ----------------------------
  ***/
-    $stats-views:         #26ADE4;
-    $stats-reach:         #7AB317;
-    $stats-clicks:        #FAA916;
+    $stats-views:         #FAA916;
+    $stats-reach:         #26ADE4;
+    $stats-clicks:        #7AB317;
     $stats-installs:      #353A47;
  /***
  Navigation
@@ -444,6 +444,8 @@
             border-bottom: 1px solid #24272F;
         }
             .vertical-menu-bar .menu-item a:hover,
+            .vertical-menu-bar .menu-item a:focus,
+            .vertical-menu-bar .menu-item button.btn-link:focus,
             .vertical-menu-bar .menu-item button.btn-link:hover {
                 text-decoration: none;
                 background: #5C5F69;
@@ -918,6 +920,17 @@
             float: none;
             vertical-align: middle;
         }
+        .campaign-overview .campaign-actions {
+            float: none;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: right;
+            min-width: 300px;
+        }
+            .campaign-actions .btn-sm, 
+            .campaign-actions.btn-group-sm > .btn {
+                padding: 5px 6px;
+            }
         .campaign-overview .campaign-menu {
             display: inline-block;
             float: none;
@@ -963,10 +976,17 @@
                 vertical-align: top;
                 margin-bottom: 10px;
                 margin-top: -8px;
-                margin-right: 10px;
+                margin-right: 3px;
                 padding-top: 0;
             }
             .campaign-stats .campaign-overview .edit-campaign-link {
+                display: inline-block;
+                vertical-align: top;
+                margin-right: 3px;
+                margin-bottom: 10px;
+                margin-top: -8px;
+            }
+            .campaign-stats .campaign-overview .trash-campaign-link {
                 display: inline-block;
                 vertical-align: top;
                 margin-bottom: 10px;
@@ -1385,6 +1405,12 @@
  Responsive styles
  ----------------------------
  ***/
+    @media (min-width: 1200px) {    
+        .campaign-actions .btn-sm, 
+        .campaign-actions.btn-group-sm > .btn {
+            padding: 5px 10px;
+        }
+    }
     @media (min-width: 998px) {
         .chart-views .empty-chart, 
         .chart-reach .empty-chart,
@@ -1399,6 +1425,13 @@
         .chart-clicks .empty-chart,
         .chart-installs .empty-chart {
             padding: 125px 20px;
+        }
+        
+    }
+    @media (min-width: 768px) and (max-width: 998px) {
+        .campaign-overview .campaign-actions {
+            margin-top: 10px;
+            text-align: left;
         }
     }
     @media (min-width: 768px) {
@@ -1516,6 +1549,10 @@
         .campaign-stats .nav-justified {
             margin-bottom: 10px;
         }
+        .campaign-overview .campaign-actions {
+            margin-top: 10px;
+            text-align: left;
+        }
         .campaign-stats .campaign-overview .advertiser-logo {
             height: 50px;
             width: 50px;
@@ -1544,6 +1581,7 @@
             .campaign-stats .campaign-overview .edit-campaign-link {
                 display: inline-block;
                 vertical-align: top;
+                margin-right: 10px;
                 margin-bottom: 10px;
                 margin-top: -8px;
             }

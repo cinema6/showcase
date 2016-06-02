@@ -9,7 +9,7 @@ import {
    CHART_30DAY,
 
    SERIES_USERS,
-   SERIES_VIEWS,
+//   SERIES_VIEWS,
    SERIES_CLICKS,
    SERIES_INSTALLS
 
@@ -24,8 +24,8 @@ export default class CampaignDetailTable extends Component {
         } = this.props;
         let activeSet = [],
             timeFormatter = () => 'unknown',
+//            classViews    = `${series === SERIES_VIEWS ? '' : 'hidden-xs'}`,
             classUsers    = `${series === SERIES_USERS ? '' : 'hidden-xs'}`,
-            classViews    = `${series === SERIES_VIEWS ? '' : 'hidden-xs'}`,
             classClicks   = `${series === SERIES_CLICKS ? '' : 'hidden-xs'}`,
             classInstalls = `${series === SERIES_INSTALLS ? '' : 'hidden-xs'}`;
 
@@ -63,10 +63,8 @@ export default class CampaignDetailTable extends Component {
                         <thead>
                             <tr>
                                 <th> <h4> Timeline </h4> </th>
-                                <th className={`text-center ${classViews}`}> 
-                                    <h4> Views </h4> </th>
                                 <th className={`text-center ${classUsers}`}> 
-                                    <h4> Reach </h4> </th>
+                                    <h4> Views </h4> </th>
                                 <th className={`text-center ${classClicks}`}> 
                                     <h4> Clicks </h4> </th>
                                 <th className={`text-center ${classInstalls}`}> 
@@ -80,15 +78,10 @@ export default class CampaignDetailTable extends Component {
                                         <th> 
                                             <h4 className="timeline-stacked">{timeFormatter(row)} 
                                         </h4></th> 
-                                        <td className={classViews}> 
-                                            <h4 className="stats-value stats-col-views">
-                                            {numsFormatter(row.views)} </h4>
-                                            <span className="small">Views</span>
-                                        </td> 
                                         <td className={classUsers}> 
                                             <h4 className="stats-value stats-col-reach">
                                             {numsFormatter(row.users)} </h4>
-                                            <span className="small">Reach</span>
+                                            <span className="small">Views</span>
                                         </td> 
                                         <td className={classClicks}> 
                                             <h4 className="stats-value stats-col-clicks">
