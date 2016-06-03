@@ -25,7 +25,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch, props) {
     return {
         loadData() {
-            return Promise.all([dispatch(getPromotions()), dispatch((autofill()) )]);
+            return Promise.all([dispatch(getPromotions()), dispatch(autofill())]);
         },
 
         onFinish({ targeting, productData }) {
