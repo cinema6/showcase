@@ -192,16 +192,12 @@ export const autofill = createThunk(() => (dispatch) => {
     const uri = localStorage.getItem('appURI');
     if(uri){
         return dispatch(getProductData({uri: uri})).then((response) => {
-            
             return dispatch(completeAutofill({
                 id: response.uri,
                 title: response.name,
                 thumbnail: getThumbnail(response),
                 uri: response.uri 
-            }));
-                            
-        }).catch(reason => {
-            return Promise.reject(reason);
+            }));             
         });
     }
 });
@@ -215,9 +211,5 @@ function completeAutofill(productData) {
 }
 
 function getThumbnail(obj){
-    try{
-        return (find(obj.images, (i) => i.type === 'thumbnail' ).uri);
-    }catch(e){
-        return '';
-    }
+    return (find(obj.images, i => i.type === 'thumbnail') || {}).uri || '';
 }
