@@ -191,17 +191,16 @@ export const AUTOFILL = prefix('AUTOFILL');
 export const autofill = createThunk(() => (dispatch) => {
     const uri = localStorage.getItem('appURI');
     if(uri){
-        dispatch(getProductData({uri: uri})).then((response) => {
-            response.id = response.uri;
-            response.title = response.name;
-            response.thumbnail = getThumbnail(response); 
-            dispatch(completeAutofill(response));
+        return dispatch(getProductData({uri: uri})).then((response) => {
+            
+            return dispatch(completeAutofill({
+                id: response.uri,
+                title: response.name,
+                thumbnail: getThumbnail(response),
+                uri: response.uri 
+            }));
                             
         }).catch(reason => {
-            dispatch(notify({
-                type: NOTIFICATION_TYPE.DANGER,
-                message: `There was a problem: ${reason.response || reason.message}`
-            }));
             return Promise.reject(reason);
         });
     }
