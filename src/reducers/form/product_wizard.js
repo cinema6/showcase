@@ -1,6 +1,6 @@
 'use strict';
 
-import { pick, includes, reject, isEqual, isArray } from 'lodash';
+import { pick, includes, reject, isEqual, isArray, assign } from 'lodash';
 import { handleActions } from 'redux-actions';
 import {
     PRODUCT_SELECTED,
@@ -16,7 +16,15 @@ export default handleActions({
     [`${PRODUCT_SELECTED}_PENDING`]: state => pick(state, ['search']),
 
     [AUTOFILL_COMPLETE]: (state, action) => {
-        return Object.assign({}, state, {search: {value:  [action.payload] }});
+        return assign(
+            {}, 
+            state, 
+            {search : assign(
+                {}, 
+                state.search, 
+                {value: [action.payload] }) 
+            }
+        );
     },
 
     // Clear the form when the wizard is destroyed

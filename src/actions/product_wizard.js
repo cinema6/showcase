@@ -190,6 +190,7 @@ export const collectPayment = createThunk(({ productData, targeting }) => (dispa
 export const AUTOFILL = prefix('AUTOFILL');
 export const autofill = createThunk(() => (dispatch) => {
     const uri = localStorage.getItem('appURI');
+    localStorage.removeItem('appURI');
     if(uri){
         return dispatch(getProductData({uri: uri})).then((response) => {
             return dispatch(completeAutofill({
