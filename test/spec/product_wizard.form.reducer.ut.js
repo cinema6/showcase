@@ -3,10 +3,12 @@
 import productWizardReducer, { plugin } from '../../src/reducers/form/product_wizard';
 import {
     PRODUCT_SELECTED,
-    WIZARD_DESTROYED
+    WIZARD_DESTROYED,
+    AUTOFILL_COMPLETE
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import * as TARGETING from '../../src/enums/targeting';
+import { assign } from 'lodash'
 
 describe('productWizardReducer()', function() {
     let state;
@@ -37,6 +39,14 @@ describe('productWizardReducer()', function() {
                 expect(newState).toEqual({
                     search: { value: [{ id: 'the-thing' }] }
                 });
+            });
+        });
+        describe(AUTOFILL_COMPLETE, function(){
+            beforeEach(function() {
+                newState = productWizardReducer(state, createAction(AUTOFILL_COMPLETE)( {id: 'test'}));        
+            });
+            it('should update the state.search.value', function(){
+                expect(newState.search.value[0].id).toEqual('test');
             });
         });
 

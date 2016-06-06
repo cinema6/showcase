@@ -10,7 +10,8 @@ import {
     LOAD_CAMPAIGN,
     UPDATE_CAMPAIGN,
     PREVIEW_LOADED,
-    COLLECT_PAYMENT
+    COLLECT_PAYMENT,
+    AUTOFILL
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -24,7 +25,7 @@ import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
 import { campaignFromData } from '../../src/utils/campaign';
 import { push, goBack } from 'react-router-redux';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-import { collectPayment } from '../../src/actions/product_wizard';
+import { collectPayment, autofill, completeAutofill } from '../../src/actions/product_wizard';
 import { dispatch } from '../helpers/stubs';
 import { getPromotions, getOrg } from '../../src/actions/session';
 import { assign } from 'lodash';
@@ -650,6 +651,65 @@ describe('product wizard actions', function() {
 
                 it('should reject with the reason', function() {
                     expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+        });
+    });
+
+    describe('autofill()', function(){
+        this.thunk;
+        this.dispatch;
+        beforeEach(function(done){
+            this.dispatch = dispatch();
+            this.thunk = getThunk(autofill());
+            setTimeout(done);
+        });
+        afterEach(function(){
+            localStorage.removeItem('appURI');
+        });
+        it('should return a thunk', function(){
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+        describe('when executed', function() {
+            beforeEach(function(done){
+                localStorage.setItem("appURI", "s");
+                this.uri = localStorage.getItem("appURI");
+                this.thunk(this.dispatch);
+                setTimeout(done);
+            });
+            it('should get the app data', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getProductData({ uri: this.uri }));
+            });
+            describe('if there is a URI in localstorage appURI', function(){
+                beforeEach(function(done){
+                    localStorage.setItem("appURI", "testURI");
+                    this.dispatch.getDeferred(getProductData({ uri: this.uri })).resolve({
+                        id: this.uri,
+                        name: 't',
+                        images: [{type: 'thumbnail', uri: 'uri'}],
+                        uri: this.uri 
+                    });
+                    setTimeout(done);
+                });
+                it('should return app data', function(){
+                    expect(this.dispatch).toHaveBeenCalledWith(completeAutofill({
+                        id: this.uri,
+                        title: 't',
+                        thumbnail: 'uri',
+                        uri: this.uri
+                    }));
+                });
+            });
+            describe('if there is no URI in localstorage appURI', function(){
+                beforeEach(function(done){
+                    localStorage.removeItem("appURI");
+                    this.uri = localStorage.getItem("appURI");
+                    this.dispatch.calls.reset();
+                    this.thunk(this.dispatch);
+                    setTimeout(done);
+                });
+                it('should not dispatch', function(){
+                    expect(this.dispatch).not.toHaveBeenCalled();
                 });
             });
         });

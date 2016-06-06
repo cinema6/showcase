@@ -191,7 +191,7 @@ export const AUTOFILL = prefix('AUTOFILL');
 export const autofill = createThunk(() => (dispatch) => {
     const uri = localStorage.getItem('appURI');
     localStorage.removeItem('appURI');
-    if(uri){
+    if(uri) {
         return dispatch(getProductData({uri: uri})).then((response) => {
             return dispatch(completeAutofill({
                 id: response.uri,
@@ -204,13 +204,13 @@ export const autofill = createThunk(() => (dispatch) => {
 });
 
 export const AUTOFILL_COMPLETE = prefix('COMPLETE_AUTOFILL');
-function completeAutofill(productData) {
+export function completeAutofill(productData) {
     return {
         type: AUTOFILL_COMPLETE,
         payload: productData
     };
 }
 
-function getThumbnail(obj){
+function getThumbnail(obj) {
     return (find(obj.images, i => i.type === 'thumbnail') || {}).uri || '';
 }
