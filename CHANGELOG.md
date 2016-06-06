@@ -1,6 +1,9 @@
 # Showcase
 
 ## v0.5.0 (June 6, 2016)
+* *[v0.5.0-rc3]*
+  * [FIX]: Final fix for FAQs link
+
 * *[v0.5.0-rc2]*
   * [FIX]: Updated FAQs link to open in new tab, fixed button width on billing
 * *[/v0.5.0-rc2]*

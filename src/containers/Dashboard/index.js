@@ -108,7 +108,7 @@ class Dashboard extends Component {
                         <span className="menu-item-label">Profile</span></Link>
                     </li>
                     <li className="menu-item">
-                        <a href="https://reelcontent.com/apps/faqs.html">
+                        <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
                         <i className="fa fa-question" /> 
                         <span className="menu-item-label">FAQs</span></a>
                     </li>                    
