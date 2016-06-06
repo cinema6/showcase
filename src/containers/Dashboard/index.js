@@ -79,7 +79,7 @@ class Dashboard extends Component {
                         <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
                     </li>
                     <li className="menu-item">
-                        <a href="https://reelcontent.com/apps/faqs.html">
+                        <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
                         <i className="fa fa-question" /> FAQs</a>
                     </li>
                     <li className="menu-item">

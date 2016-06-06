@@ -53,6 +53,7 @@ class Billing extends Component {
                             <div className="col-md-4 btn-wrap">
                                 <Button bsSize="lg"
                                     bsStyle="primary"
+                                    className="btn-block"
                                     onClick={() => showAlert({
                                         title: 'Cancel Your Subscription',
                                         description: (<span>
