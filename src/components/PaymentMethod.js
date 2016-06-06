@@ -37,7 +37,7 @@ export default class PaymentMethod extends Component {
             })()}
                 <div className="col-md-4 btn-wrap">
                     <button type="button"
-                        className="btn btn-primary btn-lg"
+                        className="btn btn-primary btn-lg btn-block"
                         onClick={onChangeMethod}>
                         {method ? 'Change' : 'Add'}
                     </button>
