@@ -34,13 +34,29 @@ class Billing extends Component {
                 </div>
                 <div className="col-md-6">
                     <div className="billing-summary card-item col-md-12">
-                        <div className="data-stacked">
-                            <h4>Your subscription provides</h4>
-                            <h3>2,000 views</h3>
-                        </div>
-                        <div className="data-stacked">
-                            <h4>Next Payment due</h4>
-                            <h3>$50</h3>
+                        <div className="row">
+                            <div className="col-md-8">
+                                <div className="data-stacked">
+                                    <h4>Your subscription provides</h4>
+                                    <h3>2,000 views</h3>
+                                </div>
+                                <div className="data-stacked">
+                                    <h4>Next Payment due</h4>
+                                    <h3>$50</h3>
+                                </div>
+                            </div>
+                            <div className="col-md-4 btn-wrap">
+                                <a href="#" className="btn btn-primary btn-lg">Cancel</a>
+                            </div>
+                            {/*
+                                Open a alert modal with the following details
+                                Title - Cancel Your Subscription
+                                Body - Are you sure you want to cancel your Subscription? Your app
+                                will lose the exposure it getting if you choose to cancel. If you
+                                still want to cancel, please email us at billing@reelcontent.com
+                                from your email that is connected to your account. Your membership
+                                will be suspended at the end of current billing period on [date]
+                            */}
                         </div>
                     </div>
                 </div>

@@ -62,7 +62,8 @@ export const removeCampaign = createThunk(campaignId => {
     return function thunk(dispatch) {
         return dispatch(showAlert({
             title: 'Woah There!',
-            description: 'Are you sure you want to delete your campaign? This cannot be un-done.',
+            description: 'Are you sure you want to replace this app? Doing this ' 
+            + 'will erase all your stats and stop current ads. This cannot be un-done.',
             buttons: [
                 {
                     text: 'Keep',

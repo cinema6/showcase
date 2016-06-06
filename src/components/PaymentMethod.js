@@ -9,18 +9,19 @@ export default class PaymentMethod extends Component {
         } = this.props;
 
         return (<div className="billing-summary card-item col-md-12">
+                <div className="row">
             {loading && !method && (<div className="spinner-contained">
                 <div className="spinner-position">
                     <div className="animation-target">
                     </div>
                 </div>
             </div>)}
-            <h3>Active payment method</h3>
             {method && (() => {
                 switch (method.type) {
                 case 'creditCard':
                     return (
                         <div className="col-md-8">
+                            <h3>Active payment method</h3>
                             <h4>{method.cardType} ****{method.last4}</h4>
                             <h4>{method.cardholderName}</h4>
                             <p>Expires {method.expirationDate}</p>
@@ -34,12 +35,13 @@ export default class PaymentMethod extends Component {
                     );
                 }
             })()}
-            <div className="col-md-4">
-                <button type="button"
-                    className="btn btn-primary btn-lg"
-                    onClick={onChangeMethod}>
-                    {method ? 'Change' : 'Add'}
-                </button>
+                <div className="col-md-4 btn-wrap">
+                    <button type="button"
+                        className="btn btn-primary btn-lg"
+                        onClick={onChangeMethod}>
+                        {method ? 'Change' : 'Add'}
+                    </button>
+                </div>
             </div>
         </div>);
     }

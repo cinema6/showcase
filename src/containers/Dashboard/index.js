@@ -74,9 +74,13 @@ class Dashboard extends Component {
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
-                    </li>                    
+                    </li>
                     <li className="menu-item">
                         <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
+                    </li>
+                    <li className="menu-item">
+                        <a href="https://reelcontent.com/apps/faqs.html">
+                        <i className="fa fa-question" /> FAQs</a>
                     </li>
                     <li className="menu-item">
                         <button className="btn btn-link" onClick={logoutUser}>
@@ -98,11 +102,16 @@ class Dashboard extends Component {
                     <li className="menu-item">
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> 
                         <span className="menu-item-label">Billing</span></Link>
-                    </li>                    
+                    </li>
                     <li className="menu-item">
                         <Link to="/dashboard/account"><i className="fa fa-user" /> 
                         <span className="menu-item-label">Profile</span></Link>
                     </li>
+                    <li className="menu-item">
+                        <a href="https://reelcontent.com/apps/faqs.html">
+                        <i className="fa fa-question" /> 
+                        <span className="menu-item-label">FAQs</span></a>
+                    </li>                    
                     <li className="menu-item">
                         <button className="btn btn-link" onClick={logoutUser}>
                             <i className="fa fa-power-off" /> 

@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import numeral from 'numeral';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default class CampaignDetailBar extends Component {
     render() {
@@ -66,22 +67,41 @@ export default class CampaignDetailBar extends Component {
                 <div className="campaign-mini-stats">
                     <div className="row">
                         <div className="col-sm-4 col-xs-12 text-center">
-                            <div className="campaign-reach data-inline">
-                                <p>Views</p>
-                                <h1>{format(users)}</h1>
-                            </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={<Tooltip>
+                                    Your ad was viewed by these people(Unique Views)
+                                </Tooltip>}>
+                                <div className="campaign-reach data-inline">
+                                    <p>Views</p>                                
+                                    <h1>{format(users)}</h1>
+                                </div>
+                            </OverlayTrigger>
                         </div>
                         <div className="col-sm-4 col-xs-12 text-center">
-                            <div className="campaign-clicks data-inline">
-                                <p>Clicks</p>
-                                <h1>{format(clicks)}</h1>
-                            </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={<Tooltip>
+                                    This is the count of your ad clicks.
+                                </Tooltip>}>
+                                <div className="campaign-clicks data-inline">
+                                    <p>Clicks</p>
+                                    <h1>{format(clicks)}</h1>
+                                </div>
+                            </OverlayTrigger>
                         </div>
                         <div className="col-sm-4 col-xs-12 text-center">
-                            <div className="campaign-installs data-inline">
-                                <p>Installs</p>
-                                <h1>{format(installs)}</h1>
-                            </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={<Tooltip>
+                                    This is how many times your app was installed. Note: You need a
+                                    tracking pixel to see the stats for instals.
+                                </Tooltip>}>
+                                <div className="campaign-installs data-inline">
+                                    <p>Installs</p>
+                                    <h1>{format(installs)}</h1>
+                                </div>
+                            </OverlayTrigger>
                         </div>
                     </div>
                 </div>

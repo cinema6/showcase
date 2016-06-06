@@ -28,15 +28,18 @@ export default class WizardPlanInfoModal extends Component {
                                     </div>
                                     <div className="plan-box-content">
                                         <div className="plan-box-item stacked-item">
-                                            <span>Reach</span>
                                             <h2>2,000</h2>
-                                            <span>people each month</span>
+                                            <span>Unique Views</span>
                                         </div>
-                                        <hr />
                                         <div className="plan-box-item stacked-item">
-                                            <span>Only</span>
+                                            <span>Promote 1 App</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Basic Stats</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
                                             <h3>$49.99</h3>
-                                            <span>per month</span>
+                                            <span>/mo</span>
                                         </div>
                                     </div>
                                     <div className="plan-box-footer plan-selected">
@@ -51,15 +54,18 @@ export default class WizardPlanInfoModal extends Component {
                                     </div>
                                     <div className="plan-box-content">
                                         <div className="plan-box-item stacked-item">
-                                            <span>Reach</span>
                                             <h2>7,500</h2>
-                                            <span>people each month</span>
+                                            <span>Unique Views</span>
                                         </div>
-                                        <hr />
                                         <div className="plan-box-item stacked-item">
-                                            <span>Only</span>
+                                            <span>Promote 3 Apps</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Custom Reports</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
                                             <h3>$149.99</h3>
-                                            <span>per month</span>
+                                            <span>/mo</span>
                                         </div>
                                     </div>
                                     <div className="plan-box-footer plan-coming-soon">
@@ -74,15 +80,18 @@ export default class WizardPlanInfoModal extends Component {
                                     </div>
                                     <div className="plan-box-content">
                                         <div className="plan-box-item stacked-item">
-                                            <span>Reach</span>
                                             <h2>25,000</h2>
-                                            <span>people each month</span>
+                                            <span>Unique Views</span>
                                         </div>
-                                        <hr />
                                         <div className="plan-box-item stacked-item">
-                                            <span>Only</span>
+                                            <span>Promote 10 Apps</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Custom Reports</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
                                             <h3>$499.99</h3>
-                                            <span>per month</span>
+                                            <span>/mo</span>
                                         </div>
                                     </div>
                                     <div className="plan-box-footer plan-coming-soon">
