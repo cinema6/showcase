@@ -3,6 +3,7 @@
 ## v0.5.0 (June 6, 2016)
 * *[v0.5.0-rc2]*
   * [FIX]: Updated FAQs link to open in new tab, fixed button width on billing
+* *[/v0.5.0-rc2]*
 
 * *[v0.5.0-rc1]*
   * [FIX]: Removed Views from analytics, replaced "Reach" with "Views".
