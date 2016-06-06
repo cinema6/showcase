@@ -11,6 +11,10 @@ import PaymentHistory from '../../components/PaymentHistory';
 import ChangePaymentMethodModal from '../../components/ChangePaymentMethodModal';
 import { showChangeModal, loadPageData, changePaymentMethod } from '../../actions/billing';
 import { getClientToken } from '../../actions/payment';
+import { showAlert } from '../../actions/alert';
+import { Button } from 'react-bootstrap';
+
+const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
 class Billing extends Component {
     componentWillMount() {
@@ -25,7 +29,8 @@ class Billing extends Component {
 
             showChangeModal,
             getClientToken,
-            changePaymentMethod
+            changePaymentMethod,
+            showAlert
         } = this.props;
         return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
             <div className="row">
@@ -34,13 +39,39 @@ class Billing extends Component {
                 </div>
                 <div className="col-md-6">
                     <div className="billing-summary card-item col-md-12">
-                        <div className="data-stacked">
-                            <h4>Your subscription provides</h4>
-                            <h3>2,000 views</h3>
-                        </div>
-                        <div className="data-stacked">
-                            <h4>Next Payment due</h4>
-                            <h3>$50</h3>
+                        <div className="row">
+                            <div className="col-md-8">
+                                <div className="data-stacked">
+                                    <h4>Your subscription provides</h4>
+                                    <h3>2,000 views</h3>
+                                </div>
+                                <div className="data-stacked">
+                                    <h4>Next Payment due</h4>
+                                    <h3>$50</h3>
+                                </div>
+                            </div>
+                            <div className="col-md-4 btn-wrap">
+                                <Button bsSize="lg"
+                                    bsStyle="primary"
+                                    onClick={() => showAlert({
+                                        title: 'Cancel Your Subscription',
+                                        description: (<span>
+                                            Are you sure you want to cancel your subscription? Your
+                                            app will lose the exposure it's getting if you choose to
+                                            cancel. If you still want to cancel, please email us
+                                            at <a href={CANCEL_ACCOUNT_HREF}>
+                                                billing@reelcontent.com
+                                            </a> from the email that is connected to your account.
+                                            Your membership will be suspended at the end of current
+                                            billing period.
+                                        </span>),
+                                        buttons: [
+                                            { text: 'Dismiss', onSelect: dismiss => dismiss() }
+                                        ]
+                                    })}>
+                                    Cancel
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -79,7 +110,8 @@ Billing.propTypes = {
     loadPageData: PropTypes.func.isRequired,
     showChangeModal: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
-    changePaymentMethod: PropTypes.func.isRequired
+    changePaymentMethod: PropTypes.func.isRequired,
+    showAlert: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -98,6 +130,7 @@ export default compose(
         loadPageData,
         showChangeModal,
         getClientToken,
-        changePaymentMethod
+        changePaymentMethod,
+        showAlert
     })
 )(Billing);

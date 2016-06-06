@@ -80,14 +80,14 @@ class EditTargeting extends Component {
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Adults <small>(18-35)</small>
                     </label>
                     <label className={classnames('btn btn-default', {
                         active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.ADULTS} /> Adults
+                            option={TARGETING.AGE.ADULTS} /> Adults <small>(35+)</small>
                     </label>
                 </div>
                 {/*swapping mobile with vertical class*/}
@@ -119,14 +119,14 @@ class EditTargeting extends Component {
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.YOUNG_ADULTS} /> Young Adults
+                            option={TARGETING.AGE.YOUNG_ADULTS} /> Adults <small>(18-35)</small>
                     </label>
                     <label className={classnames('btn btn-default', {
                         active: includes(value(age), TARGETING.AGE.ADULTS)
                     })}>
                         <MultiCheckbox value={value(age)}
                             onChange={age.onChange}
-                            option={TARGETING.AGE.ADULTS} /> Adults
+                            option={TARGETING.AGE.ADULTS} /> Adults <small>(35+)</small>
                     </label>
                 </div>
             </div>

@@ -1,10 +1,11 @@
 import { renderIntoDocument, findAllInRenderedTree, findRenderedComponentWithType } from 'react-addons-test-utils';
 import React from 'react';
 import { createUuid } from 'rc-uuid';
-import { keyBy } from 'lodash';
+import { keyBy, assign } from 'lodash';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
+import { showAlert } from '../../src/actions/alert';
 
 const proxyquire = require('proxyquire');
 
@@ -30,6 +31,7 @@ describe('Billing', function() {
         Billing = proxyquire('../../src/containers/Dashboard/Billing', {
             '../../actions/billing': billingActions,
             '../../actions/payment': paymentActions,
+            '../../actions/alert': require('../../src/actions/alert'),
 
             '../../components/ChangePaymentMethodModal': {
                 default: ChangePaymentMethodModal,
@@ -146,6 +148,33 @@ describe('Billing', function() {
                 it('should dispatch changePaymentMethod()', function() {
                     expect(billingActions.changePaymentMethod).toHaveBeenCalledWith(method);
                     expect(store.dispatch).toHaveBeenCalledWith(billingActions.changePaymentMethod.calls.mostRecent().returnValue);
+                });
+            });
+
+            describe('showAlert()', function() {
+                let title, description, buttons;
+
+                beforeEach(function() {
+                    title = 'My Alert';
+                    description = 'Is so helpful to the user.';
+                    buttons = [
+                        { text: 'Do Something', onSelect: jasmine.createSpy('onSelect()') }
+                    ];
+
+                    component.props.showAlert({ title, description, buttons });
+                });
+
+                it('should dispatch() showAlert()', function() {
+                    const expected = showAlert({ title, description, buttons });
+
+                    expect(store.dispatch).toHaveBeenCalledWith(assign({}, expected, {
+                        payload: assign({}, expected.payload, {
+                            id: jasmine.any(String),
+                            buttons: expected.payload.buttons.map(button => assign({}, button, {
+                                id: jasmine.any(String)
+                            }))
+                        })
+                    }));
                 });
             });
         });
