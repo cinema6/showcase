@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.6.0-rc1]*
+  * [FEATURE]: Add support for autofilling the app search field if the
+    user visited one of our landing pages
+
 ## v0.5.0 (June 6, 2016)
 * *[v0.5.0-rc3]*
   * [FIX]: Final fix for FAQs link
