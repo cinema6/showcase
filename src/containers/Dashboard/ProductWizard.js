@@ -26,11 +26,7 @@ import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 
 const PREVIEW = {
     CARD_OPTIONS: {
-        cardType: 'showcase-app',
-        description: {
-            show: true,
-            autoHide: 3
-        }
+        cardType: 'showcase-app'
     },
     PLACEMENT_OPTIONS: {
         type: 'mobile-card',
@@ -164,8 +160,15 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <AdPreview cardOptions={PREVIEW.CARD_OPTIONS}
-                        placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                    <AdPreview placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                        cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
+                            description: previewLoaded ? {
+                                show: true,
+                                autoHide: 3
+                            } : {
+                                show: false
+                            }
+                        })}
                         productData={this.getProductData()}
                         factory={createInterstitialFactory}
                         showLoadingAnimation={!previewLoaded}
