@@ -36,7 +36,7 @@ const PREVIEW = {
         type: 'mobile-card',
         branding: 'showcase-app--interstitial'
     },
-    LOAD_DELAY: 12500
+    LOAD_DELAY: 3000
 };
 
 class ProductWizard extends Component {
