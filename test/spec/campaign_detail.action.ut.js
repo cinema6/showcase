@@ -321,7 +321,7 @@ describe('campaign-detail-actions',function(){
             it('should show an alert', function() {
                 expect(alertActions.showAlert).toHaveBeenCalledWith({
                     title: 'Woah There!',
-                    description: 'Are you sure you want to delete your campaign? This cannot be un-done.',
+                    description: jasmine.any(String),
                     buttons: [
                         {
                             text: 'Keep',

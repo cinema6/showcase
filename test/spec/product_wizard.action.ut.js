@@ -512,7 +512,7 @@ describe('product wizard actions', function() {
                         });
 
                         it('should show a success notification', function() {
-                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.SUCCESS, message: 'Your app has been added!' });
+                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.SUCCESS, message: jasmine.any(String), time: 6000 });
                             expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
                         });
 

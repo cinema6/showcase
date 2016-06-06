@@ -415,8 +415,7 @@ describe('ProductWizard', function() {
                             expect(preview.props.cardOptions).toEqual({
                                 cardType: 'showcase-app',
                                 description: {
-                                    show: true,
-                                    autoHide: 3
+                                    show: false
                                 }
                             });
                         });
@@ -482,6 +481,18 @@ describe('ProductWizard', function() {
                         describe('loadDelay', function() {
                             it('should be 0', function() {
                                 expect(preview.props.loadDelay).toBe(0);
+                            });
+                        });
+
+                        describe('describe cardOptions', function() {
+                            it('should show the description', function() {
+                                expect(preview.props.cardOptions).toEqual({
+                                    cardType: 'showcase-app',
+                                    description: {
+                                        show: true,
+                                        autoHide: 3
+                                    }
+                                });
                             });
                         });
                     });
