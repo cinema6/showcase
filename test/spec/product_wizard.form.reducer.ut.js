@@ -8,7 +8,6 @@ import {
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import * as TARGETING from '../../src/enums/targeting';
-import { assign } from 'lodash'
 
 describe('productWizardReducer()', function() {
     let state;

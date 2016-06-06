@@ -10,8 +10,7 @@ import {
     LOAD_CAMPAIGN,
     UPDATE_CAMPAIGN,
     PREVIEW_LOADED,
-    COLLECT_PAYMENT,
-    AUTOFILL
+    COLLECT_PAYMENT
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -672,8 +671,8 @@ describe('product wizard actions', function() {
         });
         describe('when executed', function() {
             beforeEach(function(done){
-                localStorage.setItem("appURI", "s");
-                this.uri = localStorage.getItem("appURI");
+                localStorage.setItem('appURI', 's');
+                this.uri = localStorage.getItem('appURI');
                 this.thunk(this.dispatch);
                 setTimeout(done);
             });
@@ -682,7 +681,7 @@ describe('product wizard actions', function() {
             });
             describe('if there is a URI in localstorage appURI', function(){
                 beforeEach(function(done){
-                    localStorage.setItem("appURI", "testURI");
+                    localStorage.setItem('appURI', 'testURI');
                     this.dispatch.getDeferred(getProductData({ uri: this.uri })).resolve({
                         id: this.uri,
                         name: 't',
@@ -702,8 +701,8 @@ describe('product wizard actions', function() {
             });
             describe('if there is no URI in localstorage appURI', function(){
                 beforeEach(function(done){
-                    localStorage.removeItem("appURI");
-                    this.uri = localStorage.getItem("appURI");
+                    localStorage.removeItem('appURI');
+                    this.uri = localStorage.getItem('appURI');
                     this.dispatch.calls.reset();
                     this.thunk(this.dispatch);
                     setTimeout(done);

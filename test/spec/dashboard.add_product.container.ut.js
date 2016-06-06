@@ -115,8 +115,6 @@ describe('AddProduct', function() {
             });
 
             describe('loadData()', function() {
-                let result;
-
                 beforeEach(function(done) {
                     result = component.props.loadData();
                     setTimeout(done);
@@ -124,7 +122,6 @@ describe('AddProduct', function() {
 
                 it('should get the promotions', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(getPromotions());
-                    //expect(result).toBe(store.dispatch.calls.mostRecent().returnValue);
                 });
                 it('should get app data', function(){
                     expect(store.dispatch).toHaveBeenCalledWith(autofill());
