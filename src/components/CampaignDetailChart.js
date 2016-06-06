@@ -191,9 +191,9 @@ export default class CampaignDetailChart extends Component {
             <div className="tracking-pixel-message"><p>You haven’t installed our install tracking 
                 pixel so we can’t report on installs. 
                 <a href="#" onClick={event => {
-                event.preventDefault();
-                onShowInstallTrackingInstructions();
-            }}> Click here</a> to setup your 
+                    event.preventDefault();
+                    onShowInstallTrackingInstructions();
+                }}> Click here</a> to setup your 
             tracking pixel.</p></div></div> );
         }
         

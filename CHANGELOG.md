@@ -4,6 +4,7 @@
   * [FIX]: Removed Views from analytics, replaced "Reach" with "Views".
   * [FIX]: Removed drop-down menu from the CampaignDetailBar
   * [FIX]: Created a Replace button for Delete.  Needs styling fix-ups.
+  * [FIX]: Updated stats, alert messages and pricing table.
 
 ## v0.4.0 (June 1, 2016)
 * *[v0.4.0-rc1]*
