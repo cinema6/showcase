@@ -3,6 +3,7 @@
 * *[v0.6.0-rc1]*
   * [FEATURE]: Add support for autofilling the app search field if the
     user visited one of our landing pages
+  * [FEATURE]: Add support for sending referreral codes on signup
 
 ## v0.5.0 (June 6, 2016)
 * *[v0.5.0-rc3]*
