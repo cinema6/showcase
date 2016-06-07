@@ -5,7 +5,8 @@ import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { productDataFromCampaign } from '../utils/campaign';
 
 const CARD_OPTIONS = {
-    cardType: 'showcase-app'
+    cardType: 'showcase-app',
+    advanceInterval: 3
 };
 const PLACEMENT_OPTIONS = {
     type: 'mobile-card',

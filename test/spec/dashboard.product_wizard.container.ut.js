@@ -414,6 +414,7 @@ describe('ProductWizard', function() {
                         it('should exist', function() {
                             expect(preview.props.cardOptions).toEqual({
                                 cardType: 'showcase-app',
+                                advanceInterval: 3,
                                 description: {
                                     show: false
                                 }
@@ -488,6 +489,7 @@ describe('ProductWizard', function() {
                             it('should show the description', function() {
                                 expect(preview.props.cardOptions).toEqual({
                                     cardType: 'showcase-app',
+                                    advanceInterval: 3,
                                     description: {
                                         show: true,
                                         autoHide: 3
