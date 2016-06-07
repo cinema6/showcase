@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.7.0 (June 7, 2016)
+* *[v0.7.0-rc1]*
+  * Change the autoadvance interval of the ad preview to 3 seconds
+* *[/v0.7.0-rc1]*
+
 ## v0.6.0 (June 7, 2016)
 * *[v0.6.0-rc1]*
   * [FEATURE]: Add support for autofilling the app search field if the
