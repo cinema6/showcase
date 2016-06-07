@@ -36,7 +36,9 @@ describe('SignUp', function() {
 
             props = {
                 location: {
-                    query: {}
+                    query: {
+                        ref: 'ref-0GK6Z407ZL0uII1B'
+                    }
                 }
             };
 
@@ -90,7 +92,8 @@ describe('SignUp', function() {
                         expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
                             company: `${values.firstName} ${values.lastName}`,
                             paymentPlanId: APP_CONFIG.paymentPlans[0].id,
-                            promotion: APP_CONFIG.defaultPromotion
+                            promotion: APP_CONFIG.defaultPromotion,
+                            referralCode: props.location.query.ref
                         }))[CALL_API]);
                     });
 
@@ -106,7 +109,8 @@ describe('SignUp', function() {
                             expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
                                 company: `${values.firstName} ${values.lastName}`,
                                 paymentPlanId: APP_CONFIG.paymentPlans[0].id,
-                                promotion: props.location.query.promotion
+                                promotion: props.location.query.promotion,
+                                referralCode: props.location.query.ref
                             }))[CALL_API]);
                         });
                     });

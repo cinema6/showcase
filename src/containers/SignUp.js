@@ -20,7 +20,7 @@ class SignUp extends Component {
     signUp(formValues) {
         const {
             location: {
-                query: { promotion }
+                query: { promotion, ref }
             }
         } = this.props;
 
@@ -28,7 +28,8 @@ class SignUp extends Component {
             company: `${formValues.firstName} ${formValues.lastName}`,
 
             paymentPlanId: APP_CONFIG.paymentPlans[0].id,
-            promotion: promotion || APP_CONFIG.defaultPromotion
+            promotion: promotion || APP_CONFIG.defaultPromotion,
+            referralCode: ref
         }));
     }
 
