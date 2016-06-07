@@ -73,7 +73,8 @@ describe('AdPreviewModal', function() {
                 describe('cardOptions', function() {
                     it('should be an Object', function() {
                         expect(this.preview.props.cardOptions).toEqual({
-                            cardType: 'showcase-app'
+                            cardType: 'showcase-app',
+                            advanceInterval: 3
                         });
                     });
                 });
