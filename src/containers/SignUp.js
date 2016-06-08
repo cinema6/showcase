@@ -9,6 +9,7 @@ import { signUp } from '../actions/user';
 import { Link } from 'react-router';
 import APP_CONFIG from '../../config';
 import { assign } from 'lodash';
+import DocumentTitle from 'react-document-title';
 
 class SignUp extends Component {
     constructor() {
@@ -35,6 +36,7 @@ class SignUp extends Component {
 
     render() {
         return (<div className="bg-dark-wrap">
+            <DocumentTitle title="Reelcontent Apps: Sign Up" />
             <div className="container main-section">
                 <div className="row">
                     <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">

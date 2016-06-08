@@ -3,6 +3,7 @@ import { reduxForm } from 'redux-form';
 import { loginUser } from '../actions/login';
 import { Link } from 'react-router';
 import classnames from 'classnames';
+import DocumentTitle from 'react-document-title';
 
 function onSubmit({ email, password }, dispatch) {
     return dispatch(loginUser({ email, password, redirect: '/dashboard' }))
@@ -19,6 +20,7 @@ export class Login extends Component {
         } = this.props;
 
         return (<div className="bg-dark-wrap">
+            <DocumentTitle title="Reelcontent Apps: Login" />
             <div className="container main-section">
                 <div className="row">
                     <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">

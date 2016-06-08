@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import { pageify } from '../utils/page';
 import { Link } from 'react-router';
 import classnames from 'classnames';
+import DocumentTitle from 'react-document-title';
 
 function onSubmit({ email }, dispatch) {
     return dispatch(forgotPassword({ email }))
@@ -22,6 +23,7 @@ export class ForgotPassword extends Component {
         } = this.props;
 
         return (<div className="bg-dark-wrap">
+            <DocumentTitle title="Reelcontent Apps: Forgot Password" />
             <div className="container main-section">
                 <div className="row">
                     <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">

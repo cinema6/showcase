@@ -32,6 +32,7 @@ import CampaignDetailChart, {
 import InstallTrackingSetupModal from '../../components/InstallTrackingSetupModal';
 import AdPreviewModal from '../../components/AdPreviewModal';
 import { TYPE as NOTIFICATION } from '../../enums/notification';
+import DocumentTitle from 'react-document-title';
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -117,6 +118,7 @@ class CampaignDetail extends Component {
 
         return (
             <div className="container main-section campaign-stats">
+                {campaign.name && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
                 <CampaignDetailBar
                     campaignId={campaign.id}
                     title={campaign.name}
