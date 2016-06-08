@@ -1,5 +1,9 @@
 # Showcase
 
+* *[v0.9.1-rc1]*
+  *[FIX]: Fixed background position issue on pre-login screens
+  *[FIX]: Fixed broken link to Terms of Service
+
 ## v0.9.0 (June 8, 2016)
 * *[v0.9.0-rc1]*
   * Add Hubspot tracking code
