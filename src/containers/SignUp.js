@@ -48,7 +48,8 @@ class SignUp extends Component {
                         <SignUpForm onSubmit={this.signUp} />
                         <br />
                         <div className="text-center">By signing up, you agree to our
-                            <a href="#"> Terms of service</a>
+                            <a href="https://reelcontent.com/privacy_policy/tos.html" 
+                            target="_blank"> Terms of service</a>
                         </div>
                     </div>
                     <div className="clearfix"></div>
