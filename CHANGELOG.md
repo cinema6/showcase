@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.9.0 (June 8, 2016)
+* *[v0.9.0-rc1]*
+  * Add Hubspot tracking code
+* *[/v0.9.0-rc1]*
+
 ## v0.8.0 (June 8, 2016)
 * *[v0.8.0-rc1]*
   * Add proper page titles
