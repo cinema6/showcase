@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.8.0 (June 8, 2016)
+* *[v0.8.0-rc1]*
+  * Add proper page titles
+* *[/v0.8.0-rc1]*
+
 ## v0.7.0 (June 7, 2016)
 * *[v0.7.0-rc1]*
   * Change the autoadvance interval of the ad preview to 3 seconds

@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import React from 'react';
+import DocumentTitle from 'react-document-title';
 
 export class Account extends Component {
     render() {
         return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
+            <DocumentTitle title="Reelcontent Apps: Profile" />
             <div className="row">
                 <div className="page-header">
                     <h1>Account Settings</h1>

@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import { pageify } from '../utils/page';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import classnames from 'classnames';
+import DocumentTitle from 'react-document-title';
 
 function tooltip(
     text,
@@ -43,6 +44,7 @@ export class ResetPassword extends Component {
         } = this.props;
 
         return (<div className="container main-section">
+            <DocumentTitle title="Reelcontent Apps: Reset Password" />
             <div className="row">
                 <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">
                     <img src="images/rc-logo-white.png" />

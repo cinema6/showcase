@@ -13,6 +13,7 @@ import { showChangeModal, loadPageData, changePaymentMethod } from '../../action
 import { getClientToken } from '../../actions/payment';
 import { showAlert } from '../../actions/alert';
 import { Button } from 'react-bootstrap';
+import DocumentTitle from 'react-document-title';
 
 const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
@@ -33,6 +34,7 @@ class Billing extends Component {
             showAlert
         } = this.props;
         return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
+            <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
                 <div className="col-md-12">
                     <h1>Billing Details</h1>

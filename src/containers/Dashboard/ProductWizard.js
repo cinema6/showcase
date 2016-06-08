@@ -23,6 +23,7 @@ import { pick, includes, assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
+import DocumentTitle from 'react-document-title';
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -105,6 +106,9 @@ class ProductWizard extends Component {
         } = this.props;
 
         return (<div className="container main-section">
+            <DocumentTitle title={`Reelcontent Apps: ${
+                productData ? `Edit "${productData.name}"` : 'Add'
+            }`} />
             <div className="row">
                 <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
                     <ul className="nav nav-pills nav-justified">
