@@ -90,43 +90,34 @@ class ProductWizard extends Component {
     getPromotionLength(promotionArray){
         if(Array.isArray(promotionArray)){
             let length = 0;
-            for(let i = 0, len = promotionArray.length; i < len; i++){
-                length += promotionArray[i].data.trialLength;
-            }
+            promotionArray.map( i => length += i.data.trialLength );
             return length;
         }
         return 0;
     }
     formatPromotionString( promotionDays){
-        if (promotionDays % 30 == 0) {
-            let reduced = reduce(promotionDays, 30);
-            let formatted = numeral(reduced).format('0,0');
-            if(reduced > 1) {
-                return formatted + ' months';
-            } else {
-                return formatted + ' month';
+        let reduced, formatted;
+        function reduce(total, f){
+            if(total % f === 0){
+                return reduce(total/f);
+            }else{
+                return total;
             }
-        } else if(promotionDays % 7 == 0) {
-            let reduced = reduce(promotionDays, 7);
-            let formatted = numeral(reduced).format('0,0');
+        }        
+        if(promotionDays % 7 === 0) {
+            reduced = reduce(promotionDays, 7);
+            formatted = numeral(reduced).format('0,0');
             if(reduced > 1) {
                 return formatted + ' weeks';
             } else {
                 return formatted + ' week';
             }
         } else {
-            let formatted = numeral(promotionDays).format('0,0');
+            formatted = numeral(promotionDays).format('0,0');
             if(promotionDays > 1) {
                 return formatted + ' days';
             } else {
                 return formatted + ' day';
-            }
-        }
-        function reduce(total, f){
-            if(total % f === 0){
-                return reduce(total/f);
-            }else{
-                return total;
             }
         }
     }
