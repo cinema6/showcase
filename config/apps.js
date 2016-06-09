@@ -6,7 +6,8 @@ export default {
     paymentPlans: [
         {
             id: 'pp-0Ekdsm05KVZ43Aqj',
-            price: 50
+            price: 50,
+            impressionsPerDollar: 43
         }
     ],
     defaultPromotion: process.env.RC_ENV === PRODUCTION ?

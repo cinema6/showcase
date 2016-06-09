@@ -24,6 +24,8 @@ import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
+import numeral from 'numeral';
+import {default as paymentConfig} from '../../../config/apps.js';
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -85,7 +87,46 @@ class ProductWizard extends Component {
     componentWillUnmount() {
         return this.props.wizardDestroyed();
     }
-
+    getPromotionLength(promotionArray){
+        if(Array.isArray(promotionArray)){
+            return promotionArray.reduce((sum, c) => { 
+                return sum + c.data.trialLength; 
+            }, 0);
+        }
+        return 0;
+    }
+    formatPromotionString( promotionDays){
+        let reduced, formatted;
+        function reduce(total, f){
+            if(total % f === 0){
+                return reduce(total/f);
+            }else{
+                return total;
+            }
+        }        
+        if(promotionDays % 7 === 0) {
+            reduced = reduce(promotionDays, 7);
+            formatted = numeral(reduced).format('0,0');
+            if(reduced > 1) {
+                return formatted + ' weeks';
+            } else {
+                return formatted + ' week';
+            }
+        } else {
+            formatted = numeral(promotionDays).format('0,0');
+            if(promotionDays > 1) {
+                return formatted + ' days';
+            } else {
+                return formatted + ' day';
+            }
+        }
+    }
+    getNumOfImpressions(paymentPlanConfig, promotionLength){
+        let val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
+                                ((paymentPlanConfig.paymentPlans[0].price/30) * 
+                                promotionLength)));
+        return (50 * Math.floor(val / 50));
+    }
     render() {
         const {
             findApps,
@@ -205,7 +246,11 @@ class ProductWizard extends Component {
                 onContinue={() => collectPayment({
                     productData: this.getProductData(),
                     targeting: this.getTargeting()
-                })} />
+                })}
+                promotionString= {this.formatPromotionString(this.getPromotionLength(promotions))}
+                numOfImpressions = { this.getNumOfImpressions(paymentConfig, 
+                                    this.getPromotionLength(promotions)) }
+                />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}

@@ -280,7 +280,30 @@ describe('ProductWizard', function() {
             it('should exist', function() {
                 expect(this.planInfoModal).toEqual(jasmine.any(Object));
             });
-
+            describe('dynamic text', function(){
+                function generatePromo(num){ 
+                    return [
+                        {
+                            id: 'none',
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: num
+                            }
+                        }
+                    ];
+                }
+                it('should calculate the correct promotion strings', function(){
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(1)))).toEqual('1 day');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(7)))).toEqual('1 week');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(2)))).toEqual('2 days');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
+                });
+                it('should calculate the correct impression number', function(){
+                    expect(component.getNumOfImpressions({paymentPlans: 
+                        [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
+                        component.getPromotionLength(generatePromo(14)))).toEqual(900);
+                });
+            });
             describe('props', function() {
                 describe('show', function() {
                     it('should be false', function() {
@@ -301,6 +324,19 @@ describe('ProductWizard', function() {
 
                     it('should go to step 2', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
+                    });
+                });
+                describe('promotionString', function() {
+                    it('should be the value of the formatted promotion length', function() {
+                        expect(this.planInfoModal.props.promotionString).toBe(component.formatPromotionString(component.getPromotionLength(props.promotions)));
+                    });
+                });
+                describe('numOfImpressions', function() {
+                    it('should be calculated from the value of the promotions and payment plan config', function() {
+                        expect(this.planInfoModal.props.numOfImpressions).
+                        toBe(component.getNumOfImpressions({paymentPlans: 
+                            [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 43}]},
+                            component.getPromotionLength(props.promotions)));
                     });
                 });
             });

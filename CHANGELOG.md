@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.10.0 (June 9, 2016)
+* *[v0.10.0-rc1]*
+  * Added dynamic trial-length and impression number on plan info modal
+* *[/v0.10.0-rc1]*
+
 ## v0.9.1 (June 9, 2016)
 * *[v0.9.1-rc1]*
   *[FIX]: Fixed background position issue on pre-login screens
