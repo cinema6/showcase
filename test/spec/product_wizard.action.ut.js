@@ -884,8 +884,7 @@ describe('product wizard actions', function() {
 
         it('should return an FSA', function() {
             expect(this.result).toEqual({
-                type: PREVIEW_LOADED,
-                payload: undefined
+                type: PREVIEW_LOADED
             });
         });
     });

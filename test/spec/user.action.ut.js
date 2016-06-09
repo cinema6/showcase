@@ -22,7 +22,6 @@ import {
 } from '../../src/actions/user';
 import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
-import { CALL_API } from 'redux-api-middleware';
 import { format as formatURL } from 'url';
 import { getThunk } from '../../src/middleware/fsa_thunk';
 
@@ -110,7 +109,7 @@ describe('user actions', function() {
             });
 
             it('should make an api call', function() {
-                expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                expect(dispatch).toHaveBeenCalledWith(callAPI({
                     endpoint: formatURL({
                         pathname: '/api/account/users/email',
                         query: { target: 'showcase' }
@@ -132,7 +131,7 @@ describe('user actions', function() {
                         email: state.db.user[id].email,
                         password: password
                     }
-                })[CALL_API]);
+                }));
             });
 
             it('should fulfill with the new email', function() {
@@ -204,7 +203,7 @@ describe('user actions', function() {
             });
 
             it('should make an api call', function() {
-                expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                expect(dispatch).toHaveBeenCalledWith(callAPI({
                     endpoint: formatURL({
                         pathname: '/api/account/users/password',
                         query: { target: 'showcase' }
@@ -216,7 +215,7 @@ describe('user actions', function() {
                         password: oldPassword,
                         newPassword: newPassword
                     }
-                })[CALL_API]);
+                }));
             });
 
             describe('if the id is for an unknown user', function() {
@@ -256,7 +255,7 @@ describe('user actions', function() {
         });
 
         it('should call the signup endpoint', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
                 method: 'POST',
                 endpoint: formatURL({
@@ -264,7 +263,7 @@ describe('user actions', function() {
                     query: { target: 'showcase' }
                 }),
                 body: data
-            })[CALL_API]);
+            }));
         });
     });
 
@@ -280,7 +279,7 @@ describe('user actions', function() {
         });
 
         it('should call the confirm endpoint', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 types: [CONFIRM_START, CONFIRM_SUCCESS, CONFIRM_FAILURE],
                 method: 'POST',
                 endpoint: formatURL({
@@ -288,7 +287,7 @@ describe('user actions', function() {
                     query: { target: 'showcase' }
                 }),
                 body: { token }
-            })[CALL_API]);
+            }));
         });
     });
 
@@ -300,14 +299,14 @@ describe('user actions', function() {
         });
 
         it('should call the resend activation email', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 types: [RESEND_CONFIRMATION_EMAIL_START, RESEND_CONFIRMATION_EMAIL_SUCCESS, RESEND_CONFIRMATION_EMAIL_FAILURE],
                 method: 'POST',
                 endpoint: formatURL({
                     pathname: '/api/account/users/resendActivation',
                     query: { target: 'showcase' }
                 })
-            })[CALL_API]);
+            }));
         });
     });
 });
