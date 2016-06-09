@@ -280,7 +280,7 @@ describe('ProductWizard', function() {
             it('should exist', function() {
                 expect(this.planInfoModal).toEqual(jasmine.any(Object));
             });
-            fdescribe('dynamic text', function(){
+            describe('dynamic text', function(){
                 function generatePromo(num){ return [
                     {
                         id: 'none',
@@ -308,7 +308,7 @@ describe('ProductWizard', function() {
                                     ]}, component.getPromotionLength(generatePromo(60)))).toEqual(5000);
                 });
             });
-            describe('props', function() {
+            fdescribe('props', function() {
                 describe('show', function() {
                     it('should be false', function() {
                         expect(this.planInfoModal.props.show).toBe(false);
@@ -328,6 +328,23 @@ describe('ProductWizard', function() {
 
                     it('should go to step 2', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
+                    });
+                });
+                describe('promotionString', function() {
+                    it('should be the value of the fomated promotion length', function() {
+                        expect(this.planInfoModal.props.promotionString).toBe(component.formatPromotionString(component.getPromotionLength(props.promotions)));
+                    });
+                });
+                describe('numOfImpressions', function() {
+                    it('should be calculated from the value of the promotions and payment plan config', function() {
+                        expect(this.planInfoModal.props.numOfImpressions).toBe(component.getNumOfImpressions({paymentPlans: [
+                                        {
+                                            id: 'pp-0Ekdsm05KVZ43Aqj',
+                                            price: 50,
+                                            impressionsPerDollar: 50
+                                        }
+                                    ]}, 
+                                    component.getPromotionLength(props.promotions)));
                     });
                 });
             });
