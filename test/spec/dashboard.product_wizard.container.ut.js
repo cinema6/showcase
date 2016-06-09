@@ -281,15 +281,17 @@ describe('ProductWizard', function() {
                 expect(this.planInfoModal).toEqual(jasmine.any(Object));
             });
             describe('dynamic text', function(){
-                function generatePromo(num){ return [
-                    {
-                        id: 'none',
-                        type: 'freeTrial',
-                        data: {
-                            trialLength: num
+                function generatePromo(num){ 
+                    return [
+                        {
+                            id: 'none',
+                            type: 'freeTrial',
+                            data: {
+                                trialLength: num
+                            }
                         }
-                    }
-                ]};
+                    ];
+                }
                 it('should calculate the correct promotion strings', function(){
                     expect(component.formatPromotionString(component.getPromotionLength(generatePromo(1)))).toEqual('1 day');
                     expect(component.formatPromotionString(component.getPromotionLength(generatePromo(7)))).toEqual('1 week');
@@ -299,13 +301,9 @@ describe('ProductWizard', function() {
                     expect(component.formatPromotionString(component.getPromotionLength(generatePromo(60)))).toEqual('2 months');
                 });
                 it('should calculate the correct impression number', function(){
-                    expect(component.getNumOfImpressions({paymentPlans: [
-                                        {
-                                            id: 'pp-0Ekdsm05KVZ43Aqj',
-                                            price: 50,
-                                            impressionsPerDollar: 50
-                                        }
-                                    ]}, component.getPromotionLength(generatePromo(60)))).toEqual(5000);
+                    expect(component.getNumOfImpressions({paymentPlans: 
+                        [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 50 }]},
+                        component.getPromotionLength(generatePromo(60)))).toEqual(5000);
                 });
             });
             describe('props', function() {
@@ -337,14 +335,10 @@ describe('ProductWizard', function() {
                 });
                 describe('numOfImpressions', function() {
                     it('should be calculated from the value of the promotions and payment plan config', function() {
-                        expect(this.planInfoModal.props.numOfImpressions).toBe(component.getNumOfImpressions({paymentPlans: [
-                                        {
-                                            id: 'pp-0Ekdsm05KVZ43Aqj',
-                                            price: 50,
-                                            impressionsPerDollar: 50
-                                        }
-                                    ]}, 
-                                    component.getPromotionLength(props.promotions)));
+                        expect(this.planInfoModal.props.numOfImpressions).
+                        toBe(component.getNumOfImpressions({paymentPlans: 
+                            [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 50}]},
+                            component.getPromotionLength(props.promotions)));
                     });
                 });
             });

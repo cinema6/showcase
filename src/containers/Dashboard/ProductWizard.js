@@ -88,11 +88,14 @@ class ProductWizard extends Component {
         return this.props.wizardDestroyed();
     }
     getPromotionLength(promotionArray){
-        let length = 0;
-        for(let i = 0, len = promotionArray.length; i < len; i++){
-            length += promotionArray[i].data.trialLength;
+        if(Array.isArray(promotionArray)){
+            let length = 0;
+            for(let i = 0, len = promotionArray.length; i < len; i++){
+                length += promotionArray[i].data.trialLength;
+            }
+            return length;
         }
-        return length;
+        return 0;
     }
     formatPromotionString( promotionDays){
         if (promotionDays % 30 == 0) {
