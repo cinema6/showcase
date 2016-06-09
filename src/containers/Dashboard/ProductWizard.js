@@ -89,9 +89,9 @@ class ProductWizard extends Component {
     }
     getPromotionLength(promotionArray){
         if(Array.isArray(promotionArray)){
-            let length = 0;
-            promotionArray.map( i => length += i.data.trialLength );
-            return length;
+            return promotionArray.reduce((sum, c) => { 
+                return sum + c.data.trialLength; 
+            }, 0);
         }
         return 0;
     }
