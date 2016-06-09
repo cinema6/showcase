@@ -308,7 +308,7 @@ describe('ProductWizard', function() {
                                     ]}, component.getPromotionLength(generatePromo(60)))).toEqual(5000);
                 });
             });
-            fdescribe('props', function() {
+            describe('props', function() {
                 describe('show', function() {
                     it('should be false', function() {
                         expect(this.planInfoModal.props.show).toBe(false);
