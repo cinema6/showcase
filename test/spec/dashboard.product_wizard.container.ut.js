@@ -300,8 +300,8 @@ describe('ProductWizard', function() {
                 });
                 it('should calculate the correct impression number', function(){
                     expect(component.getNumOfImpressions({paymentPlans: 
-                        [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 50 }]},
-                        component.getPromotionLength(generatePromo(60)))).toEqual(5000);
+                        [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
+                        component.getPromotionLength(generatePromo(14)))).toEqual(900);
                 });
             });
             describe('props', function() {
@@ -335,7 +335,7 @@ describe('ProductWizard', function() {
                     it('should be calculated from the value of the promotions and payment plan config', function() {
                         expect(this.planInfoModal.props.numOfImpressions).
                         toBe(component.getNumOfImpressions({paymentPlans: 
-                            [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 50}]},
+                            [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 43}]},
                             component.getPromotionLength(props.promotions)));
                     });
                 });

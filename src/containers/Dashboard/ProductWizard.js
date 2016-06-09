@@ -122,9 +122,10 @@ class ProductWizard extends Component {
         }
     }
     getNumOfImpressions(paymentPlanConfig, promotionLength){
-        return Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
+        let val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
                                 ((paymentPlanConfig.paymentPlans[0].price/30) * 
-                                promotionLength));
+                                promotionLength)));
+        return (50 * Math.floor(val / 50));
     }
     render() {
         const {
