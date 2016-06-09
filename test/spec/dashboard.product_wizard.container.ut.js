@@ -331,7 +331,7 @@ describe('ProductWizard', function() {
                     });
                 });
                 describe('promotionString', function() {
-                    it('should be the value of the fomated promotion length', function() {
+                    it('should be the value of the formatted promotion length', function() {
                         expect(this.planInfoModal.props.promotionString).toBe(component.formatPromotionString(component.getPromotionLength(props.promotions)));
                     });
                 });
