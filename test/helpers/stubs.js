@@ -24,7 +24,11 @@ export function dispatch() {
         }
 
         if (!(action.payload instanceof Promise)) {
-            return Promise.resolve(action.payload);
+            if (!(action.payload instanceof Error)) {
+                return Promise.resolve(action.payload);
+            } else {
+                return Promise.reject(action.payload);
+            }
         } else {
             return action.payload.then(value => ({ value, action }))
                 .catch(reason => Promise.reject({ reason, action }));

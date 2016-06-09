@@ -11,7 +11,6 @@ import { callAPI } from '../../src/actions/api';
 import { createUuid } from 'rc-uuid';
 import { assign, clone, keyBy, omit } from 'lodash';
 import { createAction } from 'redux-actions';
-import { CALL_API } from 'redux-api-middleware';
 import defer from 'promise-defer';
 import { format as formatURL } from 'url';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
@@ -59,10 +58,10 @@ describe('utils/db', function() {
                     let thunk = getThunk(action);
 
                     thunk(dispatch, getState);
-                    return result[CALL_API];
+                    return result.payload.args[0];
                 }
 
-                return action[CALL_API];
+                return action.payload.args[0];
             }
 
             beforeEach(function() {
@@ -232,7 +231,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
+                        })));
                     });
                 });
             });
@@ -352,7 +353,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } }))
+                        })));
                     });
                 });
             });
@@ -410,7 +413,7 @@ describe('utils/db', function() {
                 });
 
                 it('should call the api', function() {
-                    expect(dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(callAPI({
+                    expect(dispatch).toHaveBeenCalledWith(callAPI({
                         types: [
                             {
                                 type: QUERY.START,
@@ -430,7 +433,7 @@ describe('utils/db', function() {
                             query: params
                         }),
                         method: 'GET'
-                    })[CALL_API]);
+                    }));
                 });
 
                 describe('if the action succeeds', function() {
@@ -482,7 +485,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
+                        })));
                     });
                 });
             });
@@ -605,7 +610,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
+                        })));
                     });
                 });
             });
@@ -746,8 +753,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ [CALL_API]: jasmine.any(Object) }));
-                        expect(dispatch.calls.all()[1].args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: data.token } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: data.token } }))
+                        })));
                     });
 
                     it('should fulfill with the key value', function() {
@@ -919,7 +927,9 @@ describe('utils/db', function() {
                     });
 
                     it('should call the api with that key in the meta', function() {
-                        expect(dispatch.calls.mostRecent().args[0][CALL_API].types).toEqual([0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } })));
+                        expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
+                            types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } }))
+                        })));
                     });
                 });
             });

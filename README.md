@@ -85,33 +85,7 @@ export const doStuff = createThunk(function() { // The action creator
 store.dispatch(doStuff()).then(() => console.log('Stuff is done!'));
 ```
 
-### 2. [`redux-api-middleware`](https://github.com/agraboso/redux-api-middleware)
-This middleware causes HTTP requests to be made if an action of a particular format is passed. It will also causes `dispatch()` to return a `Promise`.
-
-**You should not need to work with this directly.** Instead, use the [`createDbActions()`](https://github.com/cinema6/showcase/blob/master/src/utils/db.js) utility to create REST actions for an entity or the lower-level [`callAPI()`](https://github.com/cinema6/showcase/blob/master/src/actions/api.js) action.
-
-Example:
-
-```javascript
-import { CALL_API } from 'redux-api-middleware';
-
-const GET_THING_START = 'GET_THING_START';
-const GET_THING_SUCCESS = 'GET_THING_SUCCESS';
-const GET_THING_FAILURE = 'GET_THING_FAILURE';
-function getThing() {
-    return {
-        [CALL_API]: {
-            types: [GET_THING_START, GET_THING_SUCCESS, GET_THING_FAILURE],
-            endpoint: '/api/get/thing',
-            method: 'GET'
-        }
-    };
-}
-
-store.dispatch(getThing()).then(result => console.log('Got the thing!', result));
-```
-
-### 3. [`redux-promise-middleware`](https://github.com/pburtchaell/redux-promise-middleware)
+### 2. [`redux-promise-middleware`](https://github.com/pburtchaell/redux-promise-middleware)
 This middleware will `dispatch()` actions that track the state of a `Promise` when the `Promise` is provided as the `payload` of a [Flux Standard Action (FSA)](https://github.com/acdlite/flux-standard-action).
 
 **Important**: When you dispatch an FSA whose `payload` is a `Promise`, an action with the `type` you provided will *never* actually be `dispatch()`ed. Instead, three new actions will be dispatched for you:
@@ -165,7 +139,7 @@ store.dispatch(doSomething()); // A DO_SOMETHING_PENDING action is immediately d
 // dispatch(getStuff()) is fulfilled.
 ```
 
-### 4. [`src/middleware/promisify`](https://github.com/cinema6/showcase/blob/master/src/middleware/promisify.js)
+### 3. [`src/middleware/promisify`](https://github.com/cinema6/showcase/blob/master/src/middleware/promisify.js)
 This middleware ensures that `dispatch()` **always** returns a `Promise` so you can `dispatch().then()` with confidence.
 
 Additionally, it will make sure the `Promise` it returns is *rejected* if it recieves a [Flux Standard Action (FSA)](https://github.com/acdlite/flux-standard-action) representing an `error`.

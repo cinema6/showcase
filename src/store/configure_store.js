@@ -2,7 +2,6 @@
 
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from '../reducers';
-import { apiMiddleware } from 'redux-api-middleware';
 import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import promisify from '../middleware/promisify';
@@ -15,8 +14,7 @@ const middlewares = [
     fsaThunk,
     thunk,
     promiseMiddleware(),
-    routerMiddleware(history),
-    apiMiddleware
+    routerMiddleware(history)
 ];
 
 if (process.env.NODE_ENV !== 'production') {

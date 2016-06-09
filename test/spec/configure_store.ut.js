@@ -2,7 +2,6 @@
 
 /* global process */
 
-import { apiMiddleware } from 'redux-api-middleware';
 import thunk from 'redux-thunk';
 import promisify from '../../src/middleware/promisify';
 import rootReducer from '../../src/reducers';
@@ -37,12 +36,6 @@ describe('configureStore(initialState)', function() {
 
             '../middleware/fsa_thunk': {
                 middleware: fsaThunk,
-
-                __esModule: true
-            },
-
-            'redux-api-middleware': {
-                apiMiddleware: require('redux-api-middleware').apiMiddleware,
 
                 __esModule: true
             },
@@ -122,7 +115,6 @@ describe('configureStore(initialState)', function() {
                 thunk,
                 reduxPromiseMiddleware.default.calls.mostRecent().returnValue,
                 reactRouterRedux.routerMiddleware.calls.mostRecent().returnValue,
-                apiMiddleware,
                 reduxLogger.calls.mostRecent().returnValue
             );
         });
