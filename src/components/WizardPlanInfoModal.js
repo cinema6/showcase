@@ -7,15 +7,16 @@ export default class WizardPlanInfoModal extends Component {
         const {
             show,
             actionPending,
-
+            promotionString,
             onClose,
-            onContinue
+            onContinue,
+            numOfImpressions
         } = this.props;
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
-                <h1 className="modal-title">Reach 1,000 people for FREE</h1>
-                <p>Your first 2 weeks of advertising is on us</p>
+                <h1 className="modal-title">Reach {numOfImpressions} people for FREE</h1>
+                <p>Your {promotionString} of advertising is on us</p>
             </Modal.Header>
             <Modal.Body className="text-center">
                 <div className="row">
@@ -129,7 +130,7 @@ export default class WizardPlanInfoModal extends Component {
                                 })}
                                 bsSize="lg"
                                 bsStyle="danger">
-                                Get 2 weeks FREE trial
+                                Get {promotionString} FREE trial
                             </Button>
                         </div>
                     </div>
@@ -143,7 +144,9 @@ WizardPlanInfoModal.propTypes = {
     actionPending: PropTypes.bool.isRequired,
 
     onClose: PropTypes.func.isRequired,
-    onContinue: PropTypes.func.isRequired
+    onContinue: PropTypes.func.isRequired,
+    promotionString: PropTypes.string.isRequired,
+    numOfImpressions: PropTypes.number.isRequired
 };
 WizardPlanInfoModal.defaultProps = {
     actionPending: false

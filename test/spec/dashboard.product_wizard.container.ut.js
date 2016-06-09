@@ -280,7 +280,34 @@ describe('ProductWizard', function() {
             it('should exist', function() {
                 expect(this.planInfoModal).toEqual(jasmine.any(Object));
             });
-
+            fdescribe('dynamic text', function(){
+                function generatePromo(num){ return [
+                    {
+                        id: 'none',
+                        type: 'freeTrial',
+                        data: {
+                            trialLength: num
+                        }
+                    }
+                ]};
+                it('should calculate the correct promotion strings', function(){
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(1)))).toEqual('1 day');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(7)))).toEqual('1 week');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(30)))).toEqual('1 month');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(2)))).toEqual('2 days');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
+                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(60)))).toEqual('2 months');
+                });
+                it('should calculate the correct impression number', function(){
+                    expect(component.getNumOfImpressions({paymentPlans: [
+                                        {
+                                            id: 'pp-0Ekdsm05KVZ43Aqj',
+                                            price: 50,
+                                            impressionsPerDollar: 50
+                                        }
+                                    ]}, component.getPromotionLength(generatePromo(60)))).toEqual(5000);
+                });
+            });
             describe('props', function() {
                 describe('show', function() {
                     it('should be false', function() {
