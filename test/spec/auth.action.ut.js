@@ -29,7 +29,6 @@ import {
 import {
     callAPI
 } from '../../src/actions/api';
-import { CALL_API } from 'redux-api-middleware';
 import { createUuid } from 'rc-uuid';
 import { format as formatURL } from 'url';
 import { getThunk } from '../../src/middleware/fsa_thunk';
@@ -114,7 +113,7 @@ describe('actions: auth', function() {
         });
 
         it('should return an RSAA', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 endpoint: formatURL({
                     pathname: '/api/auth/login',
                     query: { target: 'showcase' }
@@ -122,7 +121,7 @@ describe('actions: auth', function() {
                 method: 'POST',
                 types: [LOGIN_START, LOGIN_SUCCESS, LOGIN_FAILURE],
                 body: { email, password }
-            })[CALL_API]);
+            }));
         });
     });
 
@@ -134,11 +133,11 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 endpoint: '/api/auth/logout',
                 method: 'POST',
                 types: [LOGOUT_START, LOGOUT_SUCCESS, LOGOUT_FAILURE]
-            })[CALL_API]);
+            }));
         });
     });
 
@@ -153,7 +152,7 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 endpoint: formatURL({
                     pathname: '/api/auth/password/forgot',
                     query: { target: 'showcase' }
@@ -161,7 +160,7 @@ describe('actions: auth', function() {
                 method: 'POST',
                 types: [FORGOT_PASSWORD_START, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE],
                 body: { email, target: 'bob' }
-            })[CALL_API]);
+            }));
         });
     });
 
@@ -178,7 +177,7 @@ describe('actions: auth', function() {
         });
 
         it('should call the api to logout the user', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 endpoint: formatURL({
                     pathname: '/api/auth/password/reset',
                     query: { target: 'showcase' }
@@ -186,7 +185,7 @@ describe('actions: auth', function() {
                 method: 'POST',
                 types: [RESET_PASSWORD_START, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE],
                 body: { id, token, newPassword }
-            })[CALL_API]);
+            }));
         });
     });
 });

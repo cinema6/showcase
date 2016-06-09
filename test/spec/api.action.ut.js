@@ -1,244 +1,407 @@
-import { callAPI } from '../../src/actions/api';
-import { CALL_API, ApiError } from 'redux-api-middleware';
+import { callAPI, StatusCodeError } from '../../src/actions/api';
 import defer from 'promise-defer';
-import { assign } from 'lodash';
+import fetchMock from 'fetch-mock';
+import { getThunk } from '../../src/middleware/fsa_thunk';
+import { dispatch } from '../helpers/stubs';
 
 const REQUEST = 'REQUEST';
 const REQUEST_SUCCESS = 'REQUEST_SUCCESS';
 const REQUEST_FAILURE = 'REQUEST_FAILURE';
 
-describe('callAPI(config)', function() {
-    let config;
-    let result;
-
-    beforeEach(function() {
-        config = {
-            endpoint: '/foo/bar',
-            types: [REQUEST, REQUEST_SUCCESS, REQUEST_FAILURE]
-        };
-
-        result = callAPI(config);
+describe('api actions', function() {
+    afterEach(function() {
+        fetchMock.restore();
     });
 
-    it('should return an api call with some defaults', function() {
-        expect(result[CALL_API]).toEqual({
-            endpoint: config.endpoint,
-            types: config.types.map(type => ({
-                type,
-                payload: jasmine.any(Function)
-            })),
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin'
-        });
-    });
-
-    describe('if defaults are overridden', function() {
+    describe('callAPI(config)', function() {
         beforeEach(function() {
-            config.method = 'PUT';
-            config.headers = {
-                'Accept-Encoding': 'foo'
+            this.config = {
+                endpoint: '/foo/bar',
+                types: [REQUEST, REQUEST_SUCCESS, REQUEST_FAILURE]
             };
 
-            result = callAPI(config);
+            this.thunk = getThunk(callAPI(this.config));
         });
 
-        it('should respect the overrides', function() {
-            expect(result[CALL_API]).toEqual({
-                endpoint: config.endpoint,
-                types: config.types.map(type => ({
-                    type,
-                    payload: jasmine.any(Function)
-                })),
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept-Encoding': 'foo'
-                },
-                credentials: 'same-origin'
-            });
-        });
-    });
-
-    describe('if there is a body', function() {
-        beforeEach(function() {
-            config.body = { foo: 'bar' };
-
-            result = callAPI(config);
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
         });
 
-        it('should stringify it', function() {
-            expect(result[CALL_API]).toEqual({
-                endpoint: config.endpoint,
-                types: config.types.map(type => ({
-                    type,
-                    payload: jasmine.any(Function)
-                })),
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(config.body)
-            });
-        });
-    });
-
-    describe('if objects are passed as types', function() {
-        beforeEach(function() {
-            config.types = config.types.map(type => ({
-                type
-            }));
-
-            result = callAPI(config);
-        });
-
-        it('should not create new Objects', function() {
-            expect(result[CALL_API]).toEqual({
-                endpoint: config.endpoint,
-                types: config.types.map(config => assign({}, config, { payload: jasmine.any(Function) })),
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin'
-            });
-        });
-    });
-
-    describe('the function used to create the request payload', function() {
-        let createRequestPayload;
-        let action, state;
-        let payload;
-
-        beforeEach(function() {
-            createRequestPayload = result[CALL_API].types[0].payload;
-
-            action = result;
-            state = {};
-
-            payload = createRequestPayload(action, state);
-        });
-
-        it('should return undefined', function() {
-            expect(payload).toBe(undefined);
-        });
-    });
-
-    describe('the function used to parse the success response', function() {
-        let parseSuccessResponse;
-        let action, state, res;
-        let textDeferred;
-        let success, failure;
-
-        beforeEach(function(done) {
-            parseSuccessResponse = result[CALL_API].types[1].payload;
-
-            action = result;
-            state = {};
-            res = {
-                text: jasmine.createSpy('res.text()').and.returnValue((textDeferred = defer()).promise)
-            };
-
-            success = jasmine.createSpy('success()');
-            failure = jasmine.createSpy('failure()');
-
-            parseSuccessResponse(action, state, res).then(success, failure);
-            setTimeout(done);
-        });
-
-        it('should call res.test()', function() {
-            expect(res.text).toHaveBeenCalledWith();
-        });
-
-        describe('if the text is json', function() {
-            let json;
-
+        describe('when executed', function() {
             beforeEach(function(done) {
-                json = { foo: 'bar' };
-                textDeferred.resolve(JSON.stringify(json));
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.returnValue({});
 
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.fetchDeferred = defer();
+
+                fetchMock.mock(this.config.endpoint, this.fetchDeferred.promise);
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
                 setTimeout(done);
             });
 
-            it('should fulfill with the json', function() {
-                expect(success).toHaveBeenCalledWith(json);
-            });
-        });
-
-        describe('if the response is text', function() {
-            let text;
-
-            beforeEach(function(done) {
-                text = 'hello world!';
-                textDeferred.resolve(text);
-
-                setTimeout(done);
+            it('should make a GET request', function() {
+                expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                expect(fetchMock.calls().matched.length).toBe(1, 'Incorrect number of calls were made.');
+                expect(fetchMock.called(this.config.endpoint)).toBe(true, 'Endpoint was not called.');
+                expect(fetchMock.lastOptions(this.config.endpoint)).toEqual({
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
             });
 
-            it('should fulfill with the text', function() {
-                expect(success).toHaveBeenCalledWith(text);
-            });
-        });
-    });
-
-    describe('the function used to parse the failure response', function() {
-        let parseFailureResponse;
-        let action, state, res;
-        let textDeferred;
-        let success, failure;
-
-        beforeEach(function(done) {
-            parseFailureResponse = result[CALL_API].types[2].payload;
-
-            action = result;
-            state = {};
-            res = {
-                status: 400,
-                statusText: 'INVALID REQUEST',
-                text: jasmine.createSpy('res.text()').and.returnValue((textDeferred = defer()).promise)
-            };
-
-            success = jasmine.createSpy('success()');
-            failure = jasmine.createSpy('failure()');
-
-            parseFailureResponse(action, state, res).then(success, failure);
-            setTimeout(done);
-        });
-
-        it('should call res.test()', function() {
-            expect(res.text).toHaveBeenCalledWith();
-        });
-
-        describe('if the text is json', function() {
-            let json;
-
-            beforeEach(function(done) {
-                json = { foo: 'bar' };
-                textDeferred.resolve(JSON.stringify(json));
-
-                setTimeout(done);
+            it('should dispatch an action', function() {
+                expect(this.dispatch).toHaveBeenCalledWith({
+                    type: REQUEST,
+                    meta: {}
+                });
             });
 
-            it('should fulfill with an ApiError for the json', function() {
-                expect(success).toHaveBeenCalledWith(new ApiError(res.status, res.statusText, json));
+            describe('if the request succeeds', function() {
+                beforeEach(function(done) {
+                    this.response = {
+                        status: 200,
+                        body: {
+                            foo: 'bar',
+                            hello: 'world'
+                        },
+                        headers: {
+                            'content-encoding': '',
+                            'x-powered-by': 'express',
+                            'content-type': 'text/plain;charset=UTF-8'
+                        }
+                    };
+
+                    this.dispatch.calls.reset();
+
+                    this.fetchDeferred.resolve(this.response);
+                    setTimeout(done);
+                });
+
+                it('should dispatch an action', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith({
+                        type: REQUEST_SUCCESS,
+                        payload: this.response.body,
+                        meta: {
+                            status: 200,
+                            ok: true,
+                            statusText: 'OK',
+                            headers: new Headers(this.response.headers)
+                        }
+                    });
+                });
+
+                it('should fulfill the promise', function() {
+                    expect(this.success).toHaveBeenCalledWith(this.response.body);
+                });
+
+                describe('with a string body', function() {
+                    beforeEach(function(done) {
+                        fetchMock.reset();
+
+                        this.response.body = 'I know I\'m not JSON...';
+
+                        fetchMock.mock(this.config.endpoint, this.response);
+
+                        this.success.calls.reset();
+                        this.failure.calls.reset();
+
+                        this.dispatch.calls.reset();
+
+                        this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                        setTimeout(done);
+                    });
+
+                    it('should parse the JSON', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_SUCCESS,
+                            payload: this.response.body,
+                            meta: {
+                                status: 200,
+                                ok: true,
+                                statusText: 'OK',
+                                headers: new Headers(this.response.headers)
+                            }
+                        });
+                        expect(this.success).toHaveBeenCalledWith(this.response.body);
+                    });
+                });
             });
-        });
 
-        describe('if the response is text', function() {
-            let text;
+            describe('if the request fails', function() {
+                beforeEach(function(done) {
+                    this.response = {
+                        status: 404,
+                        body: 'Could not find that thing...',
+                        headers: {
+                            'content-encoding': '',
+                            'x-powered-by': 'express',
+                            'content-type': 'text/plain;charset=UTF-8'
+                        }
+                    };
 
-            beforeEach(function(done) {
-                text = 'hello world!';
-                textDeferred.resolve(text);
+                    this.dispatch.calls.reset();
 
-                setTimeout(done);
+                    this.fetchDeferred.resolve(this.response);
+                    setTimeout(done);
+                });
+
+                it('should dispatch an action', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith({
+                        type: REQUEST_FAILURE,
+                        error: true,
+                        payload: new StatusCodeError(this.response.status, this.response.body),
+                        meta: {
+                            status: 404,
+                            ok: false,
+                            statusText: 'Not Found',
+                            headers: new Headers(this.response.headers)
+                        }
+                    });
+                });
+
+                it('should reject the Promise', function() {
+                    expect(this.failure).toHaveBeenCalledWith(new StatusCodeError(this.response.status, this.response.body));
+                });
+
+                describe('with a JSON body', function() {
+                    beforeEach(function(done) {
+                        fetchMock.reset();
+
+                        this.response.body = {
+                            reason: 'It went wrong!'
+                        };
+
+                        fetchMock.mock(this.config.endpoint, this.response);
+
+                        this.success.calls.reset();
+                        this.failure.calls.reset();
+
+                        this.dispatch.calls.reset();
+
+                        this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                        setTimeout(done);
+                    });
+
+                    it('should parse the JSON', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_FAILURE,
+                            error: true,
+                            payload: new StatusCodeError(this.response.status, this.response.body),
+                            meta: {
+                                status: 404,
+                                ok: false,
+                                statusText: 'Not Found',
+                                headers: new Headers(this.response.headers)
+                            }
+                        });
+                        expect(this.failure).toHaveBeenCalledWith(new StatusCodeError(this.response.status, this.response.body));
+                    });
+                });
             });
 
-            it('should fulfill with an ApiError for the text', function() {
-                expect(success).toHaveBeenCalledWith(new ApiError(res.status, res.statusText, text));
+            describe('if sending the request fails', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('Something unexpected and bad happened.');
+
+                    this.fetchDeferred.resolve({
+                        throws: this.reason
+                    });
+
+                    setTimeout(done);
+                });
+
+                it('should dispatch an action', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith({
+                        type: REQUEST_FAILURE,
+                        error: true,
+                        payload: this.reason,
+                        meta: {}
+                    });
+                });
+
+                it('should reject the Promise', function() {
+                    expect(this.failure).toHaveBeenCalledWith(this.reason);
+                });
+            });
+
+            describe('if there is a body', function() {
+                beforeEach(function(done) {
+                    this.config.body = {
+                        foo: 'bar'
+                    };
+
+                    this.thunk = getThunk(callAPI(this.config));
+
+                    fetchMock.reset();
+                    this.dispatch.calls.reset();
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should stringify it', function() {
+                    expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                    expect(fetchMock.calls().matched.length).toBe(1, 'Incorrect number of calls were made.');
+                    expect(fetchMock.called(this.config.endpoint)).toBe(true, 'Endpoint was not called.');
+                    expect(fetchMock.lastOptions(this.config.endpoint)).toEqual({
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(this.config.body)
+                    });
+                });
+            });
+
+            describe('if defaults are overridden', function() {
+                beforeEach(function(done) {
+                    this.config.method = 'PUT';
+                    this.config.headers = {
+                        'Accept-Encoding': 'gzip'
+                    };
+                    this.config.credentials = '*';
+
+                    this.thunk = getThunk(callAPI(this.config));
+
+                    fetchMock.reset();
+                    this.dispatch.calls.reset();
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should respect the overrides', function() {
+                    expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                    expect(fetchMock.calls().matched.length).toBe(1, 'Incorrect number of calls were made.');
+                    expect(fetchMock.called(this.config.endpoint)).toBe(true, 'Endpoint was not called.');
+                    expect(fetchMock.lastOptions(this.config.endpoint)).toEqual({
+                        method: 'PUT',
+                        headers: {
+                            'Accept-Encoding': 'gzip',
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: '*'
+                    });
+                });
+            });
+
+            describe('if the types are Objects', function() {
+                beforeEach(function(done) {
+                    this.config.types = [
+                        {
+                            type: REQUEST,
+                            meta: { start: true }
+                        },
+                        {
+                            type: REQUEST_SUCCESS,
+                            meta: jasmine.createSpy('meta()').and.returnValue({ success: true })
+                        },
+                        {
+                            type: REQUEST_FAILURE,
+                            meta: { failure: true }
+                        }
+                    ];
+
+                    this.thunk = getThunk(callAPI(this.config));
+
+                    fetchMock.reset();
+                    this.dispatch.calls.reset();
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should dispatch an action', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith({
+                        type: REQUEST,
+                        meta: this.config.types[0].meta
+                    });
+                });
+
+                describe('if the request succeeds', function() {
+                    beforeEach(function(done) {
+                        this.response = {
+                            status: 200,
+                            body: {
+                                foo: 'bar',
+                                hello: 'world'
+                            },
+                            headers: {
+                                'content-encoding': '',
+                                'x-powered-by': 'express',
+                                'content-type': 'text/plain;charset=UTF-8'
+                            }
+                        };
+
+                        this.dispatch.calls.reset();
+
+                        this.fetchDeferred.resolve(this.response);
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch an action', function() {
+                        expect(this.config.types[1].meta).toHaveBeenCalledWith(jasmine.any(Response), this.response.body);
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_SUCCESS,
+                            payload: this.response.body,
+                            meta: {
+                                status: 200,
+                                ok: true,
+                                statusText: 'OK',
+                                headers: new Headers(this.response.headers),
+                                success: true
+                            }
+                        });
+                    });
+                });
+
+                describe('if the request fails', function() {
+                    beforeEach(function(done) {
+                        this.response = {
+                            status: 404,
+                            body: 'Could not find that thing...',
+                            headers: {
+                                'content-encoding': '',
+                                'x-powered-by': 'express',
+                                'content-type': 'text/plain;charset=UTF-8'
+                            }
+                        };
+
+                        this.dispatch.calls.reset();
+
+                        this.fetchDeferred.resolve(this.response);
+                        setTimeout(done);
+                    });
+
+                    it('should dispatch an action', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_FAILURE,
+                            error: true,
+                            payload: new StatusCodeError(this.response.status, this.response.body),
+                            meta: {
+                                status: 404,
+                                ok: false,
+                                statusText: 'Not Found',
+                                headers: new Headers(this.response.headers),
+                                failure: true
+                            }
+                        });
+                    });
+                });
             });
         });
     });

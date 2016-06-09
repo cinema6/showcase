@@ -7,7 +7,6 @@ import {
     FIND_APPS_FAILURE
 } from '../../src/actions/search';
 import { format as formatURL } from 'url';
-import { CALL_API } from 'redux-api-middleware';
 
 const proxyquire = require('proxyquire');
 
@@ -40,7 +39,7 @@ describe('search actions', function() {
         });
 
         it('should make a request to the search service', function() {
-            expect(result[CALL_API]).toEqual(callAPI({
+            expect(result).toEqual(callAPI({
                 types: [FIND_APPS_START, FIND_APPS_SUCCESS, FIND_APPS_FAILURE],
                 endpoint: formatURL({
                     pathname: '/api/search/apps',
@@ -50,7 +49,7 @@ describe('search actions', function() {
                     }
                 }),
                 method: 'GET'
-            })[CALL_API]);
+            }));
         });
     });
 });

@@ -10,7 +10,6 @@ import { cloneDeep as clone, assign } from 'lodash';
 import SignUpForm from '../../src/forms/SignUp';
 import APP_CONFIG from '../../config';
 import { createUuid } from 'rc-uuid';
-import { CALL_API } from 'redux-api-middleware';
 
 describe('SignUp', function() {
     describe('when rendered', function() {
@@ -89,12 +88,12 @@ describe('SignUp', function() {
                     });
 
                     it('should call signUp()', function() {
-                        expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
+                        expect(store.dispatch).toHaveBeenCalledWith(signUp(assign({}, values, {
                             company: `${values.firstName} ${values.lastName}`,
                             paymentPlanId: APP_CONFIG.paymentPlans[0].id,
                             promotion: APP_CONFIG.defaultPromotion,
                             referralCode: props.location.query.ref
-                        }))[CALL_API]);
+                        })));
                     });
 
                     describe('with a promotion in the query param', function() {
@@ -106,12 +105,12 @@ describe('SignUp', function() {
                         });
 
                         it('should use the specified promotion', function() {
-                            expect(store.dispatch.calls.mostRecent().args[0][CALL_API]).toEqual(signUp(assign({}, values, {
+                            expect(store.dispatch).toHaveBeenCalledWith(signUp(assign({}, values, {
                                 company: `${values.firstName} ${values.lastName}`,
                                 paymentPlanId: APP_CONFIG.paymentPlans[0].id,
                                 promotion: props.location.query.promotion,
                                 referralCode: props.location.query.ref
-                            }))[CALL_API]);
+                            })));
                         });
                     });
                 });
