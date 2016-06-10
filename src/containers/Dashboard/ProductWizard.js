@@ -127,6 +127,20 @@ class ProductWizard extends Component {
                                 promotionLength)));
         return (50 * Math.floor(val / 50));
     }
+    hasPromotions(promos){
+        try{
+            // check if there are keys in the promotion object
+            if(Array.isArray(promos) && typeof promos[0] != undefined) {
+                if(Object.keys(promos[0]).length > 0) {
+                    // if the first object has an id property return true
+                    return ((promos[0]).hasOwnProperty('id') === true);
+                }
+            }
+            return false;
+        }catch(e){
+            return false;
+        } 
+    }
     render() {
         const {
             findApps,
@@ -248,9 +262,9 @@ class ProductWizard extends Component {
                     targeting: this.getTargeting()
                 })}
                 promotionString= {this.formatPromotionString(this.getPromotionLength(promotions))}
-                numOfImpressions = { this.getNumOfImpressions(paymentConfig, 
-                                    this.getPromotionLength(promotions)) }
-                hasPromotions= {}
+                numOfImpressions = {this.getNumOfImpressions(paymentConfig, 
+                                    this.getPromotionLength(promotions))}
+                hasPromotions= {this.hasPromotions(promotions)}
                 />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}

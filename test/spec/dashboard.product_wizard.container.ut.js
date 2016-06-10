@@ -273,15 +273,10 @@ describe('ProductWizard', function() {
         });
 
         describe('WizardPlanInfoModal', function() {
+
             beforeEach(function() {
                 this.planInfoModal = findRenderedComponentWithType(component, WizardPlanInfoModal);
-            });
-
-            it('should exist', function() {
-                expect(this.planInfoModal).toEqual(jasmine.any(Object));
-            });
-            describe('dynamic text', function(){
-                function generatePromo(num){ 
+                this.generatePromo = function(num){ 
                     return [
                         {
                             id: 'none',
@@ -291,18 +286,30 @@ describe('ProductWizard', function() {
                             }
                         }
                     ];
-                }
+                };
+            });
+
+            it('should exist', function() {
+                expect(this.planInfoModal).toEqual(jasmine.any(Object));
+            });
+            describe('dynamic text', function(){
                 it('should calculate the correct promotion strings', function(){
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(1)))).toEqual('1 day');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(7)))).toEqual('1 week');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(2)))).toEqual('2 days');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
+                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(1)))).toEqual('1 day');
+                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(7)))).toEqual('1 week');
+                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(2)))).toEqual('2 days');
+                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(14)))).toEqual('2 weeks');
                 });
                 it('should calculate the correct impression number', function(){
                     expect(component.getNumOfImpressions({paymentPlans: 
                         [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
-                        component.getPromotionLength(generatePromo(14)))).toEqual(900);
+                        component.getPromotionLength(this.generatePromo(14)))).toEqual(900);
                 });
+            });
+            describe('no-promotions modal UI', function(){
+                expect(component.hasPromotions(this.generatePromo(1))).toEqual(true);
+                //expect(component.hasPromotions([])).toEqual('false');
+                //expect(component.hasPromotions([{type: 'freeTrial', data:{trialLength: 7}}])).toEqual('false');
+
             });
             describe('props', function() {
                 describe('show', function() {

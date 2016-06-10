@@ -16,12 +16,16 @@ export default class WizardPlanInfoModal extends Component {
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
-                {hasPromotions ?  
-                    <h1 className="modal-title">Reach {numOfImpressions} people for FREE</h1>
-                    <p>Your first {promotionString} of advertising is on us</p>
-                    :
-                    <h1 className="modal-title">Reach thousands of people</h1>
-                }
+                    <h1 className="modal-title">
+                        { hasPromotions ? 
+                        `Reach ${numOfImpressions} people for FREE` : 
+                        'Reach thousands of people' } 
+                    </h1>
+                    <p>
+                        { hasPromotions ? 
+                        `Your first ${promotionString} of advertising is on us` : 
+                        '' }
+                    </p>
             </Modal.Header>
             <Modal.Body className="text-center">
                 <div className="row">
@@ -128,28 +132,15 @@ export default class WizardPlanInfoModal extends Component {
                         </div>
                         <div className="col-md-12 text-center">
                             <br />
-                            { hasPromotions ? 
-                                <Button onClick={onContinue}
-                                    disabled={actionPending}
-                                    className={classnames('col-xs-12', {
-                                        'btn-waiting': actionPending
-                                    })}
-                                    bsSize="lg"
-                                    bsStyle="danger">
-                                    Get {promotionString} FREE trial
-                                </Button>
-                                :
-                                <Button onClick={onContinue}
-                                    disabled={actionPending}
-                                    className={classnames('col-xs-12', {
-                                        'btn-waiting': actionPending
-                                    })}
-                                    bsSize="lg"
-                                    bsStyle="danger">
-                                    Continue
-                                </Button>
-                            }
-
+                            <Button onClick={onContinue}
+                                disabled={actionPending}
+                                className={classnames('col-xs-12', {
+                                    'btn-waiting': actionPending
+                                })}
+                                bsSize="lg"
+                                bsStyle="danger">
+                                { hasPromotions ? `Get ${promotionString} FREE trial` : 'Continue'}
+                            </Button>
                         </div>
                     </div>
                 </div>
