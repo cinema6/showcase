@@ -114,11 +114,7 @@
   },
   "browserify": {
     "transform": [
-      "babelify",
-      "browserify-shim"
-    ],
-    "browserify-shim" : {
-      "google_trackConversion" : "global:google_trackConversion"
-    }
+      "babelify"
+    ]
   }
 }
