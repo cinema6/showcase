@@ -3,6 +3,8 @@ import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
+import trackAdwordsConversion from 'adwords-track-conversion';
+import config from '../../config';
 
 function userPrefix(type) {
     return `USER/${type}`;
@@ -86,17 +88,30 @@ export const changePassword = createThunk(({ id, oldPassword, newPassword }) => 
 export const SIGN_UP_START = userPrefix('SIGN_UP_START');
 export const SIGN_UP_SUCCESS = userPrefix('SIGN_UP_SUCCESS');
 export const SIGN_UP_FAILURE = userPrefix('SIGN_UP_FAILURE');
-export function signUp(data) {
-    return callAPI({
-        types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
-        method: 'POST',
-        endpoint: formatURL({
-            pathname: '/api/account/users/signup',
-            query: { target: 'showcase' },
-        }),
-        body: data,
-    });
-}
+export const signUp = createThunk((data) => (
+    function thunk(dispatch) {
+        return dispatch(callAPI({
+            types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
+            method: 'POST',
+            endpoint: formatURL({
+                pathname: '/api/account/users/signup',
+                query: { target: 'showcase' },
+            }),
+            body: data,
+        })).then(response => {
+            trackAdwordsConversion({
+                google_conversion_id: config.adWords.conversionID,
+                google_conversion_language: 'en',
+                google_conversion_format: '3',
+                google_conversion_color: 'ffffff',
+                google_conversion_label: config.adWords.conversionLabel,
+                google_remarketing_only: false,
+            });
+
+            return response;
+        });
+    }
+));
 
 export const CONFIRM_START = userPrefix('CONFIRM_START');
 export const CONFIRM_SUCCESS = userPrefix('CONFIRM_SUCCESS');

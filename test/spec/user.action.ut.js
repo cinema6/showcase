@@ -24,6 +24,8 @@ import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
 import { format as formatURL } from 'url';
 import { getThunk } from '../../src/middleware/fsa_thunk';
+import { dispatch } from '../helpers/stubs';
+import { assign } from 'lodash';
 
 const proxyquire = require('proxyquire');
 
@@ -36,6 +38,8 @@ describe('user actions', function() {
         realCreateDbActions = require('../../src/utils/db').createDbActions;
         createDbActions = jasmine.createSpy('createDbActions()').and.callFake(realCreateDbActions);
         Object.keys(realCreateDbActions).forEach(key => createDbActions[key] = realCreateDbActions[key]);
+
+        window.google_trackConversion = jasmine.createSpy('google_trackConversion()');
 
         actions = proxyquire('../../src/actions/user', {
             '../utils/db': {
@@ -55,6 +59,10 @@ describe('user actions', function() {
         signUp = actions.signUp;
         confirmUser = actions.confirmUser;
         resendConfirmationEmail = actions.resendConfirmationEmail;
+    });
+
+    afterEach(function() {
+        delete window.google_trackConversion;
     });
 
     it('should create db actions for users', function() {
@@ -240,30 +248,77 @@ describe('user actions', function() {
     });
 
     describe('signUp(data)', function() {
-        let data;
-        let result;
-
         beforeEach(function() {
-            data = {
+            this.data = {
                 firstName: 'Foo',
                 lastName: 'Bar',
                 email: 'foo@bar.com',
                 password: 'the-pass'
             };
 
-            result = signUp(data);
+            this.thunk = getThunk(signUp(this.data));
         });
 
-        it('should call the signup endpoint', function() {
-            expect(result).toEqual(callAPI({
-                types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
-                method: 'POST',
-                endpoint: formatURL({
-                    pathname: '/api/account/users/signup',
-                    query: { target: 'showcase' }
-                }),
-                body: data
-            }));
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            function getAPICall() {
+                return callAPI({
+                    types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
+                    method: 'POST',
+                    endpoint: formatURL({
+                        pathname: '/api/account/users/signup',
+                        query: { target: 'showcase' }
+                    }),
+                    body: this.data
+                });
+            }
+
+            beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.returnValue({});
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+
+                setTimeout(done);
+            });
+
+            it('should call the signup endpoint', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getAPICall.call(this));
+            });
+
+            describe('when the signup succeeds', function() {
+                beforeEach(function(done) {
+                    this.response = assign({}, this.data, {
+                        id: `u-${createUuid()}`,
+                        created: new Date().toISOString()
+                    });
+
+                    this.dispatch.getDeferred(getAPICall.call(this)).resolve(this.response);
+
+                    setTimeout(done);
+                });
+
+                it('should track the adwords conversion', function() {
+                    expect(window.google_trackConversion).toHaveBeenCalledWith({
+                        google_conversion_id: 926037221,
+                        google_conversion_language: 'en',
+                        google_conversion_format: '3',
+                        google_conversion_color: 'ffffff',
+                        google_conversion_label: 'L5MhCKO_m2cQ5enIuQM',
+                        google_remarketing_only: false
+                    });
+                });
+
+                it('should fulfill with the response', function() {
+                    expect(this.success).toHaveBeenCalledWith(this.response);
+                });
+            });
         });
     });
 
