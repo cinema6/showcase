@@ -6,17 +6,22 @@ export default class WizardPlanInfoModal extends Component {
     render() {
         const {
             show,
-            actionPending,
-            promotionString,
+            actionPending,            
             onClose,
             onContinue,
-            numOfImpressions
+            promotionString,
+            numOfImpressions,
+            hasPromotions
         } = this.props;
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
-                <h1 className="modal-title">Reach {numOfImpressions} people for FREE</h1>
-                <p>Your first {promotionString} of advertising is on us</p>
+                {hasPromotions ?  
+                    <h1 className="modal-title">Reach {numOfImpressions} people for FREE</h1>
+                    <p>Your first {promotionString} of advertising is on us</p>
+                    :
+                    <h1 className="modal-title">Reach thousands of people</h1>
+                }
             </Modal.Header>
             <Modal.Body className="text-center">
                 <div className="row">
@@ -123,15 +128,28 @@ export default class WizardPlanInfoModal extends Component {
                         </div>
                         <div className="col-md-12 text-center">
                             <br />
-                            <Button onClick={onContinue}
-                                disabled={actionPending}
-                                className={classnames('col-xs-12', {
-                                    'btn-waiting': actionPending
-                                })}
-                                bsSize="lg"
-                                bsStyle="danger">
-                                Get {promotionString} FREE trial
-                            </Button>
+                            { hasPromotions ? 
+                                <Button onClick={onContinue}
+                                    disabled={actionPending}
+                                    className={classnames('col-xs-12', {
+                                        'btn-waiting': actionPending
+                                    })}
+                                    bsSize="lg"
+                                    bsStyle="danger">
+                                    Get {promotionString} FREE trial
+                                </Button>
+                                :
+                                <Button onClick={onContinue}
+                                    disabled={actionPending}
+                                    className={classnames('col-xs-12', {
+                                        'btn-waiting': actionPending
+                                    })}
+                                    bsSize="lg"
+                                    bsStyle="danger">
+                                    Continue
+                                </Button>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -145,8 +163,9 @@ WizardPlanInfoModal.propTypes = {
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired,
-    promotionString: PropTypes.string.isRequired,
-    numOfImpressions: PropTypes.number.isRequired
+    hasPromotions: PropTypes.bool.isRequired,
+    promotionString: PropTypes.string,
+    numOfImpressions: PropTypes.number
 };
 WizardPlanInfoModal.defaultProps = {
     actionPending: false

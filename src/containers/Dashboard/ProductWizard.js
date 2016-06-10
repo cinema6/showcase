@@ -250,6 +250,7 @@ class ProductWizard extends Component {
                 promotionString= {this.formatPromotionString(this.getPromotionLength(promotions))}
                 numOfImpressions = { this.getNumOfImpressions(paymentConfig, 
                                     this.getPromotionLength(promotions)) }
+                hasPromotions= {}
                 />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
