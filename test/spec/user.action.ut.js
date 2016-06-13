@@ -241,21 +241,35 @@ describe('user actions', function() {
 
     describe('signUp(data)', function() {
         let data;
-        let result;
+        let thunk, dispatch, getState, success, failure, state;
 
-        beforeEach(function() {
+        beforeEach(function(done) {
+            state = {
+                form: {
+                    signUp: {
+                        _submitSucceeded: true
+                    }
+                }
+            };
             data = {
                 firstName: 'Foo',
                 lastName: 'Bar',
                 email: 'foo@bar.com',
                 password: 'the-pass'
             };
+            thunk = getThunk(signUp(data));
+            dispatch = jasmine.createSpy('dispatch()').and.returnValue(Promise.resolve(undefined));
+            getState = jasmine.createSpy('getState()').and.returnValue(state);
 
-            result = signUp(data);
+            success = jasmine.createSpy('success()');
+            failure = jasmine.createSpy('failure()');
+
+            thunk(dispatch, getState).then(success, failure);
+            setTimeout(done);
         });
 
         it('should call the signup endpoint', function() {
-            expect(result).toEqual(callAPI({
+            expect(dispatch).toHaveBeenCalledWith(callAPI({
                 types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
                 method: 'POST',
                 endpoint: formatURL({
