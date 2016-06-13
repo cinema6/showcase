@@ -132,13 +132,3 @@ export function resendConfirmationEmail() {
         })
     });
 }
-/*
-import('google_trackConversion');
-google_trackConversion({
-    google_conversion_id: 926037221, 
-    google_conversion_language: "en",
-    google_conversion_format: "3",
-    google_conversion_color: "ffffff",
-    google_conversion_label: "L5MhCKO_m2cQ5enIuQM",
-    google_remarketing_only: false
-});*/

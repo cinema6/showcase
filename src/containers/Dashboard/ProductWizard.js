@@ -128,18 +128,14 @@ class ProductWizard extends Component {
         return (50 * Math.floor(val / 50));
     }
     hasPromotions(promos){
-        try{
-            // check if there are keys in the promotion object
-            if(Array.isArray(promos) && typeof promos[0] != undefined) {
-                if(Object.keys(promos[0]).length > 0) {
-                    // if the first object has an id property return true
-                    return ((promos[0]).hasOwnProperty('id') === true);
-                }
+        // check if there are keys in the promotion object
+        if(Array.isArray(promos) && typeof promos[0] != undefined) {
+            if( typeof (promos[0]) === 'object') {
+                // if the first object has an id property return true
+                return ((promos[0]).hasOwnProperty('id') === true);
             }
-            return false;
-        }catch(e){
-            return false;
-        } 
+        }
+        return false;
     }
     render() {
         const {

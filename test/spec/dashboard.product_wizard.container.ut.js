@@ -306,10 +306,12 @@ describe('ProductWizard', function() {
                 });
             });
             describe('no-promotions modal UI', function(){
-                expect(component.hasPromotions(this.generatePromo(1))).toEqual(true);
-                //expect(component.hasPromotions([])).toEqual('false');
-                //expect(component.hasPromotions([{type: 'freeTrial', data:{trialLength: 7}}])).toEqual('false');
-
+                it('should return expected output', function(){
+                    expect(component.hasPromotions(this.generatePromo(1))).toEqual(true);
+                    expect(component.hasPromotions([])).toEqual(false);
+                    expect(component.hasPromotions(null)).toEqual(false);
+                    expect(component.hasPromotions([{type: 'freeTrial', data:{trialLength: 7}}])).toEqual(false);
+                });
             });
             describe('props', function() {
                 describe('show', function() {
