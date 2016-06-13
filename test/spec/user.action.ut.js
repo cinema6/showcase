@@ -24,6 +24,7 @@ import { createAction } from 'redux-actions';
 import { callAPI } from '../../src/actions/api';
 import { format as formatURL } from 'url';
 import { getThunk } from '../../src/middleware/fsa_thunk';
+import  google_trackConversion from 'google_trackConversion';
 
 const proxyquire = require('proxyquire');
 
@@ -279,6 +280,10 @@ describe('user actions', function() {
                 body: data
             }));
         });
+        it('should resolve with the google script call', function(){
+            expect(success).toHaveBeenCalledWith(google_trackConversion);
+        });
+
     });
 
     describe('confirmUser({ id, token })', function() {
