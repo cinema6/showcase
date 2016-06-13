@@ -9,6 +9,7 @@ import {
     omit,
     noop
 } from 'lodash';
+import { parse as parseURL } from 'url';
 
 const HTTP = {
     GET: 'GET'
@@ -33,6 +34,10 @@ function getBody(response) {
     });
 }
 
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function getTypes(types) {
     return types.map(type => {
         if (typeof type === 'string') {
@@ -44,6 +49,28 @@ function getTypes(types) {
         return merge(defaults({}, type), {
             meta: !meta ? noop : (typeof meta !== 'function' ? () => meta : meta)
         });
+    });
+}
+
+function checkFor202(response, remainingChecks) {
+    const { hostname } = parseURL(response.url);
+
+    if (remainingChecks === 0) {
+        return Promise.reject(new Error('Timed out waiting for job to complete.'));
+    }
+
+    return getBody(response).then(body => {
+        if (response.status === 202 && !hostname) {
+            return wait(2000).then(() => fetch(body.url, {
+                method: HTTP.GET,
+                headers: {
+                    [HEADER.CONTENT_TYPE]: MIME.JSON
+                },
+                credentials: CREDENTIALS.SAME_ORIGIN
+            })).then(response => checkFor202(response, remainingChecks - 1));
+        }
+
+        return [response, body];
     });
 }
 
@@ -75,7 +102,7 @@ export const callAPI = createThunk(config => dispatch => {
         credentials: CREDENTIALS.SAME_ORIGIN
     }), {
         body: body && JSON.stringify(body)
-    })).then(response => getBody(response).then(body => {
+    })).then(response => checkFor202(response, 15)).then(([response, body]) => {
         if (!response.ok) {
             const error = new StatusCodeError(response.status, body);
 
@@ -83,5 +110,5 @@ export const callAPI = createThunk(config => dispatch => {
         }
 
         return dispatch(requestSuccess(body, response, success.meta));
-    })).catch(reason => dispatch(requestFailure(reason)));
+    }).catch(reason => dispatch(requestFailure(reason)));
 });
