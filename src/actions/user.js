@@ -5,6 +5,7 @@ import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
+import 'google_trackConversion';
 
 function userPrefix(type) {
     return `USER/${type}`;
@@ -89,15 +90,29 @@ export const SIGN_UP_START = userPrefix('SIGN_UP_START');
 export const SIGN_UP_SUCCESS = userPrefix('SIGN_UP_SUCCESS');
 export const SIGN_UP_FAILURE = userPrefix('SIGN_UP_FAILURE');
 export function signUp(data) {
-    return callAPI({
-        types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
-        method: 'POST',
-        endpoint: formatURL({
-            pathname: '/api/account/users/signup',
-            query: { target: 'showcase' }
-        }),
-        body: data
-    });
+    return function thunk(dispatch, getState) {
+        return dispatch(callAPI({
+            types: [SIGN_UP_START, SIGN_UP_SUCCESS, SIGN_UP_FAILURE],
+            method: 'POST',
+            endpoint: formatURL({
+                pathname: '/api/account/users/signup',
+                query: { target: 'showcase' }
+            }),
+            body: data
+        })).then(()=>{
+            const status = getState().form.signUp._submitSucceeded;
+            if(status && window.google_trackConversion) {
+                google_trackConversion({
+                    google_conversion_id: 926037221, 
+                    google_conversion_language: "en",
+                    google_conversion_format: "3",
+                    google_conversion_color: "ffffff",
+                    google_conversion_label: "L5MhCKO_m2cQ5enIuQM",
+                    google_remarketing_only: false
+                });
+            }
+        });
+    }
 }
 
 export const CONFIRM_START = userPrefix('CONFIRM_START');
@@ -132,13 +147,3 @@ export function resendConfirmationEmail() {
         })
     });
 }
-/*
-import('google_trackConversion');
-google_trackConversion({
-    google_conversion_id: 926037221, 
-    google_conversion_language: "en",
-    google_conversion_format: "3",
-    google_conversion_color: "ffffff",
-    google_conversion_label: "L5MhCKO_m2cQ5enIuQM",
-    google_remarketing_only: false
-});*/
