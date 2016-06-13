@@ -8,6 +8,10 @@ const REQUEST = 'REQUEST';
 const REQUEST_SUCCESS = 'REQUEST_SUCCESS';
 const REQUEST_FAILURE = 'REQUEST_FAILURE';
 
+function wait(ticks = 10) {
+    return Array.apply([], new Array(ticks)).reduce(promise => promise.then(() => {}), Promise.resolve());
+}
+
 describe('api actions', function() {
     afterEach(function() {
         fetchMock.restore();
@@ -130,6 +134,342 @@ describe('api actions', function() {
                             }
                         });
                         expect(this.success).toHaveBeenCalledWith(this.response.body);
+                    });
+                });
+            });
+
+            describe('if the request responds with a 202', function() {
+                beforeEach(function(done) {
+                    this.send202 = times => {
+                        this.fetchDeferred.resolve(this.response);
+
+                        return Array.apply([], new Array(times)).reduce(promise => {
+                            return promise.then(() => wait(100)).then(() => {
+                                jasmine.clock().tick(2000);
+
+                                return wait(100);
+                            });
+                        }, Promise.resolve());
+                    };
+
+                    jasmine.clock().install();
+                    this.response = {
+                        status: 202,
+                        body: {
+                            url: '/request/me/to/check'
+                        },
+                        headers: {
+                            'x-powered-by': 'express',
+                            'content-type': 'text/plain;charset=UTF-8'
+                        }
+                    };
+
+                    this.dispatch.calls.reset();
+
+                    this.fetchDeferred.resolve(this.response);
+
+                    fetchMock.reset();
+                    this.fetchDeferred = defer();
+                    fetchMock.mock(this.response.body.url, this.fetchDeferred.promise);
+
+                    wait().then(done);
+                });
+
+                afterEach(function() {
+                    jasmine.clock().uninstall();
+                });
+
+                it('should not dispatch anything', function() {
+                    expect(this.dispatch).not.toHaveBeenCalled();
+                });
+
+                it('should not fulfill the Promise', function() {
+                    expect(this.success).not.toHaveBeenCalled();
+                });
+
+                describe('if this happens less than 15 total times', function() {
+                    beforeEach(function(done) {
+                        this.send202(14).then(done);
+                    });
+
+                    it('should not dispatch anything', function() {
+                        expect(this.dispatch).not.toHaveBeenCalled();
+                    });
+
+                    it('should not resolve the Promise', function() {
+                        expect(this.success).not.toHaveBeenCalled();
+                        expect(this.failure).not.toHaveBeenCalled();
+                    });
+                });
+
+                describe('this happens more than 15 total times', function() {
+                    beforeEach(function(done) {
+                        this.send202(15).then(done);
+                    });
+
+                    it('should dispatch an action', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_FAILURE,
+                            error: true,
+                            payload: new Error('Timed out waiting for job to complete.'),
+                            meta: {}
+                        });
+                    });
+
+                    it('should reject the Promise', function() {
+                        expect(this.failure).toHaveBeenCalledWith(new Error('Timed out waiting for job to complete.'));
+                    });
+                });
+
+                describe('if the URL is absolute', function() {
+                    beforeEach(function(done) {
+                        this.config.endpoint = 'https://www.cinema6.com/throwback';
+
+                        this.success.calls.reset();
+                        this.failure.calls.reset();
+
+                        this.response = {
+                            status: 202,
+                            body: {
+                                hello: 'world',
+                                foo: 'bar'
+                            },
+                            headers: {
+                                'x-powered-by': 'express',
+                                'content-type': 'text/plain;charset=UTF-8'
+                            }
+                        };
+
+                        fetchMock.mock(this.config.endpoint, this.response);
+
+                        getThunk(callAPI(this.config))(this.dispatch, this.getState).then(this.success, this.failure);
+
+                        this.dispatch.calls.reset();
+
+                        wait().then(() => jasmine.clock().tick(2000))
+                            .then(() => fetchMock.reset())
+                            .then(() => wait())
+                            .then(done, done.fail);
+                    });
+
+                    it('should not make a GET request', function() {
+                        expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                        expect(fetchMock.calls().matched.length).toBe(0, 'Incorrect number of calls were made.');
+                    });
+
+                    it('should dispatch an action', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith({
+                            type: REQUEST_SUCCESS,
+                            payload: this.response.body,
+                            meta: {
+                                status: 202,
+                                ok: true,
+                                statusText: 'Accepted',
+                                headers: new Headers(this.response.headers)
+                            }
+                        });
+                    });
+
+                    it('should fulfill the promise', function() {
+                        expect(this.success).toHaveBeenCalledWith(this.response.body);
+                    });
+                });
+
+                describe('before two seconds passes', function() {
+                    beforeEach(function(done) {
+                        jasmine.clock().tick(1999);
+                        wait().then(done);
+                    });
+
+                    it('should not make a GET request', function() {
+                        expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                        expect(fetchMock.calls().matched.length).toBe(0, 'Incorrect number of calls were made.');
+                    });
+                });
+
+                describe('when two seconds passes', function() {
+                    beforeEach(function(done) {
+                        jasmine.clock().tick(2000);
+                        wait().then(done);
+                    });
+
+                    it('should make a GET request for the specified URL', function() {
+                        expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                        expect(fetchMock.calls().matched.length).toBe(1, 'Incorrect number of calls were made.');
+                        expect(fetchMock.called(this.response.body.url)).toBe(true, 'Endpoint was not called.');
+                        expect(fetchMock.lastOptions(this.response.body.url)).toEqual({
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: 'same-origin'
+                        });
+                    });
+
+                    describe('if the request succeeds', function() {
+                        beforeEach(function(done) {
+                            this.response = {
+                                status: 200,
+                                body: {
+                                    foo: 'bar',
+                                    hello: 'world'
+                                },
+                                headers: {
+                                    'content-encoding': '',
+                                    'x-powered-by': 'express',
+                                    'content-type': 'text/plain;charset=UTF-8'
+                                }
+                            };
+
+                            this.dispatch.calls.reset();
+
+                            this.fetchDeferred.resolve(this.response);
+                            wait(25).then(done);
+                        });
+
+                        it('should dispatch an action', function() {
+                            expect(this.dispatch).toHaveBeenCalledWith({
+                                type: REQUEST_SUCCESS,
+                                payload: this.response.body,
+                                meta: {
+                                    status: 200,
+                                    ok: true,
+                                    statusText: 'OK',
+                                    headers: new Headers(this.response.headers)
+                                }
+                            });
+                        });
+
+                        it('should fulfill the promise', function() {
+                            expect(this.success).toHaveBeenCalledWith(this.response.body);
+                        });
+                    });
+
+                    describe('if the request fails', function() {
+                        beforeEach(function(done) {
+                            this.response = {
+                                status: 404,
+                                body: 'Could not find that thing...',
+                                headers: {
+                                    'content-encoding': '',
+                                    'x-powered-by': 'express',
+                                    'content-type': 'text/plain;charset=UTF-8'
+                                }
+                            };
+
+                            this.dispatch.calls.reset();
+
+                            this.fetchDeferred.resolve(this.response);
+                            wait(25).then(done);
+                        });
+
+                        it('should dispatch an action', function() {
+                            expect(this.dispatch).toHaveBeenCalledWith({
+                                type: REQUEST_FAILURE,
+                                error: true,
+                                payload: new StatusCodeError(this.response.status, this.response.body),
+                                meta: {
+                                    status: 404,
+                                    ok: false,
+                                    statusText: 'Not Found',
+                                    headers: new Headers(this.response.headers)
+                                }
+                            });
+                        });
+
+                        it('should reject the Promise', function() {
+                            expect(this.failure).toHaveBeenCalledWith(new StatusCodeError(this.response.status, this.response.body));
+                        });
+                    });
+
+                    describe('if sending the request fails', function() {
+                        beforeEach(function(done) {
+                            this.reason = new Error('Something unexpected and bad happened.');
+
+                            this.fetchDeferred.resolve({
+                                throws: this.reason
+                            });
+
+                            wait(25).then(done);
+                        });
+
+                        it('should dispatch an action', function() {
+                            expect(this.dispatch).toHaveBeenCalledWith({
+                                type: REQUEST_FAILURE,
+                                error: true,
+                                payload: this.reason,
+                                meta: {}
+                            });
+                        });
+
+                        it('should reject the Promise', function() {
+                            expect(this.failure).toHaveBeenCalledWith(this.reason);
+                        });
+                    });
+
+                    describe('if there is another 202', function() {
+                        beforeEach(function(done) {
+                            this.response = {
+                                status: 202,
+                                body: {
+                                    url: '/request/me/to/check/again'
+                                },
+                                headers: {
+                                    'x-powered-by': 'express',
+                                    'content-type': 'text/plain;charset=UTF-8'
+                                }
+                            };
+
+                            this.dispatch.calls.reset();
+
+                            this.fetchDeferred.resolve(this.response);
+
+                            fetchMock.reset();
+                            this.fetchDeferred = defer();
+                            fetchMock.mock(this.response.body.url, this.fetchDeferred.promise);
+
+                            wait(25).then(done);
+                        });
+
+                        it('should not dispatch anything', function() {
+                            expect(this.dispatch).not.toHaveBeenCalled();
+                        });
+
+                        it('should not fulfill the Promise', function() {
+                            expect(this.success).not.toHaveBeenCalled();
+                        });
+
+                        describe('before two seconds passes', function() {
+                            beforeEach(function(done) {
+                                jasmine.clock().tick(1999);
+                                wait().then(done);
+                            });
+
+                            it('should not make a GET request', function() {
+                                expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                                expect(fetchMock.calls().matched.length).toBe(0, 'Incorrect number of calls were made.');
+                            });
+                        });
+
+                        describe('when two seconds passes', function() {
+                            beforeEach(function(done) {
+                                jasmine.clock().tick(2000);
+                                wait().then(done);
+                            });
+
+                            it('should make a GET request for the specified URL', function() {
+                                expect(fetchMock.calls().unmatched.length).toBe(0, 'Unmatched calls were made.');
+                                expect(fetchMock.calls().matched.length).toBe(1, 'Incorrect number of calls were made.');
+                                expect(fetchMock.called(this.response.body.url)).toBe(true, 'Endpoint was not called.');
+                                expect(fetchMock.lastOptions(this.response.body.url)).toEqual({
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    credentials: 'same-origin'
+                                });
+                            });
+                        });
                     });
                 });
             });
