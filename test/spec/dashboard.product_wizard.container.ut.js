@@ -273,15 +273,10 @@ describe('ProductWizard', function() {
         });
 
         describe('WizardPlanInfoModal', function() {
+
             beforeEach(function() {
                 this.planInfoModal = findRenderedComponentWithType(component, WizardPlanInfoModal);
-            });
-
-            it('should exist', function() {
-                expect(this.planInfoModal).toEqual(jasmine.any(Object));
-            });
-            describe('dynamic text', function(){
-                function generatePromo(num){ 
+                this.generatePromo = function(num){ 
                     return [
                         {
                             id: 'none',
@@ -291,17 +286,17 @@ describe('ProductWizard', function() {
                             }
                         }
                     ];
-                }
-                it('should calculate the correct promotion strings', function(){
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(1)))).toEqual('1 day');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(7)))).toEqual('1 week');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(2)))).toEqual('2 days');
-                    expect(component.formatPromotionString(component.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
-                });
+                };
+            });
+
+            it('should exist', function() {
+                expect(this.planInfoModal).toEqual(jasmine.any(Object));
+            });
+            describe('impression number', function(){
                 it('should calculate the correct impression number', function(){
                     expect(component.getNumOfImpressions({paymentPlans: 
                         [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
-                        component.getPromotionLength(generatePromo(14)))).toEqual(900);
+                        component.getPromotionLength(this.generatePromo(14)))).toEqual(900);
                 });
             });
             describe('props', function() {
@@ -326,9 +321,9 @@ describe('ProductWizard', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
                     });
                 });
-                describe('promotionString', function() {
-                    it('should be the value of the formatted promotion length', function() {
-                        expect(this.planInfoModal.props.promotionString).toBe(component.formatPromotionString(component.getPromotionLength(props.promotions)));
+                describe('promotionLength', function() {
+                    it('should be the value of the promotion length', function() {
+                        expect(this.planInfoModal.props.promotionLength).toBe(component.getPromotionLength(props.promotions));
                     });
                 });
                 describe('numOfImpressions', function() {

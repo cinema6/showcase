@@ -38,7 +38,22 @@ describe('WizardPlanInfoModal', function() {
         expect(modal.props.show).toBe(this.props.show);
         expect(modal.props.onHide).toBe(this.props.onClose);
     });
+    describe('the trial/promotion text', function(){
+        it('should calculate the correct promotion strings', function(){
+            expect(this.component.formatPromotionString(1)).toEqual('1 day');
+            expect(this.component.formatPromotionString(7)).toEqual('1 week');
+            expect(this.component.formatPromotionString(2)).toEqual('2 days');
+            expect(this.component.formatPromotionString(14)).toEqual('2 weeks');
 
+            describe('when there are no promotions', function(){
+                it('should not display trial UI', function(){
+                    expect(this.component.formatPromotionString(0)).toEqual(null);
+                    expect(this.component.formatPromotionString(undefined)).toEqual(null);
+                    expect(this.component.formatPromotionString(null)).toEqual(null);
+                });
+            });
+        });
+    });
     describe('the continue button', function() {
         beforeEach(function() {
             this.button = findRenderedComponentWithType(this.modal, Button);
