@@ -1,28 +1,60 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import classnames from 'classnames';
+import numeral from 'numeral';
 
 export default class WizardPlanInfoModal extends Component {
+    formatPromotionString( promotionDays ) {
+        let reduced, formatted;
+        function reduce(total, f){
+            if(total % f === 0){
+                return reduce(total/f);
+            }else{
+                return total;
+            }
+        }
+        if(promotionDays == 0 || promotionDays == null || promotionDays == undefined){
+            return null;
+        }else {
+                   
+            if(promotionDays % 7 === 0) {
+                reduced = reduce(promotionDays, 7);
+                formatted = numeral(reduced).format('0,0');
+                if(reduced > 1) {
+                    return formatted + ' weeks';
+                } else {
+                    return formatted + ' week';
+                }
+            } else {
+                formatted = numeral(promotionDays).format('0,0');
+                if(promotionDays > 1) {
+                    return formatted + ' days';
+                } else {
+                    return formatted + ' day';
+                }
+            }
+        }
+    }
     render() {
         const {
             show,
             actionPending,            
             onClose,
             onContinue,
-            promotionString,
+            promotionLength,
             numOfImpressions
         } = this.props;
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
                     <h1 className="modal-title">
-                        { numOfImpressions ? 
+                        { numOfImpressions > 0 ? 
                         `Reach ${numOfImpressions} people for FREE` : 
                         'Reach thousands of people' } 
                     </h1>
                     <p>
-                        { promotionString ? 
-                        `Your first ${promotionString} of advertising is on us` : 
+                        { promotionLength > 0 ? 
+                        `Your first ${this.formatPromotionString(promotionLength)} of advertising is on us` : 
                         '' }
                     </p>
             </Modal.Header>
@@ -138,8 +170,8 @@ export default class WizardPlanInfoModal extends Component {
                                 })}
                                 bsSize="lg"
                                 bsStyle="danger">
-                                { promotionString ? 
-                                    `Get ${promotionString} FREE trial` : 'Continue'}
+                                { promotionLength > 0 ? 
+                                    `Get ${this.formatPromotionString(promotionLength)} FREE trial` : 'Continue'}
                             </Button>
                         </div>
                     </div>
@@ -154,7 +186,7 @@ WizardPlanInfoModal.propTypes = {
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired,
-    promotionString: PropTypes.string,
+    promotionLength: PropTypes.number,
     numOfImpressions: PropTypes.number
 };
 WizardPlanInfoModal.defaultProps = {

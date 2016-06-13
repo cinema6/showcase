@@ -292,22 +292,7 @@ describe('ProductWizard', function() {
             it('should exist', function() {
                 expect(this.planInfoModal).toEqual(jasmine.any(Object));
             });
-            describe('dynamic text', function(){
-                it('should calculate the correct promotion strings', function(){
-                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(1)))).toEqual('1 day');
-                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(7)))).toEqual('1 week');
-                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(2)))).toEqual('2 days');
-                    expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(14)))).toEqual('2 weeks');
-
-                    describe('when there are no promotions', function(){
-                        it('should not display trial UI', function(){
-                            expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(0)))).toEqual(null);
-                            expect(component.formatPromotionString(undefined)).toEqual(null);
-                            expect(component.formatPromotionString(null)).toEqual(null);
-                        });
-                    });
-
-                });
+            describe('impression number', function(){
                 it('should calculate the correct impression number', function(){
                     expect(component.getNumOfImpressions({paymentPlans: 
                         [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
@@ -336,9 +321,9 @@ describe('ProductWizard', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
                     });
                 });
-                describe('promotionString', function() {
-                    it('should be the value of the formatted promotion length', function() {
-                        expect(this.planInfoModal.props.promotionString).toBe(component.formatPromotionString(component.getPromotionLength(props.promotions)));
+                describe('promotionLength', function() {
+                    it('should be the value of the promotion length', function() {
+                        expect(this.planInfoModal.props.promotionLength).toBe(component.getPromotionLength(props.promotions));
                     });
                 });
                 describe('numOfImpressions', function() {
