@@ -298,19 +298,20 @@ describe('ProductWizard', function() {
                     expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(7)))).toEqual('1 week');
                     expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(2)))).toEqual('2 days');
                     expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(14)))).toEqual('2 weeks');
+
+                    describe('when there are no promotions', function(){
+                        it('should not display trial UI', function(){
+                            expect(component.formatPromotionString(component.getPromotionLength(this.generatePromo(0)))).toEqual(null);
+                            expect(component.formatPromotionString(undefined)).toEqual(null);
+                            expect(component.formatPromotionString(null)).toEqual(null);
+                        });
+                    });
+
                 });
                 it('should calculate the correct impression number', function(){
                     expect(component.getNumOfImpressions({paymentPlans: 
                         [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
                         component.getPromotionLength(this.generatePromo(14)))).toEqual(900);
-                });
-            });
-            describe('no-promotions modal UI', function(){
-                it('should return expected output', function(){
-                    expect(component.hasPromotions(this.generatePromo(1))).toEqual(true);
-                    expect(component.hasPromotions([])).toEqual(false);
-                    expect(component.hasPromotions(null)).toEqual(false);
-                    expect(component.hasPromotions([{type: 'freeTrial', data:{trialLength: 7}}])).toEqual(false);
                 });
             });
             describe('props', function() {

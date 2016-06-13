@@ -95,7 +95,7 @@ class ProductWizard extends Component {
         }
         return 0;
     }
-    formatPromotionString( promotionDays){
+    formatPromotionString( promotionDays ){
         let reduced, formatted;
         function reduce(total, f){
             if(total % f === 0){
@@ -103,39 +103,38 @@ class ProductWizard extends Component {
             }else{
                 return total;
             }
-        }        
-        if(promotionDays % 7 === 0) {
-            reduced = reduce(promotionDays, 7);
-            formatted = numeral(reduced).format('0,0');
-            if(reduced > 1) {
-                return formatted + ' weeks';
+        }
+        if(promotionDays == 0 || promotionDays == null || promotionDays == undefined){
+            return null;
+        }else {
+                   
+            if(promotionDays % 7 === 0) {
+                reduced = reduce(promotionDays, 7);
+                formatted = numeral(reduced).format('0,0');
+                if(reduced > 1) {
+                    return formatted + ' weeks';
+                } else {
+                    return formatted + ' week';
+                }
             } else {
-                return formatted + ' week';
-            }
-        } else {
-            formatted = numeral(promotionDays).format('0,0');
-            if(promotionDays > 1) {
-                return formatted + ' days';
-            } else {
-                return formatted + ' day';
+                formatted = numeral(promotionDays).format('0,0');
+                if(promotionDays > 1) {
+                    return formatted + ' days';
+                } else {
+                    return formatted + ' day';
+                }
             }
         }
     }
     getNumOfImpressions(paymentPlanConfig, promotionLength){
-        let val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
-                                ((paymentPlanConfig.paymentPlans[0].price/30) * 
-                                promotionLength)));
-        return (50 * Math.floor(val / 50));
-    }
-    hasPromotions(promos){
-        // check if there are keys in the promotion object
-        if(Array.isArray(promos) && typeof promos[0] != undefined) {
-            if( typeof (promos[0]) === 'object') {
-                // if the first object has an id property return true
-                return ((promos[0]).hasOwnProperty('id') === true);
-            }
+        if(promotionLength == 0 || promotionLength == null || promotionLength == undefined){
+            return null;
+        }else {
+            let val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
+                                    ((paymentPlanConfig.paymentPlans[0].price/30) * 
+                                    promotionLength)));
+            return (50 * Math.floor(val / 50));
         }
-        return false;
     }
     render() {
         const {
@@ -260,7 +259,6 @@ class ProductWizard extends Component {
                 promotionString= {this.formatPromotionString(this.getPromotionLength(promotions))}
                 numOfImpressions = {this.getNumOfImpressions(paymentConfig, 
                                     this.getPromotionLength(promotions))}
-                hasPromotions= {this.hasPromotions(promotions)}
                 />
             {step === 4 && (
                 <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}

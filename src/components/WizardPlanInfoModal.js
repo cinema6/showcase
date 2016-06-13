@@ -10,19 +10,18 @@ export default class WizardPlanInfoModal extends Component {
             onClose,
             onContinue,
             promotionString,
-            numOfImpressions,
-            hasPromotions
+            numOfImpressions
         } = this.props;
 
         return (<Modal show={show} className="trial-modal" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
                     <h1 className="modal-title">
-                        { hasPromotions ? 
+                        { numOfImpressions ? 
                         `Reach ${numOfImpressions} people for FREE` : 
                         'Reach thousands of people' } 
                     </h1>
                     <p>
-                        { hasPromotions ? 
+                        { promotionString ? 
                         `Your first ${promotionString} of advertising is on us` : 
                         '' }
                     </p>
@@ -139,7 +138,8 @@ export default class WizardPlanInfoModal extends Component {
                                 })}
                                 bsSize="lg"
                                 bsStyle="danger">
-                                { hasPromotions ? `Get ${promotionString} FREE trial` : 'Continue'}
+                                { promotionString ? 
+                                    `Get ${promotionString} FREE trial` : 'Continue'}
                             </Button>
                         </div>
                     </div>
@@ -154,7 +154,6 @@ WizardPlanInfoModal.propTypes = {
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired,
-    hasPromotions: PropTypes.bool.isRequired,
     promotionString: PropTypes.string,
     numOfImpressions: PropTypes.number
 };
