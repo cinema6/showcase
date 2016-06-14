@@ -3,6 +3,7 @@
 * *[v0.10.1-rc1]*
   * [FIX]: Prevent failures that would occur if an API operation were to
     take a long time to complete
+  * Added styles for new stats page
 
 ## v0.10.0 (June 9, 2016)
 * *[v0.10.0-rc1]*
