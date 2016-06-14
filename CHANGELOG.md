@@ -4,6 +4,7 @@
   * [FIX]: Prevent failures that would occur if an API operation were to
     take a long time to complete
   * [FEATURE]: Add support for AdWords conversion tracking
+  * [FEATURE]: Added redesigned stats page
 
 ## v0.10.0 (June 9, 2016)
 * *[v0.10.0-rc1]*
