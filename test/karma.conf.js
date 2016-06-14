@@ -22,6 +22,10 @@ module.exports = function(config) {
                 bundle.once('prebundle', function() {
                     bundle.transform('babelify')
                         .plugin('proxyquire-universal');
+
+                    bundle.external('react/addons');
+                    bundle.external('react/lib/ReactContext');
+                    bundle.external('react/lib/ExecutionEnvironment');
                 });
             }
         }

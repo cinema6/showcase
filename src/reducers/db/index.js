@@ -1,5 +1,3 @@
-'use strict';
-
 import userReducer from './user';
 import { createDbReducer } from '../../utils/db';
 import { identity } from 'lodash';
@@ -11,5 +9,5 @@ export default createDbReducer({
     campaign: identity,
     advertiser: identity,
     org: identity,
-    promotion: identity
+    promotion: identity,
 });

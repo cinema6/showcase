@@ -1,6 +1,6 @@
 import AdPreviewModal from '../../src/components/AdPreviewModal';
+import { mount } from 'enzyme';
 import {
-    renderIntoDocument,
     findRenderedComponentWithType
 } from 'react-addons-test-utils';
 import React from 'react';
@@ -28,26 +28,26 @@ describe('AdPreviewModal', function() {
 
             onClose: jasmine.createSpy('onClose()')
         };
-        this.component = renderIntoDocument(
+        this.component = mount(
             <AdPreviewModal {...this.props} />
         );
     });
 
     it('should exist', function() {
-        expect(this.component).toEqual(jasmine.any(Object));
+        expect(this.component.length).toEqual(1, 'AdPreviewModal is not rendered');
     });
 
     it('should render a modal', function() {
-        const modal = findRenderedComponentWithType(this.component, Modal);
+        const modal = this.component.find(Modal);
 
         expect(modal).toEqual(jasmine.any(Object));
-        expect(modal.props.show).toBe(this.props.show);
-        expect(modal.props.onHide).toBe(this.props.onClose);
+        expect(modal.props().show).toBe(this.props.show);
+        expect(modal.props().onHide).toBe(this.props.onClose);
     });
 
     describe('the Modal', function() {
         beforeEach(function() {
-            this.modal = findRenderedComponentWithType(this.component, Modal)._modal;
+            this.modal = this.component.find(Modal).node._modal;
         });
 
         it('should exist', function() {

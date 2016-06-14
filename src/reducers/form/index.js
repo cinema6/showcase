@@ -1,5 +1,3 @@
-'use strict';
-
 import { reducer } from 'redux-form';
 import accountEmail from './account_email';
 import accountPassword from './account_password';
@@ -14,7 +12,7 @@ export default reducer.plugin({
     forgotPassword,
     resetPassword,
     productWizard,
-    signUp
+    signUp,
 }).normalize({
-    productWizard: productWizardPlugin
+    productWizard: productWizardPlugin,
 });

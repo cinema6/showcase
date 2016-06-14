@@ -14,19 +14,19 @@ const campaign = createDbActions({
             application: 'showcase',
             statuses: [
                 'draft', 'new', 'pending', 'approved', 'rejected', 'active', 'paused', 'inactive',
-                'expired', 'outOfBudget', 'error'
-            ].join(',')
-        }
-    }
+                'expired', 'outOfBudget', 'error',
+            ].join(','),
+        },
+    },
 });
 
 export default campaign;
 
 export const CANCEL = prefix('CANCEL');
-export const cancel = createThunk(id => {
-    return function thunk(dispatch) {
+export const cancel = createThunk(id => (
+    function thunk(dispatch) {
         return dispatch(createAction(CANCEL)(
             dispatch(campaign.update({ data: { id, status: 'canceled' } }))
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
-    };
-});
+    }
+));

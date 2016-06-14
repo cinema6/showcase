@@ -8,7 +8,7 @@ export default function copyable() {
         class Copyable extends Component {
             componentDidMount() {
                 this.clipboard = new Clipboard(findDOMNode(this), {
-                    text: () => this.props.copyText
+                    text: () => this.props.copyText,
                 })
                 .on('success', event => get(this.props, 'onCopySuccess', noop)(event))
                 .on('error', event => get(this.props, 'onCopyError', noop)(event));
@@ -30,7 +30,7 @@ export default function copyable() {
             copyText: PropTypes.string.isRequired,
 
             onCopySuccess: PropTypes.func,
-            onCopyError: PropTypes.func
+            onCopyError: PropTypes.func,
         };
 
         return Copyable;

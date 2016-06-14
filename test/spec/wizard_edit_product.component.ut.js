@@ -1,11 +1,7 @@
 'use strict';
 
 import WizardEditProduct from '../../src/components/WizardEditProduct';
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    scryRenderedComponentsWithType
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import React from 'react';
 import { reducer } from 'redux-form';
@@ -31,32 +27,32 @@ describe('WizardEditProduct', function() {
                 onFinish: jasmine.createSpy('onFinish()')
             };
 
-            component = findRenderedComponentWithType(renderIntoDocument(
+            component = mount(
                 <Provider store={store}>
                     <WizardEditProduct {...props} />
                 </Provider>
-            ), WizardEditProduct);
+            ).find(WizardEditProduct);
 
             spyOn(component, 'setState').and.callThrough();
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toBe(1, 'WizardEditProduct not rendered.');
         });
 
         it('should render a EditProductForm', function() {
-            expect(scryRenderedComponentsWithType(component, EditProductForm).length).toBeGreaterThan(0, 'Could not find an EditProductForm');
+            expect(component.find(EditProductForm).length).toBeGreaterThan(0, 'Could not find an EditProductForm');
         });
 
         describe('the EditProductForm', function() {
             let form;
 
             beforeEach(function() {
-                form = findRenderedComponentWithType(component, EditProductForm);
+                form = component.find(EditProductForm);
             });
 
             it('should be passed some initialValues', function() {
-                expect(form.props.initialValues).toEqual({
+                expect(form.props().initialValues).toEqual({
                     name: props.productData.name,
                     description: props.productData.description
                 });
@@ -71,11 +67,11 @@ describe('WizardEditProduct', function() {
                         description: 'My modified description. Yay!'
                     };
 
-                    form.props.onSubmit(values, store.dispatch);
+                    form.props().onSubmit(values, store.dispatch);
                 });
 
                 it('should call props.onFinish() with the values', function() {
-                    expect(component.props.onFinish).toHaveBeenCalledWith(values);
+                    expect(component.props().onFinish).toHaveBeenCalledWith(values);
                 });
             });
         });

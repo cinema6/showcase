@@ -1,5 +1,3 @@
-'use strict';
-
 import { isFSA } from 'flux-standard-action';
 
 function unwrap(value) {
@@ -14,10 +12,8 @@ function throwIfError(value) {
     return value;
 }
 
-const promisify = () => next => action => {
-    return Promise.resolve(next(action)).then(result => {
-        return throwIfError(unwrap(result));
-    }).catch(reason => {
+const promisify = () => next => action => (
+    Promise.resolve(next(action)).then(result => throwIfError(unwrap(result))).catch(reason => {
         const value = unwrap(reason);
 
         if (isFSA(reason)) {
@@ -25,7 +21,7 @@ const promisify = () => next => action => {
         }
 
         throw value;
-    });
-};
+    })
+);
 
 export default promisify;

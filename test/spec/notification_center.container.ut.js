@@ -1,10 +1,6 @@
 'use strict';
 
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    scryRenderedComponentsWithType
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import NotificationCenter from '../../src/containers/NotificationCenter';
 import { createStore } from 'redux';
@@ -75,35 +71,33 @@ describe('NotificationCenter', function() {
 
             };
 
-            component = findRenderedComponentWithType(renderIntoDocument(
+            component = mount(
                 <Provider store={store}>
                     <NotificationCenter {...props} />
                 </Provider>
-            ), NotificationCenter.WrappedComponent);
-
-            spyOn(component, 'setState').and.callThrough();
+            ).find(NotificationCenter.WrappedComponent);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'NotificationCenter not rendered');
         });
 
         it('should pass in the notification items', function() {
-            expect(component.props).toEqual(jasmine.objectContaining({
+            expect(component.props()).toEqual(jasmine.objectContaining({
                 notifications: state.notification.items
             }));
         });
 
         it('should render a NotificationItem for each notification', function() {
-            let items = scryRenderedComponentsWithType(component, NotificationItem);
+            let items = component.find(NotificationItem);
 
-            expect(items.length).toBe(component.props.notifications.length, 'Wrong number of NotificationItems.');
+            expect(items.length).toBe(component.props().notifications.length, 'Wrong number of NotificationItems.');
             items.forEach((item, index) => {
-                expect(item.props.notification).toEqual(component.props.notifications[index]);
+                expect(item.props().notification).toEqual(component.props().notifications[index]);
 
                 notificationActions.removeNotification.calls.reset();
-                item.props.onClose(item.props.notification.id);
-                expect(notificationActions.removeNotification).toHaveBeenCalledWith(item.props.notification.id);
+                item.props().onClose(item.props().notification.id);
+                expect(notificationActions.removeNotification).toHaveBeenCalledWith(item.props().notification.id);
             });
         });
 
@@ -120,7 +114,7 @@ describe('NotificationCenter', function() {
 
                 beforeEach(function() {
                     id = createUuid();
-                    result = component.props.removeNotification(id);
+                    result = component.props().removeNotification(id);
                 });
 
                 it('should dispatch the logoutUser action', function() {

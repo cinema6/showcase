@@ -8,10 +8,10 @@ const EXECUTE = prefix('EXECUTE');
 const execute = createAction(EXECUTE);
 
 export function createThunk(actionCreator) {
-    return function(...args) {
+    return function factory(...args) {
         return execute({
             fn: actionCreator,
-            args
+            args,
         });
     };
 }

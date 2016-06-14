@@ -1,5 +1,4 @@
-'use strict';
-import { renderIntoDocument } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import CampaignDetailBar from '../../src/components/CampaignDetailBar';
 import React from 'react';
 
@@ -20,21 +19,21 @@ describe('CampaignDetailBar', function() {
             onShowAdPreview: jasmine.createSpy('onShowAdPreview()')
         };
 
-        component = renderIntoDocument(<CampaignDetailBar {...props} />);
+        component = mount(<CampaignDetailBar {...props} />);
     });
 
     it('should exist', function() {
-        expect(component).toEqual(jasmine.any(Object));
+        expect(component.length).toEqual(1, 'CampaignDetailBar is not rendered');
     });
 
     it('should have the expected properties',function(){
-        expect(component.props.title).toEqual('test');
-        expect(component.props.views).toEqual(100);
-        expect(component.props.clicks).toEqual(25);
-        expect(component.props.installs).toEqual(10);
-        expect(component.props.onDeleteCampaign).toBe(props.onDeleteCampaign);
-        expect(component.props.onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
-        expect(component.props.onShowAdPreview).toBe(props.onShowAdPreview);
+        expect(component.props().title).toEqual('test');
+        expect(component.props().views).toEqual(100);
+        expect(component.props().clicks).toEqual(25);
+        expect(component.props().installs).toEqual(10);
+        expect(component.props().onDeleteCampaign).toBe(props.onDeleteCampaign);
+        expect(component.props().onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
+        expect(component.props().onShowAdPreview).toBe(props.onShowAdPreview);
     });
 });
 

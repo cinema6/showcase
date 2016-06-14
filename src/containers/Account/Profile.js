@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { updateUser } from '../../actions/account';
 import { pageify } from '../../utils/page';
@@ -20,66 +20,64 @@ function tooltip(text, id, placement = 'right') {
     return <OverlayTrigger placement={placement} overlay={tip}>{trigger}</OverlayTrigger>;
 }
 
-export class Profile extends Component {
-    render() {
-        const {
-            fields: { firstName, lastName, company, phoneNumber },
-            handleSubmit, error, submitting, pristine,
-            page: { updateSuccess }
-        } = this.props;
-
-        return (<div>
-            <div className="col-md-9">
-                <h3>Update Profile</h3>
+export function Profile({
+    fields: { firstName, lastName, company, phoneNumber },
+    handleSubmit, error, submitting, pristine,
+    page: { updateSuccess },
+}) {
+    return (<div>
+        <div className="col-md-9">
+            <h3>Update Profile</h3>
+        </div>
+        <div className="col-md-6">
+            <div className="col-md-12">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            First Name {tooltip('Enter your first name.', 'first-name')}
+                        </label>
+                        <input {...firstName} type="text" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Last Name {tooltip('Enter your last name.', 'last-name')}
+                        </label>
+                        <input {...lastName} type="text" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Company {tooltip(
+                                'Enter the name of your company, if applicable.',
+                                'company'
+                            )}
+                        </label>
+                        <input {...company} type="text" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Phone Number {tooltip('Enter your phone number.', 'phone')}
+                        </label>
+                        <input {...phoneNumber} type="text" className="form-control" />
+                    </div>
+                    {updateSuccess && (<div className="alert alert-success" role="alert">
+                        <strong>Your account has been updated!</strong>
+                    </div>)}
+                    {error && !submitting && (<div className="alert alert-danger" role="alert">
+                        <strong>Uh-oh!</strong> {error.response}
+                    </div>)}
+                    <button
+                        type="submit"
+                        disabled={submitting || pristine}
+                        className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
+                            'btn-waiting': submitting,
+                        })}
+                    >
+                        Save Changes
+                    </button>
+                </form>
             </div>
-            <div className="col-md-6">
-                <div className="col-md-12">
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                First Name {tooltip('Enter your first name.', 'first-name')}
-                            </label>
-                            <input {...firstName} type="text" className="form-control" />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Last Name {tooltip('Enter your last name.', 'last-name')}
-                            </label>
-                            <input {...lastName} type="text" className="form-control" />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Company {tooltip(
-                                    'Enter the name of your company, if applicable.',
-                                    'company'
-                                )}
-                            </label>
-                            <input {...company} type="text" className="form-control" />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Phone Number {tooltip('Enter your phone number.', 'phone')}
-                            </label>
-                            <input {...phoneNumber} type="text" className="form-control" />
-                        </div>
-                        {updateSuccess && (<div className="alert alert-success" role="alert">
-                            <strong>Your account has been updated!</strong>
-                        </div>)}
-                        {error && !submitting && (<div className="alert alert-danger" role="alert">
-                            <strong>Uh-oh!</strong> {error.response}
-                        </div>)}
-                        <button type="submit"
-                            disabled={submitting || pristine}
-                            className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
-                                'btn-waiting': submitting
-                            })}>
-                            Save Changes
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>);
-    }
+        </div>
+    </div>);
 }
 
 Profile.propTypes = {
@@ -88,12 +86,12 @@ Profile.propTypes = {
     error: PropTypes.instanceOf(Error),
     submitting: PropTypes.bool.isRequired,
     page: PropTypes.object.isRequired,
-    pristine: PropTypes.bool.isRequired
+    pristine: PropTypes.bool.isRequired,
 };
 
 export function mapStateToProps(state) {
     return {
-        initialValues: state.db.user[state.session.user] || {}
+        initialValues: state.db.user[state.session.user] || {},
     };
 }
 
@@ -101,7 +99,7 @@ export default compose(
     reduxForm({
         form: 'accountProfile',
         fields: ['firstName', 'lastName', 'company', 'phoneNumber'],
-        onSubmit
+        onSubmit,
     }, mapStateToProps),
     pageify({ path: PAGE_PATH })
 )(Profile);

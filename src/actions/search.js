@@ -1,8 +1,6 @@
-'use strict';
-
 import { callAPI } from './api';
 import {
-    format as formatURL
+    format as formatURL,
 } from 'url';
 
 function prefix(type) {
@@ -17,8 +15,8 @@ export function findApps({ query, limit }) {
         types: [FIND_APPS_START, FIND_APPS_SUCCESS, FIND_APPS_FAILURE],
         endpoint: formatURL({
             pathname: '/api/search/apps',
-            query: { query, limit }
+            query: { query, limit },
         }),
-        method: 'GET'
+        method: 'GET',
     });
 }

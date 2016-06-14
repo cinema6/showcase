@@ -9,7 +9,7 @@ import { assign } from 'lodash';
 function mapStateToProps(state, props) {
     const {
         session: { promotions },
-        db
+        db,
     } = state;
 
     return {
@@ -18,7 +18,7 @@ function mapStateToProps(state, props) {
         promotions: promotions && promotions.map(id => db.promotion[id]),
 
         productData: props.page.productData,
-        targeting: props.page.targeting
+        targeting: props.page.targeting,
     };
 }
 
@@ -31,15 +31,15 @@ function mapDispatchToProps(dispatch, props) {
         onFinish({ targeting, productData }) {
             return dispatch(wizardComplete({
                 targeting,
-                productData: assign({}, props.page.productData, productData)
+                productData: assign({}, props.page.productData, productData),
             }));
-        }
+        },
     };
 }
 
 export default compose(
     pageify({
-        path: 'dashboard.add_product'
+        path: 'dashboard.add_product',
     }),
     connect(mapStateToProps, mapDispatchToProps)
 )(ProductWizard);

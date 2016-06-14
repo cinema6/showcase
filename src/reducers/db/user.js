@@ -1,12 +1,10 @@
-'use strict';
-
 import { handleActions } from 'redux-actions';
 import {
     LOGIN_SUCCESS,
-    STATUS_CHECK_SUCCESS
+    STATUS_CHECK_SUCCESS,
 } from '../../actions/auth';
 import {
-    CHANGE_EMAIL_SUCCESS
+    CHANGE_EMAIL_SUCCESS,
 } from '../../actions/user';
 import { assign } from 'lodash';
 
@@ -14,7 +12,7 @@ const DEFAULT_STATE = {};
 
 function addUserToCache(state, { payload: user }) {
     return assign({}, state, {
-        [user.id]: user
+        [user.id]: user,
     });
 }
 
@@ -26,7 +24,7 @@ export default handleActions({
         const { id, email } = meta;
 
         return assign({}, state, {
-            [id]: assign({}, state[id], { email })
+            [id]: assign({}, state[id], { email }),
         });
-    }
+    },
 }, DEFAULT_STATE);

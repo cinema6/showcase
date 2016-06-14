@@ -4,13 +4,13 @@ import {
     PRODUCT_SELECTED,
     GO_TO_STEP,
     PREVIEW_LOADED,
-    COLLECT_PAYMENT
+    COLLECT_PAYMENT,
 } from '../../../../actions/product_wizard';
 import * as TARGETING from '../../../../enums/targeting';
 
 const DEFAULT_TARGETING = {
     age: [TARGETING.AGE.ALL],
-    gender: TARGETING.GENDER.ALL
+    gender: TARGETING.GENDER.ALL,
 };
 
 const INITIAL_STATE = {
@@ -18,33 +18,33 @@ const INITIAL_STATE = {
     previewLoaded: false,
     checkingIfPaymentRequired: false,
     productData: null,
-    targeting: DEFAULT_TARGETING
+    targeting: DEFAULT_TARGETING,
 };
 
 export default handleActions({
     [`${PRODUCT_SELECTED}_PENDING`]: state => assign({}, state, {
         previewLoaded: false,
         productData: null,
-        targeting: DEFAULT_TARGETING
+        targeting: DEFAULT_TARGETING,
     }),
     [`${PRODUCT_SELECTED}_FULFILLED`]: (state, { payload: productData }) => assign({}, state, {
         step: 1,
-        productData
+        productData,
     }),
 
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
 
     [PREVIEW_LOADED]: state => assign({}, state, {
-        previewLoaded: true
+        previewLoaded: true,
     }),
 
     [`${COLLECT_PAYMENT}_PENDING`]: state => assign({}, state, {
-        checkingIfPaymentRequired: true
+        checkingIfPaymentRequired: true,
     }),
     [`${COLLECT_PAYMENT}_FULFILLED`]: state => assign({}, state, {
-        checkingIfPaymentRequired: false
+        checkingIfPaymentRequired: false,
     }),
     [`${COLLECT_PAYMENT}_REJECTED`]: state => assign({}, state, {
-        checkingIfPaymentRequired: false
-    })
+        checkingIfPaymentRequired: false,
+    }),
 }, INITIAL_STATE);

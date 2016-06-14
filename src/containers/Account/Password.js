@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { changePassword } from '../../actions/account';
 import { pageify } from '../../utils/page';
@@ -25,72 +25,73 @@ function tooltip(
     return <OverlayTrigger placement={placement} overlay={tip}>{trigger}</OverlayTrigger>;
 }
 
-export class Password extends Component {
-    render() {
-        const {
-            fields: { oldPassword, newPassword, newPasswordRepeat },
-            handleSubmit, error, submitting, pristine, submitFailed, valid,
-            page: { updateSuccess }
-        } = this.props;
-
-        return (<div>
-            <div className="col-md-9">
-                <h3>Change Password</h3>
-            </div>
-            <div className="col-md-6">
-                <div className="col-md-12">
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Current Password 
-                                {tooltip('Your current password.', 'current-password')}
-                            </label>
-                            <input type="password" {...oldPassword} className="form-control" />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                New Password {tooltip('Your new password.', 'new-password')}
-                            </label>
-                            <input type="password" {...newPassword} className="form-control" />
-                        </div>
-                        <div className={classnames('form-group', {
+export function Password({
+    fields: { oldPassword, newPassword, newPasswordRepeat },
+    handleSubmit, error, submitting, pristine, submitFailed, valid,
+    page: { updateSuccess },
+}) {
+    return (<div>
+        <div className="col-md-9">
+            <h3>Change Password</h3>
+        </div>
+        <div className="col-md-6">
+            <div className="col-md-12">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Current Password
+                            {tooltip('Your current password.', 'current-password')}
+                        </label>
+                        <input type="password" {...oldPassword} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            New Password {tooltip('Your new password.', 'new-password')}
+                        </label>
+                        <input type="password" {...newPassword} className="form-control" />
+                    </div>
+                    <div
+                        className={classnames('form-group', {
                             'has-feedback': newPasswordRepeat.value && newPassword.error,
-                            'has-warning': newPasswordRepeat.value && newPassword.error
-                        })}>
-                            <label htmlFor="inputHelpBlock">
-                                Confirm New Password
-                                {tooltip('Your new password (again.)', 'new-password-again')}
-                            </label>
-                            <input type="password" {...newPasswordRepeat} className="form-control"/>
-                            {newPasswordRepeat.value && newPassword.error && tooltip(
-                                newPassword.error,
-                                'password-mismatch',
-                                <span className="glyphicon glyphicon-warning-sign
-                                    form-control-feedback"
-                                    aria-hidden="true">
-                                </span>
-                            )}
-                        </div>
-                        {updateSuccess && (<div className="alert alert-success" role="alert">
-                            <strong>Your password has been updated!</strong>
-                        </div>)}
-                        {error && submitFailed && !submitting && (
-                            <div className="alert alert-danger" role="alert">
-                                <strong>Uh-oh!</strong> {error.response}
-                            </div>
+                            'has-warning': newPasswordRepeat.value && newPassword.error,
+                        })}
+                    >
+                        <label htmlFor="inputHelpBlock">
+                            Confirm New Password
+                            {tooltip('Your new password (again.)', 'new-password-again')}
+                        </label>
+                        <input type="password" {...newPasswordRepeat} className="form-control" />
+                        {newPasswordRepeat.value && newPassword.error && tooltip(
+                            newPassword.error,
+                            'password-mismatch',
+                            <span
+                                className="glyphicon glyphicon-warning-sign
+                                form-control-feedback"
+                                aria-hidden="true"
+                            />
                         )}
-                        <button type="submit"
-                            disabled={submitting || pristine || !valid}
-                            className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
-                                'btn-waiting': submitting
-                            })}>
-                            Save Changes
-                        </button>
-                    </form>
-                </div>
+                    </div>
+                    {updateSuccess && (<div className="alert alert-success" role="alert">
+                        <strong>Your password has been updated!</strong>
+                    </div>)}
+                    {error && submitFailed && !submitting && (
+                        <div className="alert alert-danger" role="alert">
+                            <strong>Uh-oh!</strong> {error.response}
+                        </div>
+                    )}
+                    <button
+                        type="submit"
+                        disabled={submitting || pristine || !valid}
+                        className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
+                            'btn-waiting': submitting,
+                        })}
+                    >
+                        Save Changes
+                    </button>
+                </form>
             </div>
-        </div>);
-    }
+        </div>
+    </div>);
 }
 
 Password.propTypes = {
@@ -102,7 +103,7 @@ Password.propTypes = {
     submitting: PropTypes.bool.isRequired,
     pristine: PropTypes.bool.isRequired,
 
-    page: PropTypes.object.isRequired
+    page: PropTypes.object.isRequired,
 };
 
 export function mapStateToProps() {
@@ -114,6 +115,7 @@ export function validate(values) {
     const errors = {};
 
     if (!Object.keys(values).every(key => values[key])) {
+        /* eslint-disable no-underscore-dangle */
         errors._error = 'All fields are required.';
     }
 
@@ -128,7 +130,7 @@ export default compose(
     reduxForm({
         form: 'accountPassword',
         fields: ['oldPassword', 'newPassword', 'newPasswordRepeat'],
-        onSubmit, validate
+        onSubmit, validate,
     }, mapStateToProps),
     pageify({ path: PAGE_PATH })
 )(Password);

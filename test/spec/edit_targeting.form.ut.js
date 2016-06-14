@@ -1,24 +1,18 @@
 'use strict';
 
 import EditTargeting from '../../src/forms/EditTargeting';
-import {
-    renderIntoDocument,
-    findAllInRenderedTree,
-    findRenderedDOMComponentWithTag,
-    Simulate
-} from 'react-addons-test-utils';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { reducer, getValues } from 'redux-form';
 import { assign } from 'lodash';
-import { unmountComponentAtNode, findDOMNode } from 'react-dom';
 import { AGE, GENDER } from '../../src/enums/targeting';
+import { mount } from 'enzyme';
 
 describe('EditTargeting', function() {
     describe('when rendered', function() {
         let state, store;
-        let props, component;
+        let props, wrapper, component;
 
         beforeEach(function() {
             state = {
@@ -38,23 +32,24 @@ describe('EditTargeting', function() {
                 onSubmit: jasmine.createSpy('onSubmit()')
             };
 
-            component = findAllInRenderedTree(renderIntoDocument(
+            wrapper = mount(
                 <Provider store={store}>
                     <EditTargeting {...props} />
-                </Provider>
-            ), component => component.constructor.name === 'EditTargeting')[0];
+                </Provider>,
+                { attachTo: document.createElement('div') }
+            );
 
-            spyOn(component, 'setState').and.callThrough();
+            component = wrapper.findWhere(component => component.type().name === 'EditTargeting');
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'EditTargeting is not rendered');
         });
 
         it('should be a form', function() {
-            expect(findRenderedDOMComponentWithTag(component, 'form')).toEqual(jasmine.any(Object));
+            expect(component.find('form').length).toEqual(1, '<form> is not rendered');
             expect(store.getState().form.productWizard).toEqual(jasmine.any(Object));
-            expect(component.props.fields).toEqual({
+            expect(component.props().fields).toEqual({
                 gender: jasmine.objectContaining({
                     value: props.initialValues.gender
                 }),
@@ -66,7 +61,7 @@ describe('EditTargeting', function() {
 
         describe('when the form is submitted', function() {
             beforeEach(function() {
-                Simulate.submit(findRenderedDOMComponentWithTag(component, 'form'));
+                component.find('form').first().simulate('submit');
             });
 
             it('should call onSubmit() with the values', function() {
@@ -79,7 +74,7 @@ describe('EditTargeting', function() {
 
         describe('when the component is destroyed', function() {
             beforeEach(function() {
-                unmountComponentAtNode(findDOMNode(component).parentNode);
+                wrapper.detach();
             });
 
             it('should not wipe out the form state', function() {

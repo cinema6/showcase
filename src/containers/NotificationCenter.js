@@ -1,44 +1,36 @@
-'use strict';
-
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { removeNotification } from '../actions/notification';
+import * as notificationActions from '../actions/notification';
 import NotificationItem from '../components/NotificationItem';
 
-class NotificationCenter extends Component {
-    render() {
-        const {
-            notifications,
+function NotificationCenter({
+    notifications,
 
-            removeNotification
-        } = this.props;
-
-        return (<div>
-            {notifications.map(notification => {
-                return <NotificationItem key={notification.id}
-                    notification={notification}
-                    onClose={id => removeNotification(id)} />;
-            })}
-        </div>);
-    }
+    removeNotification,
+}) {
+    return (<div>
+        {notifications.map(notification => <NotificationItem
+            key={notification.id}
+            notification={notification}
+            onClose={id => removeNotification(id)}
+        />)}
+    </div>);
 }
 
 NotificationCenter.propTypes = {
     notifications: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
-        message: PropTypes.node.isRequired
+        message: PropTypes.node.isRequired,
     }).isRequired).isRequired,
 
-    removeNotification: PropTypes.func.isRequired
+    removeNotification: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
     return {
-        notifications: state.notification.items
+        notifications: state.notification.items,
     };
 }
 
-export default connect(mapStateToProps, {
-    removeNotification
-})(NotificationCenter);
+export default connect(mapStateToProps, notificationActions)(NotificationCenter);

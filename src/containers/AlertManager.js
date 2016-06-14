@@ -1,48 +1,41 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Alert from '../components/Alert';
 import { last } from 'lodash';
-import {
+import * as alertActions from '../actions/alert';
+
+function AlertManager({
+    alerts,
+
     dismissAlert,
-    submit
-} from '../actions/alert';
+    submit,
+}) {
+    const alert = last(alerts);
 
-class AlertManager extends Component {
-    render() {
-        const {
-            alerts,
+    if (!alert) { return null; }
 
-            dismissAlert,
-            submit
-        } = this.props;
-        const alert = last(alerts);
+    const {
+        id,
+    } = alert;
 
-        if (!alert) { return null; }
-
-        const {
-            id
-        } = alert;
-
-        return <Alert alert={alert}
-            onDismiss={() => dismissAlert(id)}
-            onSelect={submit} />;
-    }
+    return (<Alert
+        alert={alert}
+        onDismiss={() => dismissAlert(id)}
+        onSelect={submit}
+    />);
 }
 
 AlertManager.propTypes = {
     alerts: PropTypes.array.isRequired,
 
     dismissAlert: PropTypes.func.isRequired,
-    submit: PropTypes.func.isRequired
+    submit: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
     return {
-        alerts: state.alert.alerts
+        alerts: state.alert.alerts,
     };
 }
 
-export default connect(mapStateToProps, {
-    dismissAlert,
-    submit
-})(AlertManager);
+export default connect(mapStateToProps, alertActions)(AlertManager);

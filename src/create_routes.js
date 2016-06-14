@@ -1,5 +1,3 @@
-'use strict';
-
 import { Route, IndexRedirect, IndexRoute } from 'react-router';
 import React from 'react';
 import Application from './containers/Application';
@@ -21,7 +19,7 @@ import DashboardEditProduct from './containers/Dashboard/EditProduct';
 import NotFound from './components/NotFound';
 import {
     createProtectedRouteEnterHandler,
-    createLoginEnterHandler
+    createLoginEnterHandler,
 } from './utils/auth';
 
 import { TYPE as NOTIFICATION_TYPE } from './enums/notification';
@@ -32,7 +30,7 @@ export default function createRoutes(store) {
     const checkAuth = createProtectedRouteEnterHandler({
         store,
         loginPath: '/login',
-        resendConfirmationPath: '/resend-confirmation'
+        resendConfirmationPath: '/resend-confirmation',
     });
     const checkLoggedIn = createLoginEnterHandler({ store, dashboardPath: '/dashboard' });
 
@@ -40,16 +38,17 @@ export default function createRoutes(store) {
         return store.dispatch(getCampaigns()).then(([campaign]) => {
             if (!campaign) {
                 return replace('/dashboard/add-product');
-            } else {
-                return replace(`/dashboard/campaigns/${campaign}`);
             }
+
+            return replace(`/dashboard/campaigns/${campaign}`);
         }).catch(reason => {
             store.dispatch(notify({
                 type: NOTIFICATION_TYPE.DANGER,
                 message: `Unexpected error: ${reason.response || reason.message}`,
-                time: 10000
+                time: 10000,
             }));
-        }).then(() => done());
+        })
+        .then(() => done());
     }
 
     function onEnterAddProduct(routerState, replace, done) {
@@ -57,14 +56,17 @@ export default function createRoutes(store) {
             if (campaign) {
                 return replace('/dashboard');
             }
+
+            return undefined;
         }).catch(reason => {
             store.dispatch(notify({
                 type: NOTIFICATION_TYPE.WARNING,
-                message: `Unexpected error: ${reason.response || reason.message}`
+                message: `Unexpected error: ${reason.response || reason.message}`,
             }));
 
             return replace('/dashboard');
-        }).then(() => done());
+        })
+        .then(() => done());
     }
 
     return (
@@ -77,30 +79,33 @@ export default function createRoutes(store) {
             <Route path="dashboard" component={Dashboard} onEnter={checkAuth}>
                 <IndexRoute onEnter={onEnterDashboard} />
 
-                <Route path="add-product"
+                <Route
+                    path="add-product"
                     component={DashboardAddProduct}
-                    onEnter={onEnterAddProduct}>
-                </Route>
+                    onEnter={onEnterAddProduct}
+                />
 
-                <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct}></Route>
+                <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct} />
 
                 <Route path="account" component={Account}>
                     <IndexRedirect to="profile" />
 
-                    <Route path="profile" component={AccountProfile}></Route>
-                    <Route path="email" component={AccountEmail}></Route>
-                    <Route path="password" component={AccountPassword}></Route>
+                    <Route path="profile" component={AccountProfile} />
+                    <Route path="email" component={AccountEmail} />
+                    <Route path="password" component={AccountPassword} />
                 </Route>
 
-                <Route path="billing" component={DashboardBilling}></Route>
-                <Route path="campaigns/:campaignId" 
-                    component={DashboardCampaignDetail}></Route>
+                <Route path="billing" component={DashboardBilling} />
+                <Route
+                    path="campaigns/:campaignId"
+                    component={DashboardCampaignDetail}
+                />
             </Route>
 
-            <Route path="login" component={Login} onEnter={checkLoggedIn}></Route>
-            <Route path="sign-up" component={SignUp} onEnter={checkLoggedIn}></Route>
-            <Route path="forgot-password" component={ForgotPassword}></Route>
-            <Route path="reset-password" component={ResetPassword}></Route>
+            <Route path="login" component={Login} onEnter={checkLoggedIn} />
+            <Route path="sign-up" component={SignUp} onEnter={checkLoggedIn} />
+            <Route path="forgot-password" component={ForgotPassword} />
+            <Route path="reset-password" component={ResetPassword} />
 
             <Route path="*" component={NotFound} />
         </Route>

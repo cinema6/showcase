@@ -1,6 +1,4 @@
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
-import React, { Component, PropTypes } from 'react';
-import { Provider } from 'react-redux';
+import React from 'react';
 import { createStore } from 'redux';
 import CampaignDetailBar from '../../src/components/CampaignDetailBar';
 import {
@@ -18,6 +16,7 @@ import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import AdPreviewModal from '../../src/components/AdPreviewModal';
 import CampaignDetailChart from '../../src/components/CampaignDetailChart';
+import { mount } from 'enzyme';
 
 const proxyquire = require('proxyquire');
 
@@ -27,24 +26,6 @@ describe('Campaign Detail', function() {
     let store, state;
     let props;
     let renderer, component;
-
-    class Renderer extends Component {
-        constructor(props) {
-            super(...arguments);
-
-            this.state = {
-                props: props.props
-            };
-        }
-
-        render() {
-            const { props } = this.state;
-            return <CampaignDetail {...props} />;
-        }
-    }
-    Renderer.propTypes = {
-        props: PropTypes.object.isRequired
-    };
 
     beforeEach(function() {
         notificationActions = {
@@ -116,12 +97,11 @@ describe('Campaign Detail', function() {
 
         spyOn(store, 'dispatch');
 
-        renderer = findRenderedComponentWithType(renderIntoDocument(
-            <Provider store={store}>
-                <Renderer props={props} />
-            </Provider>
-        ), Renderer);
-        component = findRenderedComponentWithType(renderer, CampaignDetail.WrappedComponent.WrappedComponent);
+        renderer = mount(
+            <CampaignDetail {...props} />,
+            { context: { store }, attachTo: document.createElement('div') }
+        );
+        component = renderer.find(CampaignDetail.WrappedComponent.WrappedComponent);
     });
 
     describe('rendering',function(){
@@ -156,46 +136,44 @@ describe('Campaign Detail', function() {
             beforeEach(function() {
                 campaignDetailActions.loadPageData.calls.reset();
 
-                renderer.setState({
-                    props: assign({}, props, {
-                        params: assign({}, props.params, {
-                            campaignId: `cam-${createUuid()}`
-                        })
+                renderer.setProps({
+                    params: assign({}, props.params, {
+                        campaignId: `cam-${createUuid()}`
                     })
                 });
             });
 
             it('should loadPageData() with the new campaignId', function() {
-                expect(campaignDetailActions.loadPageData).toHaveBeenCalledWith(component.props.params.campaignId);
+                expect(campaignDetailActions.loadPageData).toHaveBeenCalledWith(component.props().params.campaignId);
                 expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.loadPageData.calls.mostRecent().returnValue);
             });
         });
 
         it('should properly map state',function(){
-            expect(component.props.campaign).toBe(state.db.campaign.foo);
-            expect(component.props.analytics).toBe(state.analytics.results.foo);
+            expect(component.props().campaign).toBe(state.db.campaign.foo);
+            expect(component.props().analytics).toBe(state.analytics.results.foo);
         });
 
         describe('the CampaignDetailBar', function() {
             let bar;
 
             beforeEach(function() {
-                bar = findRenderedComponentWithType(component, CampaignDetailBar);
+                bar = component.find(CampaignDetailBar);
             });
 
             it('should exist', function() {
-                expect(bar).toEqual(jasmine.any(Object));
+                expect(bar.length).toEqual(1, 'CampaignDetailBar not rendered');
             });
 
             describe('onDeleteCampaign()', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    bar.props.onDeleteCampaign();
+                    bar.props().onDeleteCampaign();
                 });
 
                 it('should call removeCampaign()', function() {
-                    expect(campaignDetailActions.removeCampaign).toHaveBeenCalledWith(component.props.campaign.id);
+                    expect(campaignDetailActions.removeCampaign).toHaveBeenCalledWith(component.props().campaign.id);
                     expect(store.dispatch).toHaveBeenCalledWith(campaignDetailActions.removeCampaign.calls.mostRecent().returnValue);
                 });
             });
@@ -204,7 +182,7 @@ describe('Campaign Detail', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    bar.props.onShowInstallTrackingInstructions();
+                    bar.props().onShowInstallTrackingInstructions();
                 });
 
                 it('should call dispatch showInstallTrackingInstructions(false)', function() {
@@ -217,7 +195,7 @@ describe('Campaign Detail', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    bar.props.onShowAdPreview();
+                    bar.props().onShowAdPreview();
                 });
 
                 it('should dispatch() showAdPreview(true)', function() {
@@ -230,26 +208,26 @@ describe('Campaign Detail', function() {
             let modal;
 
             beforeEach(function() {
-                modal = findRenderedComponentWithType(component, InstallTrackingSetupModal);
+                modal = component.find(InstallTrackingSetupModal);
             });
 
             it('should exist', function() {
-                expect(modal).toEqual(jasmine.any(Object));
+                expect(modal.length).toEqual(1, 'InstallTrackingSetupModal');
             });
 
             it('should pass the show property', function() {
-                expect(modal.props.show).toBe(component.props.page.showInstallTrackingInstructions);
+                expect(modal.props().show).toBe(component.props().page.showInstallTrackingInstructions);
             });
 
             it('should pass the campaignId', function() {
-                expect(modal.props.campaignId).toBe(component.props.campaign.id);
+                expect(modal.props().campaignId).toBe(component.props().campaign.id);
             });
 
             describe('onClose()', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    modal.props.onClose();
+                    modal.props().onClose();
                 });
 
                 it('should call dispatch showInstallTrackingInstructions(false)', function() {
@@ -262,7 +240,7 @@ describe('Campaign Detail', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    modal.props.onCopyCampaignIdSuccess();
+                    modal.props().onCopyCampaignIdSuccess();
                 });
 
                 it('should show a notification', function() {
@@ -278,7 +256,7 @@ describe('Campaign Detail', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    modal.props.onCopyCampaignIdError();
+                    modal.props().onCopyCampaignIdError();
                 });
 
                 it('should show a notification', function() {
@@ -293,24 +271,24 @@ describe('Campaign Detail', function() {
 
         describe('the AdPreviewModal', function() {
             beforeEach(function() {
-                this.modal = findRenderedComponentWithType(component, AdPreviewModal);
+                this.modal = component.find(AdPreviewModal);
             });
 
             it('should exist', function() {
-                expect(this.modal).toEqual(jasmine.any(Object));
+                expect(this.modal.length).toEqual(1, 'AdPreviewModal not rendered');
             });
 
             it('should pass the show property', function() {
-                expect(this.modal.props.show).toBe(component.props.page.showAdPreview);
+                expect(this.modal.props().show).toBe(component.props().page.showAdPreview);
             });
 
             it('should pass the campaign', function() {
-                expect(this.modal.props.campaign).toEqual(component.props.campaign);
+                expect(this.modal.props().campaign).toEqual(component.props().campaign);
             });
 
             describe('onClose()', function() {
                 beforeEach(function() {
-                    this.modal.props.onClose();
+                    this.modal.props().onClose();
                 });
 
                 it('should hide the modal', function() {

@@ -1,10 +1,8 @@
-'use strict';
-
 import {
-    loginUser as authLoginUser
+    loginUser as authLoginUser,
 } from './auth';
 import {
-    getCampaigns
+    getCampaigns,
 } from './session';
 import { replace } from 'react-router-redux';
 import { createAction } from 'redux-actions';
@@ -18,16 +16,16 @@ function loginType(type) {
 export const LOGIN_START = loginType('LOGIN_START');
 export const LOGIN_SUCCESS = loginType('LOGIN_SUCCESS');
 export const LOGIN_FAILURE = loginType('LOGIN_FAILURE');
-export const loginUser = createThunk(({ email, password, redirect }) => {
-    return function doLoginUser(dispatch) {
+export const loginUser = createThunk(({ email, password, redirect }) => (
+    function doLoginUser(dispatch) {
         dispatch(createAction(LOGIN_START)());
 
         return dispatch(authLoginUser({ email, password }))
             .then(data => dispatch(getCampaigns()).catch(noop) // Log-in even if GETting campaigns
             .then(() => Promise.all([                          // fails
                 dispatch(createAction(LOGIN_SUCCESS)(data)),
-                dispatch(replace(redirect))
+                dispatch(replace(redirect)),
             ])))
             .catch(reason => dispatch(createAction(LOGIN_FAILURE)(reason)));
-    };
-});
+    }
+));

@@ -1,5 +1,3 @@
-'use strict';
-
 import { callAPI } from './api';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
@@ -11,8 +9,8 @@ function authType(type) {
 export const STATUS_CHECK_START = authType('STATUS_CHECK_START');
 export const STATUS_CHECK_SUCCESS = authType('STATUS_CHECK_SUCCESS');
 export const STATUS_CHECK_FAILURE = authType('STATUS_CHECK_FAILURE');
-export const checkAuthStatus = createThunk(() => {
-    return function check(dispatch, getState) {
+export const checkAuthStatus = createThunk(() => (
+    function check(dispatch, getState) {
         const state = getState();
         const userID = state.session.user;
 
@@ -22,10 +20,10 @@ export const checkAuthStatus = createThunk(() => {
 
         return dispatch(callAPI({
             endpoint: '/api/auth/status',
-            types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE]
+            types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE],
         }));
-    };
-});
+    }
+));
 
 export const LOGIN_START = authType('LOGIN_START');
 export const LOGIN_SUCCESS = authType('LOGIN_SUCCESS');
@@ -34,11 +32,11 @@ export function loginUser({ email, password }) {
     return callAPI({
         endpoint: formatURL({
             pathname: '/api/auth/login',
-            query: { target: 'showcase' }
+            query: { target: 'showcase' },
         }),
         method: 'POST',
         types: [LOGIN_START, LOGIN_SUCCESS, LOGIN_FAILURE],
-        body: { email, password }
+        body: { email, password },
     });
 }
 
@@ -49,7 +47,7 @@ export function logoutUser() {
     return callAPI({
         endpoint: '/api/auth/logout',
         method: 'POST',
-        types: [LOGOUT_START, LOGOUT_SUCCESS, LOGOUT_FAILURE]
+        types: [LOGOUT_START, LOGOUT_SUCCESS, LOGOUT_FAILURE],
     });
 }
 
@@ -60,11 +58,11 @@ export function forgotPassword({ email }) {
     return callAPI({
         endpoint: formatURL({
             pathname: '/api/auth/password/forgot',
-            query: { target: 'showcase' }
+            query: { target: 'showcase' },
         }),
         method: 'POST',
         types: [FORGOT_PASSWORD_START, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE],
-        body: { email, target: 'bob' }
+        body: { email, target: 'bob' },
     });
 }
 
@@ -75,10 +73,10 @@ export function resetPassword({ id, token, newPassword }) {
     return callAPI({
         endpoint: formatURL({
             pathname: '/api/auth/password/reset',
-            query: { target: 'showcase' }
+            query: { target: 'showcase' },
         }),
         method: 'POST',
         types: [RESET_PASSWORD_START, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE],
-        body: { id, token, newPassword }
+        body: { id, token, newPassword },
     });
 }

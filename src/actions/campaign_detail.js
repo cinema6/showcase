@@ -1,10 +1,7 @@
-'use strict';
-
 import { createAction } from 'redux-actions';
-import campaign from './campaign';
 import { getCampaignAnalytics } from './analytics';
 import { showAlert } from './alert';
-import { cancel as cancelCampaign } from './campaign';
+import campaign, { cancel as cancelCampaign } from './campaign';
 import { replace } from 'react-router-redux';
 import { notify } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
@@ -15,15 +12,15 @@ function prefix(type) {
 }
 
 export const UPDATE_CHART_SELECTION = prefix('UPDATE_CHART_SELECTION');
-export const updateChartSelection = createAction(UPDATE_CHART_SELECTION, 
-    (activeChart, activeSeries) => { return { activeChart, activeSeries }; });
+export const updateChartSelection = createAction(UPDATE_CHART_SELECTION,
+    (activeChart, activeSeries) => ({ activeChart, activeSeries }));
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
-export const loadPageData = createThunk(campaignId => {
-    return function thunk(dispatch, getState) {
+export const loadPageData = createThunk(campaignId => (
+    function thunk(dispatch, getState) {
         return dispatch(createAction(LOAD_PAGE_DATA)(
             Promise.all([
-                dispatch(campaign.get({ id : campaignId })).catch(reason => {
+                dispatch(campaign.get({ id: campaignId })).catch(reason => {
                     const cachedCampaign = getState().db.campaign[campaignId];
 
                     // If the campaign can't be fetched but there is some cached data, return the
@@ -37,7 +34,7 @@ export const loadPageData = createThunk(campaignId => {
                     dispatch(notify({
                         type: NOTIFICATION.DANGER,
                         message: `Failed to fetch campaign: ${reason.response || reason.message}`,
-                        time: 10000
+                        time: 10000,
                     }));
                     dispatch(replace('/dashboard'));
 
@@ -48,26 +45,26 @@ export const loadPageData = createThunk(campaignId => {
                     dispatch(notify({
                         type: NOTIFICATION.WARNING,
                         message: `Couldn't fetch analytics: ${reason.response || reason.message}`,
-                        time: 10000
+                        time: 10000,
                     }));
 
                     return null;
-                })
+                }),
             ])
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
-    };
-});
+    }
+));
 
-export const removeCampaign = createThunk(campaignId => {
-    return function thunk(dispatch) {
+export const removeCampaign = createThunk(campaignId => (
+    function thunk(dispatch) {
         return dispatch(showAlert({
             title: 'Woah There!',
-            description: 'Are you sure you want to replace this app? Doing this ' 
+            description: 'Are you sure you want to replace this app? Doing this '
             + 'will erase all your stats and stop current ads. This cannot be un-done.',
             buttons: [
                 {
                     text: 'Keep',
-                    onSelect: dismiss => dismiss()
+                    onSelect: dismiss => dismiss(),
                 },
                 {
                     text: 'Delete',
@@ -77,20 +74,20 @@ export const removeCampaign = createThunk(campaignId => {
                         dispatch(replace('/dashboard'));
                         dispatch(notify({
                             type: NOTIFICATION.SUCCESS,
-                            message: 'Your app has been deleted.'
+                            message: 'Your app has been deleted.',
                         }));
                     }).catch(reason => {
                         dispatch(notify({
                             type: NOTIFICATION.DANGER,
                             message: `Failed to delete: ${reason.response || reason.message}`,
-                            time: 10000
+                            time: 10000,
                         }));
-                    })
-                }
-            ]
+                    }),
+                },
+            ],
         }));
-    };
-});
+    }
+));
 
 export const SHOW_INSTALL_TRACKING_INSTRUCTIONS = prefix('SHOW_INSTALL_TRACKING_INSTRUCTIONS');
 export const showInstallTrackingInstructions = createAction(SHOW_INSTALL_TRACKING_INSTRUCTIONS);

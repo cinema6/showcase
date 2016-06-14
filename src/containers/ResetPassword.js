@@ -19,8 +19,8 @@ function tooltip(
 }
 
 export class ResetPassword extends Component {
-    constructor() {
-        super(...arguments);
+    constructor(...args) {
+        super(...args);
 
         this.send = this.send.bind(this);
     }
@@ -28,8 +28,8 @@ export class ResetPassword extends Component {
     send({ newPassword }, dispatch) {
         const {
             location: {
-                query: { id, token }
-            }
+                query: { id, token },
+            },
         } = this.props;
 
         return dispatch(resetPassword({ newPassword, id, token }))
@@ -40,17 +40,19 @@ export class ResetPassword extends Component {
         const {
             fields: { newPassword, newPasswordRepeat },
             handleSubmit, submitFailed, valid, error, submitting, pristine,
-            page: { submitSuccess }
+            page: { submitSuccess },
         } = this.props;
 
         return (<div className="container main-section">
             <DocumentTitle title="Reelcontent Apps: Reset Password" />
             <div className="row">
                 <div className="rc-logo-white col-md-4 col-md-offset-4 col-xs-12 text-center">
-                    <img src="images/rc-logo-white.png" />
+                    <img alt="logo" src="images/rc-logo-white.png" />
                 </div>
-                <div className="pre-login-form col-md-4 col-md-offset-4 col-xs-12
-                    animated fadeIn card-item">
+                <div
+                    className="pre-login-form col-md-4 col-md-offset-4 col-xs-12
+                    animated fadeIn card-item"
+                >
                     <h1 className="text-center">Reset Password</h1>
                     <form onSubmit={handleSubmit(this.send)}>
                         <div className="form-group">
@@ -59,21 +61,29 @@ export class ResetPassword extends Component {
                             </label>
                             <input type="password" {...newPassword} className="form-control" />
                         </div>
-                        <div className={classnames('form-group', {
-                            'has-feedback': newPasswordRepeat.value && newPassword.error,
-                            'has-warning': newPasswordRepeat.value && newPassword.error
-                        })}>
+                        <div
+                            className={classnames('form-group', {
+                                'has-feedback': newPasswordRepeat.value && newPassword.error,
+                                'has-warning': newPasswordRepeat.value && newPassword.error,
+                            })}
+                        >
                             <label htmlFor="inputHelpBlock">
-                                Confirm New Password 
+                                Confirm New Password
                                 {tooltip('Your new password (again.)', 'new-password-again')}
                             </label>
-                            <input type="password" {...newPasswordRepeat} className="form-control"/>
+                            <input
+                                type="password"
+                                {...newPasswordRepeat}
+                                className="form-control"
+                            />
                             {newPasswordRepeat.value && newPassword.error && tooltip(
                                 newPassword.error,
                                 'password-mismatch',
-                                <span className="glyphicon glyphicon-warning-sign
+                                <span
+                                    className="glyphicon glyphicon-warning-sign
                                     form-control-feedback"
-                                    aria-hidden="true">
+                                    aria-hidden="true"
+                                >
                                 </span>
                             )}
                         </div>
@@ -85,11 +95,13 @@ export class ResetPassword extends Component {
                                 <strong>Uh-oh!</strong> {error.response}
                             </div>
                         )}
-                        <button type="submit"
+                        <button
+                            type="submit"
                             disabled={submitting || pristine || !valid}
                             className={classnames('btn btn-primary btn-lg btn-block', {
-                                'btn-waiting': submitting
-                            })}>
+                                'btn-waiting': submitting,
+                            })}
+                        >
                             Confirm Reset
                         </button>
                     </form>
@@ -110,7 +122,7 @@ ResetPassword.propTypes = {
     pristine: PropTypes.bool.isRequired,
 
     page: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
 };
 
 export function validate(values) {
@@ -128,7 +140,7 @@ export default compose(
     reduxForm({
         fields: ['newPassword', 'newPasswordRepeat'],
         form: 'resetPassword',
-        validate
+        validate,
     }),
     pageify({ path: 'reset_password' })
 )(ResetPassword);

@@ -3,5 +3,5 @@ import useRouterHistory from 'react-router/lib/useRouterHistory';
 
 export default useRouterHistory(createHashHistory)({
     queryKey: false,
-    basename: ''
+    basename: '',
 });

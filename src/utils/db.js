@@ -1,5 +1,3 @@
-'use strict';
-
 import { callAPI } from '../actions/api';
 import {
     assign,
@@ -7,11 +5,23 @@ import {
     mapValues,
     keyBy,
     omit,
-    map
+    map,
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
+
+function prefix(action, type = '') {
+    return `@@db${type ? (`:${type}`) : ''}/${action}`;
+}
+
+function getActionNames(method, type) {
+    return {
+        START: prefix(`${method}/START`, type),
+        SUCCESS: prefix(`${method}/SUCCESS`, type),
+        FAILURE: prefix(`${method}/FAILURE`, type),
+    };
+}
 
 export const LIST = getActionNames('LIST');
 export const GET = getActionNames('GET');
@@ -20,22 +30,10 @@ export const CREATE = getActionNames('CREATE');
 export const UPDATE = getActionNames('UPDATE');
 export const REMOVE = getActionNames('REMOVE');
 
-function prefix(action, type = '') {
-    return `@@db${type ? (':' + type) : ''}/${action}`;
-}
-
-function getActionNames(method, type) {
-    return {
-        START: prefix(`${method}/START`, type),
-        SUCCESS: prefix(`${method}/SUCCESS`, type),
-        FAILURE: prefix(`${method}/FAILURE`, type)
-    };
-}
-
 export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
     function call(config, id = null) {
         return callAPI(assign({}, config, {
-            types: config.types.map(action => ({ type: action, meta: { type, key, id } }))
+            types: config.types.map(action => ({ type: action, meta: { type, key, id } })),
         }));
     }
 
@@ -57,61 +55,61 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
         });
     }
 
-    const list = createThunk(() => {
-        return function thunk(dispatch) {
+    const list = createThunk(() => (
+        function thunk(dispatch) {
             return wrap(list, dispatch, () => dispatch(call({
                 types: [LIST.START, LIST.SUCCESS, LIST.FAILURE],
                 endpoint: formatURL({
                     pathname: endpoint,
-                    query: queries.list
+                    query: queries.list,
                 }),
-                method: 'GET'
+                method: 'GET',
             })).then(items => map(items, key)));
-        };
-    });
+        }
+    ));
     assign(list, getTypedActionNames('LIST'));
 
-    const get = createThunk(({ id }) => {
-        return function thunk(dispatch) {
-            return wrap(get, dispatch, () =>  dispatch(call({
+    const get = createThunk(({ id }) => (
+        function thunk(dispatch) {
+            return wrap(get, dispatch, () => dispatch(call({
                 types: [GET.START, GET.SUCCESS, GET.FAILURE],
                 endpoint: formatURL({
                     pathname: `${endpoint}/${id}`,
-                    query: queries.get
+                    query: queries.get,
                 }),
-                method: 'GET'
+                method: 'GET',
             }, id)).then(item => [item[key]]));
-        };
-    });
+        }
+    ));
     assign(get, getTypedActionNames('GET'));
 
-    const query = createThunk(params => {
-        return function thunk(dispatch) {
+    const query = createThunk(params => (
+        function thunk(dispatch) {
             return wrap(query, dispatch, () => dispatch(call({
                 types: [QUERY.START, QUERY.SUCCESS, QUERY.FAILURE],
                 endpoint: formatURL({
                     pathname: endpoint,
-                    query: assign({}, queries.query, params)
+                    query: assign({}, queries.query, params),
                 }),
-                method: 'GET'
+                method: 'GET',
             })).then(items => map(items, key)));
-        };
-    });
+        }
+    ));
     assign(query, getTypedActionNames('QUERY'));
 
-    const create = createThunk(({ data }) => {
-        return function thunk(dispatch) {
+    const create = createThunk(({ data }) => (
+        function thunk(dispatch) {
             return wrap(create, dispatch, () => dispatch(call({
                 types: [CREATE.START, CREATE.SUCCESS, CREATE.FAILURE],
                 endpoint: formatURL({
                     pathname: endpoint,
-                    query: queries.create
+                    query: queries.create,
                 }),
                 method: 'POST',
-                body: data
+                body: data,
             })).then(item => [item[key]]));
-        };
-    });
+        }
+    ));
     assign(create, getTypedActionNames('CREATE'));
 
     const update = createThunk(({ data }) => {
@@ -136,27 +134,27 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 types: [UPDATE.START, UPDATE.SUCCESS, UPDATE.FAILURE],
                 endpoint: formatURL({
                     pathname: `${endpoint}/${id}`,
-                    query: queries.update
+                    query: queries.update,
                 }),
                 method: 'PUT',
-                body: assign({}, current, data)
+                body: assign({}, current, data),
             }, id)).then(item => [item[key]]));
         };
     });
     assign(update, getTypedActionNames('UPDATE'));
 
-    const remove = createThunk(({ id }) => {
-        return function thunk(dispatch) {
+    const remove = createThunk(({ id }) => (
+        function thunk(dispatch) {
             return wrap(remove, dispatch, () => dispatch(call({
                 types: [REMOVE.START, REMOVE.SUCCESS, REMOVE.FAILURE],
                 endpoint: formatURL({
                     pathname: `${endpoint}/${id}`,
-                    query: queries.remove
+                    query: queries.remove,
                 }),
-                method: 'DELETE'
+                method: 'DELETE',
             }, id)).then(() => [id]));
-        };
-    });
+        }
+    ));
     assign(remove, getTypedActionNames('REMOVE'));
 
     return { list, get, query, create, update, remove };
@@ -166,20 +164,20 @@ export function createDbReducer(reducerMap) {
     function add(state, { payload, meta: { key, type } }) {
         return assign({}, state, {
             [type]: assign({}, state[type], {
-                [payload[key]]: payload
-            })
+                [payload[key]]: payload,
+            }),
         });
     }
 
     function addMany(state, { payload, meta: { key, type } }) {
         return assign({}, state, {
-            [type]: assign({}, state[type], keyBy(payload, key))
+            [type]: assign({}, state[type], keyBy(payload, key)),
         });
     }
 
     function remove(state, { meta: { id, type } }) {
         return assign({}, state, {
-            [type]: omit(state[type], [id])
+            [type]: omit(state[type], [id]),
         });
     }
 

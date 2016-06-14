@@ -1,9 +1,4 @@
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    Simulate
-} from 'react-addons-test-utils';
-import { findDOMNode } from 'react-dom';
+import { mount } from 'enzyme';
 import React from 'react';
 import WizardConfirmationModal from '../../src/components/WizardConfirmationModal';
 import BraintreeCreditCardForm from '../../src/components/BraintreeCreditCardForm';
@@ -20,7 +15,7 @@ describe('WizardConfirmationModal', function() {
                 onSubmit: jasmine.createSpy('onSubmit()')
             };
 
-            component = renderIntoDocument(<WizardConfirmationModal {...props} />);
+            component = mount(<WizardConfirmationModal {...props} />);
         });
 
         it('should exist', function() {
@@ -31,25 +26,25 @@ describe('WizardConfirmationModal', function() {
             let creditCardForm, close;
 
             beforeEach(function() {
-                creditCardForm = findRenderedComponentWithType(component, BraintreeCreditCardForm);
-                close = findDOMNode(component).querySelector('button[aria-label="Close"]');
+                creditCardForm = component.find(BraintreeCreditCardForm);
+                close = component.find('button[aria-label="Close"]');
             });
 
             describe('BraintreeCreditCardForm', function() {
                 it('should exist', function() {
-                    expect(creditCardForm).toEqual(jasmine.any(Object));
+                    expect(creditCardForm.length).toBe(1, 'BraintreeCreditCardForm not rendered');
                 });
 
                 it('should be passed getToken() and onSubmit()', function() {
-                    expect(creditCardForm.props.onSubmit).toBe(props.onSubmit);
-                    expect(creditCardForm.props.getToken).toBe(props.getToken);
+                    expect(creditCardForm.props().onSubmit).toBe(props.onSubmit);
+                    expect(creditCardForm.props().getToken).toBe(props.getToken);
                 });
             });
 
             describe('close button', function() {
                 describe('when clicked', function() {
                     beforeEach(function() {
-                        Simulate.click(close);
+                        close.simulate('click');
                     });
 
                     it('should call handleClose()', function() {

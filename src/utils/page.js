@@ -1,10 +1,10 @@
-'use strict';
-
 import {
     WILL_MOUNT,
-    WILL_UNMOUNT
+    WILL_UNMOUNT,
+
+    pageWillMount,
+    pageWillUnmount,
 } from '../actions/page';
-import { pageWillMount, pageWillUnmount } from '../actions/page';
 import { assign, omit, mapValues } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 
@@ -15,7 +15,7 @@ export function createPageReducer(reducerMap) {
             if (!reducerMap[action.payload.path]) { return state; }
 
             return assign({}, state, {
-                [action.payload.path]: reducerMap[action.payload.path](undefined, {})
+                [action.payload.path]: reducerMap[action.payload.path](undefined, {}),
             });
         case WILL_UNMOUNT:
             return omit(state, [action.payload.path]);
@@ -28,26 +28,16 @@ export function createPageReducer(reducerMap) {
 export function pageify({ path: pagePath }) {
     return function Page(Wrapped) {
         class Wrapper extends Component {
-            constructor() {
-                super(...arguments);
+            constructor(...args) {
+                super(...args);
 
                 this.store = this.context.store;
 
                 this.state = {
-                    page: this.store.getState().page[pagePath]
+                    page: this.store.getState().page[pagePath],
                 };
 
                 this.handleStateChange = this.handleStateChange.bind(this);
-            }
-
-            handleStateChange() {
-                const page = this.store.getState().page[pagePath];
-
-                if (this.state.page === page) {
-                    return;
-                }
-
-                this.setState({ page });
             }
 
             componentWillMount() {
@@ -62,6 +52,16 @@ export function pageify({ path: pagePath }) {
                 return this.store.dispatch(pageWillUnmount({ pagePath }));
             }
 
+            handleStateChange() {
+                const page = this.store.getState().page[pagePath];
+
+                if (this.state.page === page) {
+                    return;
+                }
+
+                this.setState({ page });
+            }
+
             render() {
                 return <Wrapped {...this.props} page={this.state.page} />;
             }
@@ -69,8 +69,8 @@ export function pageify({ path: pagePath }) {
 
         Wrapper.contextTypes = {
             store: PropTypes.shape({
-                getState: PropTypes.func.isRequired
-            }).isRequired
+                getState: PropTypes.func.isRequired,
+            }).isRequired,
         };
 
         Wrapper.WrappedComponent = Wrapped;

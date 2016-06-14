@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    scryRenderedComponentsWithType
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 import Alert from '../../src/components/Alert';
 import { createUuid } from 'rc-uuid';
 import { assign } from 'lodash';
@@ -49,11 +44,12 @@ describe('AlertManager', function() {
         };
 
         const AlertManager = this.AlertManager;
-        this.component = findRenderedComponentWithType(renderIntoDocument(
-            <Provider store={this.store}>
-                <AlertManager {...this.props} />
-            </Provider>
-        ), this.AlertManager.WrappedComponent);
+
+        this.wrapper = mount(
+            <AlertManager {...this.props} />,
+            { context: { store: this.store }, attachTo: document.createElement('div') }
+        );
+        this.component = this.wrapper.find(this.AlertManager.WrappedComponent);
     });
 
     it('should exist', function() {
@@ -61,13 +57,13 @@ describe('AlertManager', function() {
     });
 
     it('should map the state to some props', function() {
-        expect(this.component.props).toEqual(jasmine.objectContaining({
+        expect(this.component.props()).toEqual(jasmine.objectContaining({
             alerts: this.state.alert.alerts
         }));
     });
 
     it('should not render any Alerts', function() {
-        expect(scryRenderedComponentsWithType(this.component, Alert).length).toBeLessThan(1, 'An Alert was rendered.');
+        expect(this.component.find(Alert).length).toBeLessThan(1, 'An Alert was rendered.');
     });
 
     describe('when there are alerts', function() {
@@ -126,22 +122,22 @@ describe('AlertManager', function() {
 
         describe('the alert', function() {
             beforeEach(function() {
-                this.alert = findRenderedComponentWithType(this.component, Alert);
+                this.alert = this.component.find(Alert);
             });
 
             it('should render the most recent alert', function() {
-                expect(this.alert.props.alert).toEqual(this.state.alert.alerts[1]);
+                expect(this.alert.props().alert).toEqual(this.state.alert.alerts[1]);
             });
 
             describe('when dismissed', function() {
                 beforeEach(function() {
                     this.store.dispatch.and.callFake(({ payload }) => Promise.resolve(payload));
 
-                    this.alert.props.onDismiss();
+                    this.alert.props().onDismiss();
                 });
 
                 it('should dismiss the alert', function() {
-                    expect(this.alertActions.dismissAlert).toHaveBeenCalledWith(this.alert.props.alert.id);
+                    expect(this.alertActions.dismissAlert).toHaveBeenCalledWith(this.alert.props().alert.id);
                     expect(this.store.dispatch).toHaveBeenCalledWith(this.alertActions.dismissAlert.calls.mostRecent().returnValue);
                 });
             });
@@ -150,7 +146,7 @@ describe('AlertManager', function() {
                 beforeEach(function() {
                     this.store.dispatch.and.callFake(({ payload }) => Promise.resolve(payload));
 
-                    this.alert.props.onSelect({ alert: this.state.alert.alerts[0].id, button: this.state.alert.alerts[0].buttons[1].id });
+                    this.alert.props().onSelect({ alert: this.state.alert.alerts[0].id, button: this.state.alert.alerts[0].buttons[1].id });
                 });
 
                 it('should dispatch submit()', function() {
