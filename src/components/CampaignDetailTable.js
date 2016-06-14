@@ -48,7 +48,10 @@ export default function CampaignDetailTable({
     const numsFormatter = (n) => (n === 0 ? '-' : numeral(n).format('0,0'));
 
     return (<div className="container">
-        <div className="col-md-12 col-sm-12 col-middle table-responsive animated card-item">
+        <div
+            className="campaign-stats-table col-md-12 col-sm-12 col-middle
+            table-responsive animated card-item"
+        >
             <table className="table table-hover stats-list">
                 <thead>
                     <tr>
@@ -57,7 +60,7 @@ export default function CampaignDetailTable({
                             <h4> Views </h4> </th>
                         <th className={`text-center ${classClicks}`}>
                             <h4> Clicks </h4> </th>
-                        <th className={`text-center ${classInstalls}`}>
+                        <th className={`hidden text-center ${classInstalls}`}>
                             <h4> Installs </h4> </th>
                     </tr>
                 </thead>
@@ -76,7 +79,7 @@ export default function CampaignDetailTable({
                             {numsFormatter(row.clicks)} </h4>
                             <span className="small">Clicks</span>
                         </td>
-                        <td className={classInstalls}>
+                        <td className={`hidden ${classInstalls}`}>
                             <h4 className="stats-value stats-col-installs">
                             {numsFormatter(row.installs)} </h4>
                             <span className="small">Installs</span>
