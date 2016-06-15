@@ -1,5 +1,3 @@
-'use strict';
-
 import { checkAuthStatus } from '../actions/auth';
 
 export function createProtectedRouteEnterHandler({ store, loginPath, resendConfirmationPath }) {

@@ -12,12 +12,12 @@ import dashboardEditProductReducer from './dashboard/edit_product';
 import resendConfirmationReducer from './resend_confirmation';
 
 export default createPageReducer({
-    'forgot_password': forgotPasswordReducer,
-    'reset_password': resetPasswordReducer,
+    forgot_password: forgotPasswordReducer,
+    reset_password: resetPasswordReducer,
 
-    'resend_confirmation': resendConfirmationReducer,
+    resend_confirmation: resendConfirmationReducer,
 
-    'dashboard': dashboardReducer,
+    dashboard: dashboardReducer,
 
     'dashboard.account.profile': dashboardAccountProfileReducer,
     'dashboard.account.email': dashboardAccountEmailReducer,
@@ -27,5 +27,5 @@ export default createPageReducer({
     'dashboard.campaign_detail': dashboardCampaignDetailReducer,
 
     'dashboard.add_product': dashboardAddProductReducer,
-    'dashboard.edit_product': dashboardEditProductReducer
+    'dashboard.edit_product': dashboardEditProductReducer,
 });

@@ -2,11 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { pageify } from '../../utils/page';
-import {
-    logoutUser,
-    toggleNav,
-    checkIfPaymentMethodRequired
-} from '../../actions/dashboard';
+import * as dashboardActions from '../../actions/dashboard';
 import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
@@ -23,7 +19,7 @@ class Dashboard extends Component {
             page: { showNav },
 
             logoutUser,
-            toggleNav
+            toggleNav,
         } = this.props;
 
         if (!user) { return null; }
@@ -36,19 +32,21 @@ class Dashboard extends Component {
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header pull-left">
-                        <a className="navbar-brand-link btn btn-default pull-left"
-                            onClick={toggleNav}>
+                        <a
+                            className="navbar-brand-link btn btn-default pull-left"
+                            onClick={toggleNav}
+                        >
                             <i className="fa fa-bars"></i>
                         </a>
                         <Link to="/dashboard" className="navbar-brand">
-                            <img src="images/rc-logo-square.png" />
+                            <img alt="logo" src="images/rc-logo-square.png" />
                         </Link>
                     </div>
                     <div id="navbar" className="pull-right">
                         <ul className="nav navbar-nav navbar-right text-right">
                             <li className="dropdown">
                                 <Dropdown id="user-management-dropdown">
-                                    <Dropdown.Toggle useAnchor={true}>
+                                    <Dropdown.Toggle useAnchor>
                                         <span className="user-initials">{initials}</span>
                                         <span className="hidden-xs">{user.firstName} {user.lastName}
                                         </span>
@@ -63,11 +61,13 @@ class Dashboard extends Component {
                     </div>
                 </div>
             </nav>
-            {/* vertical mobile menu */} {/*hidden until triggered */}
-            <nav id="sidePanel"
+            {/* vertical mobile menu */} {/* hidden until triggered */}
+            <nav
+                id="sidePanel"
                 className={classnames('slideout-menu animated slideInLeft', {
-                    hidden: !showNav
-                })}>
+                    hidden: !showNav,
+                })}
+            >
                 <ul className="menu-item-list">
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
@@ -80,41 +80,48 @@ class Dashboard extends Component {
                     </li>
                     <li className="menu-item">
                         <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
-                        <i className="fa fa-question" /> FAQs</a>
+                            <i className="fa fa-question" /> FAQs
+                        </a>
                     </li>
                     <li className="menu-item">
                         <button className="btn btn-link" onClick={logoutUser}>
-                            <i className="fa fa-power-off" /> 
+                            <i className="fa fa-power-off" />
                             Logout
                         </button>
                     </li>
                 </ul>
             </nav>
             {/* vertical mobile menu ends */}
-            {/* vertical desktop menu */} {/*visible on >768px */}
-            <nav id="sidePanelDesktop" 
-                className={classnames('vertical-menu-bar')}>
+            {/* vertical desktop menu */} {/* visible on >768px */}
+            <nav
+                id="sidePanelDesktop"
+                className={classnames('vertical-menu-bar')}
+            >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-th-large" /> 
-                        <span className="menu-item-label">Dashboard</span></Link>
+                        <Link to="/dashboard"><i className="fa fa-th-large" />
+                            <span className="menu-item-label">Dashboard</span>
+                        </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/billing"><i className="fa fa-usd" /> 
-                        <span className="menu-item-label">Billing</span></Link>
+                        <Link to="/dashboard/billing"><i className="fa fa-usd" />
+                            <span className="menu-item-label">Billing</span>
+                        </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" /> 
-                        <span className="menu-item-label">Profile</span></Link>
+                        <Link to="/dashboard/account"><i className="fa fa-user" />
+                            <span className="menu-item-label">Profile</span>
+                        </Link>
                     </li>
                     <li className="menu-item">
                         <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
-                        <i className="fa fa-question" /> 
-                        <span className="menu-item-label">FAQs</span></a>
-                    </li>                    
+                            <i className="fa fa-question" />
+                            <span className="menu-item-label">FAQs</span>
+                        </a>
+                    </li>
                     <li className="menu-item">
                         <button className="btn btn-link" onClick={logoutUser}>
-                            <i className="fa fa-power-off" /> 
+                            <i className="fa fa-power-off" />
                             <span className="menu-item-label">Logout</span>
                         </button>
                     </li>
@@ -130,30 +137,26 @@ Dashboard.propTypes = {
     children: PropTypes.node.isRequired,
     user: PropTypes.shape({
         firstName: PropTypes.string.isRequired,
-        lastName: PropTypes.string.isRequired
+        lastName: PropTypes.string.isRequired,
     }),
     page: PropTypes.shape({
-        showNav: PropTypes.bool.isRequired
+        showNav: PropTypes.bool.isRequired,
     }).isRequired,
 
     logoutUser: PropTypes.func.isRequired,
     toggleNav: PropTypes.func.isRequired,
-    checkIfPaymentMethodRequired: PropTypes.func.isRequired
+    checkIfPaymentMethodRequired: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
     const user = state.db.user[state.session.user];
 
     return {
-        user: user || null
+        user: user || null,
     };
 }
 
 export default compose(
     pageify({ path: 'dashboard' }),
-    connect(mapStateToProps, {
-        logoutUser,
-        toggleNav,
-        checkIfPaymentMethodRequired
-    })
+    connect(mapStateToProps, dashboardActions)
 )(Dashboard);

@@ -13,8 +13,8 @@ export const showAlert = createAction(SHOW_ALERT, ({ title, description, buttons
     title, description,
     buttons: buttons.map(button => assign({}, button, {
         id: createUuid(),
-        submitting: false
-    }))
+        submitting: false,
+    })),
 }));
 
 export const DISMISS_ALERT = prefix('DISMISS_ALERT');
@@ -26,10 +26,10 @@ export const startSubmit = createAction(START_SUBMIT);
 export const STOP_SUBMIT = prefix('STOP_SUBMIT');
 export const stopSubmit = createAction(STOP_SUBMIT);
 
-export const submit = createThunk(({ alert: alertId, button: buttonId }) => {
-    return function thunk(dispatch, getState) {
-        const alert = find(getState().alert.alerts, alert => alert.id === alertId);
-        const button = find(alert.buttons, button => button.id === buttonId);
+export const submit = createThunk(({ alert: alertId, button: buttonId }) => (
+    function thunk(dispatch, getState) {
+        const alert = find(getState().alert.alerts, item => item.id === alertId);
+        const button = find(alert.buttons, item => item.id === buttonId);
 
         const done = (() => dispatch(stopSubmit({ alert: alertId, button: buttonId })));
         const dismiss = (() => dispatch(dismissAlert(alertId)));
@@ -37,5 +37,5 @@ export const submit = createThunk(({ alert: alertId, button: buttonId }) => {
         return dispatch(startSubmit({ alert: alertId, button: buttonId }))
             .then(() => button.onSelect(dismiss))
             .then(done, done);
-    };
-});
+    }
+));

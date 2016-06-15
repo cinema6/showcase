@@ -14,13 +14,14 @@ const middlewares = [
     fsaThunk,
     thunk,
     promiseMiddleware(),
-    routerMiddleware(history)
+    routerMiddleware(history),
 ];
 
 if (process.env.NODE_ENV !== 'production') {
-    middlewares.push((log => {
-        return log({ duration: true, collapsed: true });
-    })(require('redux-logger')));
+    /* eslint-disable global-require */
+    middlewares.push((log => (
+        log({ duration: true, collapsed: true })
+    ))(require('redux-logger')));
 }
 
 export default function configureStore(initialState) {

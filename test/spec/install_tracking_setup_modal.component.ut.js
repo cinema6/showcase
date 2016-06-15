@@ -1,13 +1,12 @@
+import { mount } from 'enzyme';
 import InstallTrackingSetupModal from '../../src/components/InstallTrackingSetupModal';
 import React from 'react';
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    findAllInRenderedTree,
-    findRenderedDOMComponentWithTag
-} from 'react-addons-test-utils';
 import { Modal, Button } from 'react-bootstrap';
 import { createUuid } from 'rc-uuid';
+import {
+    findRenderedDOMComponentWithTag,
+    findAllInRenderedTree
+} from 'react-addons-test-utils';
 
 describe('InstallTrackingSetupModal', function() {
     beforeEach(function() {
@@ -20,18 +19,18 @@ describe('InstallTrackingSetupModal', function() {
             onCopyCampaignIdError: jasmine.createSpy('onCopyCampaignIdError()')
         };
 
-        this.component = renderIntoDocument(
+        this.component = mount(
             <InstallTrackingSetupModal {...this.props} />
         );
     });
 
     it('should exist', function() {
-        expect(this.component).toEqual(jasmine.any(Object));
+        expect(this.component.length).toEqual(1, 'InstallTrackingSetupModal not rendered');
     });
 
     describe('the Modal', function() {
         beforeEach(function() {
-            this.modal = findRenderedComponentWithType(this.component, Modal)._modal;
+            this.modal = this.component.find(Modal).node._modal;
         });
 
         it('should exist', function() {

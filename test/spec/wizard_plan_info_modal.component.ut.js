@@ -1,30 +1,24 @@
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import { mount } from 'enzyme';
 import {
     findRenderedComponentWithType,
     findRenderedDOMComponentWithTag
 } from 'react-addons-test-utils';
-import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { render } from 'react-dom';
 
 describe('WizardPlanInfoModal', function() {
-    function renderComponent() {
-        return render(
-            <WizardPlanInfoModal {...this.props} />,
-            this.root
-        );
-    }
-
     beforeEach(function() {
-        this.root = document.createElement('div');
         this.props = {
             show: true,
             onClose: jasmine.createSpy('onClose()'),
             onContinue: jasmine.createSpy('onContinue()'),
             actionPending: false
         };
-        this.component = renderComponent.call(this);
-        this.modal = findRenderedComponentWithType(this.component, Modal)._modal;
+        this.component = mount(
+            <WizardPlanInfoModal {...this.props} />
+        );
+        this.modal = this.component.find(Modal).node._modal;
     });
 
     it('should exist', function() {
@@ -32,11 +26,11 @@ describe('WizardPlanInfoModal', function() {
     });
 
     it('should render a Modal', function() {
-        const modal = findRenderedComponentWithType(this.component, Modal);
+        const modal = this.component.find(Modal);
 
-        expect(modal).toEqual(jasmine.any(Object));
-        expect(modal.props.show).toBe(this.props.show);
-        expect(modal.props.onHide).toBe(this.props.onClose);
+        expect(modal.length).toBe(1, 'Modal not rendered');
+        expect(modal.props().show).toBe(this.props.show);
+        expect(modal.props().onHide).toBe(this.props.onClose);
     });
 
     describe('the continue button', function() {
@@ -64,8 +58,7 @@ describe('WizardPlanInfoModal', function() {
 
         describe('when actionPending is true', function() {
             beforeEach(function() {
-                this.props.actionPending = true;
-                renderComponent.call(this);
+                this.component.setProps({ actionPending: true });
             });
 
             it('should be disabled', function() {

@@ -1,6 +1,6 @@
 'use strict';
 
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import ResendConfirmation from '../../src/containers/ResendConfirmation';
 import { createStore } from 'redux';
@@ -51,11 +51,11 @@ describe('ResendConfirmation', function() {
                 children: <div />
             };
 
-            component = findRenderedComponentWithType(renderIntoDocument(
+            component = mount(
                 <Provider store={store}>
                     <ResendConfirmation {...props} />
                 </Provider>
-            ), ResendConfirmation.WrappedComponent.WrappedComponent);
+            ).find(ResendConfirmation.WrappedComponent.WrappedComponent);
 
             spyOn(component, 'setState').and.callThrough();
         });
@@ -65,7 +65,7 @@ describe('ResendConfirmation', function() {
         });
 
         it('should be a page', function() {
-            expect(component.props.page).toEqual(state.page.resend_confirmation);
+            expect(component.props().page).toEqual(state.page.resend_confirmation);
         });
 
         describe('dispatch props', function() {
@@ -79,7 +79,7 @@ describe('ResendConfirmation', function() {
                 let result;
 
                 beforeEach(function() {
-                    result = component.props.resendConfirmationEmail();
+                    result = component.props().resendConfirmationEmail();
                 });
 
                 it('should dispatch the resendConfirmationEmail action', function() {

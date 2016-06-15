@@ -1,49 +1,35 @@
 'use strict';
 
-import ReactTestUtils from 'react-addons-test-utils';
 import React from 'react';
-import { Application } from '../../src/containers/Application';
-import ConnectedApplication from '../../src/containers/Application';
-import configureStore from 'redux-mock-store';
+import Application from '../../src/containers/Application';
+import { createStore } from 'redux';
+import { mount } from 'enzyme';
 
 describe('Application', function() {
-    let renderer;
+    let store;
     let props;
-    let dashboard;
+    let component;
 
     beforeEach(function() {
-        renderer = ReactTestUtils.createRenderer();
+        store = createStore(() => ({
+            notification: {
+                items: []
+            },
+            alert: {
+                alerts: []
+            }
+        }));
         props = {
             children: <div />
         };
 
-        renderer.render(<Application {...props} />);
-
-        dashboard = renderer.getRenderOutput();
+        component = mount(<Application {...props} />, {
+            context: { store },
+            attachTo: document.createElement('div')
+        });
     });
 
     it('should exist', function() {
-        expect(dashboard).toEqual(jasmine.any(Object));
-    });
-});
-
-describe('ConnectedApplication', function() {
-    let renderer;
-    let dashboard;
-    let store;
-
-    beforeEach(function() {
-        store = configureStore([])({});
-
-        renderer = ReactTestUtils.createRenderer();
-        renderer.render(
-            <ConnectedApplication store={store} children={<div />}/>
-        );
-
-        dashboard = renderer.getRenderOutput();
-    });
-
-    it('should exist', function() {
-        expect(dashboard).toEqual(jasmine.any(Object));
+        expect(component.length).toEqual(1, 'Application is not rendered');
     });
 });

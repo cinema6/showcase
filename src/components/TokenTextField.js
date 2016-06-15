@@ -7,7 +7,7 @@ const KEY_CODES = {
     UP: 38,
     DOWN: 40,
     ENTER: 13,
-    BACKSPACE: 8
+    BACKSPACE: 8,
 };
 
 function queue(fn) {
@@ -19,15 +19,15 @@ function queue(fn) {
 }
 
 export default class TokenTextField extends Component {
-    constructor() {
-        super(...arguments);
+    constructor(...args) {
+        super(...args);
 
         this.state = {
             suggestions: [],
             searching: false,
 
             text: '',
-            selectedSuggestion: null
+            selectedSuggestion: null,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -35,15 +35,65 @@ export default class TokenTextField extends Component {
         this.throttledGetSuggestions = throttle(this.getSuggestions, 1000);
     }
 
+    getSuggestions(text) {
+        const {
+            selectedSuggestion,
+        } = this.state;
+
+        this.setState({ searching: true });
+
+        return this.props.getSuggestions(text).then(suggestions => {
+            const includesCurrentSelection = !!find(suggestions, { id: selectedSuggestion });
+            const firstSuggestion = suggestions[0] || null;
+
+            this.setState({
+                searching: false,
+                suggestions,
+                selectedSuggestion: includesCurrentSelection ?
+                    selectedSuggestion : (firstSuggestion && firstSuggestion.id),
+            });
+        });
+    }
+
+    handleNewText(text) {
+        this.setState({ text });
+        this.throttledGetSuggestions(text);
+    }
+
+    popToken() {
+        const {
+            value,
+            onChange,
+        } = this.props;
+
+        onChange(value.slice(0, -1));
+    }
+
+    addToken(item) {
+        const {
+            value,
+            onChange,
+        } = this.props;
+
+        if (!item) { return false; }
+
+        onChange(value.concat([item]));
+        this.setState({ text: '' });
+        this.getSuggestions('');
+        findDOMNode(this.refs.input).focus();
+
+        return true;
+    }
+
     handleKeyDown(event) {
         const { target } = event;
         const {
             suggestions,
-            selectedSuggestion
+            selectedSuggestion,
         } = this.state;
         const {
             value,
-            maxValues
+            maxValues,
         } = this.props;
         const getSuggestion = delta => {
             const firstIndex = 0;
@@ -76,68 +126,18 @@ export default class TokenTextField extends Component {
         if (respond(event.keyCode)) { event.preventDefault(); }
     }
 
-    addToken(item) {
-        const {
-            value,
-            onChange
-        } = this.props;
-
-        if (!item) { return false; }
-
-        onChange(value.concat([item]));
-        this.setState({ text: '' });
-        this.getSuggestions('');
-        findDOMNode(this.refs.input).focus();
-
-        return true;
-    }
-
-    popToken() {
-        const {
-            value,
-            onChange
-        } = this.props;
-
-        onChange(value.slice(0, -1));
-    }
-
-    handleNewText(text) {
-        this.setState({ text });
-        this.throttledGetSuggestions(text);
-    }
-
-    getSuggestions(text) {
-        const {
-            selectedSuggestion
-        } = this.state;
-
-        this.setState({ searching: true });
-
-        return this.props.getSuggestions(text).then(suggestions => {
-            const includesCurrentSelection = !!find(suggestions, { id: selectedSuggestion });
-            const firstSuggestion = suggestions[0] || null;
-
-            this.setState({
-                searching: false,
-                suggestions,
-                selectedSuggestion: includesCurrentSelection ?
-                    selectedSuggestion : (firstSuggestion && firstSuggestion.id)
-            });
-        });
-    }
-
     render() {
         const {
             suggestions,
             selectedSuggestion,
             text,
-            searching
+            searching,
         } = this.state;
         const {
             value,
 
             SuggestionComponent,
-            TokenComponent
+            TokenComponent,
         } = this.props;
 
         return (<span>
@@ -148,23 +148,27 @@ export default class TokenTextField extends Component {
                         <TokenComponent token={token} />
                     </li>)}
                     <li>
-                        <input ref="input"
+                        <input
+                            ref="input"
                             type="text"
                             value={text}
                             onKeyDown={this.handleKeyDown}
                             onChange={({ target }) => this.handleNewText(target.value)}
-                            className="input-hidden" />
+                            className="input-hidden"
+                        />
                     </li>
                 </ul>
             </div>
             {/* app search results  - hidden until triggered */}
-            <div className={classnames('app-search-results', {
-                hidden: !text
-            })}>
+            <div
+                className={classnames('app-search-results', {
+                    hidden: !text,
+                })}
+            >
                 <ul>
                     {suggestions.length < 1 && searching && (
                         <li className="app-results app-searching">
-                            Searching! 
+                            Searching!
                             <i className="fa fa-circle-o-notch fa-spin fa-fw margin-bottom" />
                         </li>
                     )}
@@ -173,14 +177,18 @@ export default class TokenTextField extends Component {
                             No results found
                         </li>
                     )}
-                    {suggestions.map(suggestion => <li key={suggestion.id}
+                    {suggestions.map(suggestion => <li
+                        key={suggestion.id}
                         className={classnames('app-results app-item', {
-                            active: suggestion.id === selectedSuggestion
+                            active: suggestion.id === selectedSuggestion,
                         })}
                         onMouseEnter={() => this.setState({ selectedSuggestion: suggestion.id })}
-                        onClick={() => this.addToken(suggestion)}>
-                        <SuggestionComponent suggestion={suggestion}
-                            active={suggestion.id === selectedSuggestion} />
+                        onClick={() => this.addToken(suggestion)}
+                    >
+                        <SuggestionComponent
+                            suggestion={suggestion}
+                            active={suggestion.id === selectedSuggestion}
+                        />
                     </li>)}
                 </ul>
             </div>
@@ -194,15 +202,15 @@ TokenTextField.propTypes = {
     onChange: PropTypes.func.isRequired,
 
     value: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
     }).isRequired).isRequired,
     maxValues: PropTypes.number.isRequired,
 
     SuggestionComponent: PropTypes.func.isRequired,
-    TokenComponent: PropTypes.func.isRequired
+    TokenComponent: PropTypes.func.isRequired,
 };
 TokenTextField.defaultProps = {
     onChange: noop,
     value: [],
-    maxValues: Infinity
+    maxValues: Infinity,
 };

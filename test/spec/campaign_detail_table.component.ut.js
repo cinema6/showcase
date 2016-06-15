@@ -1,5 +1,4 @@
-'use strict';
-import { renderIntoDocument } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import CampaignDetailTable from '../../src/components/CampaignDetailTable';
 
@@ -14,15 +13,15 @@ describe('CampaignDetailTable', function() {
                 data: { 'today' : [] }
             };
 
-            component = renderIntoDocument(<CampaignDetailTable {...props} />);
+            component = mount(<CampaignDetailTable {...props} />);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'CampaignDetailTable is not rendered');
         });
 
         it('should have the expected properties',function(){
-            expect(component.props.chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
+            expect(component.props().chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
         });
     });
 });

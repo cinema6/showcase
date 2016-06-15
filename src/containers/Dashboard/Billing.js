@@ -1,17 +1,14 @@
-'use strict';
-
-import { Component } from 'react';
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { find } from 'lodash';
+import { assign, find } from 'lodash';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentHistory from '../../components/PaymentHistory';
 import ChangePaymentMethodModal from '../../components/ChangePaymentMethodModal';
-import { showChangeModal, loadPageData, changePaymentMethod } from '../../actions/billing';
-import { getClientToken } from '../../actions/payment';
-import { showAlert } from '../../actions/alert';
+import * as billingActions from '../../actions/billing';
+import * as paymentActions from '../../actions/payment';
+import * as alertActions from '../../actions/alert';
 import { Button } from 'react-bootstrap';
 import DocumentTitle from 'react-document-title';
 
@@ -31,9 +28,9 @@ class Billing extends Component {
             showChangeModal,
             getClientToken,
             changePaymentMethod,
-            showAlert
+            showAlert,
         } = this.props;
-        return (<div className="container main-section campaign-stats" style={{marginTop: 100}}>
+        return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
             <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
                 <div className="col-md-12">
@@ -53,7 +50,8 @@ class Billing extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
-                                <Button bsSize="lg"
+                                <Button
+                                    bsSize="lg"
                                     bsStyle="primary"
                                     className="btn-block"
                                     onClick={() => showAlert({
@@ -69,9 +67,10 @@ class Billing extends Component {
                                             billing period.
                                         </span>),
                                         buttons: [
-                                            { text: 'Dismiss', onSelect: dismiss => dismiss() }
-                                        ]
-                                    })}>
+                                            { text: 'Dismiss', onSelect: dismiss => dismiss() },
+                                        ],
+                                    })}
+                                >
                                     Cancel
                                 </Button>
                             </div>
@@ -79,25 +78,31 @@ class Billing extends Component {
                     </div>
                 </div>
                 <div className="col-md-6">
-                    <PaymentMethod loading={page.loading}
+                    <PaymentMethod
+                        loading={page.loading}
                         method={defaultPaymentMethod}
-                        onChangeMethod={() => showChangeModal(true)} />
+                        onChangeMethod={() => showChangeModal(true)}
+                    />
                 </div>
             </div>
             <br />
             <div className="row">
                 <div className="container">
-                    <div className="col-md-12 col-sm-12 col-middle animated card-item
-                        table-responsive">
+                    <div
+                        className="col-md-12 col-sm-12 col-middle animated card-item
+                        table-responsive"
+                    >
                         <PaymentHistory loading={page.loading} payments={payments} />
                     </div>
                 </div>
             </div>
 
             {page.showChangeModal &&
-                <ChangePaymentMethodModal getToken={getClientToken}
+                <ChangePaymentMethodModal
+                    getToken={getClientToken}
                     onSubmit={changePaymentMethod}
-                    handleClose={() => showChangeModal(false)} />
+                    handleClose={() => showChangeModal(false)}
+                />
             }
         </div>);
     }
@@ -107,14 +112,14 @@ Billing.propTypes = {
     defaultPaymentMethod: PropTypes.object,
     payments: PropTypes.array.isRequired,
     page: PropTypes.shape({
-        showChangeModal: PropTypes.bool.isRequired
+        showChangeModal: PropTypes.bool.isRequired,
     }).isRequired,
 
     loadPageData: PropTypes.func.isRequired,
     showChangeModal: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
     changePaymentMethod: PropTypes.func.isRequired,
-    showAlert: PropTypes.func.isRequired
+    showAlert: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -123,17 +128,11 @@ function mapStateToProps(state) {
 
     return {
         payments,
-        defaultPaymentMethod: find(paymentMethods, { default: true })
+        defaultPaymentMethod: find(paymentMethods, { default: true }),
     };
 }
 
 export default compose(
     pageify({ path: 'dashboard.billing' }),
-    connect(mapStateToProps, {
-        loadPageData,
-        showChangeModal,
-        getClientToken,
-        changePaymentMethod,
-        showAlert
-    })
+    connect(mapStateToProps, assign({}, billingActions, paymentActions, alertActions))
 )(Billing);

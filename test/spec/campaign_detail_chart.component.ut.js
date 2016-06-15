@@ -1,5 +1,4 @@
-'use strict';
-import { renderIntoDocument } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import CampaignDetailChart, { 
         ChartistParameters,
@@ -24,17 +23,17 @@ describe('CampaignDetailChart', function() {
                 onShowInstallTrackingInstructions: jasmine.createSpy('onShowInstallTrackingInstructions()')
             };
 
-            component = renderIntoDocument(<CampaignDetailChart {...props} />);
+            component = mount(<CampaignDetailChart {...props} />);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'CampaignDetailChart not rendered');
         });
 
         it('should have the expected properties',function(){
-            expect(component.props.chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
-            expect(component.props.series).toEqual('CAMPAIGN_DETAIL_SERIES_VIEWS');
-            expect(component.props.onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
+            expect(component.props().chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
+            expect(component.props().series).toEqual('CAMPAIGN_DETAIL_SERIES_VIEWS');
+            expect(component.props().onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
         });
     });
 

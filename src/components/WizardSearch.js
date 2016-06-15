@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component, PropTypes } from 'react';
 import TokenTextField from './TokenTextField';
 import AppSearchItem from './AppSearchItem';
@@ -13,21 +11,21 @@ function findProducts(find, query) {
 
     return find({ query, limit: 10 })
         .then(products => products.map(product => assign({}, product, {
-            id: product.uri // Key products by their URI as it will be unique
+            id: product.uri, // Key products by their URI as it will be unique
         })))
         .catch(() => []);
 }
 
 class WizardSearch extends Component {
-    constructor() {
-        super(...arguments);
+    constructor(...args) {
+        super(...args);
 
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     onSubmit({ search: [product] }) {
         return this.props.onProductSelected(product).catch(reason => Promise.reject({
-            _error: reason
+            _error: reason,
         }));
     }
 
@@ -37,33 +35,39 @@ class WizardSearch extends Component {
             submitting,
             pristine,
             handleSubmit,
-            error
+            error,
         } = this.props;
 
-        return (<div className="create-ad step-1 col-md-6 col-md-offset-3 col-xs-12 text-center
-            animated fadeIn">
+        return (<div
+            className="create-ad step-1 col-md-6 col-md-offset-3 col-xs-12
+            text-center animated fadeIn"
+        >
             <h1 className="text-center">Find Your App on iTunes</h1>
             <form onSubmit={handleSubmit(this.onSubmit)}>
                 <div className="app-search form-group text-center">
-                    <TokenTextField {...search}
+                    <TokenTextField
+                        {...search}
                         maxValues={1}
                         TokenComponent={AppSearchToken}
                         SuggestionComponent={AppSearchItem}
                         getSuggestions={text => findProducts(this.props.findProducts, text)}
-                        value={search.value || []}/>
-                    <span id="helpBlock" className="help-block">We’ll import your app details from 
-                        the store</span>
+                        value={search.value || []}
+                    />
+                    <span id="helpBlock" className="help-block">We’ll import your app details from
+                    the store</span>
                     <br />
                     {error && !submitting && (<div className="alert alert-danger" role="alert">
                         <strong>Yikes...</strong> {error.response || error.message}.
                     </div>)}
-                    <button type="submit"
+                    <button
+                        type="submit"
                         disabled={submitting || pristine || search.value.length < 1}
                         className={classnames(
                             'col-sm-6 col-sm-offset-3 col-xs-12 btn btn-danger btn-lg', {
-                                'btn-waiting': submitting
+                                'btn-waiting': submitting,
                             }
-                        )}>
+                        )}
+                    >
                         Next
                     </button>
                 </div>
@@ -77,16 +81,16 @@ WizardSearch.propTypes = {
     onProductSelected: PropTypes.func.isRequired,
 
     fields: PropTypes.shape({
-        search: PropTypes.object.isRequired
+        search: PropTypes.object.isRequired,
     }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
     error: PropTypes.instanceOf(Error),
     submitting: PropTypes.bool.isRequired,
-    pristine: PropTypes.bool.isRequired
+    pristine: PropTypes.bool.isRequired,
 };
 
 export default reduxForm({
     form: 'productWizard',
     fields: ['search'],
-    destroyOnUnmount: false
+    destroyOnUnmount: false,
 })(WizardSearch);

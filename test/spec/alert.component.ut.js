@@ -1,8 +1,5 @@
+import { mount } from 'enzyme';
 import Alert from '../../src/components/Alert';
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType
-} from 'react-addons-test-utils';
 import { createUuid } from 'rc-uuid';
 import React from 'react';
 import { Modal } from 'react-bootstrap';
@@ -37,35 +34,35 @@ describe('Alert', function() {
             onSelect: jasmine.createSpy('onSelect()')
         };
 
-        this.component = renderIntoDocument(
+        this.component = mount(
             <Alert {...this.props} />
         );
     });
 
     it('should exist', function() {
-        expect(this.component).toEqual(jasmine.any(Object));
+        expect(this.component.length).toEqual(1, 'Alert is not rendered');
     });
 
     describe('the Modal', function() {
         beforeEach(function() {
-            this.modal = findRenderedComponentWithType(this.component, Modal);
+            this.modal = this.component.find(Modal);
         });
 
         it('should exist', function() {
-            expect(this.modal).toEqual(jasmine.any(Object));
+            expect(this.modal.length).toEqual(1, 'Modal is not rendered');
         });
 
         it('should be small', function() {
-            expect(this.modal.props.bsSize).toBe('small');
+            expect(this.modal.props().bsSize).toBe('small');
         });
 
         it('should be shown', function() {
-            expect(this.modal.props.show).toBe(true);
+            expect(this.modal.props().show).toBe(true);
         });
 
         describe('when the modal is closed', function() {
             beforeEach(function() {
-                this.modal.props.onHide();
+                this.modal.props().onHide();
             });
 
             it('should call onDismiss()', function() {

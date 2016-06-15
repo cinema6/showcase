@@ -2,25 +2,25 @@ import { handleActions } from 'redux-actions';
 import { assign } from 'lodash';
 import {
     GO_TO_STEP,
-    LOAD_CAMPAIGN
+    LOAD_CAMPAIGN,
 } from '../../../../actions/product_wizard';
 
 const INITIAL_STATE = {
     step: 1,
     previewLoaded: true,
-    loading: false
+    loading: false,
 };
 
 export default handleActions({
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
 
     [`${LOAD_CAMPAIGN}_PENDING`]: state => assign({}, state, {
-        loading: true
+        loading: true,
     }),
     [`${LOAD_CAMPAIGN}_FULFILLED`]: state => assign({}, state, {
-        loading: false
+        loading: false,
     }),
     [`${LOAD_CAMPAIGN}_REJECTED`]: state => assign({}, state, {
-        loading: false
-    })
+        loading: false,
+    }),
 }, INITIAL_STATE);

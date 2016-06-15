@@ -1,13 +1,7 @@
 'use strict';
 
 import SignUp from '../../src/forms/SignUp';
-import {
-    renderIntoDocument,
-    findAllInRenderedTree,
-    findRenderedDOMComponentWithTag,
-    scryRenderedDOMComponentsWithTag,
-    Simulate
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -36,25 +30,22 @@ describe('SignUp', function() {
                 onSubmit: jasmine.createSpy('submit()')
             };
 
-            component = findAllInRenderedTree(renderIntoDocument(
+            component = mount(
                 <Provider store={store}>
                     <SignUp {...props} />
                 </Provider>
-            ), component => component.constructor.name === 'SignUp')[0];
-
-            Simulate.focus(scryRenderedDOMComponentsWithTag(component, 'input')[0]);
-
-            spyOn(component, 'setState').and.callThrough();
+            ).findWhere(component => component.type().name === 'SignUp');
+            component.find('input').first().simulate('focus');
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'SignUp not rendered');
         });
 
         it('should be a form', function() {
-            expect(findRenderedDOMComponentWithTag(component, 'form')).toEqual(jasmine.any(Object));
+            expect(component.find('form').length).toEqual(1, '<form> not rendered');
             expect(store.getState().form.signUp).toEqual(jasmine.any(Object));
-            expect(component.props.fields).toEqual({
+            expect(component.props().fields).toEqual({
                 firstName: jasmine.objectContaining({
                     value: ''
                 }),
@@ -71,7 +62,7 @@ describe('SignUp', function() {
         });
 
         it('should pass in a submitSucceeded prop', function() {
-            expect(component.props.submitSucceeded).toBe(store.getState().form.signUp._submitSucceeded);
+            expect(component.props().submitSucceeded).toBe(store.getState().form.signUp._submitSucceeded);
         });
 
         describe('when the form is submitted', function() {
@@ -80,7 +71,7 @@ describe('SignUp', function() {
             beforeEach(function() {
                 props.onSubmit.and.returnValue((submitDeferred = defer()).promise);
 
-                Simulate.submit(findRenderedDOMComponentWithTag(component, 'form'));
+                component.find('form').simulate('submit');
             });
 
             it('should call onSubmit() with the values', function() {
@@ -103,7 +94,7 @@ describe('SignUp', function() {
                 });
 
                 it('should return an error with an _error property', function() {
-                    expect(component.props.error).toBe(reason);
+                    expect(component.props().error).toBe(reason);
                 });
             });
         });

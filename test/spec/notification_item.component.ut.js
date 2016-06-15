@@ -2,11 +2,7 @@
 
 import React from 'react';
 import NotificationItem from '../../src/components/NotificationItem';
-import {
-    renderIntoDocument,
-    findRenderedDOMComponentWithTag,
-    Simulate
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import { createUuid } from 'rc-uuid';
 import { TYPE } from '../../src/enums/notification';
 
@@ -26,7 +22,7 @@ describe('NotificationItem', function() {
                 onClose: jasmine.createSpy('onClose()')
             };
 
-            component = renderIntoDocument(
+            component = mount(
                 <NotificationItem {...props} />
             );
         });
@@ -39,9 +35,9 @@ describe('NotificationItem', function() {
             let close;
 
             beforeEach(function() {
-                close = findRenderedDOMComponentWithTag(component, 'button');
+                close = component.find('button');
 
-                Simulate.click(close);
+                close.simulate('click');
             });
 
             it('should call onClose() with its id', function() {

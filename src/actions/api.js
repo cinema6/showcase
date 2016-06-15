@@ -1,5 +1,3 @@
-'use strict';
-
 import { createThunk } from '../middleware/fsa_thunk';
 import { createAction } from 'redux-actions';
 import {
@@ -7,25 +5,25 @@ import {
     pick,
     merge,
     omit,
-    noop
+    noop,
 } from 'lodash';
 import { parse as parseURL } from 'url';
 
 const HTTP = {
-    GET: 'GET'
+    GET: 'GET',
 };
 const MIME = {
-    JSON: 'application/json'
+    JSON: 'application/json',
 };
 const CREDENTIALS = {
-    SAME_ORIGIN: 'same-origin'
+    SAME_ORIGIN: 'same-origin',
 };
 const HEADER = {
-    CONTENT_TYPE: 'Content-Type'
+    CONTENT_TYPE: 'Content-Type',
 };
 
-function meta(body = null, response = null, meta = noop) {
-    return merge(pick(response, ['status', 'ok', 'statusText', 'headers']), meta(response, body));
+function meta(body = null, response = null, metaFn = noop) {
+    return merge(pick(response, ['status', 'ok', 'statusText', 'headers']), metaFn(response, body));
 }
 
 function getBody(response) {
@@ -40,14 +38,14 @@ function wait(ms) {
 
 function getTypes(types) {
     return types.map(type => {
-        if (typeof type === 'string') {
-            type = { type };
-        }
+        const config = typeof type === 'string' ? { type } : type;
 
-        const meta = type.meta;
+        return merge(defaults({}, config), {
+            meta: (metaProp => {
+                if (!metaProp) { return noop; }
 
-        return merge(defaults({}, type), {
-            meta: !meta ? noop : (typeof meta !== 'function' ? () => meta : meta)
+                return typeof metaProp === 'function' ? metaProp : () => metaProp;
+            })(config.meta),
         });
     });
 }
@@ -64,10 +62,10 @@ function checkFor202(response, remainingChecks) {
             return wait(2000).then(() => fetch(body.url, {
                 method: HTTP.GET,
                 headers: {
-                    [HEADER.CONTENT_TYPE]: MIME.JSON
+                    [HEADER.CONTENT_TYPE]: MIME.JSON,
                 },
-                credentials: CREDENTIALS.SAME_ORIGIN
-            })).then(response => checkFor202(response, remainingChecks - 1));
+                credentials: CREDENTIALS.SAME_ORIGIN,
+            })).then(resp => checkFor202(resp, remainingChecks - 1));
         }
 
         return [response, body];
@@ -97,18 +95,19 @@ export const callAPI = createThunk(config => dispatch => {
     return fetch(endpoint, merge(defaults(omit(config, ['endpoint', 'types']), {
         method: HTTP.GET,
         headers: {
-            [HEADER.CONTENT_TYPE]: MIME.JSON
+            [HEADER.CONTENT_TYPE]: MIME.JSON,
         },
-        credentials: CREDENTIALS.SAME_ORIGIN
+        credentials: CREDENTIALS.SAME_ORIGIN,
     }), {
-        body: body && JSON.stringify(body)
-    })).then(response => checkFor202(response, 15)).then(([response, body]) => {
+        body: body && JSON.stringify(body),
+    })).then(response => checkFor202(response, 15)).then(([response, responseBody]) => {
         if (!response.ok) {
-            const error = new StatusCodeError(response.status, body);
+            const error = new StatusCodeError(response.status, responseBody);
 
             return dispatch(requestFailure(error, response, failure.meta));
         }
 
-        return dispatch(requestSuccess(body, response, success.meta));
-    }).catch(reason => dispatch(requestFailure(reason)));
+        return dispatch(requestSuccess(responseBody, response, success.meta));
+    })
+    .catch(reason => dispatch(requestFailure(reason)));
 });

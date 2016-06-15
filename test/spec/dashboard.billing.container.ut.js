@@ -1,8 +1,7 @@
-import { renderIntoDocument, findAllInRenderedTree, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import { createUuid } from 'rc-uuid';
 import { keyBy, assign } from 'lodash';
-import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
 import { showAlert } from '../../src/actions/alert';
@@ -45,7 +44,7 @@ describe('Billing', function() {
         let session;
         let store, state;
         let props;
-        let component;
+        let wrapper, component;
 
         beforeEach(function() {
             session = {
@@ -86,15 +85,15 @@ describe('Billing', function() {
 
             spyOn(store, 'dispatch');
 
-            component = findAllInRenderedTree(renderIntoDocument(
-                <Provider store={store}>
-                    <Billing {...props} />
-                </Provider>
-            ), component => component.constructor.name === 'Billing')[0];
+            wrapper = mount(
+                <Billing {...props} />,
+                { context: { store }, attachTo: document.createElement('div') }
+            );
+            component = wrapper.find(Billing.WrappedComponent.WrappedComponent);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'Billing is not rendered');
         });
 
         it('should load the page data', function() {
@@ -108,7 +107,7 @@ describe('Billing', function() {
             });
 
             it('should map the state to some props', function() {
-                expect(component.props).toEqual(jasmine.objectContaining({
+                expect(component.props()).toEqual(jasmine.objectContaining({
                     payments: session.payments.map(id => state.db.payment[id]),
                     defaultPaymentMethod: state.db.paymentMethod[session.paymentMethods[1]]
                 }));
@@ -116,7 +115,7 @@ describe('Billing', function() {
 
             describe('showChangeModal()', function() {
                 beforeEach(function() {
-                    component.props.showChangeModal(false);
+                    component.props().showChangeModal(false);
                 });
 
                 it('should dispatch showChangeModal()', function() {
@@ -127,7 +126,7 @@ describe('Billing', function() {
 
             describe('getClientToken()', function() {
                 beforeEach(function() {
-                    component.props.getClientToken();
+                    component.props().getClientToken();
                 });
 
                 it('should dispatch getClientToken()', function() {
@@ -142,7 +141,7 @@ describe('Billing', function() {
                 beforeEach(function() {
                     method = {};
 
-                    component.props.changePaymentMethod(method);
+                    component.props().changePaymentMethod(method);
                 });
 
                 it('should dispatch changePaymentMethod()', function() {
@@ -161,7 +160,7 @@ describe('Billing', function() {
                         { text: 'Do Something', onSelect: jasmine.createSpy('onSelect()') }
                     ];
 
-                    component.props.showAlert({ title, description, buttons });
+                    component.props().showAlert({ title, description, buttons });
                 });
 
                 it('should dispatch() showAlert()', function() {
@@ -185,16 +184,19 @@ describe('Billing', function() {
             beforeEach(function() {
                 store.dispatch.and.returnValue(new Promise(() => {}));
 
-                component.props.page.showChangeModal = true;
-                component.forceUpdate();
+                wrapper.setState({
+                    page: assign({}, wrapper.props().page, {
+                        showChangeModal: true
+                    })
+                });
 
-                modal = findRenderedComponentWithType(component, ChangePaymentMethodModal);
+                modal = component.find(ChangePaymentMethodModal);
             });
 
             it('should render a ChangePaymentMethodModal', function() {
-                expect(modal).toEqual(jasmine.any(Object));
-                expect(modal.props.getToken).toBe(component.props.getClientToken);
-                expect(modal.props.onSubmit).toBe(component.props.changePaymentMethod);
+                expect(modal.length).toEqual(1, 'ChangePaymentMethodModal is not rendered');
+                expect(modal.props().getToken).toBe(component.props().getClientToken);
+                expect(modal.props().onSubmit).toBe(component.props().changePaymentMethod);
             });
         });
     });

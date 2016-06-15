@@ -1,24 +1,17 @@
 'use strict';
 
 import EditProduct from '../../src/forms/EditProduct';
-import {
-    renderIntoDocument,
-    findAllInRenderedTree,
-    findRenderedDOMComponentWithTag,
-    scryRenderedDOMComponentsWithTag,
-    Simulate
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { reducer, getValues } from 'redux-form';
 import { assign } from 'lodash';
-import { unmountComponentAtNode, findDOMNode } from 'react-dom';
 
 describe('EditProduct', function() {
     describe('when rendered', function() {
         let state, store;
-        let props, component;
+        let props, wrapper, component;
 
         beforeEach(function() {
             state = {
@@ -37,23 +30,23 @@ describe('EditProduct', function() {
                 onSubmit: jasmine.createSpy('onSubmit()')
             };
 
-            component = findAllInRenderedTree(renderIntoDocument(
+            wrapper = mount(
                 <Provider store={store}>
                     <EditProduct {...props} />
-                </Provider>
-            ), component => component.constructor.name === 'EditProduct')[0];
-
-            spyOn(component, 'setState').and.callThrough();
+                </Provider>,
+                { attachTo: document.createElement('div') }
+            );
+            component = wrapper.findWhere(component => component.type().name === 'EditProduct');
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'EditProduct is not rendered');
         });
 
         it('should be a form', function() {
-            expect(findRenderedDOMComponentWithTag(component, 'form')).toEqual(jasmine.any(Object));
+            expect(component.find('form').length).toEqual(1, '<form> is not rendered');
             expect(store.getState().form.productWizard).toEqual(jasmine.any(Object));
-            expect(component.props.fields).toEqual({
+            expect(component.props().fields).toEqual({
                 name: jasmine.objectContaining({
                     value: props.initialValues.name
                 }),
@@ -64,16 +57,16 @@ describe('EditProduct', function() {
         });
 
         it('should contain inputs for the name and description', function() {
-            let [name] = scryRenderedDOMComponentsWithTag(component, 'input');
-            let [description] = scryRenderedDOMComponentsWithTag(component, 'textarea');
+            let name = component.find('input').first();
+            let description = component.find('textarea').first();
 
-            expect(name.value).toBe(props.initialValues.name);
-            expect(description.value).toBe(props.initialValues.description);
+            expect(name.prop('value')).toBe(props.initialValues.name);
+            expect(description.prop('value')).toBe(props.initialValues.description);
         });
 
         describe('when the form is submitted', function() {
             beforeEach(function() {
-                Simulate.submit(findRenderedDOMComponentWithTag(component, 'form'));
+                component.find('form').simulate('submit');
             });
 
             it('should call onSubmit() with the values', function() {
@@ -83,7 +76,7 @@ describe('EditProduct', function() {
 
         describe('when the component is destroyed', function() {
             beforeEach(function() {
-                unmountComponentAtNode(findDOMNode(component).parentNode);
+                wrapper.detach();
             });
 
             it('should not wipe out the form state', function() {

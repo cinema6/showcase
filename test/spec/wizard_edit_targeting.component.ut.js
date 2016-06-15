@@ -1,11 +1,7 @@
 'use strict';
 
 import WizardEditTargeting from '../../src/components/WizardEditTargeting';
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType,
-    scryRenderedComponentsWithType
-} from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import React from 'react';
 import { reducer } from 'redux-form';
@@ -33,39 +29,37 @@ describe('WizardEditTargeting', function() {
                 onFinish: jasmine.createSpy('onFinish()')
             };
 
-            component = findRenderedComponentWithType(renderIntoDocument(
+            component = mount(
                 <Provider store={store}>
                     <WizardEditTargeting {...props} />
                 </Provider>
-            ), WizardEditTargeting);
-
-            spyOn(component, 'setState').and.callThrough();
+            ).find(WizardEditTargeting);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toBe(1, 'WizardEditTargeting not rendered');
         });
 
         it('should render a EditTargetingForm', function() {
-            expect(scryRenderedComponentsWithType(component, EditTargetingForm).length).toBeGreaterThan(0, 'Could not find an EditTargetingForm');
+            expect(component.find(EditTargetingForm).length).toBeGreaterThan(0, 'Could not find an EditTargetingForm');
         });
 
         describe('the EditTargetingForm', function() {
             let form;
 
             beforeEach(function() {
-                form = findRenderedComponentWithType(component, EditTargetingForm);
+                form = component.find(EditTargetingForm);
             });
 
             it('should be passed some initialValues', function() {
-                expect(form.props.initialValues).toEqual({
+                expect(form.props().initialValues).toEqual({
                     age: props.targeting.age,
                     gender: props.targeting.gender
                 });
             });
 
             it('should be passed the categories', function() {
-                expect(form.props.categories).toEqual(props.categories);
+                expect(form.props().categories).toEqual(props.categories);
             });
 
             describe('when submit', function() {
@@ -77,11 +71,11 @@ describe('WizardEditTargeting', function() {
                         gender: TARGETING.AGE.MALE
                     };
 
-                    form.props.onSubmit(values, store.dispatch);
+                    form.props().onSubmit(values, store.dispatch);
                 });
 
                 it('should call props.onFinish() with the values', function() {
-                    expect(component.props.onFinish).toHaveBeenCalledWith(values);
+                    expect(component.props().onFinish).toHaveBeenCalledWith(values);
                 });
             });
         });

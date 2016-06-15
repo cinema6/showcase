@@ -1,4 +1,4 @@
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import BraintreeCreditCardForm from '../../src/components/BraintreeCreditCardForm';
 
@@ -28,7 +28,7 @@ describe('ChangePaymentMethodModal', function() {
                 onSubmit: jasmine.createSpy('onSubmit()')
             };
 
-            component = renderIntoDocument(<ChangePaymentMethodModal {...props} />);
+            component = mount(<ChangePaymentMethodModal {...props} />);
         });
 
         it('should exist', function() {
@@ -39,17 +39,17 @@ describe('ChangePaymentMethodModal', function() {
             let creditCardForm;
 
             beforeEach(function() {
-                creditCardForm = findRenderedComponentWithType(component, BraintreeCreditCardForm);
+                creditCardForm = component.find(BraintreeCreditCardForm);
             });
 
             describe('BraintreeCreditCardForm', function() {
                 it('should exist', function() {
-                    expect(creditCardForm).toEqual(jasmine.any(Object));
+                    expect(creditCardForm.length).toEqual(1, 'BraintreeCreditCardForm is not rendered');
                 });
 
                 it('should be passed getToken() and onSubmit()', function() {
-                    expect(creditCardForm.props.onSubmit).toBe(props.onSubmit);
-                    expect(creditCardForm.props.getToken).toBe(props.getToken);
+                    expect(creditCardForm.props().onSubmit).toBe(props.onSubmit);
+                    expect(creditCardForm.props().getToken).toBe(props.getToken);
                 });
             });
         });

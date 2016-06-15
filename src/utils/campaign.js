@@ -1,43 +1,12 @@
-'use strict';
-
 import {
     reject,
     defaultsDeep,
     defaults,
     assign,
     cloneDeep as clone,
-    get
+    get,
 } from 'lodash';
 import * as TARGETING from '../enums/targeting';
-
-export function campaignFromData({ productData, targeting }, campaign) {
-    const currentTargeting = targetingFromCampaign(campaign);
-    const base = defaultsDeep({}, campaign, {
-        application: 'showcase',
-        cards: [],
-        status: 'draft',
-        targeting: {
-            demographics: {
-                age: [],
-                gender: []
-            },
-            appStoreCategory: []
-        }
-    });
-    const newTargeting = defaults({}, targeting, currentTargeting);
-
-    return assign({}, base, {
-        name: productData.name || base.name,
-        product: assign({}, base.product, productData),
-        targeting: assign({}, base.targeting, {
-            demographics: {
-                age: reject(newTargeting.age, age => age === TARGETING.AGE.ALL),
-                gender: reject([newTargeting.gender], gender => gender === TARGETING.GENDER.ALL)
-            },
-            appStoreCategory: productData.categories || base.targeting.appStoreCategory
-        })
-    });
-}
 
 export function productDataFromCampaign(campaign) {
     return (campaign && clone(campaign.product)) || null;
@@ -51,6 +20,35 @@ export function targetingFromCampaign(campaign) {
 
     return {
         gender: gender || TARGETING.GENDER.ALL,
-        age: age.length > 0 ? age : [TARGETING.AGE.ALL]
+        age: age.length > 0 ? age : [TARGETING.AGE.ALL],
     };
+}
+
+export function campaignFromData({ productData, targeting }, campaign) {
+    const currentTargeting = targetingFromCampaign(campaign);
+    const base = defaultsDeep({}, campaign, {
+        application: 'showcase',
+        cards: [],
+        status: 'draft',
+        targeting: {
+            demographics: {
+                age: [],
+                gender: [],
+            },
+            appStoreCategory: [],
+        },
+    });
+    const newTargeting = defaults({}, targeting, currentTargeting);
+
+    return assign({}, base, {
+        name: productData.name || base.name,
+        product: assign({}, base.product, productData),
+        targeting: assign({}, base.targeting, {
+            demographics: {
+                age: reject(newTargeting.age, age => age === TARGETING.AGE.ALL),
+                gender: reject([newTargeting.gender], gender => gender === TARGETING.GENDER.ALL),
+            },
+            appStoreCategory: productData.categories || base.targeting.appStoreCategory,
+        }),
+    });
 }

@@ -17,7 +17,7 @@ export default class PaymentHistory extends Component {
     render() {
         const {
             payments,
-            loading
+            loading,
         } = this.props;
 
         return (<table className="table table-hover stats-list">
@@ -39,7 +39,7 @@ export default class PaymentHistory extends Component {
             </thead>
             <tbody>
                 {payments.length < 1 && loading && (
-                    <tr style={{position: 'relative'}}><td colSpan="4">
+                    <tr style={{ position: 'relative' }}><td colSpan="4">
                         <div className="spinner-contained">
                             <div className="spinner-position">
                                 <div className="animation-target">
@@ -65,6 +65,8 @@ export default class PaymentHistory extends Component {
                                 return `${method.cardType} ****${method.last4}`;
                             case 'paypal':
                                 return `Paypal ${method.email}`;
+                            default:
+                                return '';
                             }
                         })(payment.method)}</h4>
                     </td>
@@ -81,7 +83,7 @@ PaymentHistory.propTypes = {
     payments: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string.isRequired,
         amount: PropTypes.number.isRequired,
-        createdAt: PropTypes.string.isRequired
+        createdAt: PropTypes.string.isRequired,
     }).isRequired).isRequired,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
 };

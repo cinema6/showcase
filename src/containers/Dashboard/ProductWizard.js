@@ -1,17 +1,8 @@
-'use strict';
-
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { findApps } from '../../actions/search';
-import {
-    productSelected,
-    goToStep,
-    wizardDestroyed,
-    createCampaign,
-    previewLoaded,
-    collectPayment
-} from '../../actions/product_wizard';
-import { getClientToken } from'../../actions/payment';
+import * as searchActions from '../../actions/search';
+import * as productWizardActions from '../../actions/product_wizard';
+import * as paymentActions from '../../actions/payment';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
@@ -25,23 +16,23 @@ import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
 import numeral from 'numeral';
-import {default as paymentConfig} from '../../../config/apps.js';
+import { default as paymentConfig } from '../../../config/apps.js';
 
 const PREVIEW = {
     CARD_OPTIONS: {
         cardType: 'showcase-app',
-        advanceInterval: 3
+        advanceInterval: 3,
     },
     PLACEMENT_OPTIONS: {
         type: 'mobile-card',
-        branding: 'showcase-app--interstitial'
+        branding: 'showcase-app--interstitial',
     },
-    LOAD_DELAY: 3000
+    LOAD_DELAY: 3000,
 };
 
 class ProductWizard extends Component {
-    constructor() {
-        super(...arguments);
+    constructor(...args) {
+        super(...args);
 
         this.loadProduct = this.loadProduct.bind(this);
     }
@@ -50,12 +41,79 @@ class ProductWizard extends Component {
         return this.props.loadData();
     }
 
+    componentWillUnmount() {
+        return this.props.wizardDestroyed();
+    }
+
+    getPromotionLength(promotionArray) {
+        if (Array.isArray(promotionArray)) {
+            return promotionArray.reduce((sum, c) => sum + c.data.trialLength, 0);
+        }
+        return 0;
+    }
+
+    getProductData() {
+        const {
+            productData,
+            formValues,
+        } = this.props;
+
+        return productData && assign({}, productData, pick(formValues, [
+            'name', 'description',
+        ]));
+    }
+
+    getTargeting() {
+        const {
+            formValues,
+        } = this.props;
+
+        return pick(formValues, ['age', 'gender']);
+    }
+
+    getNumOfImpressions(paymentPlanConfig, promotionLength) {
+        const val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *
+                                ((paymentPlanConfig.paymentPlans[0].price / 30) *
+                                promotionLength)));
+        return (50 * Math.floor(val / 50));
+    }
+
+    formatPromotionString(promotionDays) {
+        let reduced;
+        let formatted;
+
+        function reduce(total, f) {
+            if (total % f === 0) {
+                return reduce(total / f);
+            }
+
+            return total;
+        }
+
+        if (promotionDays % 7 === 0) {
+            reduced = reduce(promotionDays, 7);
+            formatted = numeral(reduced).format('0,0');
+            if (reduced > 1) {
+                return `${formatted} weeks`;
+            }
+
+            return `${formatted} week`;
+        }
+
+        formatted = numeral(promotionDays).format('0,0');
+        if (promotionDays > 1) {
+            return `${formatted} days`;
+        }
+
+        return `${formatted} day`;
+    }
+
     loadProduct(product) {
         const {
             productSelected,
             goToStep,
 
-            productData
+            productData,
         } = this.props;
 
         if (product.uri === (productData && productData.uri)) {
@@ -65,68 +123,6 @@ class ProductWizard extends Component {
         return productSelected({ product });
     }
 
-    getProductData() {
-        const {
-            productData,
-            formValues
-        } = this.props;
-
-        return productData && assign({}, productData, pick(formValues, [
-            'name', 'description'
-        ]));
-    }
-
-    getTargeting() {
-        const {
-            formValues
-        } = this.props;
-
-        return pick(formValues, ['age', 'gender']);
-    }
-
-    componentWillUnmount() {
-        return this.props.wizardDestroyed();
-    }
-    getPromotionLength(promotionArray){
-        if(Array.isArray(promotionArray)){
-            return promotionArray.reduce((sum, c) => { 
-                return sum + c.data.trialLength; 
-            }, 0);
-        }
-        return 0;
-    }
-    formatPromotionString( promotionDays){
-        let reduced, formatted;
-        function reduce(total, f){
-            if(total % f === 0){
-                return reduce(total/f);
-            }else{
-                return total;
-            }
-        }        
-        if(promotionDays % 7 === 0) {
-            reduced = reduce(promotionDays, 7);
-            formatted = numeral(reduced).format('0,0');
-            if(reduced > 1) {
-                return formatted + ' weeks';
-            } else {
-                return formatted + ' week';
-            }
-        } else {
-            formatted = numeral(promotionDays).format('0,0');
-            if(promotionDays > 1) {
-                return formatted + ' days';
-            } else {
-                return formatted + ' day';
-            }
-        }
-    }
-    getNumOfImpressions(paymentPlanConfig, promotionLength){
-        let val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *  
-                                ((paymentPlanConfig.paymentPlans[0].price/30) * 
-                                promotionLength)));
-        return (50 * Math.floor(val / 50));
-    }
     render() {
         const {
             findApps,
@@ -143,19 +139,23 @@ class ProductWizard extends Component {
             targeting,
             promotions,
 
-            page: { step, previewLoaded, checkingIfPaymentRequired }
+            page: { step, previewLoaded, checkingIfPaymentRequired },
         } = this.props;
 
         return (<div className="container main-section">
-            <DocumentTitle title={`Reelcontent Apps: ${
-                productData ? `Edit "${productData.name}"` : 'Add'
-            }`} />
+            <DocumentTitle
+                title={`Reelcontent Apps: ${
+                    productData ? `Edit "${productData.name}"` : 'Add'
+                }`}
+            />
             <div className="row">
                 <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
                     <ul className="nav nav-pills nav-justified">
-                        {includes(steps, 0) && (<li className={classnames('progressbar-step-1', {
-                            active: step >= 0
-                        })}>
+                        {includes(steps, 0) && (<li
+                            className={classnames('progressbar-step-1', {
+                                active: step >= 0,
+                            })}
+                        >
                             <button onClick={() => goToStep(0)}>
                                 <h3>
                                     <i className="fa fa-search" />
@@ -164,11 +164,15 @@ class ProductWizard extends Component {
                                 Search
                             </button>
                         </li>)}
-                        {includes(steps, 1) && (<li className={classnames('progressbar-step-2', {
-                            active: step >= 1
-                        })}>
-                            <button disabled={step < 2}
-                                onClick={() => goToStep(1)}>
+                        {includes(steps, 1) && (<li
+                            className={classnames('progressbar-step-2', {
+                                active: step >= 1,
+                            })}
+                        >
+                            <button
+                                disabled={step < 2}
+                                onClick={() => goToStep(1)}
+                            >
                                 <h3>
                                     <i className="fa fa-pencil-square-o" />
                                     <span className="sr-only">Create</span>
@@ -176,11 +180,15 @@ class ProductWizard extends Component {
                                 Create
                             </button>
                         </li>)}
-                        {includes(steps, 2) && (<li className={classnames('progressbar-step-3', {
-                            active: step >= 2
-                        })}>
-                            <button disabled={step < 3}
-                                onClick={() => goToStep(2)}>
+                        {includes(steps, 2) && (<li
+                            className={classnames('progressbar-step-3', {
+                                active: step >= 2,
+                            })}
+                        >
+                            <button
+                                disabled={step < 3}
+                                onClick={() => goToStep(2)}
+                            >
                                 <h3>
                                     <i className="fa fa-bullseye" />
                                     <span className="sr-only">Target</span>
@@ -188,11 +196,15 @@ class ProductWizard extends Component {
                                 Target
                             </button>
                         </li>)}
-                        {includes(steps, 3) && (<li className={classnames('progressbar-step-4', {
-                            active: step >= 3
-                        })}>
-                            <button disabled={step < 4}
-                                onClick={() => goToStep(3)}>
+                        {includes(steps, 3) && (<li
+                            className={classnames('progressbar-step-4', {
+                                active: step >= 3,
+                            })}
+                        >
+                            <button
+                                disabled={step < 4}
+                                onClick={() => goToStep(3)}
+                            >
                                 <h3>
                                     <i className="fa fa-paper-plane-o" />
                                     <span className="sr-only">Promote</span>
@@ -206,60 +218,73 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <AdPreview placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                    <AdPreview
+                        placementOptions={PREVIEW.PLACEMENT_OPTIONS}
                         cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
                             description: previewLoaded ? {
                                 show: true,
-                                autoHide: 3
+                                autoHide: 3,
                             } : {
-                                show: false
-                            }
+                                show: false,
+                            },
                         })}
                         productData={this.getProductData()}
                         factory={createInterstitialFactory}
                         showLoadingAnimation={!previewLoaded}
                         loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
-                        onLoadComplete={() => previewWasLoaded()} />
+                        onLoadComplete={() => previewWasLoaded()}
+                    />
                 )}
                 {(() => {
                     switch (step) {
                     case 0:
-                        return <WizardSearch findProducts={findApps}
-                            onProductSelected={this.loadProduct}/>;
+                        return (<WizardSearch
+                            findProducts={findApps}
+                            onProductSelected={this.loadProduct}
+                        />);
                     case 1:
-                        return <WizardEditProduct productData={productData}
-                            onFinish={() => goToStep(2)} />;
+                        return (<WizardEditProduct
+                            productData={productData}
+                            onFinish={() => goToStep(2)}
+                        />);
                     case 2:
                     case 4:
-                        return <WizardEditTargeting targeting={targeting}
+                        return (<WizardEditTargeting
+                            targeting={targeting}
                             categories={(productData && productData.categories) || []}
                             onFinish={() => onFinish({
                                 targeting: this.getTargeting(),
-                                productData: this.getProductData()
-                            })} />;
+                                productData: this.getProductData(),
+                            })}
+                        />);
+                    default:
+                        return undefined;
                     }
                 })()}
             </div>
-            <WizardPlanInfoModal show={step === 3}
+            <WizardPlanInfoModal
+                show={step === 3}
                 actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
                 onContinue={() => collectPayment({
                     productData: this.getProductData(),
-                    targeting: this.getTargeting()
+                    targeting: this.getTargeting(),
                 })}
-                promotionString= {this.formatPromotionString(this.getPromotionLength(promotions))}
-                numOfImpressions = { this.getNumOfImpressions(paymentConfig, 
-                                    this.getPromotionLength(promotions)) }
-                />
+                promotionString={this.formatPromotionString(this.getPromotionLength(promotions))}
+                numOfImpressions={this.getNumOfImpressions(paymentConfig,
+                                    this.getPromotionLength(promotions))}
+            />
             {step === 4 && (
-                <WizardConfirmationModal startDate={promotions && getPaymentPlanStart(promotions)}
+                <WizardConfirmationModal
+                    startDate={promotions && getPaymentPlanStart(promotions)}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({
                         payment,
                         productData: this.getProductData(),
-                        targeting: this.getTargeting()
-                    })} />
+                        targeting: this.getTargeting(),
+                    })}
+                />
             )}
         </div>);
     }
@@ -279,7 +304,7 @@ ProductWizard.propTypes = {
 
     page: PropTypes.shape({
         step: PropTypes.number.isRequired,
-        previewLoaded: PropTypes.bool.isRequired
+        previewLoaded: PropTypes.bool.isRequired,
     }).isRequired,
 
     loadData: PropTypes.func.isRequired,
@@ -288,30 +313,26 @@ ProductWizard.propTypes = {
     steps: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
     productData: PropTypes.shape({
         name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired
+        description: PropTypes.string.isRequired,
     }),
     targeting: PropTypes.shape({
         gender: PropTypes.string,
-        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
+        age: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
     }),
     promotions: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired
-    }).isRequired)
+        id: PropTypes.string.isRequired,
+    }).isRequired),
 };
 
 function mapStateToProps(state) {
     return {
-        formValues: getFormValues(state.form.productWizard)
+        formValues: getFormValues(state.form.productWizard),
     };
 }
 
-export default connect(mapStateToProps, {
-    findApps,
-    productSelected,
-    goToStep,
-    wizardDestroyed,
-    getClientToken,
-    createCampaign,
-    previewLoaded,
-    collectPayment
-})(ProductWizard);
+export default connect(mapStateToProps, assign(
+    {},
+    searchActions,
+    productWizardActions,
+    paymentActions
+))(ProductWizard);

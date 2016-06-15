@@ -19,10 +19,12 @@ export default class NotFound extends Component {
                 </Link>, or you're welcome to stay here and watch this cat Vine over and over again.
             </p>
             <p>
-                <iframe src="https://vine.co/v/hETBPqijwFM/embed/simple"
+                <iframe
+                    src="https://vine.co/v/hETBPqijwFM/embed/simple"
                     width="600"
                     height="600"
-                    frameBorder="0" />
+                    frameBorder="0"
+                />
                 <script src="https://platform.vine.co/static/scripts/embed.js" />
             </p>
         </div>);

@@ -16,5 +16,5 @@ export default combineReducers({
     session: sessionReducer,
     page: pageReducer,
     notification: notificationReducer,
-    alert: alertReducer
+    alert: alertReducer,
 });

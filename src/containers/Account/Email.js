@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { changeEmail } from '../../actions/account';
 import { pageify } from '../../utils/page';
@@ -20,55 +20,53 @@ function onSubmit(values, dispatch) {
         .then(() => undefined);
 }
 
-export class Email extends Component {
-    render() {
-        const {
-            fields: { email, password },
-            handleSubmit, error, pristine, submitting,
-            page: { updateSuccess },
-            currentEmail
-        } = this.props;
-
-        return (<div>
-            <div className="col-md-9">
-                <h3>Change Email / Username</h3>
+export function Email({
+    fields: { email, password },
+    handleSubmit, error, pristine, submitting,
+    page: { updateSuccess },
+    currentEmail,
+}) {
+    return (<div>
+        <div className="col-md-9">
+            <h3>Change Email / Username</h3>
+        </div>
+        <div className="col-md-6">
+            <div className="col-md-12">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Email {tooltip(
+                                `What is your new email? Your current one is ${currentEmail}.`,
+                                'current-email'
+                            )}
+                        </label>
+                        <input {...email} type="email" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputHelpBlock">
+                            Password {tooltip('Your current password.', 'current-password')}
+                        </label>
+                        <input {...password} type="password" className="form-control" />
+                    </div>
+                    {updateSuccess && (<div className="alert alert-success" role="alert">
+                        <strong>Your email has been updated!</strong>
+                    </div>)}
+                    {error && !submitting && (<div className="alert alert-danger" role="alert">
+                        <strong>Uh-oh!</strong> {error.response}
+                    </div>)}
+                    <button
+                        type="submit"
+                        disabled={submitting || pristine}
+                        className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
+                            'btn-waiting': submitting,
+                        })}
+                    >
+                        Save Changes
+                    </button>
+                </form>
             </div>
-            <div className="col-md-6">
-                <div className="col-md-12">
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Email {tooltip(
-                                    `What is your new email? Your current one is ${currentEmail}.`,
-                                    'current-email'
-                                )}
-                            </label>
-                            <input {...email} type="email" className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="inputHelpBlock">
-                                Password {tooltip('Your current password.', 'current-password')}
-                            </label>
-                            <input {...password} type="password" className="form-control" />
-                        </div>
-                        {updateSuccess && (<div className="alert alert-success" role="alert">
-                            <strong>Your email has been updated!</strong>
-                        </div>)}
-                        {error && !submitting && (<div className="alert alert-danger" role="alert">
-                            <strong>Uh-oh!</strong> {error.response}
-                        </div>)}
-                        <button type="submit"
-                            disabled={submitting || pristine}
-                            className={classnames('col-md-5 col-xs-12 btn btn-danger btn-lg', {
-                                'btn-waiting': submitting
-                            })}>
-                            Save Changes
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>);
-    }
+        </div>
+    </div>);
 }
 
 Email.propTypes = {
@@ -79,7 +77,7 @@ Email.propTypes = {
     submitting: PropTypes.bool.isRequired,
 
     page: PropTypes.object.isRequired,
-    currentEmail: PropTypes.string.isRequired
+    currentEmail: PropTypes.string.isRequired,
 };
 
 export function mapStateToProps(state) {
@@ -88,7 +86,7 @@ export function mapStateToProps(state) {
 
     return {
         currentEmail: email,
-        initialValues: { email }
+        initialValues: { email },
     };
 }
 
@@ -96,7 +94,7 @@ export default compose(
     reduxForm({
         form: 'accountEmail',
         fields: ['email', 'password'],
-        onSubmit
+        onSubmit,
     }, mapStateToProps),
     pageify({ path: PAGE_PATH })
 )(Email);

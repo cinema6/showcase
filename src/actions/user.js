@@ -1,5 +1,3 @@
-'use strict';
-
 import { createAction } from 'redux-actions';
 import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
@@ -12,7 +10,7 @@ function userPrefix(type) {
 
 export default createDbActions({
     type: 'user',
-    endpoint: '/api/account/users'
+    endpoint: '/api/account/users',
 });
 
 export const CHANGE_EMAIL_START = userPrefix('CHANGE_EMAIL_START');
@@ -33,25 +31,25 @@ export const changeEmail = createThunk(({ id, email, password }) => {
         return dispatch(callAPI({
             endpoint: formatURL({
                 pathname: '/api/account/users/email',
-                query: { target: 'showcase' }
+                query: { target: 'showcase' },
             }),
             method: 'POST',
             types: [
                 CHANGE_EMAIL_START,
                 {
                     type: CHANGE_EMAIL_SUCCESS,
-                    meta: meta()
+                    meta: meta(),
                 },
                 {
                     type: CHANGE_EMAIL_FAILURE,
-                    meta: meta()
-                }
+                    meta: meta(),
+                },
             ],
             body: {
+                password,
                 newEmail: email,
                 email: user.email,
-                password: password
-            }
+            },
         })).then(() => email);
     };
 });
@@ -59,8 +57,8 @@ export const changeEmail = createThunk(({ id, email, password }) => {
 export const CHANGE_PASSWORD_START = userPrefix('CHANGE_PASSWORD_START');
 export const CHANGE_PASSWORD_SUCCESS = userPrefix('CHANGE_PASSWORD_SUCCESS');
 export const CHANGE_PASSWORD_FAILURE = userPrefix('CHANGE_PASSWORD_FAILURE');
-export const changePassword = createThunk(({ id, oldPassword, newPassword }) => {
-    return function thunk(dispatch, getState) {
+export const changePassword = createThunk(({ id, oldPassword, newPassword }) => (
+    function thunk(dispatch, getState) {
         const user = getState().db.user[id];
 
         if (!user) {
@@ -72,18 +70,18 @@ export const changePassword = createThunk(({ id, oldPassword, newPassword }) => 
         return dispatch(callAPI({
             endpoint: formatURL({
                 pathname: '/api/account/users/password',
-                query: { target: 'showcase' }
+                query: { target: 'showcase' },
             }),
             method: 'POST',
             types: [CHANGE_PASSWORD_START, CHANGE_PASSWORD_SUCCESS, CHANGE_PASSWORD_FAILURE],
             body: {
+                newPassword,
                 email: user.email,
                 password: oldPassword,
-                newPassword: newPassword
-            }
+            },
         }));
-    };
-});
+    }
+));
 
 export const SIGN_UP_START = userPrefix('SIGN_UP_START');
 export const SIGN_UP_SUCCESS = userPrefix('SIGN_UP_SUCCESS');
@@ -94,9 +92,9 @@ export function signUp(data) {
         method: 'POST',
         endpoint: formatURL({
             pathname: '/api/account/users/signup',
-            query: { target: 'showcase' }
+            query: { target: 'showcase' },
         }),
-        body: data
+        body: data,
     });
 }
 
@@ -109,9 +107,9 @@ export function confirmUser({ id, token }) {
         method: 'POST',
         endpoint: formatURL({
             pathname: `/api/account/users/confirm/${id}`,
-            query: { target: 'showcase' }
+            query: { target: 'showcase' },
         }),
-        body: { token }
+        body: { token },
     });
 }
 
@@ -123,12 +121,12 @@ export function resendConfirmationEmail() {
         types: [
             RESEND_CONFIRMATION_EMAIL_START,
             RESEND_CONFIRMATION_EMAIL_SUCCESS,
-            RESEND_CONFIRMATION_EMAIL_FAILURE
+            RESEND_CONFIRMATION_EMAIL_FAILURE,
         ],
         method: 'POST',
         endpoint: formatURL({
             pathname: '/api/account/users/resendActivation',
-            query: { target: 'showcase' }
-        })
+            query: { target: 'showcase' },
+        }),
     });
 }

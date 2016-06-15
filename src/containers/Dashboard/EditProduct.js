@@ -1,5 +1,3 @@
-'use strict';
-
 import { connect } from 'react-redux';
 import ProductWizard from './ProductWizard';
 import { compose } from 'redux';
@@ -8,7 +6,7 @@ import { loadCampaign, updateCampaign } from '../../actions/product_wizard';
 import { PropTypes } from 'react';
 import {
     productDataFromCampaign,
-    targetingFromCampaign
+    targetingFromCampaign,
 } from '../../utils/campaign';
 
 function mapStateToProps(state, props) {
@@ -17,7 +15,7 @@ function mapStateToProps(state, props) {
     return {
         steps: [1, 2],
         productData: productDataFromCampaign(campaign),
-        targeting: targetingFromCampaign(campaign)
+        targeting: targetingFromCampaign(campaign),
     };
 }
 
@@ -31,9 +29,9 @@ function mapDispatchToProps(dispatch, props) {
             return dispatch(updateCampaign({
                 id: props.params.campaignId,
                 productData,
-                targeting
+                targeting,
             }));
-        }
+        },
     };
 }
 
@@ -44,8 +42,8 @@ const EditProduct = compose(
 
 EditProduct.propTypes = {
     params: PropTypes.shape({
-        campaignId: PropTypes.string.isRequired
-    }).isRequired
+        campaignId: PropTypes.string.isRequired,
+    }).isRequired,
 };
 
 export default EditProduct;

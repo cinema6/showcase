@@ -14,7 +14,7 @@ const routes = createRoutes(store);
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={syncHistoryWithStore(history, store)} routes={routes}></Router>
+        <Router history={syncHistoryWithStore(history, store)} routes={routes} />
     </Provider>,
     document.getElementById('root')
 );
