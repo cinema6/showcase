@@ -1,230 +1,347 @@
+import CampaignDetailChart from '../../src/components/CampaignDetailChart';
 import { mount } from 'enzyme';
 import React from 'react';
-import CampaignDetailChart, { 
-        ChartistParameters,
-        TodayChartParameters,
-        Daily7ChartParameters,
-        Daily30ChartParameters,
+import moment from 'moment';
+import { assign, random } from 'lodash';
 
-        createChartParameters
-    }
-    from '../../src/components/CampaignDetailChart';
+function getChartOptions() {
+    return jasmine.objectContaining({
+        responsive: true,
+        legend: jasmine.objectContaining({
+            position: 'bottom'
+        }),
+        hoverMode: 'label',
+        borderWidth: 2,
+
+        stacked: true,
+        scales: jasmine.objectContaining({
+            xAxes: jasmine.arrayContaining([
+                jasmine.objectContaining({
+                    display: true,
+                    gridLines: jasmine.objectContaining({
+                        offsetGridLines: false
+                    })
+                })
+            ]),
+            yAxes: jasmine.arrayContaining([
+                jasmine.objectContaining({
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    id: 'users'
+                }),
+                jasmine.objectContaining({
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    id: 'clicks',
+
+                    gridLines: jasmine.objectContaining({
+                        drawOnChartArea: false
+                    })
+                })
+            ])
+        })
+    });
+}
+function getChartData(items) {
+    return jasmine.objectContaining({
+        labels: items.map(({ date }) => moment(date).format('dddd M/D')),
+        datasets: [
+            jasmine.objectContaining({
+                label: 'Unique Views',
+                data: items.map(({ users }) => users || null),
+                fill: false,
+                backgroundColor: 'rgba(38, 173, 228,1)',
+                borderColor: 'rgba(38, 173, 228,1)',
+                pointBorderColor: 'rgba(38, 173, 228,1)',
+                pointBackgroundColor: 'rgba(38, 173, 228,1)',
+                lineTension: 0,
+                yAxisID: 'users'
+            }),
+            jasmine.objectContaining({
+                label: 'Clicks',
+                data: items.map(({ clicks }) => clicks || null),
+                fill: false,
+                backgroundColor: 'rgba(122, 179, 23,1)',
+                borderColor: 'rgba(122, 179, 23,1)',
+                pointBorderColor: 'rgba(122, 179, 23,1)',
+                pointBackgroundColor: 'rgba(122, 179, 23,1)',
+                lineTension: 0,
+                yAxisID: 'clicks'
+            })
+        ]
+    });
+}
 
 describe('CampaignDetailChart', function() {
-    describe('CampaignDetailChartComponent', function() {
-        let props;
-        let component;
+    beforeEach(function() {
+        this.props = {
+            items: [
+                { date: '2016-05-06', views: 270, users: 210, clicks: 15, installs: 0, launches: 0 },
+                { date: '2016-05-07', views: 283, users: 221, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-08', views: 245, users: 195, clicks: 3 , installs: 3, launches: 0 },
+                { date: '2016-05-09', views: 433, users: 0, clicks: 50, installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 250, users: 200, clicks: 0, installs: 5, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 0, launches: 0 },
+                { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
+            ]
+        };
 
+        this.component = mount(
+            <CampaignDetailChart {...this.props} />
+        );
+    });
+
+    it('should exist', function() {
+        expect(this.component.length).toBe(1, 'CampaignDetailChart not rendered.');
+    });
+
+    it('should render a <canvas>', function() {
+        expect(this.component.find('canvas').length).toBe(1, '<canvas> is not rendered.');
+    });
+
+    it('should create a chart', function() {
+        const canvas = this.component.find('canvas').node;
+        const chart = this.component.instance().chart;
+
+        expect(chart.chart.canvas).toBe(canvas);
+        expect(chart.config.type).toBe('line');
+        expect(chart.config.options).toEqual(getChartOptions());
+        expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+    });
+
+    describe('if the items does not change', function() {
         beforeEach(function() {
-            props = {
-                chart: 'CAMPAIGN_DETAIL_CHART_TODAY',
-                series: 'CAMPAIGN_DETAIL_SERIES_VIEWS',
-                data: { 'today' : [] },
-                onShowInstallTrackingInstructions: jasmine.createSpy('onShowInstallTrackingInstructions()')
-            };
+            spyOn(this.component.instance().chart, 'update').and.callThrough();
 
-            component = mount(<CampaignDetailChart {...props} />);
+            this.component.setProps({ items: this.props.items.slice() });
         });
 
-        it('should exist', function() {
-            expect(component.length).toEqual(1, 'CampaignDetailChart not rendered');
-        });
-
-        it('should have the expected properties',function(){
-            expect(component.props().chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
-            expect(component.props().series).toEqual('CAMPAIGN_DETAIL_SERIES_VIEWS');
-            expect(component.props().onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
+        it('should not update the chart', function() {
+            expect(this.component.instance().chart.update).not.toHaveBeenCalled();
         });
     });
 
-    describe('ChartistParameters',function(){
-        let chartParams, series, data, labelFormatter;
-        
-        beforeEach(function(){
-            series =  'CAMPAIGN_DETAIL_SERIES_VIEWS';
-            labelFormatter = jasmine.createSpy('formatter').and.returnValue('foo');
-            data = {
-                'today' : [
-                    { 'hour'  : '2016-05-12T00:00:00.000Z', 'installs': 0,
-                      'views' : 250, 'users' : 200, 'clicks' : 13 },
-                    { 'hour'  : '2016-05-12T01:00:00.000Z', 'installs': 0,
-                      'views' : 125, 'users' : 175, 'clicks': 3 },
-                    { 'hour'  : '2016-05-12T02:00:00.000Z', 'installs': 0,
-                      'views' : 433, 'users' : 395, 'clicks': 50 }
-                ],
-                'daily_7' : [
-                    {   'date': '2016-05-06', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-07', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 }
-                ],
-                'daily_30' : [
-                    {   'date': '2016-04-28', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-04-29', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-04-30', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-01', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-02', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-03', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-04', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-05', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-06', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-07', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 }
+    describe('if the items do change', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'update').and.callThrough();
+
+            this.component.setProps({
+                items: this.props.items.map(item => assign({}, item, {
+                    users: item.users * 2,
+                    clicks: item.clicks * 3
+                }))
+            });
+        });
+
+        it('should update the chart', function() {
+            expect(this.component.instance().chart.data.datasets[0].data).toEqual(this.component.prop('items').map(({ users }) => users || null));
+            expect(this.component.instance().chart.data.datasets[1].data).toEqual(this.component.prop('items').map(({ clicks }) => clicks || null));
+
+            expect(this.component.instance().chart.update).toHaveBeenCalledWith();
+        });
+
+        describe('to 30 days', function() {
+            beforeEach(function() {
+                this.component.instance().chart.update.calls.reset();
+
+                this.component.setProps({
+                    items: Array.apply([], new Array(30)).map((_, index) => ({
+                        users: random(100, 125),
+                        clicks: random(10, 20),
+                        date: moment().add(index, 'days').format('YYYY-MM-DD')
+                    }))
+                });
+            });
+
+            it('should update the labels', function() {
+                expect(this.component.instance().chart.data.labels).toEqual(this.component.prop('items').map(({ date }) => moment(date).format('M/D')));
+                expect(this.component.instance().chart.update).toHaveBeenCalledWith();
+            });
+        });
+    });
+
+    describe('when the component is unmounted', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'destroy').and.callThrough();
+            this.chart = this.component.instance().chart;
+
+            this.component.unmount();
+        });
+
+        it('should destroy the chart', function() {
+            expect(this.chart.destroy).toHaveBeenCalledWith();
+            expect(this.component.node.chart).toBeNull();
+        });
+    });
+
+    describe('if there are 30 items', function() {
+        beforeEach(function() {
+            this.props.items = Array.apply([], new Array(30)).map((_, index) => ({
+                users: random(100, 125),
+                clicks: random(10, 20),
+                date: moment().add(index, 'days').format('YYYY-MM-DD')
+            }));
+
+            this.component = mount(
+                <CampaignDetailChart {...this.props} />
+            );
+        });
+
+        it('should use shorter labels', function() {
+            expect(this.component.instance().chart.data.labels).toEqual(this.props.items.map(({ date }) => moment(date).format('M/D')));
+        });
+    });
+
+    describe('if there is at least one metric', function() {
+        beforeEach(function() {
+            this.props.items = [
+                { date: '2016-05-06', views: 270, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-07', views: 283, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-08', views: 245, users: 0, clicks: 0 , installs: 3, launches: 0 },
+                { date: '2016-05-09', views: 433, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 250, users: 1, clicks: 0, installs: 5, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-12', views: 193, users: 0, clicks: 0, installs: 0, launches: 0 }
+            ];
+
+            this.component = mount(
+                <CampaignDetailChart {...this.props} />
+            );
+        });
+
+        it('should render a chart', function() {
+            expect(this.component.find('canvas').length).toBe(1, '<canvas> is not rendered.');
+            expect(this.component.instance().chart).toEqual(jasmine.any(Object));
+        });
+    });
+
+    describe('if there is not one metric', function() {
+        beforeEach(function() {
+            this.props.items = [
+                { date: '2016-05-06', views: 270, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-07', views: 283, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-08', views: 245, users: 0, clicks: 0 , installs: 3, launches: 0 },
+                { date: '2016-05-09', views: 433, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 250, users: 0, clicks: 0, installs: 5, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-12', views: 193, users: 0, clicks: 0, installs: 0, launches: 0 }
+            ];
+
+            this.component = mount(
+                <CampaignDetailChart {...this.props} />
+            );
+        });
+
+        it('should render a chart', function() {
+            expect(this.component.find('canvas').length).toBe(0, '<canvas> is rendered.');
+            expect(this.component.instance().chart).toBeNull();
+        });
+
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
+    });
+
+    describe('if there are no items', function() {
+        beforeEach(function() {
+            this.props.items = undefined;
+
+            this.component = mount(
+                <CampaignDetailChart {...this.props} />
+            );
+        });
+
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
+
+        it('should not render a chart', function() {
+            expect(this.component.find('canvas').length).toBe(0, '<canvas> is rendered.');
+            expect(this.component.instance().chart).toBeNull();
+        });
+
+        describe('and then there are items', function() {
+            beforeEach(function() {
+                this.component.setProps({
+                    items: [
+                        { date: '2016-05-06', views: 270, users: 210, clicks: 15, installs: 0, launches: 0 },
+                        { date: '2016-05-07', views: 283, users: 221, clicks: 0, installs: 0, launches: 0 },
+                        { date: '2016-05-08', views: 245, users: 195, clicks: 3 , installs: 3, launches: 0 },
+                        { date: '2016-05-09', views: 433, users: 0, clicks: 50, installs: 0, launches: 0 },
+                        { date: '2016-05-10', views: 250, users: 200, clicks: 0, installs: 5, launches: 0 },
+                        { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 0, launches: 0 },
+                        { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
+                    ]
+                });
+            });
+
+            it('should create a chart', function() {
+                const canvas = this.component.find('canvas').node;
+                const chart = this.component.instance().chart;
+
+                expect(chart.chart.canvas).toBe(canvas);
+                expect(chart.config.type).toBe('line');
+                expect(chart.config.options).toEqual(getChartOptions());
+                expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+            });
+        });
+    });
+
+    describe('if the items change so there are no metrics', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'destroy').and.callThrough();
+            this.chart = this.component.instance().chart;
+
+            this.component.setProps({
+                items: [
+                    { date: '2016-05-06', views: 270, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-07', views: 283, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-08', views: 245, users: 0, clicks: 0 , installs: 3, launches: 0 },
+                    { date: '2016-05-09', views: 433, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-10', views: 250, users: 0, clicks: 0, installs: 5, launches: 0 },
+                    { date: '2016-05-11', views: 125, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-12', views: 193, users: 0, clicks: 0, installs: 0, launches: 0 }
                 ]
-            };
-        });
-
-        describe('Base Class',function(){
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_VIEWS',function(){
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 250, 125, 433 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_USERS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_USERS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 200, 175, 395 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_CLICKS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_CLICKS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 13, 3, 50 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_INSTALLS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_INSTALLS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ null, null, null ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(true);
-            });
-
-            it('should throw an exception with a bad series',function(){
-                series = 'bad';
-                expect( () => {
-                    chartParams = new ChartistParameters({ labelFormatter, series,
-                        data : data.today });
-                }).toThrowError('Unexpected series type: bad');
-
-            });
-
-            it('should throw an exception with missing data',function(){
-                expect( () => {
-                    chartParams = new ChartistParameters({ labelFormatter, series,
-                        data : data.noop });
-                }).toThrowError('ChartistParameters requires a data property.');
-            });
-            
-            it('should throw an exception with a missing labelFormatter',function(){
-                expect( () => {
-                    chartParams = new ChartistParameters({ series,
-                        data : data.today });
-                }).toThrowError('ChartistParameters requires labelFormatter function.');
-
-            });
-
-        });
-        
-        describe('TodayChartParameters',function(){
-
-            it('creates the right parameters based on data and series',function(){
-                chartParams = new TodayChartParameters({ series, data });
-                expect(chartParams.data).toEqual({
-                    labels: [ '12am', '1am', '2am' ],
-                    series : [ [ 250, 125, 433 ] ]
-                });
-            });
-        });
-        
-        describe('Daily7ChartParameters',function(){
-
-            it('creates the right parameters based on data and series ',function(){
-                chartParams = new Daily7ChartParameters({ series, data });
-                expect(chartParams.data).toEqual({
-                    labels: [ 'Friday 5/6', 'Saturday 5/7', 'Sunday 5/8',
-                        'Monday 5/9', 'Tuesday 5/10', 'Wednesday 5/11', 'Thursday 5/12' ],
-                    series : [ [ 250, 250, 125, 433, 250, 125, 433 ] ]
-                });
             });
         });
 
-        describe('createChartParameters',function(){
-            let chart;
+        it('should destroy the chart', function() {
+            expect(this.chart.destroy).toHaveBeenCalledWith();
+            expect(this.component.instance().chart).toBeNull();
+        });
 
-            it('creates a TodayChartParameters from CAMPAIGN_DETAIL_CHART_TODAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_TODAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(TodayChartParameters));
-            });
-            
-            it('creates a Daily7ChartParameters from CAMPAIGN_DETAIL_CHART_7DAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_7DAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(Daily7ChartParameters));
-            });
-            
-            it('creates a Daily30ChartParameters from CAMPAIGN_DETAIL_CHART_30DAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_30DAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(Daily30ChartParameters));
-            });
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
 
-            it('throws an exeception for unrecogizned chart types',function(){
-                chart = 'foo';
-                expect( () => {
-                    createChartParameters({ chart, series, data });
-                }).toThrowError('Unrecognized Chart Type: foo');
-            });
+        it('should not render a chart', function() {
+            expect(this.component.find('canvas').length).toBe(0, '<canvas> is rendered.');
         });
     });
 
+    describe('if the items change so there are no items', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'destroy').and.callThrough();
+            this.chart = this.component.instance().chart;
+
+            this.component.setProps({
+                items: undefined
+            });
+        });
+
+        it('should destroy the chart', function() {
+            expect(this.chart.destroy).toHaveBeenCalledWith();
+            expect(this.component.instance().chart).toBeNull();
+        });
+
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
+
+        it('should not render a chart', function() {
+            expect(this.component.find('canvas').length).toBe(0, '<canvas> is rendered.');
+        });
+    });
 });
