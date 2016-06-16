@@ -25,8 +25,8 @@
   "peerDependencies": {
     "babelify": "^7.2.0"
   },
-  "browserify-shim" : {
-    "adwords-track-conversion" : "global:google_trackConversion"
+  "browserify-shim": {
+    "adwords-track-conversion": "global:google_trackConversion"
   },
   "browserify": {
     "transform": [
@@ -100,6 +100,7 @@
     "braintree-web": "^2.24.0",
     "c6embed": "^3.11.0",
     "chartist": "^0.9.7",
+    "chart.js": "^2.1.6",
     "classnames": "^2.2.5",
     "clipboard": "^1.5.10",
     "core-js": "^2.3.0",
