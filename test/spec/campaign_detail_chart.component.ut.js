@@ -1,230 +1,315 @@
+import CampaignDetailChart from '../../src/components/CampaignDetailChart';
 import { mount } from 'enzyme';
 import React from 'react';
-import CampaignDetailChart, { 
-        ChartistParameters,
-        TodayChartParameters,
-        Daily7ChartParameters,
-        Daily30ChartParameters,
-
-        createChartParameters
-    }
-    from '../../src/components/CampaignDetailChart';
+import ChartistGraph from 'react-chartist';
+import moment from 'moment';
+import numeral from 'numeral';
+import { random } from 'lodash';
 
 describe('CampaignDetailChart', function() {
-    describe('CampaignDetailChartComponent', function() {
-        let props;
-        let component;
+    beforeEach(function() {
+        this.props = {
+            items: [
+                { date: '2016-05-06', views: 270, users: 210, clicks: 15, installs: 0, launches: 0 },
+                { date: '2016-05-07', views: 283, users: 221, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-08', views: 245, users: 195, clicks: 3 , installs: 3, launches: 0 },
+                { date: '2016-05-09', views: 433, users: 0, clicks: 50, installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 250, users: 200, clicks: 0, installs: 5, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 0, launches: 0 },
+                { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
+            ]
+        };
 
+        this.component = mount(
+            <CampaignDetailChart {...this.props} />
+        );
+    });
+
+    it('should exist', function() {
+        expect(this.component.length).toBe(1, 'CampaignDetailChart not rendered.');
+    });
+
+    it('should render 2 charts', function() {
+        expect(this.component.find(ChartistGraph).length).toBe(2, 'Two <ChartistGraph>s are not rendered.');
+    });
+
+    describe('if there are no items', function() {
         beforeEach(function() {
-            props = {
-                chart: 'CAMPAIGN_DETAIL_CHART_TODAY',
-                series: 'CAMPAIGN_DETAIL_SERIES_VIEWS',
-                data: { 'today' : [] },
-                onShowInstallTrackingInstructions: jasmine.createSpy('onShowInstallTrackingInstructions()')
-            };
+            this.component.setProps({
+                items: undefined
+            });
+        });
 
-            component = mount(<CampaignDetailChart {...props} />);
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
+
+        it('should not render any charts', function() {
+            expect(this.component.find(ChartistGraph).length).toBe(0, 'ChartistGraphs were rendered.');
+        });
+    });
+
+    describe('if there is at least one metric', function() {
+        beforeEach(function() {
+            this.component.setProps({
+                items: [
+                    { date: '2016-05-06', views: 270, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-07', views: 283, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-08', views: 245, users: 0, clicks: 0 , installs: 3, launches: 0 },
+                    { date: '2016-05-09', views: 433, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-10', views: 250, users: 1, clicks: 0, installs: 5, launches: 0 },
+                    { date: '2016-05-11', views: 125, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-12', views: 193, users: 0, clicks: 0, installs: 0, launches: 0 }
+                ]
+            });
+        });
+
+        it('should render 2 charts', function() {
+            expect(this.component.find(ChartistGraph).length).toBe(2, 'Two <ChartistGraph>s are not rendered.');
+        });
+    });
+
+    describe('if there is not one metric', function() {
+        beforeEach(function() {
+            this.component.setProps({
+                items: [
+                    { date: '2016-05-06', views: 270, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-07', views: 283, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-08', views: 245, users: 0, clicks: 0 , installs: 3, launches: 0 },
+                    { date: '2016-05-09', views: 433, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-10', views: 250, users: 0, clicks: 0, installs: 5, launches: 0 },
+                    { date: '2016-05-11', views: 125, users: 0, clicks: 0, installs: 0, launches: 0 },
+                    { date: '2016-05-12', views: 193, users: 0, clicks: 0, installs: 0, launches: 0 }
+                ]
+            });
+        });
+
+        it('should show a message', function() {
+            expect(this.component.find('.empty-chart').length).toBe(1, 'empty chart message not shown.');
+        });
+
+        it('should not render any charts', function() {
+            expect(this.component.find(ChartistGraph).length).toBe(0, 'ChartistGraphs were rendered.');
+        });
+    });
+
+    describe('the chart for views', function() {
+        beforeEach(function() {
+            this.views = this.component.find(ChartistGraph).first();
         });
 
         it('should exist', function() {
-            expect(component.length).toEqual(1, 'CampaignDetailChart not rendered');
+            expect(this.views.length).toBe(1, 'ChartistGraph is not rendered.');
+            expect(this.views.prop('type')).toBe('Line');
         });
 
-        it('should have the expected properties',function(){
-            expect(component.props().chart).toEqual('CAMPAIGN_DETAIL_CHART_TODAY');
-            expect(component.props().series).toEqual('CAMPAIGN_DETAIL_SERIES_VIEWS');
-            expect(component.props().onShowInstallTrackingInstructions).toBe(props.onShowInstallTrackingInstructions);
-        });
-    });
-
-    describe('ChartistParameters',function(){
-        let chartParams, series, data, labelFormatter;
-        
-        beforeEach(function(){
-            series =  'CAMPAIGN_DETAIL_SERIES_VIEWS';
-            labelFormatter = jasmine.createSpy('formatter').and.returnValue('foo');
-            data = {
-                'today' : [
-                    { 'hour'  : '2016-05-12T00:00:00.000Z', 'installs': 0,
-                      'views' : 250, 'users' : 200, 'clicks' : 13 },
-                    { 'hour'  : '2016-05-12T01:00:00.000Z', 'installs': 0,
-                      'views' : 125, 'users' : 175, 'clicks': 3 },
-                    { 'hour'  : '2016-05-12T02:00:00.000Z', 'installs': 0,
-                      'views' : 433, 'users' : 395, 'clicks': 50 }
-                ],
-                'daily_7' : [
-                    {   'date': '2016-05-06', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-07', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 }
-                ],
-                'daily_30' : [
-                    {   'date': '2016-04-28', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-04-29', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-04-30', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-01', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-02', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-03', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-04', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-05', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-06', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-07', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-08', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-09', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 },
-                    {   'date': '2016-05-10', 'installs': 0,
-                        'views':250, 'users':200, 'clicks': 13 },
-                    {   'date': '2016-05-11', 'installs': 0,
-                        'views': 125, 'users': 175, 'clicks': 3 },
-                    {   'date': '2016-05-12', 'installs': 0,
-                        'views': 433, 'users': 395, 'clicks': 50 }
-                ]
-            };
+        it('should add series', function() {
+            expect(this.views.prop('data').series).toEqual([this.component.prop('items').map(({ users }) => users || null)]);
         });
 
-        describe('Base Class',function(){
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_VIEWS',function(){
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 250, 125, 433 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_USERS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_USERS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 200, 175, 395 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_CLICKS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_CLICKS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ 13, 3, 50 ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(false);
-            });
-
-            it('should initialize with CAMPAIGN_DETAIL_SERIES_INSTALLS',function(){
-                series =  'CAMPAIGN_DETAIL_SERIES_INSTALLS';
-                chartParams = new ChartistParameters({ labelFormatter, series,
-                    data : data.today });
-                expect(labelFormatter.calls.count()).toEqual(3);
-                expect(chartParams.data).toEqual(jasmine.objectContaining({
-                    series : [ [ null, null, null ] ]
-                }));
-                expect(chartParams.isEmpty).toEqual(true);
-            });
-
-            it('should throw an exception with a bad series',function(){
-                series = 'bad';
-                expect( () => {
-                    chartParams = new ChartistParameters({ labelFormatter, series,
-                        data : data.today });
-                }).toThrowError('Unexpected series type: bad');
-
-            });
-
-            it('should throw an exception with missing data',function(){
-                expect( () => {
-                    chartParams = new ChartistParameters({ labelFormatter, series,
-                        data : data.noop });
-                }).toThrowError('ChartistParameters requires a data property.');
-            });
-            
-            it('should throw an exception with a missing labelFormatter',function(){
-                expect( () => {
-                    chartParams = new ChartistParameters({ series,
-                        data : data.today });
-                }).toThrowError('ChartistParameters requires labelFormatter function.');
-
-            });
-
+        it('should add labels', function() {
+            expect(this.views.prop('data').labels).toEqual(this.component.prop('items').map(({ date }) => moment(date)));
         });
-        
-        describe('TodayChartParameters',function(){
 
-            it('creates the right parameters based on data and series',function(){
-                chartParams = new TodayChartParameters({ series, data });
-                expect(chartParams.data).toEqual({
-                    labels: [ '12am', '1am', '2am' ],
-                    series : [ [ 250, 125, 433 ] ]
+        describe('chart options', function() {
+            beforeEach(function() {
+                this.options = this.views.prop('options');
+            });
+
+            it('should contain formatting options', function() {
+                expect(this.options).toEqual({
+                    axisX: {
+                        showGrid: false,
+                        labelInterpolationFnc: jasmine.any(Function)
+                    },
+                    axisY: {
+                        labelInterpolationFnc: jasmine.any(Function)
+                    },
+                    lineSmooth: false,
+                    showArea: true,
+                    showPoint: false,
+                    fullWidth: true
                 });
             });
-        });
-        
-        describe('Daily7ChartParameters',function(){
 
-            it('creates the right parameters based on data and series ',function(){
-                chartParams = new Daily7ChartParameters({ series, data });
-                expect(chartParams.data).toEqual({
-                    labels: [ 'Friday 5/6', 'Saturday 5/7', 'Sunday 5/8',
-                        'Monday 5/9', 'Tuesday 5/10', 'Wednesday 5/11', 'Thursday 5/12' ],
-                    series : [ [ 250, 250, 125, 433, 250, 125, 433 ] ]
+            describe('the axisX labelInterpolationFnc', function() {
+                beforeEach(function() {
+                    this.labels = this.views.prop('data').labels;
+                });
+
+                it('should return the label formatted for every label but the last', function() {
+                    this.labels.slice(0, -1).forEach((label, index) => expect(this.options.axisX.labelInterpolationFnc(label, index, this.labels)).toBe(label.format('dddd')));
+                });
+
+                it('should return an empty string for the last label', function() {
+                    expect(this.options.axisX.labelInterpolationFnc(this.labels.slice(-1)[0], this.labels.length - 1, this.labels)).toBe('');
+                });
+            });
+
+            describe('the axisY labelInterpolationFnc', function() {
+                beforeEach(function() {
+                    this.label = (8756496).toString();
+                });
+
+                it('should format the number', function() {
+                    expect(this.options.axisY.labelInterpolationFnc(this.label)).toBe(numeral(this.label).format('0,0'));
                 });
             });
         });
 
-        describe('createChartParameters',function(){
-            let chart;
-
-            it('creates a TodayChartParameters from CAMPAIGN_DETAIL_CHART_TODAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_TODAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(TodayChartParameters));
-            });
-            
-            it('creates a Daily7ChartParameters from CAMPAIGN_DETAIL_CHART_7DAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_7DAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(Daily7ChartParameters));
-            });
-            
-            it('creates a Daily30ChartParameters from CAMPAIGN_DETAIL_CHART_30DAY',function(){
-                chart = 'CAMPAIGN_DETAIL_CHART_30DAY';
-                expect(createChartParameters({ chart, series, data }))
-                        .toEqual(jasmine.any(Daily30ChartParameters));
+        describe('chart responsive options', function() {
+            beforeEach(function() {
+                this.responsiveOptions = this.views.prop('responsiveOptions');
             });
 
-            it('throws an exeception for unrecogizned chart types',function(){
-                chart = 'foo';
-                expect( () => {
-                    createChartParameters({ chart, series, data });
-                }).toThrowError('Unrecognized Chart Type: foo');
+            it('should contain responsive configuration', function() {
+                expect(this.responsiveOptions).toEqual([
+                    ['screen and (max-width: 700px)', {
+                        axisX: {
+                            labelInterpolationFnc: jasmine.any(Function)
+                        }
+                    }]
+                ]);
+            });
+
+            describe('the axisX labelInterpolationFnc', function() {
+                beforeEach(function() {
+                    this.labelInterpolationFnc = this.responsiveOptions[0][1].axisX.labelInterpolationFnc;
+
+                    this.labels = this.views.prop('data').labels;
+                });
+
+                it('should format the dates in short-form', function() {
+                    this.labels.slice(0, -1).forEach((label, index) => expect(this.labelInterpolationFnc(label, index, this.labels)).toBe(label.format('dd')));
+                });
+
+                it('should return an empty string for the last label', function() {
+                    expect(this.labelInterpolationFnc(this.labels.slice(-1)[0], this.labels.length - 1, this.labels)).toBe('');
+                });
+            });
+        });
+
+        describe('if there are 30 items', function() {
+            beforeEach(function() {
+                this.component.setProps({
+                    items: Array.apply([], new Array(30)).map((_, index) => ({
+                        users: random(100, 125),
+                        clicks: random(10, 20),
+                        date: moment().add(index, 'days').format('YYYY-MM-DD')
+                    }))
+                });
+
+                this.responsiveOptions = this.views.prop('responsiveOptions');
+            });
+
+            describe('the options', function() {
+                beforeEach(function() {
+                    this.options = this.views.prop('options');
+                });
+
+                it('should be different', function() {
+                    expect(this.options).toEqual({
+                        axisX: {
+                            showGrid: false,
+                            labelInterpolationFnc: jasmine.any(Function)
+                        },
+                        axisY: {
+                            labelInterpolationFnc: jasmine.any(Function)
+                        },
+                        lineSmooth: false,
+                        showArea: true,
+                        showPoint: false,
+                        fullWidth: true
+                    });
+                });
+
+                describe('the axisX labelInterpolationFnc', function() {
+                    beforeEach(function() {
+                        this.labels = this.views.prop('data').labels;
+                    });
+
+                    it('should return the label formatted', function() {
+                        this.labels.forEach((label, index) => expect(this.options.axisX.labelInterpolationFnc(label, index, this.labels)).toBe(label.format('M/D')));
+                    });
+                });
+
+                describe('the axisY labelInterpolationFnc', function() {
+                    beforeEach(function() {
+                        this.label = (8756496).toString();
+                    });
+
+                    it('should format the number', function() {
+                        expect(this.options.axisY.labelInterpolationFnc(this.label)).toBe(numeral(this.label).format('0,0'));
+                    });
+                });
+            });
+
+            describe('the responsiveOptions', function() {
+                beforeEach(function() {
+                    this.responsiveOptions = this.views.prop('responsiveOptions');
+                });
+
+                it('should be different', function() {
+                    expect(this.responsiveOptions).toEqual([
+                        ['screen and (max-width: 700px)', {
+                            axisX: {
+                                labelInterpolationFnc: jasmine.any(Function)
+                            }
+                        }]
+                    ]);
+                });
+
+                describe('the axisX labelInterpolationFnc', function() {
+                    beforeEach(function() {
+                        this.labelInterpolationFnc = this.responsiveOptions[0][1].axisX.labelInterpolationFnc;
+
+                        this.labels = this.views.prop('data').labels;
+                    });
+
+                    it('should only show every fifth label', function() {
+                        this.labels.forEach((label, index) => expect(this.labelInterpolationFnc(label, index, this.labels)).toBe((index % 5 === 0) ? label.format('dd') : ''));
+                    });
+                });
             });
         });
     });
 
+    describe('the chart for clicks', function() {
+        beforeEach(function() {
+            this.clicks = this.component.find(ChartistGraph).last();
+        });
+
+        it('should exist', function() {
+            expect(this.clicks.length).toBe(1, 'ChartistGraph is not rendered.');
+            expect(this.clicks.prop('type')).toBe('Line');
+        });
+
+        it('should add series', function() {
+            expect(this.clicks.prop('data').series).toEqual([this.component.prop('items').map(({ clicks }) => clicks || null)]);
+        });
+
+        describe('chart options', function() {
+            beforeEach(function() {
+                this.options = this.clicks.prop('options');
+            });
+
+            it('should contain formatting options', function() {
+                expect(this.options).toEqual({
+                    axisX: {
+                        showGrid: false,
+                        showLabel: false
+                    },
+                    axisY: {
+                        showGrid: false,
+                        showLabel: true,
+                        position: 'end'
+                    },
+                    lineSmooth: false,
+                    showArea: true,
+                    showPoint: false,
+                    fullWidth: true
+                });
+            });
+        });
+    });
 });
