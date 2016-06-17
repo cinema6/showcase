@@ -1,27 +1,36 @@
 import React, { Component, PropTypes } from 'react';
-import { Nav, NavItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { assign, get, find } from 'lodash';
+import _, { assign, get, find } from 'lodash';
 import * as campaignDetailActions from '../../actions/campaign_detail';
 import * as notificationActions from '../../actions/notification';
-import CampaignDetailBar from '../../components/CampaignDetailBar';
-import CampaignDetailTable from '../../components/CampaignDetailTable';
-import CampaignDetailChart, {
-   CHART_TODAY,
-   CHART_7DAY,
-   CHART_30DAY,
-
-   SERIES_USERS,
-//   SERIES_VIEWS,
-   SERIES_CLICKS,
-   SERIES_INSTALLS,
-} from '../../components/CampaignDetailChart';
 import InstallTrackingSetupModal from '../../components/InstallTrackingSetupModal';
-import AdPreviewModal from '../../components/AdPreviewModal';
 import { TYPE as NOTIFICATION } from '../../enums/notification';
 import DocumentTitle from 'react-document-title';
+import CampaignDetailInfo from '../../components/CampaignDetailInfo';
+import CampaignDetailStatsOverview from '../../components/CampaignDetailStatsOverview';
+import config from '../../../config';
+import { estimateImpressions } from '../../utils/billing';
+import moment from 'moment';
+import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
+import { productDataFromCampaign } from '../../utils/campaign';
+import AdPreview from '../../components/AdPreview';
+import CampaignDetailStatsDetails, {
+    CHART_7DAY,
+    CHART_30DAY,
+} from '../../components/CampaignDetailStatsDetails';
+
+const CARD_OPTIONS = {
+    cardType: 'showcase-app',
+    advanceInterval: 3,
+};
+const PLACEMENT_OPTIONS = {
+    type: 'mobile-card',
+    branding: 'showcase-app--interstitial',
+};
+
+const [paymentPlan] = config.paymentPlans;
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -37,147 +46,170 @@ class CampaignDetail extends Component {
     render() {
         const {
             page,
-            analyticsError,
-            analytics = { summary: {} },
-            campaign = {},
+            campaign,
+            analytics,
+            billingPeriod,
 
-            updateChartSelection,
-            removeCampaign,
             showInstallTrackingInstructions,
             notify,
-            showAdPreview,
+            removeCampaign,
+            updateChartSelection,
         } = this.props;
+        const billingPeriodStart = billingPeriod && moment(billingPeriod.start);
+        const billingPeriodEnd = billingPeriod && moment(billingPeriod.end);
 
-        let inner;
-        let logoUrl;
-        let selectChart = (key) => updateChartSelection(key, page.activeSeries);
-        let selectSeries = (key) => updateChartSelection(page.activeChart, key);
-
-        if (campaign && campaign.product) {
-            logoUrl = (find(campaign.product.images, (img) => img.type === 'thumbnail') || {}).uri;
-        }
-
-        if (page.loading) {
-            inner = <span> Loading... </span>;
-        } else if (analyticsError) {
-            inner = (
-                <div className="row">
-                    <span> {analyticsError.message} </span>
-                </div>
-            );
-        } else {
-            inner = (
-                <div>
-                    <div className="row">
-                        <div className="col-md-5 col-sm-5">
-                            <Nav
-                                bsStyle="pills"
-                                className="switch-chart"
-                                activeKey={page.activeSeries} onSelect={selectSeries}
-                            >
-                                <NavItem eventKey={SERIES_USERS}> Views </NavItem>
-                                <NavItem eventKey={SERIES_CLICKS}> Clicks </NavItem>
-                                <NavItem eventKey={SERIES_INSTALLS}> Installs </NavItem>
-                            </Nav>
-                        </div>
-                        <div className="col-md-5 col-md-offset-2 col-sm-6 col-sm-offset-1">
-                            <Nav
-                                bsStyle="pills"
-                                className="switch-chart-range"
-                                activeKey={page.activeChart} onSelect={selectChart}
-                            >
-                                <NavItem eventKey={CHART_TODAY}> Today </NavItem>
-                                <NavItem eventKey={CHART_7DAY}> Past 7 Days </NavItem>
-                                <NavItem eventKey={CHART_30DAY}> Past 30 Days </NavItem>
-                            </Nav>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <CampaignDetailChart
-                            data={analytics || {}}
-                            onShowInstallTrackingInstructions={() => {
-                                showInstallTrackingInstructions(true);
-                            }}
-                            chart={page.activeChart} series={page.activeSeries}
-                        />
-                    </div>
-                    <div className="row">
-                        <CampaignDetailTable
-                            data={analytics || {}}
-                            chart={page.activeChart} series={page.activeSeries}
-                        />
-                    </div>
-                </div>
-            );
-        }
-
-        return (
+        return (<div>
+            {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
             <div className="container main-section campaign-stats">
-                {campaign.name && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
-                <CampaignDetailBar
-                    campaignId={campaign.id}
-                    title={campaign.name}
-                    logoUrl={logoUrl}
-                    users={get(analytics, 'summary.users')}
-                    views={get(analytics, 'summary.views')}
-                    clicks={get(analytics, 'summary.clicks')}
-                    installs={get(analytics, 'summary.installs')}
-                    onDeleteCampaign={() => removeCampaign(campaign.id)}
-                    onShowInstallTrackingInstructions={() => showInstallTrackingInstructions(true)}
-                    onShowAdPreview={() => showAdPreview(true)}
-                />
-                {inner}
-                {campaign.id && (<InstallTrackingSetupModal
-                    show={page.showInstallTrackingInstructions}
-                    campaignId={campaign.id}
-                    onClose={() => showInstallTrackingInstructions(false)}
-                    onCopyCampaignIdSuccess={() => notify({
-                        type: NOTIFICATION.SUCCESS,
-                        message: 'Copied to clipboard!',
-                    })}
-                    onCopyCampaignIdError={() => notify({
-                        type: NOTIFICATION.WARNING,
-                        message: 'Unable to copy.',
-                    })}
-                />)}
-                <AdPreviewModal
-                    show={page.showAdPreview}
-                    campaign={campaign}
-                    onClose={() => showAdPreview(false)}
-                />
+                <div className="row">
+                    {campaign && <CampaignDetailInfo
+                        campaignId={campaign.id}
+                        title={get(campaign, 'product.name')}
+                        logo={find(get(campaign, 'product.images'), { type: 'thumbnail' }).uri}
+                        company={get(campaign, 'product.developer')}
+                        rating={get(campaign, 'product.rating')}
+                        ratingCount={get(campaign, 'product.ratingCount')}
+                        onReplace={() => removeCampaign(campaign.id)}
+                    />}
+                    <div className="right-col col-md-8">
+                        <p className="text-center track-installs">
+                            Want to track your installs? <a
+                                href="#"
+                                onClick={event => {
+                                    event.preventDefault();
+                                    showInstallTrackingInstructions(true);
+                                }}
+                            >Setup</a>
+                        </p>
+                        <CampaignDetailStatsOverview
+                            analytics={analytics && {
+                                today: {
+                                    users: _(analytics.today).map('users').sum(),
+                                    clicks: _(analytics.today).map('clicks').sum(),
+                                    installs: _(analytics.today).map('installs').sum(),
+                                },
+                                lifetime: {
+                                    users: analytics.summary.users,
+                                    clicks: analytics.summary.clicks,
+                                    installs: analytics.summary.installs,
+                                },
+                                billingPeriod: {
+                                    users: analytics.cycle.users,
+                                },
+                            }}
+                            billingPeriod={(billingPeriod || undefined) && {
+                                start: billingPeriodStart,
+                                end: billingPeriodEnd,
+                                targetViews: estimateImpressions({
+                                    start: billingPeriodStart,
+                                    end: billingPeriodEnd,
+                                    viewsPerDay: paymentPlan.viewsPerDay,
+                                }),
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
-        );
+            <div className="container">
+                <div className="row">
+                    <div className="campaign-ad-preview col-md-4">
+                        <div className="campaign-preview-wrap text-center">
+                            <AdPreview
+                                productData={productDataFromCampaign(campaign)}
+                                cardOptions={CARD_OPTIONS}
+                                placementOptions={PLACEMENT_OPTIONS}
+                                factory={createInterstitialFactory}
+                            />
+                        </div>
+                    </div>
+                    <CampaignDetailStatsDetails
+                        range={page.activeSeries}
+                        items={(series => {
+                            switch (series) {
+                            case CHART_7DAY:
+                                return get(analytics, 'daily_7');
+                            case CHART_30DAY:
+                                return get(analytics, 'daily_30');
+                            default:
+                                return undefined;
+                            }
+                        })(page.activeSeries)}
+                        onChangeView={view => updateChartSelection(view)}
+                    />
+                </div>
+            </div>
+            {campaign && (<InstallTrackingSetupModal
+                show={page.showInstallTrackingInstructions}
+                campaignId={campaign.id}
+                onClose={() => showInstallTrackingInstructions(false)}
+                onCopyCampaignIdSuccess={() => notify({
+                    type: NOTIFICATION.SUCCESS,
+                    message: 'Copied to clipboard!',
+                })}
+                onCopyCampaignIdError={() => notify({
+                    type: NOTIFICATION.WARNING,
+                    message: 'Unable to copy.',
+                })}
+            />)}
+        </div>);
     }
 }
 
 CampaignDetail.propTypes = {
     page: PropTypes.shape({
-        loading: PropTypes.bool.isRequired,
-        activeChart: PropTypes.number.isRequired,
-        activeSeries: PropTypes.number.isRequired,
         showInstallTrackingInstructions: PropTypes.bool.isRequired,
-        showAdPreview: PropTypes.bool.isRequired,
+        activeSeries: PropTypes.oneOf([CHART_7DAY, CHART_30DAY]).isRequired,
     }).isRequired,
     params: PropTypes.shape({
         campaignId: PropTypes.string.isRequired,
     }).isRequired,
-    campaign: PropTypes.object,
-    analytics: PropTypes.object,
-    analyticsError: PropTypes.object,
+    campaign: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        product: PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            images: PropTypes.arrayOf(PropTypes.shape({
+                type: PropTypes.string.isRequired,
+                uri: PropTypes.string.isRequired,
+            }).isRequired).isRequired,
+            developer: PropTypes.string.isRequired,
+            price: PropTypes.string.isRequired,
+            rating: PropTypes.number,
+            ratingCount: PropTypes.number,
+        }).isRequired,
+    }),
+    analytics: PropTypes.shape({
+        today: PropTypes.arrayOf(PropTypes.shape({
+            users: PropTypes.number.isRequired,
+            clicks: PropTypes.number.isRequired,
+            installs: PropTypes.number.isRequired,
+        }).isRequired).isRequired,
+        summary: PropTypes.shape({
+            users: PropTypes.number.isRequired,
+            clicks: PropTypes.number.isRequired,
+            installs: PropTypes.number.isRequired,
+        }).isRequired,
+        cycle: PropTypes.shape({
+            users: PropTypes.number.isRequired,
+        }).isRequired,
+    }),
+    billingPeriod: PropTypes.shape({
+        start: PropTypes.string.isRequired,
+        end: PropTypes.string.isRequired,
+    }),
 
     loadPageData: PropTypes.func.isRequired,
-    updateChartSelection: PropTypes.func.isRequired,
     removeCampaign: PropTypes.func.isRequired,
     showInstallTrackingInstructions: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
-    showAdPreview: PropTypes.func.isRequired,
+    updateChartSelection: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, props) {
     return {
         campaign: state.db.campaign[props.params.campaignId],
         analytics: state.analytics.results[props.params.campaignId],
-        analyticsError: state.analytics.lastError,
+        billingPeriod: state.session.billingPeriod,
     };
 }
 
