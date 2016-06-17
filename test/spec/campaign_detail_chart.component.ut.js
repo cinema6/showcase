@@ -228,8 +228,8 @@ describe('CampaignDetailChart', function() {
                         this.labels = this.views.prop('data').labels;
                     });
 
-                    it('should return the label formatted', function() {
-                        this.labels.forEach((label, index) => expect(this.options.axisX.labelInterpolationFnc(label, index, this.labels)).toBe(label.format('M/D')));
+                    it('should return every other label formatted', function() {
+                        this.labels.forEach((label, index) => expect(this.options.axisX.labelInterpolationFnc(label, index, this.labels)).toBe((index % 2 === 0) ? label.format('M/D') : ''));
                     });
                 });
 
@@ -267,7 +267,7 @@ describe('CampaignDetailChart', function() {
                     });
 
                     it('should only show every fifth label', function() {
-                        this.labels.forEach((label, index) => expect(this.labelInterpolationFnc(label, index, this.labels)).toBe((index % 5 === 0) ? label.format('dd') : ''));
+                        this.labels.forEach((label, index) => expect(this.labelInterpolationFnc(label, index, this.labels)).toBe((index % 5 === 0) ? label.format('M/D') : ''));
                     });
                 });
             });

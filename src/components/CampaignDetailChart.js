@@ -29,7 +29,7 @@ function ViewsChart({
             axisX: {
                 showGrid: false,
                 labelInterpolationFnc: is30Day ?
-                    formatter({ template: 'M/D' }) :
+                    formatter({ template: 'M/D', showEvery: 2 }) :
                     formatter({ template: 'dddd', hideLast: true }),
             },
             axisY: {
@@ -44,7 +44,7 @@ function ViewsChart({
             ['screen and (max-width: 700px)', {
                 axisX: {
                     labelInterpolationFnc: is30Day ?
-                        formatter({ template: 'dd', showEvery: 5 }) :
+                        formatter({ template: 'M/D', showEvery: 5 }) :
                         formatter({ template: 'dd', hideLast: true }),
                 },
             }],
