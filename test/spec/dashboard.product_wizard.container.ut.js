@@ -28,6 +28,9 @@ import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
+import config from '../../config';
+import { estimateImpressions } from '../../src/utils/billing';
+import moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
@@ -288,11 +291,6 @@ describe('ProductWizard', function() {
                     expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(2)))).toEqual('2 days');
                     expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
                 });
-                it('should calculate the correct impression number', function(){
-                    expect(component.node.getNumOfImpressions({paymentPlans: 
-                        [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 40 }]},
-                        component.node.getPromotionLength(generatePromo(14)))).toEqual(900);
-                });
             });
             describe('props', function() {
                 describe('show', function() {
@@ -323,10 +321,10 @@ describe('ProductWizard', function() {
                 });
                 describe('numOfImpressions', function() {
                     it('should be calculated from the value of the promotions and payment plan config', function() {
-                        expect(this.planInfoModal.props().numOfImpressions).
-                        toBe(component.node.getNumOfImpressions({paymentPlans: 
-                            [{id: 'pp-0Ekdsm05KVZ43Aqj', price: 50, impressionsPerDollar: 43}]},
-                            component.node.getPromotionLength(props.promotions)));
+                        expect(this.planInfoModal.props().numOfImpressions).toEqual(estimateImpressions({
+                            end: moment().add(component.node.getPromotionLength(props.promotions), 'days'),
+                            viewsPerDay: config.paymentPlans[0].viewsPerDay
+                        }));
                     });
                 });
             });
