@@ -12,8 +12,9 @@ function prefix(type) {
 }
 
 export const UPDATE_CHART_SELECTION = prefix('UPDATE_CHART_SELECTION');
-export const updateChartSelection = createAction(UPDATE_CHART_SELECTION,
-    (activeChart, activeSeries) => ({ activeChart, activeSeries }));
+export const updateChartSelection = createAction(UPDATE_CHART_SELECTION, activeSeries => ({
+    activeSeries,
+}));
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(campaignId => (
