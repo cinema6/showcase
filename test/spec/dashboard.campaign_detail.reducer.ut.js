@@ -7,6 +7,7 @@ import {
 } from '../../src/actions/campaign_detail';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
+import { CHART_7DAY } from '../../src/components/CampaignDetailStatsDetails';
 
 describe('dashboardCampaignDetailReducer()', function() {
     it('should return some initial state for the page', function() {
@@ -14,8 +15,7 @@ describe('dashboardCampaignDetailReducer()', function() {
             loading: true,
             showInstallTrackingInstructions: false,
             showAdPreview: false,
-            activeChart: 'CAMPAIGN_DETAIL_CHART_TODAY',
-            activeSeries: 'CAMPAIGN_DETAIL_SERIES_USERS'
+            activeSeries: CHART_7DAY
         });
     });
 
