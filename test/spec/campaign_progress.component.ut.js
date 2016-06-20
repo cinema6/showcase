@@ -44,7 +44,8 @@ describe('CampaignProgress', function() {
             series: [Math.round(this.component.prop('views') / this.component.prop('total') * 100)]
         });
         expect(chart.prop('options')).toEqual({
-            donut: true
+            donut: true,
+            total: 100
         });
     });
 
