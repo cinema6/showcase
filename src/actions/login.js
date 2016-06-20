@@ -4,6 +4,9 @@ import {
 import {
     getCampaigns,
 } from './session';
+import {
+    intercomTrackLogin,
+} from './intercom';
 import { replace } from 'react-router-redux';
 import { createAction } from 'redux-actions';
 import { noop } from 'lodash';
@@ -25,6 +28,7 @@ export const loginUser = createThunk(({ email, password, redirect }) => (
             .then(() => Promise.all([                          // fails
                 dispatch(createAction(LOGIN_SUCCESS)(data)),
                 dispatch(replace(redirect)),
+                dispatch(intercomTrackLogin(data)),
             ])))
             .catch(reason => dispatch(createAction(LOGIN_FAILURE)(reason)));
     }
