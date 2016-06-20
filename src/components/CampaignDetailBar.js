@@ -21,7 +21,7 @@ export default function CampaignDetailBar({
             <div className="campaign-overview">
                 <div className="row">
                     <div className="campaign-app col-md-8 col-sm-12 col-xs-12">
-                        <div className="advertiser-logo">
+                        <div className="app-icon-logo">
                             <img alt={title} src={logoUrl || 'http://placehold.it/512x512'} />
                         </div>
                         <div className="campaign-title">

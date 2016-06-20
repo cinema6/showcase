@@ -71,7 +71,7 @@ class CampaignDetail extends Component {
                         ratingCount={get(campaign, 'product.ratingCount')}
                         onReplace={() => removeCampaign(campaign.id)}
                     />}
-                    <div className="right-col col-md-8">
+                    <div className="stats-overview-wrapper right-col col-md-8 col-sm-12 col-xs-12">
                         <p className="text-center track-installs">
                             Want to track your installs? <a
                                 href="#"
@@ -112,7 +112,7 @@ class CampaignDetail extends Component {
             </div>
             <div className="container">
                 <div className="row">
-                    <div className="campaign-ad-preview col-md-4">
+                    <div className="campaign-app-preview col-md-4">
                         <div className="campaign-preview-wrap text-center">
                             <AdPreview
                                 productData={productDataFromCampaign(campaign)}

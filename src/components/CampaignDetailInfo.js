@@ -16,7 +16,7 @@ export default function CampaignDetailInfo({
     return (<div className="campaign-overview col-md-4">
         <div className="col-md-12 col-sm-12">
             <div className="campaign-app text-center">
-                <div className="advertiser-logo">
+                <div className="app-icon-logo">
                     <img alt="logo" src={logo} className="img-rounded" />
                 </div>
                 <div className="clearfix" />
