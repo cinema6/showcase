@@ -19,7 +19,7 @@ export default function CampaignDetailStatsDetails({
     onChangeView,
 }) {
     return (<div className="right-col  campaign-stats col-md-8">
-        <ul className="switch-chart-range nav nav-pills pull-right">
+        <ul className="switch-chart-range nav nav-pills">
             {[
                 { type: CHART_7DAY, days: 7 },
                 { type: CHART_30DAY, days: 30 },
@@ -27,6 +27,8 @@ export default function CampaignDetailStatsDetails({
                 key={type}
                 role="presentation"
             >
+                <div className="clearfix"></div>
+                <br />
                 <button
                     className={classnames('btn', 'btn-primary', {
                         active: range === type,

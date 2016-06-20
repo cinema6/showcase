@@ -19,7 +19,7 @@ export default function AdPreviewModal({
 
     onClose,
 }) {
-    return (<Modal className="ad-preview-modal" show={show} onHide={onClose}>
+    return (<Modal className="app-preview-modal" show={show} onHide={onClose}>
         <Modal.Header closeButton>
         </Modal.Header>
         <Modal.Body>
