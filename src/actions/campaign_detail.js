@@ -6,6 +6,7 @@ import { replace } from 'react-router-redux';
 import { notify } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
 import { createThunk } from '../middleware/fsa_thunk';
+import { getBillingPeriod } from './session';
 
 function prefix(type) {
     return `CAMPAIGN_DETAIL/${type}`;
@@ -51,6 +52,7 @@ export const loadPageData = createThunk(campaignId => (
 
                     return null;
                 }),
+                dispatch(getBillingPeriod()).catch(() => null),
             ])
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     }

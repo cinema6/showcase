@@ -10,6 +10,7 @@ import campaign, {
 } from '../actions/campaign';
 import {
     GET_PROMOTIONS,
+    GET_BILLING_PERIOD,
 } from '../actions/session';
 import { assign, reject, includes } from 'lodash';
 
@@ -22,6 +23,8 @@ const DEFAULT_STATE = {
     paymentMethods: [],
 
     campaigns: null,
+
+    billingPeriod: null,
 };
 
 function addUserToSession(state, { payload: user }) {
@@ -36,6 +39,10 @@ export default handleActions({
 
     [`${GET_PROMOTIONS}_FULFILLED`]: (state, { payload: promotions }) => assign({}, state, {
         promotions,
+    }),
+
+    [`${GET_BILLING_PERIOD}_FULFILLED`]: (state, { payload: billingPeriod }) => assign({}, state, {
+        billingPeriod,
     }),
 
     [payment.list.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
