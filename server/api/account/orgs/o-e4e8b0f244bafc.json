@@ -38,5 +38,7 @@
             "id": "promo-9dc14002b4bc23",
             "status": "active"
         }
-    ]
+    ],
+    "paymentPlanStart": "2016-08-06T13:07:35-04:00",
+    "nextPaymentDate": "2016-07-02T13:08:19-04:00"
 }
