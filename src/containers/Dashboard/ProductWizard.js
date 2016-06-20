@@ -219,22 +219,24 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <AdPreview
-                        placementOptions={PREVIEW.PLACEMENT_OPTIONS}
-                        cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
-                            description: previewLoaded ? {
-                                show: true,
-                                autoHide: 3,
-                            } : {
-                                show: false,
-                            },
-                        })}
-                        productData={this.getProductData()}
-                        factory={createInterstitialFactory}
-                        showLoadingAnimation={!previewLoaded}
-                        loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
-                        onLoadComplete={() => previewWasLoaded()}
-                    />
+                    <div className="col-md-6 col-sm-6 col-xs-12 col-middle text-center">
+                        <AdPreview
+                            placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                            cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
+                                description: previewLoaded ? {
+                                    show: true,
+                                    autoHide: 3,
+                                } : {
+                                    show: false,
+                                },
+                            })}
+                            productData={this.getProductData()}
+                            factory={createInterstitialFactory}
+                            showLoadingAnimation={!previewLoaded}
+                            loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
+                            onLoadComplete={() => previewWasLoaded()}
+                        />
+                    </div>
                 )}
                 {(() => {
                     switch (step) {

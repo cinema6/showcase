@@ -36,7 +36,7 @@ function ViewsChart({
                 labelInterpolationFnc: label => numeral(label).format('0,0'),
             },
             lineSmooth: false,
-            showArea: true,
+            showArea: false,
             showPoint: false,
             fullWidth: true,
         }}
@@ -77,7 +77,7 @@ function ClicksChart({
                 position: 'end',
             },
             lineSmooth: false,
-            showArea: true,
+            showArea: false,
             showPoint: false,
             fullWidth: true,
         }}
@@ -102,8 +102,8 @@ export default function CampaignDetailChart({
                 working hard. Check back soon to see how it’s doing.
             </div>
         </div>)}
-        {!isEmpty && <ViewsChart items={items} />}
-        {!isEmpty && <ClicksChart items={items} />}
+        {!isEmpty && <div className="chart-stacked-bottom"><ViewsChart items={items} /></div>}
+        {!isEmpty && <div className="chart-stacked-top"><ClicksChart items={items} /></div>}
     </div>);
 }
 
