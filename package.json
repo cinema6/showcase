@@ -25,8 +25,8 @@
   "peerDependencies": {
     "babelify": "^7.2.0"
   },
-  "browserify-shim" : {
-    "adwords-track-conversion" : "global:google_trackConversion"
+  "browserify-shim": {
+    "adwords-track-conversion": "global:google_trackConversion"
   },
   "browserify": {
     "transform": [
@@ -99,7 +99,7 @@
     "babel-runtime": "^6.6.1",
     "braintree-web": "^2.24.0",
     "c6embed": "^3.11.0",
-    "chartist": "0.9.7",
+    "chart.js": "^2.1.6",
     "classnames": "^2.2.5",
     "clipboard": "^1.5.10",
     "core-js": "^2.3.0",
@@ -112,7 +112,6 @@
     "rc-uuid": "^2.0.1",
     "react": "^15.0.1",
     "react-bootstrap": "^0.29.3",
-    "react-chartist": "0.10.2",
     "react-document-title": "^2.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
