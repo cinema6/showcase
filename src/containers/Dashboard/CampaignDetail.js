@@ -97,7 +97,7 @@ class CampaignDetail extends Component {
                                     users: analytics.cycle.users,
                                 },
                             }}
-                            billingPeriod={billingPeriod && {
+                            billingPeriod={(billingPeriod || undefined) && {
                                 start: billingPeriodStart,
                                 end: billingPeriodEnd,
                                 targetViews: estimateImpressions({

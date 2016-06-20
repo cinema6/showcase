@@ -11,6 +11,13 @@ import * as paymentActions from '../../actions/payment';
 import * as alertActions from '../../actions/alert';
 import { Button } from 'react-bootstrap';
 import DocumentTitle from 'react-document-title';
+import config from '../../../config';
+import moment from 'moment';
+import { estimateImpressions } from '../../utils/billing';
+import numeral from 'numeral';
+
+const DASH = '\u2014';
+const [paymentPlan] = config.paymentPlans;
 
 const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
@@ -24,12 +31,18 @@ class Billing extends Component {
             defaultPaymentMethod,
             payments,
             page,
+            billingPeriod,
 
             showChangeModal,
             getClientToken,
             changePaymentMethod,
             showAlert,
         } = this.props;
+
+        const billingStart = billingPeriod && moment(billingPeriod.start);
+        const billingEnd = billingPeriod && moment(billingPeriod.end);
+        const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
+
         return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
             <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
@@ -42,11 +55,20 @@ class Billing extends Component {
                             <div className="col-md-8">
                                 <div className="data-stacked">
                                     <h4>Your subscription provides</h4>
-                                    <h3>2,000 views</h3>
+                                    <h3>{(billingPeriod && numeral(estimateImpressions({
+                                        start: billingStart,
+                                        end: billingEnd,
+                                        viewsPerDay: paymentPlan.viewsPerDay,
+                                    })).format('0,0')) || DASH} views</h3>
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
-                                    <h3>$50</h3>
+                                    <h3>
+                                        ${paymentPlan.price} on {
+                                            (nextDueDate && nextDueDate.format('MMM D, YYYY')) ||
+                                            DASH
+                                        }
+                                    </h3>
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
@@ -114,6 +136,10 @@ Billing.propTypes = {
     page: PropTypes.shape({
         showChangeModal: PropTypes.bool.isRequired,
     }).isRequired,
+    billingPeriod: PropTypes.shape({
+        start: PropTypes.string.isRequired,
+        end: PropTypes.string.isRequired,
+    }),
 
     loadPageData: PropTypes.func.isRequired,
     showChangeModal: PropTypes.func.isRequired,
@@ -129,6 +155,7 @@ function mapStateToProps(state) {
     return {
         payments,
         defaultPaymentMethod: find(paymentMethods, { default: true }),
+        billingPeriod: state.session.billingPeriod,
     };
 }
 

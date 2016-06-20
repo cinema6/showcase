@@ -31,6 +31,7 @@ export default function CampaignProgress({
             }}
             options={{
                 donut: true,
+                total: 100,
             }}
         />
         <p>{formatDate(start)} - {formatDate(end)}</p>

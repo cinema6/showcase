@@ -18,12 +18,14 @@ import {
     getCampaignAnalytics
 } from '../../src/actions/analytics';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import { getBillingPeriod } from '../../src/actions/session';
+import  moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
 describe('campaign-detail-actions',function(){
     let lib;
-    let callAPI, alertActions, campaignActions, notificationActions, analyticsActions;
+    let callAPI, alertActions, campaignActions, notificationActions, analyticsActions, sessionActions;
 
     beforeEach(function(){
         callAPI = jasmine.createSpy('callAPI()');
@@ -53,12 +55,19 @@ describe('campaign-detail-actions',function(){
             __esModule: true
         };
 
+        sessionActions = {
+            getBillingPeriod: jasmine.createSpy('getBillingPeriod()').and.callFake(getBillingPeriod),
+
+            __esModule: true
+        };
+
         lib = proxyquire('../../src/actions/campaign_detail', {
             './api':  { callAPI },
             './alert': alertActions,
             './campaign': campaignActions,
             './notification': notificationActions,
-            './analytics': analyticsActions
+            './analytics': analyticsActions,
+            './session': sessionActions
         });
     });
 
@@ -158,8 +167,12 @@ describe('campaign-detail-actions',function(){
                 expect(dispatch).toHaveBeenCalledWith(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue);
             });
 
-            describe('if getting both succeeds', function() {
-                let campaignData, analyticsData;
+            it('should get the billingPeriod', function() {
+                expect(dispatch).toHaveBeenCalledWith(getBillingPeriod());
+            });
+
+            describe('if getting everything succeeds', function() {
+                let campaignData, analyticsData, billingPeriod;
 
                 beforeEach(function(done) {
                     campaignData = {
@@ -171,20 +184,25 @@ describe('campaign-detail-actions',function(){
                         data: {},
                         foo: 'bar'
                     };
+                    billingPeriod = {
+                        start: moment().format(),
+                        end: moment().add(1, 'month').subtract(1, 'day').format()
+                    };
 
                     dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).resolve(campaignData);
                     dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).resolve(analyticsData);
+                    dispatchDeferreds.get(sessionActions.getBillingPeriod.calls.mostRecent().returnValue).resolve(billingPeriod);
 
                     setTimeout(done);
                 });
 
                 it('should fulfill the Promise', function() {
-                    expect(success).toHaveBeenCalledWith([campaignData, analyticsData]);
+                    expect(success).toHaveBeenCalledWith([campaignData, analyticsData, billingPeriod]);
                 });
             });
 
             describe('if getting analytics fails', function() {
-                let reason, campaignData;
+                let reason, campaignData, billingPeriod;
 
                 beforeEach(function(done) {
                     campaignData = {
@@ -192,10 +210,15 @@ describe('campaign-detail-actions',function(){
                         product: {},
                         targeting: {}
                     };
+                    billingPeriod = {
+                        start: moment().format(),
+                        end: moment().add(1, 'month').subtract(1, 'day').format()
+                    };
                     reason = new Error('It just didn\'t work...');
 
                     dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).resolve(campaignData);
                     dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).reject(reason);
+                    dispatchDeferreds.get(sessionActions.getBillingPeriod.calls.mostRecent().returnValue).resolve(billingPeriod);
 
                     setTimeout(done);
                 });
@@ -210,22 +233,27 @@ describe('campaign-detail-actions',function(){
                 });
 
                 it('should fulfill the promise', function() {
-                    expect(success).toHaveBeenCalledWith([campaignData, null]);
+                    expect(success).toHaveBeenCalledWith([campaignData, null, billingPeriod]);
                 });
             });
 
             describe('if getting the campaign fails', function() {
-                let reason, analyticsData;
+                let reason, analyticsData, billingPeriod;
 
                 beforeEach(function() {
                     analyticsData = {
                         data: {},
                         foo: 'bar'
                     };
+                    billingPeriod = {
+                        start: moment().format(),
+                        end: moment().add(1, 'month').subtract(1, 'day').format()
+                    };
                     reason = new Error('There were issues.');
 
                     dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).reject(reason);
                     dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).resolve(analyticsData);
+                    dispatchDeferreds.get(sessionActions.getBillingPeriod.calls.mostRecent().returnValue).resolve(billingPeriod);
                 });
 
                 describe('if there is cached data', function() {
@@ -248,7 +276,7 @@ describe('campaign-detail-actions',function(){
                     });
 
                     it('should fulfill with the cached data', function() {
-                        expect(success).toHaveBeenCalledWith([state.db.campaign[campaignId], analyticsData]);
+                        expect(success).toHaveBeenCalledWith([state.db.campaign[campaignId], analyticsData, billingPeriod]);
                     });
                 });
 
@@ -275,6 +303,37 @@ describe('campaign-detail-actions',function(){
                     it('should reject', function() {
                         expect(failure).toHaveBeenCalledWith(reason);
                     });
+                });
+            });
+
+            describe('if getting the billing period fails', function() {
+                let reason, campaignData, analyticsData;
+
+                beforeEach(function(done) {
+                    campaignData = {
+                        id: campaignId,
+                        product: {},
+                        targeting: {}
+                    };
+                    analyticsData = {
+                        data: {},
+                        foo: 'bar'
+                    };
+                    reason = new Error('Something bad happened.');
+
+                    dispatchDeferreds.get(campaign.get.calls.mostRecent().returnValue).resolve(campaignData);
+                    dispatchDeferreds.get(analyticsActions.getCampaignAnalytics.calls.mostRecent().returnValue).resolve(analyticsData);
+                    dispatchDeferreds.get(sessionActions.getBillingPeriod.calls.mostRecent().returnValue).reject(reason);
+
+                    setTimeout(done);
+                });
+
+                it('should fulfill the promise', function() {
+                    expect(success).toHaveBeenCalledWith([campaignData, analyticsData, null]);
+                });
+
+                it('should not show a notification', function() {
+                    expect(notificationActions.notify).not.toHaveBeenCalled();
                 });
             });
         });

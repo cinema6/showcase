@@ -355,7 +355,7 @@ describe('CampaignDetail', function() {
             beforeEach(function() {
                 this.state = assign({}, this.state, {
                     session: assign({}, this.state.session, {
-                        billingPeriod: undefined
+                        billingPeriod: null
                     })
                 });
                 this.store.dispatch.and.callThrough();
