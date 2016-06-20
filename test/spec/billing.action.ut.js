@@ -10,6 +10,7 @@ import { assign, find } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import { getBillingPeriod } from '../../src/actions/session';
 
 const proxyquire = require('proxyquire');
 
@@ -22,7 +23,12 @@ describe('billing actions', function() {
         paymentActions = require('../../src/actions/payment');
 
         actions = proxyquire('../../src/actions/billing', {
-            './payment': paymentActions
+            './payment': paymentActions,
+            './session': {
+                getBillingPeriod,
+
+                __esModule: true
+            }
         });
         getPayments = actions.getPayments;
         getPaymentMethods = actions.getPaymentMethods;
@@ -148,6 +154,10 @@ describe('billing actions', function() {
 
             it('should get payment methods', function() {
                 expect(dispatch).toHaveBeenCalledWith(getPaymentMethods());
+            });
+
+            it('should getBillingPeriod()', function() {
+                expect(dispatch).toHaveBeenCalledWith(getBillingPeriod());
             });
 
             it('should dispatch LOAD_PAGE_DATA', function() {

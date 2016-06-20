@@ -5,8 +5,13 @@ import { keyBy, assign } from 'lodash';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
 import { showAlert } from '../../src/actions/alert';
+import moment from 'moment';
+import config from '../../config';
+import { estimateImpressions } from '../../src/utils/billing';
+import numeral from 'numeral';
 
 const proxyquire = require('proxyquire');
+const DASH = '\u2014';
 
 describe('Billing', function() {
     let billingActions, paymentActions;
@@ -49,7 +54,11 @@ describe('Billing', function() {
         beforeEach(function() {
             session = {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
-                paymentMethods: Array.apply([], new Array(3)).map(() => createUuid())
+                paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
+                billingPeriod: {
+                    start: moment().subtract(5, 'days').format(),
+                    end: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format()
+                }
             };
             state = {
                 session,
@@ -101,6 +110,35 @@ describe('Billing', function() {
             expect(store.dispatch).toHaveBeenCalledWith(billingActions.loadPageData.calls.mostRecent().returnValue);
         });
 
+        it('should render the paymentPlan price and due date', function() {
+            expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${config.paymentPlans[0].price} on ${moment(session.billingPeriod.end).add(1, 'day').format('MMM D, YYYY')}`);
+        });
+
+        it('should render the estimated amount of views for the billing period', function() {
+            expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(estimateImpressions({ start: moment(session.billingPeriod.start), end: moment(session.billingPeriod.end), viewsPerDay: config.paymentPlans[0].viewsPerDay })).format('0,0')} views`);
+        });
+
+        describe('if the billing period is unknown', function() {
+            beforeEach(function() {
+                store.dispatch.and.callThrough();
+
+                state = assign({}, state, {
+                    session: assign({}, state.session, {
+                        billingPeriod: null
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should render dashes in place of data', function() {
+                const nextDueDate = component.find('.billing-summary .data-stacked h3').at(1);
+                const numOfImpressions = component.find('.billing-summary .data-stacked h3').at(0);
+
+                expect(nextDueDate.text()).toBe(`$${config.paymentPlans[0].price} on ${DASH}`);
+                expect(numOfImpressions.text()).toBe(`${DASH} views`);
+            });
+        });
+
         describe('props', function() {
             beforeEach(function() {
                 store.dispatch.calls.reset();
@@ -109,7 +147,8 @@ describe('Billing', function() {
             it('should map the state to some props', function() {
                 expect(component.props()).toEqual(jasmine.objectContaining({
                     payments: session.payments.map(id => state.db.payment[id]),
-                    defaultPaymentMethod: state.db.paymentMethod[session.paymentMethods[1]]
+                    defaultPaymentMethod: state.db.paymentMethod[session.paymentMethods[1]],
+                    billingPeriod: state.session.billingPeriod
                 }));
             });
 
