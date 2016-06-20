@@ -10,6 +10,9 @@ import {
 import {
     getCampaigns
 } from '../../src/actions/session';
+import {
+    intercomTrackLogin
+} from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { replace } from 'react-router-redux';
@@ -18,7 +21,7 @@ import { getThunk } from '../../src/middleware/fsa_thunk';
 const proxyquire = require('proxyquire');
 
 describe('actions: login', function() {
-    let authActions, sessionActions;
+    let authActions, sessionActions, intercomActions;
     let actions;
     let loginUser;
 
@@ -29,10 +32,14 @@ describe('actions: login', function() {
         sessionActions = {
             getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns)
         };
+        intercomActions = {
+            intercomTrackLogin: jasmine.createSpy('intercomTrackLogin()').and.callFake(intercomTrackLogin)
+        };
 
         actions = proxyquire('../../src/actions/login', {
             './auth': authActions,
-            './session': sessionActions
+            './session': sessionActions,
+            './intercom': intercomActions,
         });
         loginUser = actions.loginUser;
     });
@@ -109,6 +116,10 @@ describe('actions: login', function() {
                         it('should dispatch a transition to the redirect', function() {
                             expect(dispatch).toHaveBeenCalledWith(replace(redirect));
                         });
+
+                        it('should dispatch an intercom login tracker', function() {
+                            expect(dispatch).toHaveBeenCalledWith(intercomTrackLogin(data));
+                        });
                     });
 
                     describe('if getting the campaigns fails', function() {
@@ -129,6 +140,10 @@ describe('actions: login', function() {
 
                         it('should dispatch a transition to the redirect', function() {
                             expect(dispatch).toHaveBeenCalledWith(replace(redirect));
+                        });
+
+                        it('should dispatch an intercom login tracker', function() {
+                            expect(dispatch).toHaveBeenCalledWith(intercomTrackLogin(data));
                         });
                     });
                 });
@@ -154,6 +169,10 @@ describe('actions: login', function() {
                         expect(dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({
                             type: replace().type
                         }));
+                    });
+
+                    it('should not dispatch an intercom login tracker', function() {
+                        expect(dispatch).not.toHaveBeenCalledWith(intercomTrackLogin(jasmine.any(Object)));
                     });
                 });
             });
