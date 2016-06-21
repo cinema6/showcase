@@ -103,7 +103,8 @@ export default class AdPreview extends Component {
         } = this.state;
 
         return (<div
-            className="create-app-campaign step-2 col-middle text-center">
+            className="create-app-campaign step-2 col-middle text-center"
+        >
             <div className="phone-wrap">
                 <div ref="root" className="phone-frame">
                     {showLoadingAnimation && (

@@ -29,7 +29,7 @@ describe('CampaignDetailInfo', function() {
     });
 
     it('should render the logo', function() {
-        expect(this.component.find('.advertiser-logo img').prop('src')).toBe(this.props.logo);
+        expect(this.component.find('.app-icon-logo img').prop('src')).toBe(this.props.logo);
     });
 
     it('should render the campaign title', function() {
