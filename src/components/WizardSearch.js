@@ -39,7 +39,7 @@ class WizardSearch extends Component {
         } = this.props;
 
         return (<div
-            className="create-ad step-1 col-md-6 col-md-offset-3 col-xs-12
+            className="create-app-campaign step-1 col-md-6 col-md-offset-3 col-xs-12
             text-center animated fadeIn"
         >
             <h1 className="text-center">Find Your App on iTunes</h1>

@@ -7,9 +7,8 @@ import {
 } from '../../../../actions/campaign_detail';
 
 import {
-    CHART_TODAY,
-    SERIES_USERS,
-} from '../../../../components/CampaignDetailChart';
+    CHART_7DAY,
+} from '../../../../components/CampaignDetailStatsDetails';
 
 import { assign } from 'lodash';
 
@@ -17,8 +16,7 @@ const INITIAL_STATE = {
     loading: true,
     showInstallTrackingInstructions: false,
     showAdPreview: false,
-    activeChart: CHART_TODAY,
-    activeSeries: SERIES_USERS,
+    activeSeries: CHART_7DAY,
 };
 
 export default handleActions({

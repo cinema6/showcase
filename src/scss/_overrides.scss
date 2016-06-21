@@ -342,6 +342,9 @@
         a.light-text:hover {
             color: lighten($link-color, 15%);
         }
+    .grey-text {
+        color: #666;
+    }
     .text-block {
         display: block;
     }
@@ -602,7 +605,7 @@
             .campaign-progress-bar .nav-pills>li a {
                 background-color: transparent;
             }
-            .create-ad img{
+            .create-app-campaign img{
                 max-width: 100%;
             }
     .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
@@ -676,6 +679,17 @@
         right: 5px;
         z-index: 10;
     }
+        .app-results .app__ratings {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .app-results ul.app__ratings--stars {
+            box-shadow: none;
+            background: transparent;
+            display: inline-block;
+            position: initial;
+        }
         .app-search-results li.app-results.app-searching,
         .app-search-results li.app-results.not-found,
         .app-search-results li.app-results.app-item {
@@ -758,7 +772,7 @@
         height: 700px;
         width: 350px;
         position: relative;
-        max-width: 90%;
+        max-width: 100%;
         margin-left: auto;
         margin-right: auto;
     }
@@ -823,7 +837,7 @@
             height: 580px;
             width: 320px;
             position: relative;
-            max-width: 90%;
+            max-width: 100%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -876,12 +890,12 @@
                 left: 4% !important;
             }
     }
-    .ad-preview-modal .create-ad {
+    .app-preview-modal .create-app-campaign {
         width: 100%;
         padding: 0;
         margin-top: -10px;
     }
-    .ad-preview-modal .phone-frame {
+    .app-preview-modal .phone-frame {
         top: 0;
     }
     /***targeting***/
@@ -911,14 +925,17 @@
     }
         .campaign-stats .campaign-overview {
             display: block;
-            /*overflow: hidden;*/
-            border-bottom: 1px dotted $brand-primary;
+            /*overflow: hidden;
+            border-bottom: 1px dotted $brand-primary;*/
             padding-left: 0;
         }
     .campaign-overview {
         display: block;
     }
-        .campaign-overview .campaign-app {
+        .stats-overview-wrapper {
+            float: right;
+        }
+        /*.campaign-overview .campaign-app {
             display: inline-block;
             float: none;
             vertical-align: middle;
@@ -929,10 +946,51 @@
             vertical-align: middle;
             text-align: right;
             min-width: 300px;
+        }*/
+        .campaign-app-preview .create-app-campaign {
+            max-width: 100%;
+        }
+        .campaign-overview .campaign-actions {
+            margin-bottom: 20px;
+        }
+        .campaign-overview,
+        .campaign-stats-overview {
+            min-height: 300px;
+            padding-top: 15px;
+            margin-bottom: 20px;
+        }
+        .campaign-chart-donut {
+            margin-top: 10px;
+        }
+        .campaign-stats-chart {
+            margin-bottom: 20px;
+            position: relative;
+        }
+            .chart-stacked-top {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        .campaign-stats-table {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+        }
+            .campaign-stats-table .table {
+                margin-bottom: 0;
+            }
+        .switch-chart-range {
+            margin-bottom: 20px;
         }
             .campaign-actions .btn-sm, 
             .campaign-actions.btn-group-sm > .btn {
                 padding: 5px 6px;
+            }
+            .campaign-actions .btn-sm i.fa, 
+            .campaign-actions.btn-group-sm > .btn i.fa {
+                margin-right: 3px;
             }
         .campaign-overview .campaign-menu {
             display: inline-block;
@@ -945,17 +1003,17 @@
                 padding: 0;
                 width: 40px;
             }
-        .campaign-overview .advertiser-logo {
+        .campaign-overview .app-icon-logo {
             height: 80px;
             width: 80px;
             display: inline-block;
-            margin-right: 15px;
             margin-top: 10px;
-            margin-bottom: 10px;
+            margin-right: auto;
+            margin-left: auto;
             vertical-align: top;
-            float: left;
+            float: none;
         }
-            .advertiser-logo img {
+            .app-icon-logo img {
                 width: 80px;
                 height: auto;
                 max-height: 80px;
@@ -963,22 +1021,22 @@
                 border: 1px solid #ddd;
             }
         .campaign-overview .campaign-title {
-            overflow: hidden;
+            /*overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
             word-break: break-all;
-            word-wrap: break-word;
+            word-wrap: break-word;*/
             margin-top: 10px;
         }
-            .campaign-overview .campaign-title h2 {
+            .campaign-overview .campaign-title h3 {
                 display: inline;
-                line-height: 60px;
+                line-height: 1.25;
             }
             .campaign-stats .campaign-overview .campaign-preview-link {
                 display: inline-block;
                 vertical-align: top;
                 margin-bottom: 10px;
-                margin-top: -8px;
+                /*margin-top: -8px;*/
                 margin-right: 3px;
                 padding-top: 0;
             }
@@ -987,14 +1045,41 @@
                 vertical-align: top;
                 margin-right: 3px;
                 margin-bottom: 10px;
-                margin-top: -8px;
+               /*margin-top: -8px;*/
             }
             .campaign-stats .campaign-overview .trash-campaign-link {
                 display: inline-block;
                 vertical-align: top;
                 margin-bottom: 10px;
-                margin-top: -8px;
+                /*margin-top: -8px;*/
             }
+        .app__ratings--stars {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+                color: #0dbeb2;
+                font-size: 18px;
+            }
+                .app__ratings--stars li {
+                    display: inline;
+                }
+        .campaign-stat-timeline {
+            margin-top: 15px;
+        }
+            .campaign-stat-timeline .stats-header {
+                margin: 0;
+                font-weight: 400;
+            }
+            .campaign-stat-timeline .row {
+                padding-bottom: 15px;
+            }
+                .campaign-stat-timeline .row p {
+                    margin-top: 5px;
+                    margin-bottom: 15px;
+                }
+                .campaign-stat-timeline hr {
+                    border-top: 1px solid #ddd;
+                }
         .campaign-mini-stats {
             padding-top: 25px;
             padding-bottom: 25px;
@@ -1068,6 +1153,18 @@
                         font-family: 'FontAwesome';
                         font-size: 40px;
                     }
+        .campaign-reach-mini .stats-header {
+            color: $stats-reach;
+        }
+        .campaign-clicks-mini .stats-header {
+            color: $stats-clicks;
+        }
+        .campaign-ctr-mini .stats-header {
+            color: $stats-views;
+        }
+        .campaign-installs-mini .stats-header {
+            color: $stats-installs;
+        }
         .campaign-stats .campaign-menu li a .fa {
             margin-right: 10px;
             text-align: center;
@@ -1078,6 +1175,15 @@
         }
             .campaign-stats .stats-list td.text-right {
                 text-align: right;
+            }
+        .campaign-stats-totals {
+            padding: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+            .campaign-stats-totals .stats-header {
+                margin: 0;
+                font-weight: 400;
             }
     .campaign-stats .nav-justified {
         margin-bottom: 10px;
@@ -1483,7 +1589,6 @@
     @media (min-width: 768px) and (max-width: 998px) {
         .campaign-overview .campaign-actions {
             margin-top: 10px;
-            text-align: left;
         }
         .campaign-mini-stats h1 {
             font-size: 24px;
@@ -1614,19 +1719,18 @@
         }
         .campaign-overview .campaign-actions {
             margin-top: 10px;
-            text-align: left;
         }
-        .campaign-stats .campaign-overview .advertiser-logo {
+        .campaign-stats .campaign-overview .app-icon-logo {
             height: 50px;
             width: 50px;
         }
-            .campaign-stats .campaign-overview .advertiser-logo img {
+            .campaign-stats .campaign-overview .app-icon-logo img {
                 max-width: 50px;
                 max-height: 50px;
                 border-radius: 15px;
             }
         .campaign-stats .campaign-overview .campaign-title {
-            max-width: 70%;
+            max-width: 100%;
         }
             .campaign-stats .campaign-overview .campaign-title h2 {
                 display: inline;
@@ -1646,15 +1750,22 @@
                 vertical-align: top;
                 margin-right: 10px;
                 margin-bottom: 10px;
-                margin-top: -8px;
+                /*margin-top: -8px;*/
             }
         .campaign-stats .switch-chart,
         .campaign-stats .switch-chart-range {
             margin-bottom: 10px;
         }
         .campaign-stats .switch-chart-range {
-            float: left;
+            float: none;
+            width: 100%;
+            display: block;
+            text-align: center;
         }
+            .campaign-stats .switch-chart-range li {
+                float: none;
+                display: inline-block;
+            }
         .campaign-stats .campaign-mini-stats .data-inline p {
             font-size: 13px;
         }
@@ -1699,6 +1810,13 @@
             display: block;
             width: 100%;
         }
+        .campaign-stats-totals span {
+            margin-bottom: 5px;
+            display: block;
+        }
+            .campaign-stats-totals .stats-header {
+                margin-top: 10px;
+            }
 
     }
     @media (max-width: 992px) {
@@ -1709,27 +1827,27 @@
 
 /***scrollbar***/
 
-.create-ad ::-webkit-scrollbar {
+.create-app-campaign ::-webkit-scrollbar {
   -webkit-appearance:none;
   width:12px;
   background: #FFF;
 }
 
-.create-ad ::-webkit-scrollbar-thumb {
+.create-app-campaign ::-webkit-scrollbar-thumb {
   border-radius:12px;
   /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   _background-color:#0DBEB2;
   background-color: #0DBEB2;
 }
-.create-ad ::-webkit-scrollbar-thumb:hover {
+.create-app-campaign ::-webkit-scrollbar-thumb:hover {
   border-radius:12px;
   /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   background-color: #08766f;
 }
 
-.create-ad ::-webkit-scrollbar-corner {
+.create-app-campaign ::-webkit-scrollbar-corner {
   background-color:#e6e6e6;
 }
 /***button spinner***/

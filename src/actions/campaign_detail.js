@@ -6,14 +6,16 @@ import { replace } from 'react-router-redux';
 import { notify } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
 import { createThunk } from '../middleware/fsa_thunk';
+import { getBillingPeriod } from './session';
 
 function prefix(type) {
     return `CAMPAIGN_DETAIL/${type}`;
 }
 
 export const UPDATE_CHART_SELECTION = prefix('UPDATE_CHART_SELECTION');
-export const updateChartSelection = createAction(UPDATE_CHART_SELECTION,
-    (activeChart, activeSeries) => ({ activeChart, activeSeries }));
+export const updateChartSelection = createAction(UPDATE_CHART_SELECTION, activeSeries => ({
+    activeSeries,
+}));
 
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(campaignId => (
@@ -50,6 +52,7 @@ export const loadPageData = createThunk(campaignId => (
 
                     return null;
                 }),
+                dispatch(getBillingPeriod()).catch(() => null),
             ])
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     }

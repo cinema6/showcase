@@ -16,7 +16,11 @@ import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
 import numeral from 'numeral';
-import { default as paymentConfig } from '../../../config/apps.js';
+import config from '../../../config';
+import { estimateImpressions } from '../../utils/billing';
+import moment from 'moment';
+
+const [paymentPlan] = config.paymentPlans;
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -46,10 +50,7 @@ class ProductWizard extends Component {
     }
 
     getPromotionLength(promotionArray) {
-        if (Array.isArray(promotionArray)) {
-            return promotionArray.reduce((sum, c) => sum + c.data.trialLength, 0);
-        }
-        return 0;
+        return (promotionArray || []).reduce((sum, c) => sum + c.data.trialLength, 0);
     }
 
     getProductData() {
@@ -218,22 +219,24 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <AdPreview
-                        placementOptions={PREVIEW.PLACEMENT_OPTIONS}
-                        cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
-                            description: previewLoaded ? {
-                                show: true,
-                                autoHide: 3,
-                            } : {
-                                show: false,
-                            },
-                        })}
-                        productData={this.getProductData()}
-                        factory={createInterstitialFactory}
-                        showLoadingAnimation={!previewLoaded}
-                        loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
-                        onLoadComplete={() => previewWasLoaded()}
-                    />
+                    <div className="col-md-6 col-sm-6 col-xs-12 col-middle text-center">
+                        <AdPreview
+                            placementOptions={PREVIEW.PLACEMENT_OPTIONS}
+                            cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
+                                description: previewLoaded ? {
+                                    show: true,
+                                    autoHide: 3,
+                                } : {
+                                    show: false,
+                                },
+                            })}
+                            productData={this.getProductData()}
+                            factory={createInterstitialFactory}
+                            showLoadingAnimation={!previewLoaded}
+                            loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
+                            onLoadComplete={() => previewWasLoaded()}
+                        />
+                    </div>
                 )}
                 {(() => {
                     switch (step) {
@@ -271,8 +274,10 @@ class ProductWizard extends Component {
                     targeting: this.getTargeting(),
                 })}
                 promotionString={this.formatPromotionString(this.getPromotionLength(promotions))}
-                numOfImpressions={this.getNumOfImpressions(paymentConfig,
-                                    this.getPromotionLength(promotions))}
+                numOfImpressions={estimateImpressions({
+                    end: moment().add(this.getPromotionLength(promotions), 'days'),
+                    viewsPerDay: paymentPlan.viewsPerDay,
+                })}
             />
             {step === 4 && (
                 <WizardConfirmationModal

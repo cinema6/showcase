@@ -12,8 +12,10 @@ import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import {
-    GET_PROMOTIONS
+    GET_PROMOTIONS,
+    GET_BILLING_PERIOD
 } from '../../src/actions/session';
+import moment from 'moment';
 
 describe('sessionReducer()', function() {
     it('should return some initial state', function() {
@@ -22,7 +24,8 @@ describe('sessionReducer()', function() {
             promotions: null,
             payments: [],
             paymentMethods: [],
-            campaigns: null
+            campaigns: null,
+            billingPeriod: null
         });
     });
 
@@ -38,7 +41,9 @@ describe('sessionReducer()', function() {
 
                 payments: Array.apply([], new Array(5)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
-                campaigns: Array.apply([], new Array(10)).map(() => createUuid())
+                campaigns: Array.apply([], new Array(10)).map(() => createUuid()),
+
+                billingPeriod: null
             };
         });
 
@@ -86,6 +91,23 @@ describe('sessionReducer()', function() {
             it('should update the promotions', function() {
                 expect(newState).toEqual(assign({}, state, {
                     promotions: this.promotions
+                }));
+            });
+        });
+
+        describe(`${GET_BILLING_PERIOD}_FULFILLED`, function() {
+            beforeEach(function() {
+                this.billingPeriod = {
+                    start: moment().format(),
+                    end: moment().add(1, 'month').subtract(1, 'day').format()
+                };
+
+                newState = sessionReducer(state, createAction(`${GET_BILLING_PERIOD}_FULFILLED`)(this.billingPeriod));
+            });
+
+            it('should update the billingPeriod', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    billingPeriod: this.billingPeriod
                 }));
             });
         });

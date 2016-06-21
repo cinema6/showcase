@@ -1,28 +1,5 @@
 import React, { PropTypes } from 'react';
-import { times } from 'lodash';
-import classnames from 'classnames';
-
-function AppRating({ rating }) {
-    return (<span className="app-rating">
-        {times(5, index => {
-            const star = index + 1;
-            const halfStar = index + 0.5;
-
-            return (<i
-                key={star}
-                className={classnames('fa', {
-                    'fa-star': rating >= star,
-                    'fa-star-o': rating < halfStar,
-                    'fa-star-half-o': rating === halfStar,
-                })}
-            />);
-        })}
-    </span>);
-}
-
-AppRating.propTypes = {
-    rating: PropTypes.number.isRequired,
-};
+import StarRating from './StarRating';
 
 export default function AppSearchItem({
     suggestion: {
@@ -40,7 +17,7 @@ export default function AppSearchItem({
         <div className="app-info">
             <h4 className="app-title">{title}</h4>
             <span className="app-author"> By {developer} </span>
-            {rating && (<AppRating rating={rating} />)}
+            {rating && (<StarRating rating={rating} />)}
             <span className="app-cost"> {price} </span>
         </div>
     </span>);
