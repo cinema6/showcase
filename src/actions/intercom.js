@@ -12,3 +12,9 @@ export const intercomTrackLogin = createThunk(user => (
         });
     }
 ));
+
+export const intercomTrackLogout = createThunk(() => (
+    function trackLogout() {
+        return intercom.track('shutdown');
+    }
+));

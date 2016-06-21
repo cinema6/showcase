@@ -1,6 +1,4 @@
-import intercom from '../../src/utils/intercom';
 import { getThunk } from '../../src/middleware/fsa_thunk';
-import defer from 'promise-defer';
 
 const proxyquire = require('proxyquire');
 
@@ -8,6 +6,7 @@ describe('actions: intercom', function() {
     let intercomUtil;
     let actions;
     let intercomTrackLogin;
+    let intercomTrackLogout;
 
     beforeEach(function() {
         intercomUtil = {
@@ -23,6 +22,7 @@ describe('actions: intercom', function() {
         });
 
         intercomTrackLogin = actions.intercomTrackLogin;
+        intercomTrackLogout = actions.intercomTrackLogout;
     });
 
     describe('intercomTrackLogin', function() {
@@ -45,23 +45,36 @@ describe('actions: intercom', function() {
         });
 
         describe('when called', function() {
-            let dispatch;
-            let dispatchDeferred;
-
-            beforeEach(function() {
-                dispatch = jasmine.createSpy('dispatch()').and.returnValue((dispatchDeferred = defer()).promise);
-
-                thunk(dispatch);
-            });
-
             it('should call intercom.track()', function() {
+                thunk();
+
                 expect(intercomUtil.track).toHaveBeenCalledWith('boot', {
                     app_id: 'xyz123',
                     name: 'Scott Munson',
                     email: 'scott@cinema6.com',
                     created_at: '2014-03-13T15:28:23.653Z',
-                    rc_app: 'showcase apps',
+                    rc_app: 'showcase apps'
                 });
+            });
+        });
+    });
+
+    describe('intercomTrackLogout', function() {
+        let thunk;
+
+        beforeEach(function() {
+            thunk = getThunk(intercomTrackLogout());
+        });
+
+        it('should return a thunk', function() {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when called', function() {
+            it('should call intercom.track()', function() {
+                thunk();
+
+                expect(intercomUtil.track).toHaveBeenCalledWith('shutdown');
             });
         });
     });

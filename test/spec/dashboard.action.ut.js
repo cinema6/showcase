@@ -6,6 +6,7 @@ import {
     checkIfPaymentMethodRequired
 } from '../../src/actions/dashboard';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
+import { intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
 import {
     LOGOUT_START,
@@ -79,6 +80,10 @@ describe('dashboard actions', function() {
 
                 it('should redirect to the homepage', function() {
                     expect(dispatch).toHaveBeenCalledWith(replace('/login'));
+                });
+
+                it('should dispath intercomTrackLogout', function() {
+                    expect(dispatch).toHaveBeenCalledWith(intercomTrackLogout());
                 });
 
                 it('should fulfill to undefined', function() {

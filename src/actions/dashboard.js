@@ -1,6 +1,9 @@
 import {
     logoutUser as authLogoutUser,
 } from './auth';
+import {
+    intercomTrackLogout,
+} from './intercom';
 import { createAction } from 'redux-actions';
 import { replace } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
@@ -31,6 +34,7 @@ export const logoutUser = createThunk(() => (
         return dispatch(authLogoutUser()).then(result => Promise.all([
             dispatch(createAction(LOGOUT_SUCCESS)(result)),
             dispatch(replace('/login')),
+            dispatch(intercomTrackLogout()),
         ])).catch(reason => {
             dispatch(createAction(LOGOUT_FAILURE)(reason));
 

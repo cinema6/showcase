@@ -39,7 +39,7 @@ describe('actions: login', function() {
         actions = proxyquire('../../src/actions/login', {
             './auth': authActions,
             './session': sessionActions,
-            './intercom': intercomActions,
+            './intercom': intercomActions
         });
         loginUser = actions.loginUser;
     });
