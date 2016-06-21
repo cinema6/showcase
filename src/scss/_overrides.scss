@@ -679,6 +679,17 @@
         right: 5px;
         z-index: 10;
     }
+        .app-results .app__ratings {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .app-results ul.app__ratings--stars {
+            box-shadow: none;
+            background: transparent;
+            display: inline-block;
+            position: initial;
+        }
         .app-search-results li.app-results.app-searching,
         .app-search-results li.app-results.not-found,
         .app-search-results li.app-results.app-item {
