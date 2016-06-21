@@ -9,6 +9,7 @@ function getSetData(items, prop) {
 
 function getLabels(items) {
     const is30Day = items.length > 7;
+
     return is30Day ?
         items.map(({ date }) => moment(date).format('M/D')) :
         items.map(({ date }) => moment(date).format('dddd M/D'));
