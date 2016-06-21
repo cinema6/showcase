@@ -6,7 +6,7 @@ import {
     checkIfPaymentMethodRequired
 } from '../../src/actions/dashboard';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
-import { intercomTrackLogout } from '../../src/actions/intercom';
+import { trackLogout as intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
 import {
     LOGOUT_START,

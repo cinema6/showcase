@@ -5,8 +5,8 @@ const proxyquire = require('proxyquire');
 describe('actions: intercom', function() {
     let intercomUtil;
     let actions;
-    let intercomTrackLogin;
-    let intercomTrackLogout;
+    let trackLogin;
+    let trackLogout;
 
     beforeEach(function() {
         intercomUtil = {
@@ -21,11 +21,11 @@ describe('actions: intercom', function() {
             }
         });
 
-        intercomTrackLogin = actions.intercomTrackLogin;
-        intercomTrackLogout = actions.intercomTrackLogout;
+        trackLogin = actions.trackLogin;
+        trackLogout = actions.trackLogout;
     });
 
-    describe('intercomTrackLogin', function() {
+    describe('trackLogin', function() {
         let user;
         let thunk;
 
@@ -37,7 +37,7 @@ describe('actions: intercom', function() {
                 created: '2014-03-13T15:28:23.653Z'
             };
 
-            thunk = getThunk(intercomTrackLogin(user));
+            thunk = getThunk(trackLogin(user));
         });
 
         it('should return a thunk', function() {
@@ -59,11 +59,11 @@ describe('actions: intercom', function() {
         });
     });
 
-    describe('intercomTrackLogout', function() {
+    describe('trackLogout', function() {
         let thunk;
 
         beforeEach(function() {
-            thunk = getThunk(intercomTrackLogout());
+            thunk = getThunk(trackLogout());
         });
 
         it('should return a thunk', function() {

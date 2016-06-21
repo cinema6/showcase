@@ -11,7 +11,7 @@ import {
     getCampaigns
 } from '../../src/actions/session';
 import {
-    intercomTrackLogin
+    trackLogin as intercomTrackLogin
 } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -33,7 +33,7 @@ describe('actions: login', function() {
             getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns)
         };
         intercomActions = {
-            intercomTrackLogin: jasmine.createSpy('intercomTrackLogin()').and.callFake(intercomTrackLogin)
+            trackLogin: jasmine.createSpy('intercomTrackLogin()').and.callFake(intercomTrackLogin)
         };
 
         actions = proxyquire('../../src/actions/login', {

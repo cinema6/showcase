@@ -2,7 +2,7 @@ import {
     logoutUser as authLogoutUser,
 } from './auth';
 import {
-    intercomTrackLogout,
+    trackLogout as intercomTrackLogout,
 } from './intercom';
 import { createAction } from 'redux-actions';
 import { replace } from 'react-router-redux';

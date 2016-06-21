@@ -1,20 +1,8 @@
+import intercom from '../../src/utils/intercom';
+import { intercomId } from '../../config';
 import defer from 'promise-defer';
 
-const proxyquire = require('proxyquire');
-
 describe('utils: intercom', function() {
-    let intercom;
-    let intercomId;
-
-    beforeEach(function() {
-        intercomId = 'xyz123';
-        intercom = proxyquire('../../src/utils/intercom', {
-            '../../config': {
-                intercomId: intercomId
-            }
-        }).default;
-    });
-
     it('should exist', function() {
         expect(intercom).toEqual(jasmine.any(Object));
     });
@@ -40,6 +28,8 @@ describe('utils: intercom', function() {
             let $firstScript;
 
             beforeEach(function() {
+                intercom.pending = null;
+
                 $script = {};
                 $firstScript = {
                     parentNode: {

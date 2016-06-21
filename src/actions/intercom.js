@@ -1,8 +1,8 @@
 import { createThunk } from '../middleware/fsa_thunk';
 import intercom from '../utils/intercom';
 
-export const intercomTrackLogin = createThunk(user => (
-    function trackLogin() {
+export const trackLogin = createThunk(user => (
+    function doTrackLogin() {
         return intercom.track('boot', {
             app_id: intercom.id,
             name: `${user.firstName} ${user.lastName}`,
@@ -13,8 +13,8 @@ export const intercomTrackLogin = createThunk(user => (
     }
 ));
 
-export const intercomTrackLogout = createThunk(() => (
-    function trackLogout() {
+export const trackLogout = createThunk(() => (
+    function doTrackLogout() {
         return intercom.track('shutdown');
     }
 ));

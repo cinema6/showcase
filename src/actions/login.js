@@ -5,7 +5,7 @@ import {
     getCampaigns,
 } from './session';
 import {
-    intercomTrackLogin,
+    trackLogin as intercomTrackLogin,
 } from './intercom';
 import { replace } from 'react-router-redux';
 import { createAction } from 'redux-actions';
