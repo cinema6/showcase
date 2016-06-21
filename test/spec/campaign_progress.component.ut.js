@@ -42,11 +42,11 @@ describe('CampaignProgress', function() {
         expect(chart.chart.canvas).toBe(canvas);
         expect(chart.config.type).toBe('doughnut');
         expect(chart.config.options).toEqual(jasmine.objectContaining({
-            responsive: false,
+            responsive: true,
             legend: jasmine.objectContaining({
                 display: false
             }),
-            cutoutPercentage: 80,
+            cutoutPercentage: 0,
             animation: jasmine.objectContaining({
                 animateScale: true,
                 animateRotate: true

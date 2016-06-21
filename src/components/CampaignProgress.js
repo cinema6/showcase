@@ -53,11 +53,11 @@ export default class CampaignProgress extends Component {
         this.chart = new Chart(canvas, {
             type: 'doughnut',
             options: {
-                responsive: false,
+                responsive: true,
                 legend: {
                     display: false,
                 },
-                cutoutPercentage: 80,
+                cutoutPercentage: 0,
                 animation: {
                     animateScale: true,
                     animateRotate: true,
