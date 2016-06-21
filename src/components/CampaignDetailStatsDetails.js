@@ -32,8 +32,10 @@ export default function CampaignDetailStatsDetails({
             >
                 <div className="clearfix"></div>
                 <br />
-                <button className="btn btn-primary" 
-                onClick={() => onChangeView(type)}>Past {days} Days</button>
+                <button
+                    className="btn btn-primary" onClick={() => onChangeView(type)}
+                >Past {days} Days
+                </button>
             </li>))}
         </ul>
         <div className="clearfix" />
