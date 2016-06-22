@@ -43,28 +43,24 @@ function getChartOptions() {
                         drawOnChartArea: false
                     }),
                     ticks: jasmine.objectContaining({
-                        callback: jasmine.any(Function)
+                        callback: jasmine.any(Function),
+                        suggestedMin: 0,
+                        suggestedMax: 30
                     })
                 })
             ])
+        }),
+        tooltips: jasmine.objectContaining({
+            callbacks: jasmine.objectContaining({
+                label: jasmine.any(Function)
+            })
         })
     });
 }
 
 function getChartData(items) {
     return jasmine.objectContaining({
-        datasets: jasmine.arrayContaining([
-            jasmine.objectContaining({
-                label: 'Unique Views',
-                data: items.map(({ users }) => users || null),
-                fill: false,
-                backgroundColor: 'rgba(38, 173, 228,1)',
-                borderColor: 'rgba(38, 173, 228,1)',
-                pointBorderColor: 'rgba(38, 173, 228,1)',
-                pointBackgroundColor: 'rgba(38, 173, 228,1)',
-                lineTension: 0,
-                yAxisID: 'users'
-            }),
+        datasets: [
             jasmine.objectContaining({
                 label: 'CTR',
                 data: items.map(({ clicks, users }) => {
@@ -78,9 +74,21 @@ function getChartData(items) {
                 pointBorderColor: 'rgba(250, 169, 22,1)',
                 pointBackgroundColor: 'rgba(250, 169, 22,1)',
                 lineTension: 0,
+                pointRadius: 0,
                 yAxisID: 'ctr'
+            }),
+            jasmine.objectContaining({
+                label: 'Unique Views',
+                data: items.map(({ users }) => users || null),
+                fill: true,
+                backgroundColor: 'rgba(38, 173, 228,0.5)',
+                borderColor: 'rgba(38, 173, 228,1)',
+                pointBorderColor: 'rgba(38, 173, 228,1)',
+                pointBackgroundColor: 'rgba(38, 173, 228,1)',
+                lineTension: 0,
+                yAxisID: 'users'
             })
-        ])
+        ]
     });
 }
 
@@ -126,6 +134,40 @@ describe('CampaignDetailChart', function() {
         expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
     });
 
+    describe('the tooltips.label Function', function() {
+        beforeEach(function() {
+            this.tooltip = {
+                xLabel: 'Monday 5/9',
+                yLabel: '13',
+                datasetIndex: 0,
+                index: 2
+            };
+            this.data = this.component.instance().chart.config.data;
+
+            this.label = this.component.instance().chart.config.options.tooltips.callbacks.label;
+        });
+
+        describe('if the dataset is 0', function() {
+            beforeEach(function() {
+                this.tooltip.datasetIndex = 0;
+            });
+
+            it('should add a %', function() {
+                expect(this.label(this.tooltip, this.data)).toBe(`CTR: ${this.tooltip.yLabel}%`);
+            });
+        });
+
+        describe('if the dataset is 1', function() {
+            beforeEach(function() {
+                this.tooltip.datasetIndex = 1;
+            });
+
+            it('should not add a %', function() {
+                expect(this.label(this.tooltip, this.data)).toBe(`Unique Views: ${this.tooltip.yLabel}`);
+            });
+        });
+    });
+
     describe('the yAxes callback', function() {
         beforeEach(function() {
             this.callback = this.component.instance().chart.options.scales.yAxes[1].ticks.callback;
@@ -147,9 +189,9 @@ describe('CampaignDetailChart', function() {
             this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('dddd M/D')));
         });
 
-        describe('if the canvas is under 600px wide', function() {
+        describe('if the canvas is under 700px wide', function() {
             beforeEach(function() {
-                this.component.find('canvas').node.width = 599;
+                this.component.find('canvas').node.width = 699;
             });
 
             it('should use smaller labels', function() {
@@ -173,9 +215,9 @@ describe('CampaignDetailChart', function() {
                 this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('M/D')));
             });
 
-            describe('if the canvas is under 600px wide', function() {
+            describe('if the canvas is under 700px wide', function() {
                 beforeEach(function() {
-                    this.component.find('canvas').node.width = 599;
+                    this.component.find('canvas').node.width = 699;
                 });
 
                 it('should only show every other item', function() {

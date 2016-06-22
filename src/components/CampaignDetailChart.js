@@ -50,7 +50,7 @@ export default class CampaignDetailChart extends Component {
         }
 
         const { data } = this.chart;
-        const [users, ctr] = data.datasets;
+        const [ctr, users] = data.datasets;
 
         data.labels = getLabels(items);
         users.data = getUsers(items);
@@ -87,17 +87,6 @@ export default class CampaignDetailChart extends Component {
                 labels: getLabels(items),
                 datasets: [
                     {
-                        label: 'Unique Views',
-                        data: getUsers(items),
-                        fill: false,
-                        backgroundColor: 'rgba(38, 173, 228,1)',
-                        borderColor: 'rgba(38, 173, 228,1)',
-                        pointBorderColor: 'rgba(38, 173, 228,1)',
-                        pointBackgroundColor: 'rgba(38, 173, 228,1)',
-                        lineTension: 0,
-                        yAxisID: 'users',
-                    },
-                    {
                         label: 'CTR',
                         data: getCTR(items),
                         fill: false,
@@ -106,7 +95,19 @@ export default class CampaignDetailChart extends Component {
                         pointBorderColor: 'rgba(250, 169, 22,1)',
                         pointBackgroundColor: 'rgba(250, 169, 22,1)',
                         lineTension: 0,
+                        pointRadius: 0,
                         yAxisID: 'ctr',
+                    },
+                    {
+                        label: 'Unique Views',
+                        data: getUsers(items),
+                        fill: true,
+                        backgroundColor: 'rgba(38, 173, 228,0.5)',
+                        borderColor: 'rgba(38, 173, 228,1)',
+                        pointBorderColor: 'rgba(38, 173, 228,1)',
+                        pointBackgroundColor: 'rgba(38, 173, 228,1)',
+                        lineTension: 0,
+                        yAxisID: 'users',
                     },
                 ],
             },
@@ -128,7 +129,7 @@ export default class CampaignDetailChart extends Component {
                             },
                             ticks: {
                                 callback: (date, index, dates) => {
-                                    const isSmall = canvas.width < 600;
+                                    const isSmall = canvas.width < 700;
                                     const is30Day = dates.length > 7;
 
                                     if (is30Day) {
@@ -160,9 +161,22 @@ export default class CampaignDetailChart extends Component {
                             },
                             ticks: {
                                 callback: value => `${value}%`,
+                                suggestedMin: 0,
+                                suggestedMax: 30,
                             },
                         },
                     ],
+                },
+
+                tooltips: {
+                    callbacks: {
+                        label: ({ yLabel, datasetIndex }, { datasets }) => {
+                            const { label } = datasets[datasetIndex];
+                            const postfix = datasetIndex === 0 ? '%' : '';
+
+                            return `${label}: ${yLabel}${postfix}`;
+                        },
+                    },
                 },
             },
         });
