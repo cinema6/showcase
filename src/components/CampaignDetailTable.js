@@ -44,13 +44,13 @@ export default function CampaignDetailTable({
                     <h4>{formatDate(date)}</h4>
                 </th>
                 <td>
-                    <h4>{formatNumber(users)}</h4>
+                    <h4 className="stats-col-reach">{formatNumber(users)}</h4>
                 </td>
                 <td>
-                    <h4>{formatNumber(clicks)}</h4>
+                    <h4 className="stats-col-clicks">{formatNumber(clicks)}</h4>
                 </td>
                 <td>
-                    <h4>{formatCTR({ users, clicks })}</h4>
+                    <h4 className="stats-col-ctr">{formatCTR({ users, clicks })}</h4>
                 </td>
             </tr>))}
         </tbody>
