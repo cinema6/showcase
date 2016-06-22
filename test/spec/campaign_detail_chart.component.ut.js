@@ -73,10 +73,10 @@ function getChartData(items) {
                     return Math.round((clicks / users) * 100) || null;
                 }),
                 fill: false,
-                backgroundColor: 'rgba(122, 179, 23,1)',
-                borderColor: 'rgba(122, 179, 23,1)',
-                pointBorderColor: 'rgba(122, 179, 23,1)',
-                pointBackgroundColor: 'rgba(122, 179, 23,1)',
+                backgroundColor: 'rgba(250, 169, 22,1)',
+                borderColor: 'rgba(250, 169, 22,1)',
+                pointBorderColor: 'rgba(250, 169, 22,1)',
+                pointBackgroundColor: 'rgba(250, 169, 22,1)',
                 lineTension: 0,
                 yAxisID: 'ctr'
             })
