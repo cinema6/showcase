@@ -1,6 +1,6 @@
 {
   "name": "showcase",
-  "version": "0.11.0-rc1",
+  "version": "0.11.0-rc2",
   "description": "Reelcontent Showcase app.",
   "main": "src/index.js",
   "scripts": {
