@@ -29,9 +29,13 @@ import {
 import {
     callAPI
 } from '../../src/actions/api';
+import {
+    trackLogin as intercomTrackLogin
+} from '../../src/actions/intercom';
 import { createUuid } from 'rc-uuid';
 import { format as formatURL } from 'url';
 import { getThunk } from '../../src/middleware/fsa_thunk';
+import defer from 'promise-defer';
 
 describe('actions: auth', function() {
     describe('checkAuthStatus()', function() {
@@ -48,9 +52,14 @@ describe('actions: auth', function() {
         describe('when called', function() {
             let dispatch, getState;
             let callResult;
+            let user, userDeferred;
 
             beforeEach(function() {
-                dispatch = jasmine.createSpy('dispatch()').and.returnValue(Promise.resolve());
+                user = {
+                    id: 'u-' + createUuid()
+                };
+                userDeferred = defer();
+                dispatch = jasmine.createSpy('dispatch()').and.returnValue(userDeferred.promise);
                 getState = jasmine.createSpy('getState()').and.returnValue({
                     session: {
                         user: null
@@ -65,6 +74,30 @@ describe('actions: auth', function() {
                     endpoint: '/api/auth/status',
                     types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE]
                 }));
+            });
+
+            describe('when the user is returned', function() {
+                beforeEach(function(done) {
+                    userDeferred.resolve(user);
+
+                    setTimeout(done);
+                });
+
+                it('should track via intercom', function() {
+                    expect(dispatch).toHaveBeenCalledWith(intercomTrackLogin(user));
+                });
+            });
+
+            describe('when the user is not returned', function() {
+                beforeEach(function(done) {
+                    userDeferred.reject();
+
+                    setTimeout(done);
+                });
+
+                it('should not track via intercom', function() {
+                    expect(dispatch).not.toHaveBeenCalledWith(intercomTrackLogin(user));
+                });
             });
 
             describe('if there is a logged-in user', function() {

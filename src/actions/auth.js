@@ -1,3 +1,6 @@
+import {
+    trackLogin as intercomTrackLogin,
+} from './intercom';
 import { callAPI } from './api';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
@@ -21,7 +24,7 @@ export const checkAuthStatus = createThunk(() => (
         return dispatch(callAPI({
             endpoint: '/api/auth/status',
             types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE],
-        }));
+        })).then(user => dispatch(intercomTrackLogin(user)));
     }
 ));
 
