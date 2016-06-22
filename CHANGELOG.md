@@ -2,6 +2,8 @@
 
 * *[v0.11.0-rc2]*
   * Initialize Intercom on page load for logged in user
+  * Render CTR on the dashboard chart instead of clicks
+  * Show CTR in the table on the dashboard
 
 ## v0.11.0 (June 21, 2016)
 * *[v0.11.0-rc1]*
