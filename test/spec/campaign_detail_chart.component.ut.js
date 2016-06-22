@@ -37,16 +37,20 @@ function getChartOptions() {
                     type: 'linear',
                     display: true,
                     position: 'right',
-                    id: 'clicks',
+                    id: 'ctr',
 
                     gridLines: jasmine.objectContaining({
                         drawOnChartArea: false
+                    }),
+                    ticks: jasmine.objectContaining({
+                        callback: jasmine.any(Function)
                     })
                 })
             ])
         })
     });
 }
+
 function getChartData(items) {
     return jasmine.objectContaining({
         datasets: jasmine.arrayContaining([
@@ -62,15 +66,19 @@ function getChartData(items) {
                 yAxisID: 'users'
             }),
             jasmine.objectContaining({
-                label: 'Clicks',
-                data: items.map(({ clicks }) => clicks || null),
+                label: 'CTR',
+                data: items.map(({ clicks, users }) => {
+                    if (!users) { return null; }
+
+                    return Math.round((clicks / users) * 100) || null;
+                }),
                 fill: false,
                 backgroundColor: 'rgba(122, 179, 23,1)',
                 borderColor: 'rgba(122, 179, 23,1)',
                 pointBorderColor: 'rgba(122, 179, 23,1)',
                 pointBackgroundColor: 'rgba(122, 179, 23,1)',
                 lineTension: 0,
-                yAxisID: 'clicks'
+                yAxisID: 'ctr'
             })
         ])
     });
@@ -84,8 +92,8 @@ describe('CampaignDetailChart', function() {
                 { date: '2016-05-07', views: 283, users: 221, clicks: 0, installs: 0, launches: 0 },
                 { date: '2016-05-08', views: 245, users: 195, clicks: 3 , installs: 3, launches: 0 },
                 { date: '2016-05-09', views: 433, users: 0, clicks: 50, installs: 0, launches: 0 },
-                { date: '2016-05-10', views: 250, users: 200, clicks: 0, installs: 5, launches: 0 },
-                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 0, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 2, launches: 0 },
                 { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
             ]
         };
@@ -116,6 +124,16 @@ describe('CampaignDetailChart', function() {
         expect(chart.config.options).toEqual(getChartOptions());
         expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
         expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
+    });
+
+    describe('the yAxes callback', function() {
+        beforeEach(function() {
+            this.callback = this.component.instance().chart.options.scales.yAxes[1].ticks.callback;
+        });
+
+        it('should format the number as a percent', function() {
+            expect(this.callback(8, 0, [8])).toBe('8%');
+        });
     });
 
     describe('the xAxes callback', function() {
@@ -194,9 +212,7 @@ describe('CampaignDetailChart', function() {
         });
 
         it('should update the chart', function() {
-            expect(this.component.instance().chart.data.datasets[0].data).toEqual(this.component.prop('items').map(({ users }) => users || null));
-            expect(this.component.instance().chart.data.datasets[1].data).toEqual(this.component.prop('items').map(({ clicks }) => clicks || null));
-
+            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items')));
             expect(this.component.instance().chart.update).toHaveBeenCalledWith();
         });
     });
