@@ -8,11 +8,7 @@ function getSetData(items, prop) {
 }
 
 function getLabels(items) {
-    const is30Day = items.length > 7;
-
-    return is30Day ?
-        items.map(({ date }) => moment(date).format('M/D')) :
-        items.map(({ date }) => moment(date).format('dddd M/D'));
+    return items.map(({ date }) => moment(date));
 }
 
 function isEmpty(items) {
@@ -121,6 +117,20 @@ export default class CampaignDetailChart extends Component {
                             display: true,
                             gridLines: {
                                 offsetGridLines: false,
+                            },
+                            ticks: {
+                                callback: (date, index, dates) => {
+                                    const isSmall = canvas.width < 600;
+                                    const is30Day = dates.length > 7;
+
+                                    if (is30Day) {
+                                        return !isSmall || (index % 2 === 0) ?
+                                            date.format('M/D') : ' ';
+                                    }
+
+                                    return isSmall ? date.format('dd M/D') :
+                                        date.format('dddd M/D');
+                                },
                             },
                         },
                     ],
