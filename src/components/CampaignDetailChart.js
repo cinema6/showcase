@@ -3,8 +3,16 @@ import Chart from 'chart.js';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 
-function getSetData(items, prop) {
-    return items.map(item => item[prop] || null);
+function getUsers(items) {
+    return items.map(({ users }) => users || null);
+}
+
+function toPercent(number) {
+    return Math.round(number * 100);
+}
+
+function getCTR(items) {
+    return items.map(({ users, clicks }) => toPercent(Math.min(clicks, users) / users) || null);
 }
 
 function getLabels(items) {
@@ -42,11 +50,11 @@ export default class CampaignDetailChart extends Component {
         }
 
         const { data } = this.chart;
-        const [userSet, clickSet] = data.datasets;
+        const [users, ctr] = data.datasets;
 
         data.labels = getLabels(items);
-        userSet.data = getSetData(items, 'users');
-        clickSet.data = getSetData(items, 'clicks');
+        users.data = getUsers(items);
+        ctr.data = getCTR(items);
 
         return this.chart.update();
     }
@@ -80,7 +88,7 @@ export default class CampaignDetailChart extends Component {
                 datasets: [
                     {
                         label: 'Unique Views',
-                        data: getSetData(items, 'users'),
+                        data: getUsers(items),
                         fill: false,
                         backgroundColor: 'rgba(38, 173, 228,1)',
                         borderColor: 'rgba(38, 173, 228,1)',
@@ -90,15 +98,15 @@ export default class CampaignDetailChart extends Component {
                         yAxisID: 'users',
                     },
                     {
-                        label: 'Clicks',
-                        data: getSetData(items, 'clicks'),
+                        label: 'CTR',
+                        data: getCTR(items),
                         fill: false,
                         backgroundColor: 'rgba(122, 179, 23,1)',
                         borderColor: 'rgba(122, 179, 23,1)',
                         pointBorderColor: 'rgba(122, 179, 23,1)',
                         pointBackgroundColor: 'rgba(122, 179, 23,1)',
                         lineTension: 0,
-                        yAxisID: 'clicks',
+                        yAxisID: 'ctr',
                     },
                 ],
             },
@@ -145,10 +153,13 @@ export default class CampaignDetailChart extends Component {
                             type: 'linear',
                             display: true,
                             position: 'right',
-                            id: 'clicks',
+                            id: 'ctr',
 
                             gridLines: {
                                 drawOnChartArea: false,
+                            },
+                            ticks: {
+                                callback: value => `${value}%`,
                             },
                         },
                     ],
