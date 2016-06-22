@@ -20,6 +20,9 @@ function getChartOptions() {
                     display: true,
                     gridLines: jasmine.objectContaining({
                         offsetGridLines: false
+                    }),
+                    ticks: jasmine.objectContaining({
+                        callback: jasmine.any(Function)
                     })
                 })
             ]),
@@ -46,8 +49,7 @@ function getChartOptions() {
 }
 function getChartData(items) {
     return jasmine.objectContaining({
-        labels: items.map(({ date }) => moment(date).format('dddd M/D')),
-        datasets: [
+        datasets: jasmine.arrayContaining([
             jasmine.objectContaining({
                 label: 'Unique Views',
                 data: items.map(({ users }) => users || null),
@@ -70,7 +72,7 @@ function getChartData(items) {
                 lineTension: 0,
                 yAxisID: 'clicks'
             })
-        ]
+        ])
     });
 }
 
@@ -91,6 +93,10 @@ describe('CampaignDetailChart', function() {
         this.component = mount(
             <CampaignDetailChart {...this.props} />
         );
+
+        const canvas = this.component.find('canvas').node;
+        canvas.width = 800;
+        canvas.height = 600;
     });
 
     it('should exist', function() {
@@ -109,6 +115,58 @@ describe('CampaignDetailChart', function() {
         expect(chart.config.type).toBe('line');
         expect(chart.config.options).toEqual(getChartOptions());
         expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+        expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
+    });
+
+    describe('the xAxes callback', function() {
+        beforeEach(function() {
+            this.dates = this.component.prop('items').map(({ date }) => moment(date));
+
+            this.callback = this.component.instance().chart.options.scales.xAxes[0].ticks.callback;
+        });
+
+        it('should format the date', function() {
+            this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('dddd M/D')));
+        });
+
+        describe('if the canvas is under 600px wide', function() {
+            beforeEach(function() {
+                this.component.find('canvas').node.width = 599;
+            });
+
+            it('should use smaller labels', function() {
+                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('dd M/D')));
+            });
+        });
+
+        describe('if there are 30 items', function() {
+            beforeEach(function() {
+                this.component.setProps({
+                    items: Array.apply([], new Array(30)).map((_, index) => ({
+                        users: random(100, 125),
+                        clicks: random(10, 20),
+                        date: moment().add(index, 'days').format('YYYY-MM-DD')
+                    }))
+                });
+                this.dates = this.component.prop('items').map(({ date }) => moment(date));
+            });
+
+            it('should only show the date', function() {
+                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('M/D')));
+            });
+
+            describe('if the canvas is under 600px wide', function() {
+                beforeEach(function() {
+                    this.component.find('canvas').node.width = 599;
+                });
+
+                it('should only show every other item', function() {
+                    this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(
+                        index % 2 === 0 ? date.format('M/D') : ' '
+                    ));
+                });
+            });
+        });
     });
 
     describe('if the items does not change', function() {
@@ -141,25 +199,6 @@ describe('CampaignDetailChart', function() {
 
             expect(this.component.instance().chart.update).toHaveBeenCalledWith();
         });
-
-        describe('to 30 days', function() {
-            beforeEach(function() {
-                this.component.instance().chart.update.calls.reset();
-
-                this.component.setProps({
-                    items: Array.apply([], new Array(30)).map((_, index) => ({
-                        users: random(100, 125),
-                        clicks: random(10, 20),
-                        date: moment().add(index, 'days').format('YYYY-MM-DD')
-                    }))
-                });
-            });
-
-            it('should update the labels', function() {
-                expect(this.component.instance().chart.data.labels).toEqual(this.component.prop('items').map(({ date }) => moment(date).format('M/D')));
-                expect(this.component.instance().chart.update).toHaveBeenCalledWith();
-            });
-        });
     });
 
     describe('when the component is unmounted', function() {
@@ -173,24 +212,6 @@ describe('CampaignDetailChart', function() {
         it('should destroy the chart', function() {
             expect(this.chart.destroy).toHaveBeenCalledWith();
             expect(this.component.node.chart).toBeNull();
-        });
-    });
-
-    describe('if there are 30 items', function() {
-        beforeEach(function() {
-            this.props.items = Array.apply([], new Array(30)).map((_, index) => ({
-                users: random(100, 125),
-                clicks: random(10, 20),
-                date: moment().add(index, 'days').format('YYYY-MM-DD')
-            }));
-
-            this.component = mount(
-                <CampaignDetailChart {...this.props} />
-            );
-        });
-
-        it('should use shorter labels', function() {
-            expect(this.component.instance().chart.data.labels).toEqual(this.props.items.map(({ date }) => moment(date).format('M/D')));
         });
     });
 
@@ -295,6 +316,7 @@ describe('CampaignDetailChart', function() {
                 expect(chart.config.type).toBe('line');
                 expect(chart.config.options).toEqual(getChartOptions());
                 expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+                expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
             });
         });
     });
