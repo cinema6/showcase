@@ -43,10 +43,18 @@ describe('CampaignDetailTable', function() {
             const dateNode = row.find('h4').at(0);
             const viewsNode = row.find('h4').at(1);
             const clicksNode = row.find('h4').at(2);
+            const ctrNode = row.find('h4').at(3);
 
             expect(dateNode.text()).toBe(moment(date).format('MMM D'));
             expect(viewsNode.text()).toBe(formatNumber(users));
             expect(clicksNode.text()).toBe(formatNumber(clicks));
+            if (!users) {
+                expect(ctrNode.text()).toBe(DASH);
+            } else {
+                const percent = Math.round((clicks / users) * 100);
+
+                expect(ctrNode.text()).toBe(!percent ? DASH : `${percent}%`);
+            }
         });
     });
 
