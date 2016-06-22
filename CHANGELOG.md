@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.11.0-rc2]*
+  * Initialize Intercom on page load for logged in user
+
 ## v0.11.0 (June 21, 2016)
 * *[v0.11.0-rc1]*
   * [FIX]: Prevent failures that would occur if an API operation were to
