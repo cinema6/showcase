@@ -24,7 +24,11 @@ export const checkAuthStatus = createThunk(() => (
         return dispatch(callAPI({
             endpoint: '/api/auth/status',
             types: [STATUS_CHECK_START, STATUS_CHECK_SUCCESS, STATUS_CHECK_FAILURE],
-        })).then(user => dispatch(intercomTrackLogin(user)));
+        })).then(user => {
+            dispatch(intercomTrackLogin(user));
+
+            return user;
+        });
     }
 ));
 
