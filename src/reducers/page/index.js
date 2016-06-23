@@ -4,7 +4,6 @@ import dashboardAccountProfileReducer from './dashboard/account/profile';
 import dashboardAccountEmailReducer from './dashboard/account/email';
 import dashboardAccountPasswordReducer from './dashboard/account/password';
 import forgotPasswordReducer from './forgot_password';
-import resetPasswordReducer from './reset_password';
 import dashboardBillingReducer from './dashboard/billing';
 import dashboardCampaignDetailReducer from './dashboard/campaign_detail';
 import dashboardAddProductReducer from './dashboard/add_product';
@@ -13,7 +12,6 @@ import resendConfirmationReducer from './resend_confirmation';
 
 export default createPageReducer({
     forgot_password: forgotPasswordReducer,
-    reset_password: resetPasswordReducer,
 
     resend_confirmation: resendConfirmationReducer,
 
