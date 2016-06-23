@@ -3,6 +3,8 @@
 * *[v0.11.1-rc1]*
   * [FIX]: Ensure the user does not get stuck on the password reset page
     after successfully resetting their password
+  * [FIX]: Ensure users cannot submit the signup form without filling
+    anything out
 
 ## v0.11.0 (June 21, 2016)
 * *[v0.11.0-rc3]*
