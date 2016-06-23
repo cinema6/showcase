@@ -77,7 +77,7 @@ function getChartData(items, industryCTR) {
                 borderColor: 'rgba(250, 169, 22,1)',
                 pointBorderColor: 'rgba(250, 169, 22,1)',
                 pointBackgroundColor: 'rgba(250, 169, 22,1)',
-                lineTension: 0,
+                lineTension: 0.1,
                 pointRadius: 0,
                 yAxisID: 'ctr'
             }),
@@ -87,7 +87,7 @@ function getChartData(items, industryCTR) {
                 fill: false,
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 borderColor: 'rgba(0, 0, 0, 0.5)',
-                lineTension: 0,
+                lineTension: 0.1,
                 pointRadius: 0,
                 yAxisID: 'ctr'
             }),
@@ -99,7 +99,7 @@ function getChartData(items, industryCTR) {
                 borderColor: 'rgba(38, 173, 228,1)',
                 pointBorderColor: 'rgba(38, 173, 228,1)',
                 pointBackgroundColor: 'rgba(38, 173, 228,1)',
-                lineTension: 0,
+                lineTension: 0.1,
                 yAxisID: 'users'
             })
         ]
@@ -203,7 +203,7 @@ describe('CampaignDetailChart', function() {
         });
 
         it('should format the date', function() {
-            this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('dddd M/D')));
+            this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('ddd M/D')));
         });
 
         describe('if the canvas is under 700px wide', function() {
@@ -212,7 +212,7 @@ describe('CampaignDetailChart', function() {
             });
 
             it('should use smaller labels', function() {
-                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('dd M/D')));
+                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('M/D')));
             });
         });
 

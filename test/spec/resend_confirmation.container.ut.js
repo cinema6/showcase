@@ -6,29 +6,10 @@ import ResendConfirmation from '../../src/containers/ResendConfirmation';
 import { createStore } from 'redux';
 import { resendConfirmationEmail } from '../../src/actions/user';
 import { Provider } from 'react-redux';
-import defer from 'promise-defer';
 import { cloneDeep as clone } from 'lodash';
-
-const proxyquire = require('proxyquire');
+import { logoutUser } from '../../src/actions/dashboard';
 
 describe('ResendConfirmation', function() {
-    let userActions;
-    let ResendConfirmation;
-
-    beforeEach(function() {
-        userActions = {
-            resendConfirmationEmail: jasmine.createSpy('resendConfirmationEmail()').and.callFake(resendConfirmationEmail),
-
-            __esModule: true
-        };
-
-        ResendConfirmation = proxyquire('../../src/containers/ResendConfirmation', {
-            'react': React,
-
-            '../actions/user': userActions
-        }).default;
-    });
-
     describe('when rendered', function() {
         let store, state;
         let props;
@@ -68,25 +49,27 @@ describe('ResendConfirmation', function() {
             expect(component.props().page).toEqual(state.page.resend_confirmation);
         });
 
-        describe('dispatch props', function() {
-            let dispatchDeferred;
-
+        describe('when the resend confirmation email button is clicked', function() {
             beforeEach(function() {
-                store.dispatch.and.returnValue((dispatchDeferred = defer()).promise);
+                this.button = component.find('.btn-primary');
+
+                this.button.simulate('click');
             });
 
-            describe('resendConfirmationEmail()', function() {
-                let result;
+            it('should dispatch the resendConfirmationEmail action', function() {
+                expect(store.dispatch).toHaveBeenCalledWith(resendConfirmationEmail());
+            });
+        });
 
-                beforeEach(function() {
-                    result = component.props().resendConfirmationEmail();
-                });
+        describe('when the logout button is clicked', function() {
+            beforeEach(function() {
+                this.button = component.find('.btn-link');
 
-                it('should dispatch the resendConfirmationEmail action', function() {
-                    expect(userActions.resendConfirmationEmail).toHaveBeenCalledWith();
-                    expect(store.dispatch).toHaveBeenCalledWith(userActions.resendConfirmationEmail.calls.mostRecent().returnValue);
-                    expect(result).toBe(dispatchDeferred.promise);
-                });
+                this.button.simulate('click');
+            });
+
+            it('should logout the user', function() {
+                expect(store.dispatch).toHaveBeenCalledWith(logoutUser());
             });
         });
     });
