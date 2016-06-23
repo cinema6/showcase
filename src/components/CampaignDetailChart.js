@@ -3,16 +3,20 @@ import Chart from 'chart.js';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 
-function getSetData(items, prop) {
-    return items.map(item => item[prop] || null);
+function getUsers(items) {
+    return items.map(({ users }) => users || null);
+}
+
+function toPercent(number) {
+    return Math.round(number * 100);
+}
+
+function getCTR(items) {
+    return items.map(({ users, clicks }) => toPercent(Math.min(clicks, users) / users) || null);
 }
 
 function getLabels(items) {
-    const is30Day = items.length > 7;
-
-    return is30Day ?
-        items.map(({ date }) => moment(date).format('M/D')) :
-        items.map(({ date }) => moment(date).format('dddd M/D'));
+    return items.map(({ date }) => moment(date));
 }
 
 function isEmpty(items) {
@@ -46,11 +50,11 @@ export default class CampaignDetailChart extends Component {
         }
 
         const { data } = this.chart;
-        const [userSet, clickSet] = data.datasets;
+        const [ctr, users] = data.datasets;
 
         data.labels = getLabels(items);
-        userSet.data = getSetData(items, 'users');
-        clickSet.data = getSetData(items, 'clicks');
+        users.data = getUsers(items);
+        ctr.data = getCTR(items);
 
         return this.chart.update();
     }
@@ -83,26 +87,27 @@ export default class CampaignDetailChart extends Component {
                 labels: getLabels(items),
                 datasets: [
                     {
-                        label: 'Unique Views',
-                        data: getSetData(items, 'users'),
+                        label: 'CTR',
+                        data: getCTR(items),
                         fill: false,
-                        backgroundColor: 'rgba(38, 173, 228,1)',
+                        backgroundColor: 'rgba(250, 169, 22,1)',
+                        borderColor: 'rgba(250, 169, 22,1)',
+                        pointBorderColor: 'rgba(250, 169, 22,1)',
+                        pointBackgroundColor: 'rgba(250, 169, 22,1)',
+                        lineTension: 0,
+                        pointRadius: 0,
+                        yAxisID: 'ctr',
+                    },
+                    {
+                        label: 'Unique Views',
+                        data: getUsers(items),
+                        fill: true,
+                        backgroundColor: 'rgba(38, 173, 228,0.5)',
                         borderColor: 'rgba(38, 173, 228,1)',
                         pointBorderColor: 'rgba(38, 173, 228,1)',
                         pointBackgroundColor: 'rgba(38, 173, 228,1)',
                         lineTension: 0,
                         yAxisID: 'users',
-                    },
-                    {
-                        label: 'Clicks',
-                        data: getSetData(items, 'clicks'),
-                        fill: false,
-                        backgroundColor: 'rgba(122, 179, 23,1)',
-                        borderColor: 'rgba(122, 179, 23,1)',
-                        pointBorderColor: 'rgba(122, 179, 23,1)',
-                        pointBackgroundColor: 'rgba(122, 179, 23,1)',
-                        lineTension: 0,
-                        yAxisID: 'clicks',
                     },
                 ],
             },
@@ -122,6 +127,20 @@ export default class CampaignDetailChart extends Component {
                             gridLines: {
                                 offsetGridLines: false,
                             },
+                            ticks: {
+                                callback: (date, index, dates) => {
+                                    const isSmall = canvas.width < 700;
+                                    const is30Day = dates.length > 7;
+
+                                    if (is30Day) {
+                                        return !isSmall || (index % 2 === 0) ?
+                                            date.format('M/D') : ' ';
+                                    }
+
+                                    return isSmall ? date.format('dd M/D') :
+                                        date.format('dddd M/D');
+                                },
+                            },
                         },
                     ],
                     yAxes: [
@@ -135,13 +154,29 @@ export default class CampaignDetailChart extends Component {
                             type: 'linear',
                             display: true,
                             position: 'right',
-                            id: 'clicks',
+                            id: 'ctr',
 
                             gridLines: {
                                 drawOnChartArea: false,
                             },
+                            ticks: {
+                                callback: value => `${value}%`,
+                                suggestedMin: 0,
+                                suggestedMax: 30,
+                            },
                         },
                     ],
+                },
+
+                tooltips: {
+                    callbacks: {
+                        label: ({ yLabel, datasetIndex }, { datasets }) => {
+                            const { label } = datasets[datasetIndex];
+                            const postfix = datasetIndex === 0 ? '%' : '';
+
+                            return `${label}: ${yLabel}${postfix}`;
+                        },
+                    },
                 },
             },
         });
