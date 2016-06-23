@@ -1,6 +1,10 @@
 # Showcase
 
 ## v0.11.0 (June 21, 2016)
+* *[v0.11.0-rc3]*
+  * Add the industry CTR to the dashboard chart
+* *[/v0.11.0-rc3]*
+
 * *[v0.11.0-rc2]*
   * Initialize Intercom on page load for logged in user
   * Render CTR on the dashboard chart instead of clicks

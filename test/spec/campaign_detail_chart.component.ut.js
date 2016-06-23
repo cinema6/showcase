@@ -31,7 +31,11 @@ function getChartOptions() {
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    id: 'users'
+                    id: 'users',
+
+                    ticks: jasmine.objectContaining({
+                        suggestedMin: 25
+                    })
                 }),
                 jasmine.objectContaining({
                     type: 'linear',
@@ -45,7 +49,7 @@ function getChartOptions() {
                     ticks: jasmine.objectContaining({
                         callback: jasmine.any(Function),
                         suggestedMin: 0,
-                        suggestedMax: 30
+                        suggestedMax: 20
                     })
                 })
             ])
@@ -58,7 +62,7 @@ function getChartOptions() {
     });
 }
 
-function getChartData(items) {
+function getChartData(items, industryCTR) {
     return jasmine.objectContaining({
         datasets: [
             jasmine.objectContaining({
@@ -78,10 +82,20 @@ function getChartData(items) {
                 yAxisID: 'ctr'
             }),
             jasmine.objectContaining({
+                label: 'Industry CTR',
+                data: items.map(() => industryCTR),
+                fill: false,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                borderColor: 'rgba(0, 0, 0, 0.5)',
+                lineTension: 0,
+                pointRadius: 0,
+                yAxisID: 'ctr'
+            }),
+            jasmine.objectContaining({
                 label: 'Unique Views',
                 data: items.map(({ users }) => users || null),
                 fill: true,
-                backgroundColor: 'rgba(38, 173, 228,0.5)',
+                backgroundColor: 'rgba(38, 173, 228,0.15)',
                 borderColor: 'rgba(38, 173, 228,1)',
                 pointBorderColor: 'rgba(38, 173, 228,1)',
                 pointBackgroundColor: 'rgba(38, 173, 228,1)',
@@ -103,7 +117,8 @@ describe('CampaignDetailChart', function() {
                 { date: '2016-05-10', views: 0, users: 0, clicks: 0, installs: 0, launches: 0 },
                 { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 2, launches: 0 },
                 { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
-            ]
+            ],
+            industryCTR: 2
         };
 
         this.component = mount(
@@ -130,7 +145,7 @@ describe('CampaignDetailChart', function() {
         expect(chart.chart.canvas).toBe(canvas);
         expect(chart.config.type).toBe('line');
         expect(chart.config.options).toEqual(getChartOptions());
-        expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+        expect(chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
         expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
     });
 
@@ -157,13 +172,15 @@ describe('CampaignDetailChart', function() {
             });
         });
 
-        describe('if the dataset is 1', function() {
-            beforeEach(function() {
-                this.tooltip.datasetIndex = 1;
-            });
+        [1, 2].forEach(function(index) {
+            describe(`if the dataset is ${index}`, function() {
+                beforeEach(function() {
+                    this.tooltip.datasetIndex = index;
+                });
 
-            it('should not add a %', function() {
-                expect(this.label(this.tooltip, this.data)).toBe(`Unique Views: ${this.tooltip.yLabel}`);
+                it('should not add a %', function() {
+                    expect(this.label(this.tooltip, this.data)).toBe(`${this.component.instance().chart.config.data.datasets[index].label}: ${this.tooltip.yLabel}`);
+                });
             });
         });
     });
@@ -254,7 +271,22 @@ describe('CampaignDetailChart', function() {
         });
 
         it('should update the chart', function() {
-            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items')));
+            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
+            expect(this.component.instance().chart.update).toHaveBeenCalledWith();
+        });
+    });
+
+    describe('if the industryCTR changes', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'update').and.callThrough();
+
+            this.component.setProps({
+                industryCTR: 10
+            });
+        });
+
+        it('should update the chart', function() {
+            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
             expect(this.component.instance().chart.update).toHaveBeenCalledWith();
         });
     });
@@ -373,7 +405,7 @@ describe('CampaignDetailChart', function() {
                 expect(chart.chart.canvas).toBe(canvas);
                 expect(chart.config.type).toBe('line');
                 expect(chart.config.options).toEqual(getChartOptions());
-                expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+                expect(chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
                 expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
             });
         });

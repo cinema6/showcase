@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import Chart from 'chart.js';
 import moment from 'moment';
-import { isEqual } from 'lodash';
+import { isEqual, pick } from 'lodash';
 
 function getUsers(items) {
     return items.map(({ users }) => users || null);
@@ -31,14 +31,18 @@ export default class CampaignDetailChart extends Component {
     }
 
     componentDidMount() {
-        this.createChart(this.props.items);
+        this.createChart();
     }
 
     componentWillReceiveProps(nextProps) {
-        if (isEqual(nextProps.items, this.props.items)) { return undefined; }
+        const nextChartProps = pick(nextProps, ['items', 'industryCTR']);
+        const chartProps = pick(this.props, ['items', 'industryCTR']);
+
+        if (isEqual(nextChartProps, chartProps)) { return undefined; }
 
         const {
             items,
+            industryCTR,
         } = nextProps;
 
         if (isEmpty(items)) {
@@ -50,17 +54,18 @@ export default class CampaignDetailChart extends Component {
         }
 
         const { data } = this.chart;
-        const [ctr, users] = data.datasets;
+        const [ctr, indCTR, users] = data.datasets;
 
         data.labels = getLabels(items);
         users.data = getUsers(items);
         ctr.data = getCTR(items);
+        indCTR.data = items.map(() => industryCTR);
 
         return this.chart.update();
     }
 
     componentDidUpdate() {
-        this.createChart(this.props.items);
+        this.createChart();
     }
 
     componentWillUnmount() {
@@ -74,7 +79,11 @@ export default class CampaignDetailChart extends Component {
         this.chart = null;
     }
 
-    createChart(items) {
+    createChart() {
+        const {
+            items,
+            industryCTR,
+        } = this.props;
         const {
             canvas,
         } = this.refs;
@@ -99,10 +108,20 @@ export default class CampaignDetailChart extends Component {
                         yAxisID: 'ctr',
                     },
                     {
+                        label: 'Industry CTR',
+                        data: items.map(() => industryCTR),
+                        fill: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        borderColor: 'rgba(0, 0, 0, 0.5)',
+                        lineTension: 0,
+                        pointRadius: 0,
+                        yAxisID: 'ctr',
+                    },
+                    {
                         label: 'Unique Views',
                         data: getUsers(items),
                         fill: true,
-                        backgroundColor: 'rgba(38, 173, 228,0.5)',
+                        backgroundColor: 'rgba(38, 173, 228,0.15)',
                         borderColor: 'rgba(38, 173, 228,1)',
                         pointBorderColor: 'rgba(38, 173, 228,1)',
                         pointBackgroundColor: 'rgba(38, 173, 228,1)',
@@ -149,6 +168,10 @@ export default class CampaignDetailChart extends Component {
                             display: true,
                             position: 'left',
                             id: 'users',
+
+                            ticks: {
+                                suggestedMin: 25,
+                            },
                         },
                         {
                             type: 'linear',
@@ -162,7 +185,7 @@ export default class CampaignDetailChart extends Component {
                             ticks: {
                                 callback: value => `${value}%`,
                                 suggestedMin: 0,
-                                suggestedMax: 30,
+                                suggestedMax: 20,
                             },
                         },
                     ],
@@ -205,4 +228,9 @@ CampaignDetailChart.propTypes = {
         clicks: PropTypes.number.isRequired,
         date: PropTypes.string.isRequired,
     }).isRequired),
+
+    industryCTR: PropTypes.number.isRequired,
+};
+CampaignDetailChart.defaultProps = {
+    industryCTR: 1,
 };
