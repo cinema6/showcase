@@ -57,6 +57,8 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('server', 'start a development server', [
+        'clean:build',
+        'clean:server',
         'compass:server',
         'copy:server',
         'browserify:server',
@@ -80,11 +82,13 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('test:unit', 'run unit tests', [
+        'clean:test',
         'eslint',
         'karma:unit'
     ]);
 
     grunt.registerTask('tdd', 'run unit tests whenever files change', [
+        'clean:test',
         'karma:tdd'
     ]);
 
@@ -95,8 +99,8 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('build', 'build app into distDir', [
-        'git_describe_tags',
         'clean:build',
+        'git_describe_tags',
         'rebase:build',
         'compass:build',
         'htmlmin:build',

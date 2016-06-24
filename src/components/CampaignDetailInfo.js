@@ -24,9 +24,9 @@ export default function CampaignDetailInfo({
                     <h3>{title}</h3>
                     <p>by {company}</p>
                 </div>
-                <div className="campaign-app-info">
+                {!!rating && (<div className="campaign-app-info">
                     <StarRating rating={rating} ratingCount={ratingCount} />
-                </div>
+                </div>)}
                 <div className="campaign-actions">
                     <span className="edit-campaign-link">
                         <Link
@@ -52,7 +52,7 @@ CampaignDetailInfo.propTypes = {
     title: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     company: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired,
+    rating: PropTypes.number,
     ratingCount: PropTypes.number,
 
     onReplace: PropTypes.func.isRequired,

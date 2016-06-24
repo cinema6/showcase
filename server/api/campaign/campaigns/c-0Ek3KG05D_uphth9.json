@@ -2,12 +2,15 @@
     "miniReels": [],
     "application": "showcase",
     "cards": [],
-    "name": "Workaround - Keeps you motivated even if your job is boring!",
+    "name": "Workaround",
     "status": "outOfBudget",
     "product": {
         "type": "app",
         "platform": "iOS",
-        "name": "Workaround - Keeps you motivated even if your job is boring!",
+        "name": "Workaround",
+        "developer": "Some Guy",
+        "ratingCount": 3827439,
+        "rating": 3.5,
         "description": "Do you like money, but don't like working? \nKeep yourself motivated with this simple, yet fun app. Just open it when you start working and it immediately begins counting your daily earning.\n\nNo more frustration!\nNo more boredom!\n\nWhen launching for the first time, you should set all parameters on the settings page.",
         "uri": "https://itunes.apple.com/us/app/workaround-keeps-you-motivated/id1074085238?mt=8&uo=4",
         "categories": [
