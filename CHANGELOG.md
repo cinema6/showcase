@@ -5,6 +5,9 @@
     after successfully resetting their password
   * [FIX]: Ensure users cannot submit the signup form without filling
     anything out
+  * [FIX]: Allow the user to logout if they login before their account
+    is activated
+  * [FIX]: Make the dashboard look better on mobile
 
 ## v0.11.0 (June 21, 2016)
 * *[v0.11.0-rc3]*

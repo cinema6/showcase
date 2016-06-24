@@ -103,7 +103,7 @@ export default class CampaignDetailChart extends Component {
                         borderColor: 'rgba(250, 169, 22,1)',
                         pointBorderColor: 'rgba(250, 169, 22,1)',
                         pointBackgroundColor: 'rgba(250, 169, 22,1)',
-                        lineTension: 0,
+                        lineTension: 0.1,
                         pointRadius: 0,
                         yAxisID: 'ctr',
                     },
@@ -113,7 +113,7 @@ export default class CampaignDetailChart extends Component {
                         fill: false,
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
                         borderColor: 'rgba(0, 0, 0, 0.5)',
-                        lineTension: 0,
+                        lineTension: 0.1,
                         pointRadius: 0,
                         yAxisID: 'ctr',
                     },
@@ -125,7 +125,7 @@ export default class CampaignDetailChart extends Component {
                         borderColor: 'rgba(38, 173, 228,1)',
                         pointBorderColor: 'rgba(38, 173, 228,1)',
                         pointBackgroundColor: 'rgba(38, 173, 228,1)',
-                        lineTension: 0,
+                        lineTension: 0.1,
                         yAxisID: 'users',
                     },
                 ],
@@ -156,9 +156,11 @@ export default class CampaignDetailChart extends Component {
                                             date.format('M/D') : ' ';
                                     }
 
-                                    return isSmall ? date.format('dd M/D') :
-                                        date.format('dddd M/D');
+                                    return isSmall ? date.format('M/D') :
+                                        date.format('ddd M/D');
                                 },
+                                autoSkip: true,
+                                maxRotation: 0,
                             },
                         },
                     ],
@@ -202,6 +204,7 @@ export default class CampaignDetailChart extends Component {
                     },
                 },
             },
+
         });
     }
 
