@@ -2,10 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { resetPassword } from '../actions/auth';
 import { compose } from 'redux';
-import { pageify } from '../utils/page';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import classnames from 'classnames';
 import DocumentTitle from 'react-document-title';
+import { notify } from '../actions/notification';
+import { replace } from 'react-router-redux';
+import { TYPE as NOTIFICATION } from '../enums/notification';
 
 function tooltip(
     text,
@@ -33,6 +35,13 @@ export class ResetPassword extends Component {
         } = this.props;
 
         return dispatch(resetPassword({ newPassword, id, token }))
+            .then(() => {
+                dispatch(notify({
+                    type: NOTIFICATION.SUCCESS,
+                    message: 'Your password has been reset!',
+                }));
+                dispatch(replace('/login'));
+            })
             .catch(reason => Promise.reject({ _error: reason }));
     }
 
@@ -40,7 +49,6 @@ export class ResetPassword extends Component {
         const {
             fields: { newPassword, newPasswordRepeat },
             handleSubmit, submitFailed, valid, error, submitting, pristine,
-            page: { submitSuccess },
         } = this.props;
 
         return (<div className="container main-section">
@@ -87,9 +95,6 @@ export class ResetPassword extends Component {
                                 </span>
                             )}
                         </div>
-                        {submitSuccess && (<div className="alert alert-success" role="alert">
-                            <strong>Your password has been reset!</strong>
-                        </div>)}
                         {error && submitFailed && !submitting && (
                             <div className="alert alert-danger" role="alert">
                                 <strong>Uh-oh!</strong> {error.response}
@@ -121,7 +126,6 @@ ResetPassword.propTypes = {
     valid: PropTypes.bool.isRequired,
     pristine: PropTypes.bool.isRequired,
 
-    page: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
 };
 
@@ -141,6 +145,5 @@ export default compose(
         fields: ['newPassword', 'newPasswordRepeat'],
         form: 'resetPassword',
         validate,
-    }),
-    pageify({ path: 'reset_password' })
+    })
 )(ResetPassword);

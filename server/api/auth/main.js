@@ -49,4 +49,16 @@ module.exports = function(http) {
             this.respond(404, 'That user does not exist');
         }
     });
+
+    http.whenPOST('/api/auth/password/reset', function(request) {
+        var id = request.body.id;
+        var newPassword = request.body.newPassword;
+        var token = request.body.token;
+
+        if (!id || !token || !newPassword) {
+            return this.respond(400, 'Missing required params.');
+        }
+
+        return this.respond(200, 'Successfully reset password!');
+    });
 };
