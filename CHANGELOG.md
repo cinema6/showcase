@@ -5,6 +5,7 @@
   * [FIX]: hide blank space if the app has no rating
   * [FIX]: Make sure a payment method is required by default in
     production
+* *[/v0.11.1-rc2]*
 
 * *[v0.11.1-rc1]*
   * [FIX]: Ensure the user does not get stuck on the password reset page
