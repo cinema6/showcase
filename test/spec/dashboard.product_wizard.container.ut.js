@@ -28,9 +28,6 @@ import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
-import config from '../../config';
-import { estimateImpressions } from '../../src/utils/billing';
-import moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
@@ -167,6 +164,13 @@ describe('ProductWizard', function() {
                         data: {
                             trialLength: 10
                         }
+                    },
+                    {
+                        id: `pro-${createUuid()}`,
+                        type: 'freeTrial',
+                        data: {
+                            trialLength: 4
+                        }
                     }
                 ],
 
@@ -273,25 +277,6 @@ describe('ProductWizard', function() {
                 expect(this.planInfoModal.length).toEqual(1, 'WizardPlanInfoModal is not rendered');
             });
 
-            describe('dynamic text', function(){
-                function generatePromo(num){ 
-                    return [
-                        {
-                            id: 'none',
-                            type: 'freeTrial',
-                            data: {
-                                trialLength: num
-                            }
-                        }
-                    ];
-                }
-                it('should calculate the correct promotion strings', function(){
-                    expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(1)))).toEqual('1 day');
-                    expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(7)))).toEqual('1 week');
-                    expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(2)))).toEqual('2 days');
-                    expect(component.node.formatPromotionString(component.node.getPromotionLength(generatePromo(14)))).toEqual('2 weeks');
-                });
-            });
             describe('props', function() {
                 describe('show', function() {
                     it('should be false', function() {
@@ -314,17 +299,20 @@ describe('ProductWizard', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep(2));
                     });
                 });
-                describe('promotionString', function() {
-                    it('should be the value of the formatted promotion length', function() {
-                        expect(this.planInfoModal.props().promotionString).toBe(component.node.formatPromotionString(component.node.getPromotionLength(props.promotions)));
+
+                describe('trialLength', function() {
+                    it('should be calculated from the promotions', function() {
+                        expect(this.planInfoModal.prop('trialLength')).toBe(14);
                     });
-                });
-                describe('numOfImpressions', function() {
-                    it('should be calculated from the value of the promotions and payment plan config', function() {
-                        expect(this.planInfoModal.props().numOfImpressions).toEqual(estimateImpressions({
-                            end: moment().add(component.node.getPromotionLength(props.promotions), 'days'),
-                            viewsPerDay: config.paymentPlans[0].viewsPerDay
-                        }));
+
+                    describe('if there are no promotions', function() {
+                        beforeEach(function() {
+                            wrapper.setProps({ promotions: null });
+                        });
+
+                        it('should be 0', function() {
+                            expect(this.planInfoModal.prop('trialLength')).toBe(0);
+                        });
                     });
                 });
             });

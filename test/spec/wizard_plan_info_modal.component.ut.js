@@ -6,6 +6,11 @@ import {
     findRenderedComponentWithType,
     findRenderedDOMComponentWithTag
 } from 'react-addons-test-utils';
+import { findDOMNode } from 'react-dom';
+import { estimateImpressions } from '../../src/utils/billing';
+import moment from 'moment';
+import config from '../../config';
+import numeral from 'numeral';
 
 describe('WizardPlanInfoModal', function() {
     beforeEach(function() {
@@ -13,7 +18,8 @@ describe('WizardPlanInfoModal', function() {
             show: true,
             onClose: jasmine.createSpy('onClose()'),
             onContinue: jasmine.createSpy('onContinue()'),
-            actionPending: false
+            actionPending: false,
+            trialLength: 17
         };
         this.component = mount(
             <WizardPlanInfoModal {...this.props} />
@@ -31,6 +37,108 @@ describe('WizardPlanInfoModal', function() {
         expect(modal.length).toBe(1, 'Modal not rendered');
         expect(modal.props().show).toBe(this.props.show);
         expect(modal.props().onHide).toBe(this.props.onClose);
+    });
+
+    describe('if the trialLength is 0', function() {
+        beforeEach(function() {
+            this.component.setProps({ trialLength: 0 });
+
+            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
+            this.subheader = findDOMNode(this.modal).querySelector('.modal-header p');
+            this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+        });
+
+        it('should hide the subheader', function() {
+            expect(this.subheader).toBeNull();
+            expect(this.header.nextSibling).toBeNull();
+        });
+
+        it('should use generic text', function() {
+            expect(this.header.textContent).toBe('Reach thousands of people');
+            expect(this.button.textContent).toBe('Continue');
+        });
+    });
+
+    describe('the number of impressions', function() {
+        beforeEach(function() {
+            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
+        });
+
+        it('should be calculated', function() {
+            expect(this.header.textContent).toBe(`Reach ${
+                numeral(estimateImpressions({
+                    end: moment().add(this.component.prop('trialLength'), 'days'),
+                    viewsPerDay: config.paymentPlans[0].viewsPerDay
+                })).format('0,0')
+            } people for FREE`);
+        });
+    });
+
+    describe('the length of the trial', function() {
+        beforeEach(function() {
+            this.header = findDOMNode(this.modal).querySelector('.modal-header p');
+            this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+        });
+
+        it('should be formatted', function() {
+            expect(this.header.textContent).toBe('Your first 17 days of advertising is on us');
+            expect(this.button.textContent).toBe('Get 17 days FREE trial');
+        });
+
+        describe('if singular', function() {
+            beforeEach(function() {
+                this.component.setProps({ trialLength: 1 });
+            });
+
+            it('should use singular text', function() {
+                expect(this.header.textContent).toBe('Your first 1 day of advertising is on us');
+                expect(this.button.textContent).toBe('Get 1 day FREE trial');
+            });
+        });
+
+        describe('if 7', function() {
+            beforeEach(function() {
+                this.component.setProps({ trialLength: 7 });
+            });
+
+            it('should use singular week text', function() {
+                expect(this.header.textContent).toBe('Your first 1 week of advertising is on us');
+                expect(this.button.textContent).toBe('Get 1 week FREE trial');
+            });
+        });
+
+        describe('if 30', function() {
+            beforeEach(function() {
+                this.component.setProps({ trialLength: 30 });
+            });
+
+            it('should use singular month text', function() {
+                expect(this.header.textContent).toBe('Your first 1 month of advertising is on us');
+                expect(this.button.textContent).toBe('Get 1 month FREE trial');
+            });
+        });
+
+        describe('if a multiple of 7', function() {
+            beforeEach(function() {
+                this.component.setProps({ trialLength: 21 });
+            });
+
+            it('should use plural week text', function() {
+                expect(this.header.textContent).toBe('Your first 3 weeks of advertising is on us');
+                expect(this.button.textContent).toBe('Get 3 weeks FREE trial');
+            });
+        });
+
+        describe('if a multiple of 30', function() {
+            beforeEach(function() {
+                this.component.setProps({ trialLength: 120 });
+            });
+
+            it('should use plural month text', function() {
+                expect(this.header.textContent).toBe('Your first 4 months of advertising is on us');
+                expect(this.button.textContent).toBe('Get 4 months FREE trial');
+            });
+        });
     });
 
     describe('the continue button', function() {
