@@ -1,19 +1,65 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import classnames from 'classnames';
+import moment from 'moment';
+import config from '../../config';
+import { estimateImpressions } from '../utils/billing';
+import numeral from 'numeral';
+
+const [paymentPlan] = config.paymentPlans;
+
+function trialText(length) {
+    const denomination = (() => {
+        if (length % 7 === 0) {
+            return 'week';
+        }
+
+        if (length % 30 === 0) {
+            return 'month';
+        }
+
+        return 'day';
+    })();
+    const amount = (() => {
+        switch (denomination) {
+        case 'week':
+            return length / 7;
+        case 'month':
+            return length / 30;
+        case 'day':
+        default:
+            return length;
+        }
+    })();
+
+    return `${amount} ${denomination}${amount > 1 ? 's' : ''}`;
+}
+
+function impressions(length) {
+    return numeral(estimateImpressions({
+        end: moment().add(length, 'days'),
+        viewsPerDay: paymentPlan.viewsPerDay,
+    })).format('0,0');
+}
 
 export default function WizardPlanInfoModal({
     show,
     actionPending,
-    promotionString,
     onClose,
     onContinue,
-    numOfImpressions,
+    trialLength,
 }) {
+    const title = trialLength ?
+        `Reach ${impressions(trialLength)} people for FREE` :
+        'Reach thousands of people';
+    const cta = trialLength ?
+        `Get ${trialText(trialLength)} FREE trial` :
+        'Continue';
+
     return (<Modal show={show} className="trial-modal" onHide={onClose}>
         <Modal.Header className="text-center" closeButton>
-            <h1 className="modal-title">Reach {numOfImpressions} people for FREE</h1>
-            <p>Your first {promotionString} of advertising is on us</p>
+            <h1 className="modal-title">{title}</h1>
+            {!!trialLength && <p>Your first {trialText(trialLength)} of advertising is on us</p>}
         </Modal.Header>
         <Modal.Body className="text-center">
             <div className="row">
@@ -129,7 +175,7 @@ export default function WizardPlanInfoModal({
                             bsSize="lg"
                             bsStyle="danger"
                         >
-                            Get {promotionString} FREE trial
+                            {cta}
                         </Button>
                     </div>
                 </div>
@@ -140,12 +186,12 @@ export default function WizardPlanInfoModal({
 WizardPlanInfoModal.propTypes = {
     show: PropTypes.bool.isRequired,
     actionPending: PropTypes.bool.isRequired,
+    trialLength: PropTypes.number.isRequired,
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired,
-    promotionString: PropTypes.string.isRequired,
-    numOfImpressions: PropTypes.number.isRequired,
 };
 WizardPlanInfoModal.defaultProps = {
     actionPending: false,
+    trialLength: 0,
 };

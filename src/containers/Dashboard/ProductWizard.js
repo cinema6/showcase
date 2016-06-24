@@ -10,17 +10,11 @@ import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
 import classnames from 'classnames';
-import { pick, includes, assign } from 'lodash';
+import _, { pick, includes, assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
-import numeral from 'numeral';
-import config from '../../../config';
-import { estimateImpressions } from '../../utils/billing';
-import moment from 'moment';
-
-const [paymentPlan] = config.paymentPlans;
 
 const PREVIEW = {
     CARD_OPTIONS: {
@@ -49,10 +43,6 @@ class ProductWizard extends Component {
         return this.props.wizardDestroyed();
     }
 
-    getPromotionLength(promotionArray) {
-        return (promotionArray || []).reduce((sum, c) => sum + c.data.trialLength, 0);
-    }
-
     getProductData() {
         const {
             productData,
@@ -70,43 +60,6 @@ class ProductWizard extends Component {
         } = this.props;
 
         return pick(formValues, ['age', 'gender']);
-    }
-
-    getNumOfImpressions(paymentPlanConfig, promotionLength) {
-        const val = (Math.ceil(paymentPlanConfig.paymentPlans[0].impressionsPerDollar *
-                                ((paymentPlanConfig.paymentPlans[0].price / 30) *
-                                promotionLength)));
-        return (50 * Math.floor(val / 50));
-    }
-
-    formatPromotionString(promotionDays) {
-        let reduced;
-        let formatted;
-
-        function reduce(total, f) {
-            if (total % f === 0) {
-                return reduce(total / f);
-            }
-
-            return total;
-        }
-
-        if (promotionDays % 7 === 0) {
-            reduced = reduce(promotionDays, 7);
-            formatted = numeral(reduced).format('0,0');
-            if (reduced > 1) {
-                return `${formatted} weeks`;
-            }
-
-            return `${formatted} week`;
-        }
-
-        formatted = numeral(promotionDays).format('0,0');
-        if (promotionDays > 1) {
-            return `${formatted} days`;
-        }
-
-        return `${formatted} day`;
     }
 
     loadProduct(product) {
@@ -273,11 +226,7 @@ class ProductWizard extends Component {
                     productData: this.getProductData(),
                     targeting: this.getTargeting(),
                 })}
-                promotionString={this.formatPromotionString(this.getPromotionLength(promotions))}
-                numOfImpressions={estimateImpressions({
-                    end: moment().add(this.getPromotionLength(promotions), 'days'),
-                    viewsPerDay: paymentPlan.viewsPerDay,
-                })}
+                trialLength={_(promotions).map('data.trialLength').sum()}
             />
             {step === 4 && (
                 <WizardConfirmationModal
