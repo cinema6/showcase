@@ -2,6 +2,22 @@ import { Link } from 'react-router';
 import React, { PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import classnames from 'classnames';
+import { assign } from 'lodash';
+
+function showError(field) {
+    return field.error && field.touched;
+}
+
+function formGroupClass(field) {
+    return classnames('form-group', {
+        'has-error': showError(field),
+    });
+}
+
+function fieldError(field) {
+    return showError(field) && <span className="help-block">{field.error}</span>;
+}
+
 
 function SignUp({
     fields: { firstName, lastName, email, password },
@@ -9,7 +25,7 @@ function SignUp({
     handleSubmit,
 }) {
     return (<form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className={formGroupClass(firstName)}>
             <label htmlFor="firstName">First name</label>
             <input
                 id="firstName"
@@ -18,8 +34,9 @@ function SignUp({
                 className="form-control"
                 placeholder="First name"
             />
+            {fieldError(firstName)}
         </div>
-        <div className="form-group">
+        <div className={formGroupClass(lastName)}>
             <label htmlFor="lastName">Last name</label>
             <input
                 id="lastName"
@@ -28,8 +45,9 @@ function SignUp({
                 className="form-control"
                 placeholder="Last name"
             />
+            {fieldError(lastName)}
         </div>
-        <div className="form-group">
+        <div className={formGroupClass(email)}>
             <label htmlFor="email">Email address</label>
             <input
                 id="email"
@@ -38,8 +56,9 @@ function SignUp({
                 className="form-control"
                 placeholder="Email"
             />
+            {fieldError(email)}
         </div>
-        <div className="form-group">
+        <div className={formGroupClass(password)}>
             <label htmlFor="password">Password</label>
             <input
                 id="password"
@@ -48,6 +67,7 @@ function SignUp({
                 className="form-control"
                 placeholder="Password"
             />
+            {fieldError(password)}
         </div>
         {error && submitFailed && !submitting && (
             <div className="alert alert-danger" role="alert">
@@ -103,7 +123,14 @@ function mapDispatchToProps(dispatch, props) {
     };
 }
 
+function validate(values) {
+    return Object.keys(values).reduce((errors, field) => assign(errors, {
+        [field]: !values[field] ? '* required' : undefined,
+    }), {});
+}
+
 export default reduxForm({
     form: 'signUp',
     fields: ['firstName', 'lastName', 'email', 'password'],
+    validate,
 }, mapStateToProps, mapDispatchToProps)(SignUp);
