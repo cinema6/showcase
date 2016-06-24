@@ -8,6 +8,7 @@
   * [FIX]: Allow the user to logout if they login before their account
     is activated
   * [FIX]: Make the dashboard look better on mobile
+  * [FIX]: Fix strange marketing messaging if the user has no free trial
 
 ## v0.11.0 (June 21, 2016)
 * *[v0.11.0-rc3]*
