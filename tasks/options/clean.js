@@ -1,5 +1,5 @@
 module.exports = {
-    build: ['<%= settings.distDir %>', '.tmp', 'static/scss'],
-    server: ['server/.build', 'static/scss'],
+    build: ['<%= settings.distDir %>', '.tmp', '.sass-cache', 'static/scss'],
+    server: ['server/.build'],
     test: ['.tmp']
 };
