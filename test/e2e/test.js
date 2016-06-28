@@ -61,7 +61,6 @@ module.exports = {
       .click('#sidePanelDesktop ul li button')
     })
 
-
     browser
     .pause(1000)
 
@@ -188,7 +187,8 @@ module.exports = {
     .setValue('input[name=lastName]', 'Last')
     .setValue('input[name=company]', 'Company')
     .setValue('input[name=phoneNumber]', Math.random() * 10000000000)
-    //.setValue('input[name=phoneNumber]', '(' + (int)(Math.random() * 1000) + ') ' + (int)(Math.random() * 1000) + '-' + (int)(Math.random() * 10000))
+    //.setValue('input[name=phoneNumber]', '(' + (int)(Math.random() * 1000) + ') '
+    //+ (int)(Math.random() * 1000) + '-' + (int)(Math.random() * 10000))
 
     .click('button[type=submit]')
 
