@@ -1,11 +1,10 @@
-var utils = require("../helpers/utils.js")
-var config = require("../helpers/config.js")
+var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-  'Reelcontent Login / Logout Test': function (browser) {
-    browser
-      .url(launch_url)
+    'Reelcontent Login / Logout Test': function (browser) {
+        browser
+      .url(browser.launchUrl)
       .waitForElementVisible('body', 1000)
 
       .assert.urlContains('login')
@@ -19,9 +18,9 @@ module.exports = {
 
       .assert.elementPresent('button[type=submit]')
       .click('button[type=submit]')
-      .waitForElementVisible('div[role=alert]', 1000)
+      .waitForElementVisible('div[role=alert]', 1000);
 
-    utils.login(browser)
+        utils.login(browser)
 
       .pause(3000)
 
@@ -29,13 +28,13 @@ module.exports = {
       .assert.urlContains('dashboard')
       .pause(1000)
       .isVisible('nav[id=sidePanelDesktop]', function () {
-        return browser
+          return browser
           .assert.elementPresent('#sidePanelDesktop ul li button')
-          .click('#sidePanelDesktop ul li button')
+          .click('#sidePanelDesktop ul li button');
       })
 
       .pause(1000)
 
       .end();
-  }
+    }
 };

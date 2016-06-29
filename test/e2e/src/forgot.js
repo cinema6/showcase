@@ -1,10 +1,9 @@
-var config = require("../helpers/config.js")
 
 module.exports = {
 
-  'Reelcontent Forgot Password Test': function (browser) {
-    browser
-      .url(launch_url + '#/forgot-password')
+    'Reelcontent Forgot Password Test': function (browser) {
+        browser
+      .url(browser.launchUrl + '#/forgot-password')
       .waitForElementVisible('body', 1000)
       .assert.urlContains('password')
       .assert.elementPresent('input[type=email]')
@@ -20,5 +19,5 @@ module.exports = {
       .pause(1000)
 
       .end();
-  }
+    }
 };

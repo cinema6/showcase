@@ -1,22 +1,21 @@
-var utils = require("../helpers/utils.js")
-var config = require("../helpers/config.js")
+var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-  'Reelcontent Dashboard Test': function (browser) {
+    'Reelcontent Dashboard Test': function (browser) {
 
-    utils.login(browser)
+        utils.login(browser)
 
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .assert.urlContains('dashboard')
+      .assert.urlContains('dashboard');
 
-    utils.allDashboardTest(browser)
+        utils.allDashboardTest(browser)
 
-      .pause(1000)
+      .pause(1000);
 
-    utils.logout(browser)
+        utils.logout(browser)
 
       .end();
-  }
+    }
 };

@@ -1,17 +1,16 @@
-var utils = require("../helpers/utils.js")
-var config = require("../helpers/config.js")
+var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-  'Reelcontent Profile Test': function (browser) {
+    'Reelcontent Profile Test': function (browser) {
 
-    utils.login(browser)
+        utils.login(browser)
 
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(launch_url + '#/dashboard/account/profile')
+      .url(browser.launchUrl + '#/dashboard/account/profile');
 
-    utils.allDashboardTest(browser)
+        utils.allDashboardTest(browser)
 
       .assert.elementPresent('input[name=firstName]')
       .assert.elementPresent('input[name=lastName]')
@@ -38,11 +37,11 @@ module.exports = {
       .waitForElementVisible('div[role=alert]', 2000)
       .assert.elementPresent('div[role=alert]')
 
-      .pause(1000)
+      .pause(1000);
 
-    utils.logout(browser)
+        utils.logout(browser)
 
       .end();
-  }
+    }
 };
 

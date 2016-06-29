@@ -1,17 +1,16 @@
-var utils = require("../helpers/utils.js")
-var config = require("../helpers/config.js")
+var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-  'Reelcontent Password Test': function (browser) {
+    'Reelcontent Password Test': function (browser) {
 
-    utils.login(browser)
+        utils.login(browser)
 
       .pause(3000)
-      .url(launch_url + '#/dashboard/account/password')
-      .waitForElementVisible('body', 1000)
+      .url(browser.launchUrl + '#/dashboard/account/password')
+      .waitForElementVisible('body', 1000);
 
-    utils.allDashboardTest(browser)
+        utils.allDashboardTest(browser)
 
       .pause(1000)
 
@@ -32,11 +31,11 @@ module.exports = {
 
       .assert.elementPresent('div[role=alert]')
 
-      .pause(1000)
+      .pause(1000);
 
-    utils.logout(browser)
+        utils.logout(browser)
 
       .end();
-  }
+    }
 };
 

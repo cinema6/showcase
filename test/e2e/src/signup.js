@@ -1,11 +1,9 @@
-var utils = require("../helpers/utils.js")
-var config = require("../helpers/config.js")
 
 module.exports = {
 
-  'Reelcontent Sign Up Test': function (browser) {
-    browser
-      .url(launch_url + '#/sign-up')
+    'Reelcontent Sign Up Test': function (browser) {
+        browser
+      .url(browser.launchUrl + '#/sign-up')
       .waitForElementVisible('body', 1000)
       .assert.urlContains('sign-up')
 
@@ -30,5 +28,5 @@ module.exports = {
       .pause(1000)
 
       .end();
-  }
+    }
 };
