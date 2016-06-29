@@ -1,4 +1,5 @@
 var utils = require("./utils.js")
+var config = require("./config.js")
 
 module.exports = {
 
@@ -9,7 +10,7 @@ module.exports = {
     browser
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url('http://localhost:9000/#/dashboard/billing')
+      .url(config.getUrl() + '#/dashboard/billing')
 
     utils.allDashboardTest(browser)
 
