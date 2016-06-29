@@ -9,7 +9,7 @@ module.exports = {
 
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(config.getUrl() + '#/dashboard/account/profile')
+      .url(launch_url + '#/dashboard/account/profile')
 
     utils.allDashboardTest(browser)
 
@@ -43,6 +43,6 @@ module.exports = {
     utils.logout(browser)
 
       .end();
-  },
+  }
 };
 

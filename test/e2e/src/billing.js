@@ -9,7 +9,7 @@ module.exports = {
 
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(config.getUrl() + '#/dashboard/billing')
+      .url(launch_url + '#/dashboard/billing')
 
     utils.allDashboardTest(browser)
 
@@ -18,5 +18,5 @@ module.exports = {
     utils.logout(browser)
 
       .end();
-  },
+  }
 };

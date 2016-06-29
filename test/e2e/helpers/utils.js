@@ -5,7 +5,7 @@ module.exports = {
 
   login: function (browser) {
     return browser
-      .url(config.getUrl() + '#/login')
+      .url(launch_url + '#/login')
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('input[type=password]')
@@ -16,7 +16,7 @@ module.exports = {
 
   logout: function (browser) {
     return browser
-      .url(config.getUrl() + '#/dashboard/')
+      .url(launch_url + '#/dashboard/')
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#sidePanelDesktop ul li button')
       .click('#sidePanelDesktop ul li button')

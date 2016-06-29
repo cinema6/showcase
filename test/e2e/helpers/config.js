@@ -1,7 +1,7 @@
 module.exports = {
   '@disabled': true,
 
-  var: url = 'http://localhost:9000/',
+  var: url = launch_url,
 
   'getUrl': function () {
     return url

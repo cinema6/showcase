@@ -8,7 +8,7 @@ module.exports = {
     utils.login(browser)
 
       .pause(3000)
-      .url(config.getUrl() + '#/dashboard/account/password')
+      .url(launch_url + '#/dashboard/account/password')
       .waitForElementVisible('body', 1000)
 
     utils.allDashboardTest(browser)
@@ -37,6 +37,6 @@ module.exports = {
     utils.logout(browser)
 
       .end();
-  },
+  }
 };
 

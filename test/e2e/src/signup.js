@@ -5,7 +5,7 @@ module.exports = {
 
   'Reelcontent Sign Up Test': function (browser) {
     browser
-      .url(config.getUrl() + '#/sign-up')
+      .url(launch_url + '#/sign-up')
       .waitForElementVisible('body', 1000)
       .assert.urlContains('sign-up')
 
@@ -30,5 +30,5 @@ module.exports = {
       .pause(1000)
 
       .end();
-  },
+  }
 };

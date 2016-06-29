@@ -4,7 +4,7 @@ module.exports = {
 
   'Reelcontent Forgot Password Test': function (browser) {
     browser
-      .url(config.getUrl() + '#/forgot-password')
+      .url(launch_url + '#/forgot-password')
       .waitForElementVisible('body', 1000)
       .assert.urlContains('password')
       .assert.elementPresent('input[type=email]')
@@ -20,5 +20,5 @@ module.exports = {
       .pause(1000)
 
       .end();
-  },
+  }
 };

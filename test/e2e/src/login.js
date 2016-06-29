@@ -5,7 +5,7 @@ module.exports = {
 
   'Reelcontent Login / Logout Test': function (browser) {
     browser
-      .url(config.getUrl())
+      .url(launch_url)
       .waitForElementVisible('body', 1000)
 
       .assert.urlContains('login')

@@ -18,5 +18,5 @@ module.exports = {
     utils.logout(browser)
 
       .end();
-  },
+  }
 };
