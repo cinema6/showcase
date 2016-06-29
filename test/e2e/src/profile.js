@@ -1,5 +1,5 @@
-var utils = require("./utils.js")
-var config = require("./config.js")
+var utils = require("../helpers/utils.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
@@ -7,14 +7,12 @@ module.exports = {
 
     utils.login(browser)
 
-    browser
       .pause(3000)
       .waitForElementVisible('body', 1000)
       .url(config.getUrl() + '#/dashboard/account/profile')
 
     utils.allDashboardTest(browser)
 
-    browser
       .assert.elementPresent('input[name=firstName]')
       .assert.elementPresent('input[name=lastName]')
       .assert.elementPresent('input[name=company]')
@@ -44,8 +42,7 @@ module.exports = {
 
     utils.logout(browser)
 
-    browser
       .end();
   },
-
 };
+

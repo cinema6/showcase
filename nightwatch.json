@@ -1,6 +1,6 @@
 {
   "src_folders": [
-    "test/e2e"
+    "test/e2e/src"
   ],
   "output_folder": "reports",
   "custom_commands_path": "",
@@ -9,13 +9,13 @@
   "globals_path": "",
   "selenium": {
     "start_process": true,
-    "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.0-server.jar",
+    "server_path": ".\\node_modules\\selenium-standalone\\.selenium\\selenium-server\\2.53.0-server.jar",
     "log_path": "",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.22-x64-chromedriver",
-      "webdriver.ie.driver": "./node_modules/selenium-standalone/.selenium/iedriver/2.53.0-x64-IEDriverServer.exe"
+      "webdriver.chrome.driver": ".\\node_modules\\selenium-standalone\\.selenium\\chromedriver\\2.22-x64-chromedriver",
+      "webdriver.ie.driver": ".\\node_modules\\selenium-standalone\\.selenium\\iedriver\\2.53.0-x64-IEDriverServer.exe"
     }
   },
   "test_settings": {

@@ -1,5 +1,5 @@
-var utils = require("./utils.js")
-var config = require("./config.js")
+var utils = require("../helpers/utils.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
@@ -23,22 +23,19 @@ module.exports = {
 
     utils.login(browser)
 
-    browser
       .pause(3000)
 
       .waitForElementVisible('body', 1000)
       .assert.urlContains('dashboard')
       .pause(1000)
       .isVisible('nav[id=sidePanelDesktop]', function () {
-        browser
+        return browser
           .assert.elementPresent('#sidePanelDesktop ul li button')
           .click('#sidePanelDesktop ul li button')
       })
 
-    browser
       .pause(1000)
 
       .end();
   }
-
 };

@@ -1,5 +1,5 @@
-var utils = require("./utils.js")
-var config = require("./config.js")
+var utils = require("../helpers/utils.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
@@ -7,14 +7,12 @@ module.exports = {
 
     utils.login(browser)
 
-    browser
       .pause(3000)
       .url(config.getUrl() + '#/dashboard/account/password')
       .waitForElementVisible('body', 1000)
 
     utils.allDashboardTest(browser)
 
-    browser
       .pause(1000)
 
       .assert.elementPresent('input[name=oldPassword]')
@@ -38,8 +36,7 @@ module.exports = {
 
     utils.logout(browser)
 
-    browser
       .end();
   },
-
 };
+

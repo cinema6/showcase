@@ -1,25 +1,22 @@
-var utils = require("./utils.js")
-var config = require("./config.js")
+var utils = require("../helpers/utils.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
-  'Reelcontent Dashboard Test': function (browser) {
+  'Reelcontent Billing Test': function (browser) {
 
     utils.login(browser)
 
-    browser
       .pause(3000)
       .waitForElementVisible('body', 1000)
-      .assert.urlContains('dashboard')
+      .url(config.getUrl() + '#/dashboard/billing')
 
     utils.allDashboardTest(browser)
-    browser
+
       .pause(1000)
 
     utils.logout(browser)
 
-    browser
       .end();
   },
-
 };

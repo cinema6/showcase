@@ -1,4 +1,4 @@
-var config = require("./config.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
@@ -21,5 +21,4 @@ module.exports = {
 
       .end();
   },
-
 };

@@ -2,9 +2,9 @@ var config = require("./config.js")
 
 module.exports = {
   '@disabled': true,
-  
-  'login': function (browser) {
-    browser
+
+  login: function (browser) {
+    return browser
       .url(config.getUrl() + '#/login')
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('input[type=email]')
@@ -14,16 +14,16 @@ module.exports = {
       .click('button[type=submit]')
   },
 
-  'logout': function (browser) {
-    browser
+  logout: function (browser) {
+    return browser
       .url(config.getUrl() + '#/dashboard/')
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#sidePanelDesktop ul li button')
       .click('#sidePanelDesktop ul li button')
   },
 
-  'allDashboardTest': function (browser) {
-    browser
+  allDashboardTest: function (browser) {
+    return browser
       .assert.elementPresent('img[alt=logo]')
       .assert.elementPresent('a[id=user-management-dropdown]')
       .assert.elementPresent('#sidePanelDesktop')

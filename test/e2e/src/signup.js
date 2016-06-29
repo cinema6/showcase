@@ -1,5 +1,5 @@
-var utils = require("./utils.js")
-var config = require("./config.js")
+var utils = require("../helpers/utils.js")
+var config = require("../helpers/config.js")
 
 module.exports = {
 
