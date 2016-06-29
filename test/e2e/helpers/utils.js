@@ -1,6 +1,4 @@
-
 module.exports = {
-    '@disabled': true,
 
     login: function (browser) {
         return browser

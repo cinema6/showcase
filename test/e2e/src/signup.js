@@ -1,4 +1,3 @@
-
 module.exports = {
 
     'Reelcontent Sign Up Test': function (browser) {
