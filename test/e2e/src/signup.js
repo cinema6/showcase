@@ -2,6 +2,7 @@ module.exports = {
 
     'Reelcontent Sign Up Test': function (browser) {
         browser
+          
       .url(browser.launchUrl + '#/sign-up')
       .waitForElementVisible('body', 1000)
       .assert.urlContains('sign-up')
@@ -20,11 +21,8 @@ module.exports = {
 
       .click('button[type=submit]')
 
-      .pause(1000)
-
+      .waitForElementVisible('div[role=alert]', 1000)
       .assert.elementPresent('div[role=alert]')
-
-      .pause(1000)
 
       .end();
     }

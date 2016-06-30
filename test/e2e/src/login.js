@@ -22,18 +22,14 @@ module.exports = {
 
         utils.login(browser)
 
-      .pause(3000)
-
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('div[class=phone-frame]', 3000)
       .assert.urlContains('dashboard')
-      .pause(1000)
+      .waitForElementVisible('nav[id=sidePanelDesktop]', 1000)
       .isVisible('nav[id=sidePanelDesktop]', function () {
           return browser
           .assert.elementPresent('#sidePanelDesktop ul li button')
           .click('#sidePanelDesktop ul li button');
       })
-
-      .pause(1000)
 
       .end();
     }

@@ -6,13 +6,10 @@ module.exports = {
 
         utils.login(browser)
 
-      .pause(3000)
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('div[class=phone-frame]', 3000)
       .assert.urlContains('dashboard');
 
-        utils.allDashboardTest(browser)
-
-      .pause(1000);
+        utils.allDashboardTest(browser);
 
         utils.logout(browser)
 

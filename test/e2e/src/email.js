@@ -6,13 +6,11 @@ module.exports = {
 
         utils.login(browser)
 
-      .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(browser.launchUrl + '#/dashboard/account/email');
+      .url(browser.launchUrl + '#/dashboard/account/email')
+      .waitForElementVisible('body', 1000);
 
         utils.allDashboardTest(browser)
-
-      .pause(1000)
 
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('input[type=password]')
@@ -24,11 +22,9 @@ module.exports = {
       .setValue('input[name=password]', 'password')
       .click('button[type=submit]')
 
-      .pause(1000)
+      .waitForElementVisible('div[role=alert]', 1000)
 
-      .assert.elementPresent('div[role=alert]')
-
-      .pause(1000);
+      .assert.elementPresent('div[role=alert]');
 
         utils.logout(browser)
 

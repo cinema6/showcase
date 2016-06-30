@@ -4,6 +4,7 @@ module.exports = {
         browser
       .url(browser.launchUrl + '#/forgot-password')
       .waitForElementVisible('body', 1000)
+          
       .assert.urlContains('password')
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('button[type=submit]')
@@ -11,11 +12,9 @@ module.exports = {
       .setValue('input[name=email]', 'email@cinema6.com')
       .click('button[type=submit]')
 
-      .pause(1000)
+      .waitForElementVisible('div[role=alert', 1000)
 
       .assert.elementPresent('div[role=alert]')
-
-      .pause(1000)
 
       .end();
     }

@@ -6,9 +6,9 @@ module.exports = {
 
         utils.login(browser)
 
-      .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(browser.launchUrl + '#/dashboard/account/profile');
+      .url(browser.launchUrl + '#/dashboard/account/profile')
+      .waitForElementVisible('body', 2000);
 
         utils.allDashboardTest(browser)
 
@@ -32,12 +32,8 @@ module.exports = {
 
       .click('button[type=submit]')
 
-      .pause(1000)
-
       .waitForElementVisible('div[role=alert]', 2000)
-      .assert.elementPresent('div[role=alert]')
-
-      .pause(1000);
+      .assert.elementPresent('div[role=alert]');
 
         utils.logout(browser)
 

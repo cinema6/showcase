@@ -6,13 +6,12 @@ module.exports = {
 
         utils.login(browser)
 
-      .pause(3000)
       .waitForElementVisible('body', 1000)
-      .url(browser.launchUrl + '#/dashboard/billing');
+      .url(browser.launchUrl + '#/dashboard/billing')
+      .waitForElementVisible('body', 3000)
+      .assert.urlContains('billing');
 
-        utils.allDashboardTest(browser)
-
-      .pause(1000);
+        utils.allDashboardTest(browser);
 
         utils.logout(browser)
 
