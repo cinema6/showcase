@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.11.2-rc1]*
+  * [FIX]: Fix iOS whitespace issue
+
 ## v0.11.1 (June 24, 2016)
 * *[v0.11.1-rc2]*
   * [FIX]: hide blank space if the app has no rating
