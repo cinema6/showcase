@@ -7,11 +7,13 @@ module.exports = {
         utils.login(browser)
 
       .waitForElementVisible('body', 1000)
+      .waitForElementVisible('div[class=phone-frame]', 10000)
       .url(browser.launchUrl + '#/dashboard/account/password')
-      .waitForElementVisible('body', 1000);
+      .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser)
 
+      .waitForElementVisible('input[name=oldPassword]', 10000)
       .assert.elementPresent('input[name=oldPassword]')
       .assert.elementPresent('input[name=newPassword]')
       .assert.elementPresent('input[name=newPasswordRepeat]')

@@ -7,11 +7,13 @@ module.exports = {
         utils.login(browser)
 
       .waitForElementVisible('body', 1000)
+      .waitForElementVisible('div[class=phone-frame]', 10000)
       .url(browser.launchUrl + '#/dashboard/account/profile')
-      .waitForElementVisible('body', 2000);
+      .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser)
 
+      .waitForElementVisible('input[name=firstName]', 10000)
       .assert.elementPresent('input[name=firstName]')
       .assert.elementPresent('input[name=lastName]')
       .assert.elementPresent('input[name=company]')
@@ -32,7 +34,7 @@ module.exports = {
 
       .click('button[type=submit]')
 
-      .waitForElementVisible('div[role=alert]', 2000)
+      .waitForElementVisible('div[role=alert]', 10000)
       .assert.elementPresent('div[role=alert]');
 
         utils.logout(browser)

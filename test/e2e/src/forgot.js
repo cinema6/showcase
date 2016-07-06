@@ -3,7 +3,7 @@ module.exports = {
     'Reelcontent Forgot Password Test': function (browser) {
         browser
       .url(browser.launchUrl + '#/forgot-password')
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('body', 10000)
           
       .assert.urlContains('password')
       .assert.elementPresent('input[type=email]')
@@ -12,7 +12,7 @@ module.exports = {
       .setValue('input[name=email]', 'email@cinema6.com')
       .click('button[type=submit]')
 
-      .waitForElementVisible('div[role=alert', 1000)
+      .waitForElementVisible('div[role=alert', 50000)
 
       .assert.elementPresent('div[role=alert]')
 
