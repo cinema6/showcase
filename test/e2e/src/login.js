@@ -5,7 +5,8 @@ module.exports = {
     'Reelcontent Login / Logout Test': function (browser) {
         browser
       .url(browser.launchUrl + '#/login')
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('body', 10000)
+      .waitForElementVisible('input[type=email]', 40000)
 
       .assert.urlContains('login')
       .assert.containsText('body', 'Email')
@@ -18,13 +19,13 @@ module.exports = {
 
       .assert.elementPresent('button[type=submit]')
       .click('button[type=submit]')
-      .waitForElementVisible('div[role=alert]', 1000);
+      .waitForElementVisible('div[role=alert]', 10000);
 
         utils.login(browser)
 
-      .waitForElementVisible('div[class=phone-frame]', 3000)
+      .waitForElementVisible('div[class=phone-frame]', 40000)
       .assert.urlContains('dashboard')
-      .waitForElementVisible('nav[id=sidePanelDesktop]', 1000)
+      .waitForElementVisible('nav[id=sidePanelDesktop]', 10000)
       .isVisible('nav[id=sidePanelDesktop]', function () {
           return browser
           .assert.elementPresent('#sidePanelDesktop ul li button')

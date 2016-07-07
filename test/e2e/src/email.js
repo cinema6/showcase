@@ -6,10 +6,10 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('body', 1000)
-      .waitForElementVisible('div[class=phone-frame]', 10000)
+      .waitForElementVisible('body', 10000)
+      .waitForElementVisible('div[class=phone-frame]', 40000)
       .url(browser.launchUrl + '#/dashboard/account/email')
-      .waitForElementVisible('body', 1000);
+      .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser)
           

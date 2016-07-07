@@ -15,7 +15,7 @@ module.exports = {
     logout: function (browser) {
         return browser
       .url(browser.launchUrl + '#/dashboard/')
-      .waitForElementVisible('#sidePanelDesktop ul li button', 1000)
+      .waitForElementVisible('#sidePanelDesktop ul li button', 10000)
       .assert.elementPresent('#sidePanelDesktop ul li button')
       .click('#sidePanelDesktop ul li button');
     },

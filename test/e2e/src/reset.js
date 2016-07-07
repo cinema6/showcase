@@ -6,8 +6,8 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('body', 1000)
-      .waitForElementVisible('div[class=phone-frame]', 10000)
+      .waitForElementVisible('body', 10000)
+      .waitForElementVisible('div[class=phone-frame]', 40000)
       .url(browser.launchUrl + '#/dashboard/account/password')
       .waitForElementVisible('body', 10000);
 
@@ -27,7 +27,7 @@ module.exports = {
       .setValue('input[name=newPasswordRepeat]', 'password12345')
       .click('button[type=submit]')
 
-      .waitForElementVisible('div[role=alert]', 1000)
+      .waitForElementVisible('div[role=alert]', 10000)
       .assert.elementPresent('div[role=alert]');
 
         utils.logout(browser)

@@ -6,7 +6,7 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('div[class=phone-frame]', 3000)
+      .waitForElementVisible('div[class=phone-frame]', 40000)
       .assert.urlContains('dashboard');
 
         utils.allDashboardTest(browser);

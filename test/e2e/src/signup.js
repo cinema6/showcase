@@ -4,9 +4,10 @@ module.exports = {
         browser
           
       .url(browser.launchUrl + '#/sign-up')
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('body', 10000)
       .assert.urlContains('sign-up')
-
+      
+      .waitForElementVisible('input[name=firstName]', 10000)
       .assert.elementPresent('input[name=firstName]')
       .assert.elementPresent('input[name=lastName]')
       .assert.elementPresent('input[name=email]')
@@ -21,7 +22,7 @@ module.exports = {
 
       .click('button[type=submit]')
 
-      .waitForElementVisible('div[role=alert]', 1000)
+      .waitForElementVisible('div[role=alert]', 10000)
       .assert.elementPresent('div[role=alert]')
 
       .end();
