@@ -79,7 +79,7 @@ export default function WizardPlanInfoModal({
                                         <span>Promote 1 App</span>
                                     </div>
                                     <div className="plan-box-item stacked-item">
-                                        <span>Basic Stats</span>
+                                        <span>Real-time Stats</span>
                                     </div>
                                     <div className="plan-box-item stacked-item last-item">
                                         <h3>$49.99</h3>
@@ -105,7 +105,7 @@ export default function WizardPlanInfoModal({
                                         <span>Promote 3 Apps</span>
                                     </div>
                                     <div className="plan-box-item stacked-item">
-                                        <span>Custom Reports</span>
+                                        <span>Real-time Stats</span>
                                     </div>
                                     <div className="plan-box-item stacked-item last-item">
                                         <h3>$149.99</h3>
@@ -131,7 +131,7 @@ export default function WizardPlanInfoModal({
                                         <span>Promote 10 Apps</span>
                                     </div>
                                     <div className="plan-box-item stacked-item">
-                                        <span>Custom Reports</span>
+                                        <span>Real-time Stats</span>
                                     </div>
                                     <div className="plan-box-item stacked-item last-item">
                                         <h3>$499.99</h3>
