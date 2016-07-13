@@ -1,4 +1,5 @@
 var utils = require('../helpers/utils.js');
+var config = require('../helpers/config.js');
 
 module.exports = {
 
@@ -7,7 +8,6 @@ module.exports = {
         utils.login(browser)
 
       .waitForElementVisible('body', 10000)
-      .waitForElementVisible('div[class=phone-frame]', 40000)
       .url(browser.launchUrl + '#/dashboard/account/password')
       .waitForElementVisible('body', 10000);
 
@@ -22,9 +22,9 @@ module.exports = {
       .clearValue('input[name=newPassword]')
       .clearValue('input[name=newPasswordRepeat]')
 
-      .setValue('input[name=oldPassword]', 'password')
-      .setValue('input[name=newPassword]', 'password12345')
-      .setValue('input[name=newPasswordRepeat]', 'password12345')
+      .setValue('input[name=oldPassword]', config.password)
+      .setValue('input[name=newPassword]', config.password)
+      .setValue('input[name=newPasswordRepeat]', config.password)
       .click('button[type=submit]')
 
       .waitForElementVisible('div[role=alert]', 10000)

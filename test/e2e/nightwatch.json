@@ -26,7 +26,7 @@
   },
   "test_settings": {
     "default": {
-      "launch_url": "http://localhost:9000/",
+      "launch_url": "https://apps-staging.reelcontent.com/",
       "selenium_port": 4444,
       "selenium_host": "localhost",
       "silent": true,
@@ -41,7 +41,7 @@
       }
     },
     "saucelabs": {
-      "launch_url": "http://localhost:9000/",
+      "launch_url": "https://apps-staging.reelcontent.com/",
       "selenium_host": "ondemand.saucelabs.com",
       "selenium_port": 80,
       "username": "username",
@@ -55,12 +55,12 @@
         "path": "./test/e2e/error"
       },
       "desiredCapabilities": {
-        "platform": "OS X 10.11",
+        "platform": "Windows 10",
         "name": "e2e-tests",
-        "browserName": "chrome"
+        "browserName": "MicrosoftEdge"
       },
       "globals": {
-        "waitForConditionTimeout": 10000
+        "waitForConditionTimeout": 40000
       },
       "selenium": {
         "start_process": false

@@ -1,4 +1,5 @@
 var utils = require('../helpers/utils.js');
+var config = require('../helpers/config.js');
 
 module.exports = {
 
@@ -7,7 +8,7 @@ module.exports = {
         utils.login(browser)
 
       .waitForElementVisible('body', 10000)
-      .waitForElementVisible('div[class=phone-frame]', 40000)
+      .waitForElementVisible('div[class=phone-frame]', 10000)
       .url(browser.launchUrl + '#/dashboard/account/profile')
       .waitForElementVisible('body', 10000);
 
@@ -24,9 +25,9 @@ module.exports = {
       .clearValue('input[name=company]')
       .clearValue('input[name=phoneNumber]')
 
-      .setValue('input[name=firstName]', 'First')
-      .setValue('input[name=lastName]', 'Last')
-      .setValue('input[name=company]', 'Company')
+      .setValue('input[name=firstName]', config.firstName)
+      .setValue('input[name=lastName]', config.lastName)
+      .setValue('input[name=company]', config.firstName + ' ' + config.lastName)
       .setValue('input[name=phoneNumber]',
         '(' + Math.round(Math.random() * 1000) + ') '
         + Math.round(Math.random() * 1000) + '-'

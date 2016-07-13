@@ -6,10 +6,12 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('div[class=phone-frame]', 40000)
+      .waitForElementVisible('#sidePanelDesktop', 10000)
       .assert.urlContains('dashboard');
 
         utils.allDashboardTest(browser);
+
+        utils.phoneFrameTest(browser);
 
         utils.logout(browser)
 

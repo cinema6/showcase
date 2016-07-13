@@ -6,7 +6,7 @@ module.exports = {
         browser
       .url(browser.launchUrl + '#/login')
       .waitForElementVisible('body', 10000)
-      .waitForElementVisible('input[type=email]', 40000)
+      .waitForElementVisible('input[type=email]', 10000)
 
       .assert.urlContains('login')
       .assert.containsText('body', 'Email')
@@ -23,7 +23,7 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('div[class=phone-frame]', 40000)
+      .waitForElementVisible('div[class=phone-frame]', 10000)
       .assert.urlContains('dashboard')
       .waitForElementVisible('nav[id=sidePanelDesktop]', 10000)
       .isVisible('nav[id=sidePanelDesktop]', function () {

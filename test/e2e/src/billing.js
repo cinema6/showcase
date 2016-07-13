@@ -6,9 +6,11 @@ module.exports = {
 
         utils.login(browser)
 
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('div[class=phone-frame]', 40000)
       .url(browser.launchUrl + '#/dashboard/billing')
-      .waitForElementVisible('body', 3000)
+
+      .waitForElementVisible('#sidePanelDesktop', 100000)
+
       .assert.urlContains('billing');
 
         utils.allDashboardTest(browser);

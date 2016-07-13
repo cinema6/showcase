@@ -1,3 +1,5 @@
+var config = require('../helpers/config.js');
+
 module.exports = {
 
     login: function (browser) {
@@ -7,8 +9,8 @@ module.exports = {
       .waitForElementVisible('input[type=email]', 10000)
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('input[type=password]')
-      .setValue('input[name=email]', 'email@cinema6.com')
-      .setValue('input[name=password]', 'password')
+      .setValue('input[name=email]', config.email)
+      .setValue('input[name=password]', config.password)
       .click('button[type=submit]');
     },
 
@@ -24,11 +26,17 @@ module.exports = {
         return browser
       .waitForElementVisible('img[alt=logo]', 10000)
       .assert.elementPresent('img[alt=logo]')
+      .assert.urlContains('dashboard')
       .assert.elementPresent('a[id=user-management-dropdown]')
       .assert.elementPresent('#sidePanelDesktop')
       .assert.attributeEquals('a[id=user-management-dropdown]', 'aria-expanded', 'false')
       .click('a[id=user-management-dropdown]')
       .assert.attributeEquals('a[id=user-management-dropdown]', 'aria-expanded', 'true')
       .assert.elementPresent('#navbar ul li div ul.dropdown-menu');
+    },
+
+    phoneFrameTest: function (browser) {
+        return browser
+      .assert.elementPresent('div[class=phone-frame');
     }
 };
