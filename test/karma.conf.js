@@ -19,9 +19,32 @@ module.exports = function(config) {
         browserify: {
             debug: true,
             configure: function(bundle) {
+                var _filterTransform = bundle._filterTransform;
+
                 bundle.once('prebundle', function() {
                     bundle.transform('babelify')
                         .plugin('proxyquire-universal');
+
+                    // Monkey-patch browserify so that the babelify transform is not added twice.
+                    bundle._filterTransform = function(tr) {
+                        var existing;
+
+                        if (!_filterTransform.call(this, tr)) { return false; }
+
+                        if (tr instanceof Array) {
+                            tr = tr[0];
+                        }
+
+                        existing = bundle._transforms.map(function(item) {
+                            return item.transform;
+                        });
+
+                        try {
+                            return existing.indexOf(require.resolve(tr)) < 0;
+                        } catch (e) {
+                            return true;
+                        }
+                    };
 
                     bundle.external('react/addons');
                     bundle.external('react/lib/ReactContext');
