@@ -1,5 +1,4 @@
 var utils = require('../helpers/utils.js');
-var config = require('../helpers/config.js');
 
 module.exports = {
 
@@ -25,9 +24,9 @@ module.exports = {
       .clearValue('input[name=company]')
       .clearValue('input[name=phoneNumber]')
 
-      .setValue('input[name=firstName]', config.firstName)
-      .setValue('input[name=lastName]', config.lastName)
-      .setValue('input[name=company]', config.firstName + ' ' + config.lastName)
+      .setValue('input[name=firstName]', browser.globals.firstName)
+      .setValue('input[name=lastName]', browser.globals.lastName)
+      .setValue('input[name=company]', browser.globals.company)
       .setValue('input[name=phoneNumber]',
         '(' + Math.round(Math.random() * 1000) + ') '
         + Math.round(Math.random() * 1000) + '-'

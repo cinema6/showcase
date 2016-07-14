@@ -13,7 +13,7 @@
     "deploy:production": "npm test && grunt publish:production --rc-env production",
     "test:e2e": "nightwatch --config test/e2e/nightwatch.json",
     "test:e2e:sauce": "nightwatch --config test/e2e/nightwatch.json -e saucelabs",
-    "test:e2e:local": "nightwatch --config test/e2e/nightwatch.json -e local"
+    "test:e2e:staging": "nightwatch --config test/e2e/nightwatch.json -e staging"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,4 @@
 var utils = require('../helpers/utils.js');
-var config = require('../helpers/config.js');
 
 module.exports = {
 
@@ -21,8 +20,8 @@ module.exports = {
       .clearValue('input[name=email]')
       .clearValue('input[name=password]')
 
-      .setValue('input[name=email]', config.email)
-      .setValue('input[name=password]', config.email)
+      .setValue('input[name=email]', browser.globals.email)
+      .setValue('input[name=password]', browser.globals.password)
       .click('button[type=submit]')
 
       .waitForElementVisible('div[role=alert]', 40000)

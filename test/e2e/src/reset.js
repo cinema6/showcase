@@ -1,5 +1,4 @@
 var utils = require('../helpers/utils.js');
-var config = require('../helpers/config.js');
 
 module.exports = {
 
@@ -22,9 +21,9 @@ module.exports = {
       .clearValue('input[name=newPassword]')
       .clearValue('input[name=newPasswordRepeat]')
 
-      .setValue('input[name=oldPassword]', config.password)
-      .setValue('input[name=newPassword]', config.password)
-      .setValue('input[name=newPasswordRepeat]', config.password)
+      .setValue('input[name=oldPassword]', browser.globals.password)
+      .setValue('input[name=newPassword]', browser.globals.password)
+      .setValue('input[name=newPasswordRepeat]', browser.globals.password)
       .click('button[type=submit]')
 
       .waitForElementVisible('div[role=alert]', 10000)

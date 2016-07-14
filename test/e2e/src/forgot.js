@@ -1,5 +1,3 @@
-var config = require('../helpers/config.js');
-
 module.exports = {
 
     'Reelcontent Forgot Password Test': function (browser) {
@@ -11,7 +9,7 @@ module.exports = {
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('button[type=submit]')
 
-      .setValue('input[name=email]', config.email)
+      .setValue('input[name=email]', browser.globals.email)
       .click('button[type=submit]')
 
       .waitForElementVisible('div[role=alert', 10000)

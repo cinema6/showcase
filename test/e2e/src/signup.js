@@ -1,5 +1,3 @@
-var config = require('../helpers/config.js');
-
 module.exports = {
 
     'Reelcontent Sign Up Test': function (browser) {
@@ -17,10 +15,10 @@ module.exports = {
 
       .assert.elementPresent('button[type=submit]')
 
-      .setValue('input[name=firstName]', config.firstName)
-      .setValue('input[name=lastName]', config.lastName)
-      .setValue('input[name=email]', config.email)
-      .setValue('input[name=password]', config.password)
+      .setValue('input[name=firstName]', browser.globals.firstName)
+      .setValue('input[name=lastName]', browser.globals.lastName)
+      .setValue('input[name=email]', browser.globals.email)
+      .setValue('input[name=password]', browser.globals.password)
 
       .click('button[type=submit]')
 

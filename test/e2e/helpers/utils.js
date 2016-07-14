@@ -1,5 +1,3 @@
-var config = require('../helpers/config.js');
-
 module.exports = {
 
     login: function (browser) {
@@ -9,8 +7,8 @@ module.exports = {
       .waitForElementVisible('input[type=email]', 10000)
       .assert.elementPresent('input[type=email]')
       .assert.elementPresent('input[type=password]')
-      .setValue('input[name=email]', config.email)
-      .setValue('input[name=password]', config.password)
+      .setValue('input[name=email]', browser.globals.email)
+      .setValue('input[name=password]', browser.globals.password)
       .click('button[type=submit]');
     },
 
