@@ -6,7 +6,7 @@
   "custom_commands_path": "",
   "custom_assertions_path": "",
   "page_objects_path": "",
-  "globals_path": "",
+  "globals_path": "test/e2e/helpers/globals.js",
   "selenium": {
     "start_process": true,
     "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.0-server.jar",
@@ -40,12 +40,6 @@
         "acceptSslCerts": true
       },
       "globals": {
-        "email": "email@cinema6.com",
-        "password": "password",
-        "firstName": "First",
-        "lastName": "Last",
-        "company": "Company",
-        "app": "Pokémon GO"
       }
     },
     "saucelabs": {
@@ -69,11 +63,7 @@
       },
       "globals": {
         "waitForConditionTimeout": 40000,
-        "email": "c6e2etester@gmail.com",
-        "password": "bananas4bananas",
-        "firstName": "Johnny",
-        "lastName": "Testmonkey",
-        "app": "Pokémon GO"
+        "email": "c6e2etester@gmail.com"
       },
       "selenium": {
         "start_process": false
@@ -95,11 +85,7 @@
         "browserName": "firefox"
       },
       "globals": {
-        "email": "c6e2etester@gmail.com",
-        "password": "bananas4bananas",
-        "firstName": "Johnny",
-        "lastName": "Testmonkey",
-        "app": "Pokémon GO"
+        "email": "c6e2etester@gmail.com"
       },
       "selenium": {
         "start_process": true
@@ -107,29 +93,6 @@
       "test_workers": {
         "enabled": false,
         "workers": "auto"
-      }
-    },
-    "chrome": {
-      "desiredCapabilities": {
-        "browserName": "chrome",
-        "platform": "XP",
-        "version": "51",
-        "javascriptEnabled": true,
-        "acceptSslCerts": true
-      }
-    },
-    "firefox": {
-      "desiredCapabilities": {
-        "platform": "XP",
-        "browserName": "firefox",
-        "version": "33"
-      }
-    },
-    "internet_explorer_10": {
-      "desiredCapabilities": {
-        "platform": "Windows 7",
-        "browserName": "internet explorer",
-        "version": "10"
       }
     }
   }
