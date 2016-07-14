@@ -1,14 +1,29 @@
 'use strict';
 
+var grunt = require('grunt');
+var concat = Array.prototype.concat;
+
 module.exports = function(config) {
+    var only = grunt.option('only') || '**';
+    var specs = grunt.file.match(
+        { matchBase: true },
+        only,
+        concat.apply([], [
+            'test/spec/**/*.ut.js'
+        ].map(function(glob) {
+            return grunt.file.expand(glob);
+        }))
+    );
+
     config.set({
         frameworks: ['browserify', 'jasmine'],
 
         // list of files / patterns to load in the browser
         files: [
-            { pattern: 'test/main.js', watched: false },
-            { pattern: 'test/spec/**/*.ut.js', watched: false }
-        ],
+            { pattern: 'test/main.js', watched: false }
+        ].concat(specs.map(function(path) {
+            return { pattern: path, watched: false };
+        })),
 
         exclude: [],
 
