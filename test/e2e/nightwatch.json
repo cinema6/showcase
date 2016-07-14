@@ -66,6 +66,25 @@
         "start_process": false
       },
       "test_workers": {
+        "enabled": true,
+        "workers": "auto"
+      }
+    },
+    "local": {
+      "launch_url": "http://localhost:9000/",
+      "selenium_host": "localhost",
+      "selenium_port": 4444,
+      "use_ssl": false,
+      "silent": true,
+      "output": true,
+      "desiredCapabilities": {
+        "name": "e2e-tests",
+        "browserName": "firefox"
+      },
+      "selenium": {
+        "start_process": true
+      },
+      "test_workers": {
         "enabled": false,
         "workers": "auto"
       }
