@@ -3,8 +3,8 @@ import { callAPI } from './api';
 import { createDbActions } from '../utils/db';
 import { format as formatURL } from 'url';
 import { createThunk } from '../middleware/fsa_thunk';
-import trackAdwordsConversion from 'adwords-track-conversion';
 import config from '../../config';
+import loader from '../utils/loader';
 
 function userPrefix(type) {
     return `USER/${type}`;
@@ -98,8 +98,16 @@ export const signUp = createThunk((data) => (
                 query: { target: 'showcase' },
             }),
             body: data,
-        })).then(response => {
-            trackAdwordsConversion({
+        })).then(response => Promise.all([
+            loader.load('adwords'),
+            loader.load('twitter'),
+            loader.load('facebook'),
+        ]).then(([
+            adwords,
+            twitter,
+            facebook,
+        ]) => {
+            adwords({
                 google_conversion_id: config.adWords.conversionID,
                 google_conversion_language: 'en',
                 google_conversion_format: '3',
@@ -108,8 +116,15 @@ export const signUp = createThunk((data) => (
                 google_remarketing_only: false,
             });
 
+            twitter.conversion.trackPid('nv3ie', {
+                tw_sale_amount: 0,
+                tw_order_quantity: 0,
+            });
+
+            facebook('track', 'CompleteRegistration');
+
             return response;
-        });
+        }).catch(() => response));
     }
 ));
 
