@@ -48,92 +48,117 @@ export default function WizardPlanInfoModal({
     return (<Modal show={show} className="trial-modal" onHide={onClose}>
         <Modal.Header className="text-center" closeButton>
             <h1 className="modal-title">{title}</h1>
+            <h1 className="modal-title">Change your plan</h1>
             {!!trialLength && <p>Your first {trialText(trialLength)} of advertising is on us</p>}
+            <p>Start promoting your app now</p> {/*show this message when selecting first plan*/}
+            <p>Your billing cycle ends on Feb 24</p> {/*show this message when upgrading/
+            downgrading*/}
         </Modal.Header>
         <Modal.Body className="text-center">
             <div className="row">
                 <div className="trail-wrap">
                     <div className="row">
-                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
-                            <div className="plan-info-box plan-starter">
-                                <div className="plan-box-header">
-                                    <h3>Starter</h3>
-                                </div>
-                                <div className="plan-box-content">
-                                    <div className="plan-box-item stacked-item">
-                                        <h2>2,000</h2>
-                                        <span>Unique Views</span>
+                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle payment-plan">
+                            <label for="starter-plan">
+                                <input type="radio" name="plan-name" id="starter-plan" />
+                                <div className="plan-info-box plan-starter">                                
+                                    <div className="plan-box-header">
+                                        <h3>Starter</h3>
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Promote 1 App</span>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <h2>2,000</h2>
+                                            <span>Unique Views</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <h3>$49.99</h3>
+                                            <span>/mo</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Promote 1 App</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
+                                            <span>Real-time Stats</span>
+                                        </div>
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Real-time Stats</span>
+                                    <div className="plan-box-footer current-plan">
+                                        
                                     </div>
-                                    <div className="plan-box-item stacked-item last-item">
-                                        <h3>$49.99</h3>
-                                        <span>/mo</span>
-                                    </div>
-                                </div>
-                                <div className="plan-box-footer plan-selected">
-                                    <h4>Selected</h4>
-                                </div>
-                            </div>
+                                </div>                                
+                            </label>
                         </div>
-                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
-                            <div className="plan-info-box plan-pro">
-                                <div className="plan-box-header">
-                                    <h3>Pro</h3>
-                                </div>
-                                <div className="plan-box-content">
-                                    <div className="plan-box-item stacked-item">
-                                        <h2>7,500</h2>
-                                        <span>Unique Views</span>
+                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle payment-plan">
+                            <label for="pro-plan">
+                                <input type="radio" name="plan-name" id="pro-plan" />
+                                <div className="plan-info-box plan-pro">                                
+                                    <div className="plan-box-header">
+                                        <h3>Pro</h3>
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Promote 3 Apps</span>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <h2>7,500</h2>
+                                            <span>Unique Views</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <h3>$149.99</h3>
+                                            <span>/mo</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Promote 3 Apps</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
+                                            <span>Real-time Stats</span>
+                                        </div>
+                                    </div>                                    
+                                    <div className="plan-box-footer choose-plan">
+                                        
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Real-time Stats</span>
-                                    </div>
-                                    <div className="plan-box-item stacked-item last-item">
-                                        <h3>$149.99</h3>
-                                        <span>/mo</span>
-                                    </div>
-                                </div>
-                                <div className="plan-box-footer plan-coming-soon">
-                                    <h4>coming soon</h4>
-                                </div>
-                            </div>
+                                </div>                                
+                            </label>
                         </div>
-                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle">
-                            <div className="plan-info-box plan-business">
-                                <div className="plan-box-header">
-                                    <h3>Business</h3>
-                                </div>
-                                <div className="plan-box-content">
-                                    <div className="plan-box-item stacked-item">
-                                        <h2>25,000</h2>
-                                        <span>Unique Views</span>
+                        <div className="col-sm-4 col-md-4 col-xs-12 col-middle payment-plan">
+                            <label for="business-plan">
+                                <input type="radio" name="plan-name" id="business-plan" />
+                                <div className="plan-info-box plan-business">
+                                    <div className="plan-box-header">
+                                        <h3>Business</h3>
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Promote 10 Apps</span>
+                                    <div className="plan-box-content">
+                                        <div className="plan-box-item stacked-item">
+                                            <h2>25,000</h2>
+                                            <span>Unique Views</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <h3>$499.99</h3>
+                                            <span>/mo</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item">
+                                            <span>Promote 10 Apps</span>
+                                        </div>
+                                        <div className="plan-box-item stacked-item last-item">
+                                            <span>Real-time Stats</span>
+                                        </div>
                                     </div>
-                                    <div className="plan-box-item stacked-item">
-                                        <span>Real-time Stats</span>
+                                    <div className="plan-box-footer choose-plan">
+                                        
                                     </div>
-                                    <div className="plan-box-item stacked-item last-item">
-                                        <h3>$499.99</h3>
-                                        <span>/mo</span>
-                                    </div>
-                                </div>
-                                <div className="plan-box-footer plan-coming-soon">
-                                    <h4>coming soon</h4>
-                                </div>
-                            </div>
+                                </div>                                
+                            </label>
                         </div>
                     </div>
                     <div className="col-sm-12 col-middle text-left">
+                        <div className="alert alert-warning text-center">
+                            <p>You must archive your ads to downgrade to this plan. If you select to 
+                            downgrade and have more than allowed apps for the selected plan, we will
+                            archive the oldest ads for you to be able to downgrade.
+                            </p>{/* show this paragraph when users have more apps than their new 
+                            plan */}
+                        </div>
+                        
+                        <div className="alert alert-success text-center">
+                            Upgrade will take effect immediately.
+                        </div> {/*show this alert when user tries to downgrade a plan*/}
+                        
                         <h3>We Give Your App The Royal Treatment With:</h3>
                         <ul className="checked-feature-list">
                             <li>
@@ -150,11 +175,11 @@ export default function WizardPlanInfoModal({
                                 </h4>
                             </li>
                         </ul>
+                        {/*Hide the UL and H3 above when users are upgrading/downgrading*/}
                     </div>
                     <div className="clearfix">
                     </div>
                     <div className="col-md-12 text-center">
-                        <br />
                         <Button
                             onClick={onContinue}
                             disabled={actionPending}
@@ -165,7 +190,13 @@ export default function WizardPlanInfoModal({
                             bsStyle="danger"
                         >
                             {cta}
+                            Continue {/*Show "Continue" label if users need to add payment info*/}
+                            Confirm {/*Show "Confirm" label when users are upgrading/downgrading*/}
                         </Button>
+                    </div>
+                    <div className="col-md-12 text-center cancel-plan">
+                        <p>Don't want to run ads anymore?</p>
+                        <a href="#">Cancel my plan</a>
                     </div>
                 </div>
             </div>

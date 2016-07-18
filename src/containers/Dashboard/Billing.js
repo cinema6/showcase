@@ -40,7 +40,7 @@ class Billing extends Component {
         const billingEnd = billingPeriod && moment(billingPeriod.cycleEnd);
         const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
 
-        return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
+        return (<div className="container main-section campaign-stats">
             <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
                 <div className="col-md-12">
@@ -72,22 +72,37 @@ class Billing extends Component {
                             <div className="col-md-4 btn-wrap">
                                 <Button
                                     bsSize="lg"
-                                    bsStyle="primary"
-                                    className="btn-block"
+                                    bsStyle="primary"                                    
                                     onClick={() => showAlert({
                                         title: 'Cancel Your Subscription',
-                                        description: (<span>
-                                            Are you sure you want to cancel your subscription? Your
-                                            app will lose the exposure it's getting if you choose to
-                                            cancel. If you still want to cancel, please email us
-                                            at <a href={CANCEL_ACCOUNT_HREF}>
-                                                billing@reelcontent.com
-                                            </a> from the email that is connected to your account.
-                                            Your membership will be suspended at the end of current
-                                            billing period.
-                                        </span>),
+                                        description: (<div><span className="text-center">
+                                            <strong className="text-center">
+                                            Are you sure you want to cancel your subscription?
+                                            </strong> <br />
+                                            All 3 of your apps will lose the exposure they have been
+                                            getting! Your membership will be suspended at the end 
+                                            of current billing period.
+                                        </span>
+                                        <div>
+                                            <div className="campaign-mini-stats col-md-6 
+                                            text-center">
+                                                <span>Current period</span>
+                                                <h3>3,500</h3>
+                                                <span>views</span>
+                                            </div>
+                                            <div className="campaign-mini-stats col-md-6 
+                                            text-center">
+                                                <span>Later</span>
+                                                <h3>0</h3>
+                                                <span>views</span>
+                                            </div>
+                                        </div>
+                                        </div>),
                                         buttons: [
-                                            { text: 'Dismiss', onSelect: dismiss => dismiss() },
+                                            { text: 'Cancel my subscription',
+                                            type: 'danger',
+                                            bsSize: 'large',
+                                            onSelect: dismiss => dismiss() },
                                         ],
                                     })}
                                 >

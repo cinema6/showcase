@@ -22,9 +22,12 @@ export default function WizardConfirmationModal({
                     >
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h1 className="modal-title" id="myPaymentModal">Start Your FREE Trial</h1>
-                    <h4>You will not be charged until after your free trial ends on {start}.
+                    <h1 className="modal-title" id="myPaymentModal">Start promoting your app</h1>
+                    <h4>Get 1000 views for FREE. {/*Show the count of free views based on 
+                    promotion*/}
                     Cancel anytime.</h4>
+                    <h4>Reach thousands fo potential app users</h4> {/*Show this message if 
+                    there is no promotion associated with the product*/}
                 </div>
                 <div className="modal-body text-center">
                     <BraintreeCreditCardForm
@@ -32,9 +35,9 @@ export default function WizardConfirmationModal({
                         getToken={getToken}
                         onSubmit={onSubmit}
                     />
-                    <div className="payment-charge-info">
+                    {/*<div className="payment-charge-info">
                         Reach 2,000 users for only $49.99/month after your trial
-                    </div>
+                    </div>*/}
                     <div className="secured-locked">
                         <div className="signup__secured">
                             <span className="signup__secured--icon">

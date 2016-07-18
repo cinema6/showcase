@@ -57,6 +57,7 @@ class CampaignDetail extends Component {
         return (<div>
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
             <div className="container main-section campaign-stats">
+                
                 <div className="row">
                     {campaign && <CampaignDetailInfo
                         campaignId={campaign.id}

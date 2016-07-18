@@ -59,9 +59,40 @@ class Dashboard extends Component {
                             </li>
                         </ul>
                     </div>
+                    <a href="#" className="btn btn-danger hidden-xs btn-header">
+                    <i className="fa fa-plus" /> Add New App</a>
                 </div>
             </nav>
-            {/* vertical mobile menu */} {/* hidden until triggered */}
+            {/* account summary horizontal bar*/}
+            <div className="account-summary">
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                  <span className="lighter-text">Current cycle</span>
+                  <h4 className="stats-header">May 26 - Jun 25</h4>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                  <span className="lighter-text">Days left</span>
+                  <h4 className="stats-header">7</h4>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                  <span className="lighter-text text-left">Views</span><span className="lighter-text
+                            pull-right">2100 / 2500</span>
+                  <div className="stats-header stas-bar view-count">
+                    <div className="bar-wrap">
+                      <div className="bar-fill" style={{width: '45%'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                  <span className="lighter-text text-left">Apps</span><span className="lighter-text 
+                            pull-right">1 / 3</span>
+                  <div className="stats-header stas-bar app-count">
+                    <div className="bar-wrap">
+                      <div className="bar-fill" style={{width: '33.33%'}} />
+                    </div>
+                  </div>
+                </div>
+            </div>
+          {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
                 id="sidePanel"
                 className={classnames('slideout-menu animated slideInLeft', {
@@ -70,7 +101,14 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
+                        <Link to="/dashboard" className="bg-danger"> {/*link to add new app*/}
+                        <i className="fa fa-plus" /> Add New App</Link>
+                    </li>
+                    <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard"><i className="fa fa-archive" /> Archive</Link>
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
@@ -101,6 +139,11 @@ class Dashboard extends Component {
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-th-large" />
                             <span className="menu-item-label">Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard"><i className="fa fa-archive" />
+                            <span className="menu-item-label">Archive</span>
                         </Link>
                     </li>
                     <li className="menu-item">
