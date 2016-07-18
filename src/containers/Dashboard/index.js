@@ -61,6 +61,35 @@ class Dashboard extends Component {
                     </div>
                 </div>
             </nav>
+            {/* account summary horizontal bar*/}
+            <div className="account-summary">
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                    <span className="lighter-text">Current cycle</span>
+                    <h4 className="stats-header">May 26 - Jun 25</h4>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                    <span className="lighter-text">Days left</span>
+                    <h4 className="stats-header">7</h4>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                    <span className="lighter-text text-left">Views</span>
+                    <span className="lighter-text pull-right">2100 / 2500</span>
+                    <div className="stats-header stas-bar view-count">
+                    <div className="bar-wrap">
+                        <div className="bar-fill" style={{width: '45%'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
+                    <span className="lighter-text text-left">Apps</span>
+                    <span className="lighter-text pull-right">1 / 3</span>
+                    <div className="stats-header stas-bar app-count">
+                        <div className="bar-wrap">
+                            <div className="bar-fill" style={{width: '33.33%'}} />
+                        </div>
+                    </div>
+                </div>
+            </div>
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
                 id="sidePanel"

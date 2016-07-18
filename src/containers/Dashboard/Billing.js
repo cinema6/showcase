@@ -43,7 +43,7 @@ class Billing extends Component {
         const billingEnd = billingPeriod && moment(billingPeriod.end);
         const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
 
-        return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
+        return (<div className="container main-section campaign-stats">
             <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
                 <div className="col-md-12">
