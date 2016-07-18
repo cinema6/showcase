@@ -52,4 +52,8 @@ export default new Loader({
         src: 'http://www.googleadservices.com/pagead/conversion_async.js',
         postload: () => window.google_trackConversion || noop,
     },
+    twitter: {
+        src: 'https://platform.twitter.com/oct.js',
+        postload: () => window.twttr,
+    },
 });

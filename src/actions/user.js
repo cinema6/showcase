@@ -98,7 +98,10 @@ export const signUp = createThunk((data) => (
                 query: { target: 'showcase' },
             }),
             body: data,
-        })).then(response => loader.load('adwords').then(adwords => {
+        })).then(response => Promise.all([
+            loader.load('adwords'),
+            loader.load('twitter'),
+        ]).then(([adwords, twitter]) => {
             adwords({
                 google_conversion_id: config.adWords.conversionID,
                 google_conversion_language: 'en',
@@ -106,6 +109,11 @@ export const signUp = createThunk((data) => (
                 google_conversion_color: 'ffffff',
                 google_conversion_label: config.adWords.conversionLabel,
                 google_remarketing_only: false,
+            });
+
+            twitter.conversion.trackPid('nv3ie', {
+                tw_sale_amount: 0,
+                tw_order_quantity: 0,
             });
 
             return response;

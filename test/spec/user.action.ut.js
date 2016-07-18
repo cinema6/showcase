@@ -31,7 +31,7 @@ import loader from '../../src/utils/loader';
 const proxyquire = require('proxyquire');
 
 describe('user actions', function() {
-    let adwords;
+    let adwords, twitter;
     let realCreateDbActions, createDbActions;
     let actions;
     let changeEmail, changePassword, user, signUp, confirmUser, resendConfirmationEmail;
@@ -42,11 +42,18 @@ describe('user actions', function() {
         Object.keys(realCreateDbActions).forEach(key => createDbActions[key] = realCreateDbActions[key]);
 
         adwords = jasmine.createSpy('adwords()');
+        twitter = {
+            conversion: {
+                trackPid: jasmine.createSpy('twttr.conversion.trackPid()')
+            }
+        };
 
         spyOn(loader, 'load').and.callFake(name => {
             switch (name) {
             case 'adwords':
                 return Promise.resolve(adwords);
+            case 'twitter':
+                return Promise.resolve(twitter);
             default:
                 return Promise.reject(new Error(`Unknown: ${name}`));
             }
@@ -324,6 +331,13 @@ describe('user actions', function() {
                         google_conversion_color: 'ffffff',
                         google_conversion_label: 'L5MhCKO_m2cQ5enIuQM',
                         google_remarketing_only: false
+                    });
+                });
+
+                it('should track the twitter conversion', function() {
+                    expect(twitter.conversion.trackPid).toHaveBeenCalledWith('nv3ie', {
+                        tw_sale_amount: 0,
+                        tw_order_quantity: 0
                     });
                 });
 

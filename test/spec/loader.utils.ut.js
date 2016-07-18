@@ -253,5 +253,31 @@ describe('loader utils', function() {
                 });
             });
         });
+
+        describe('twitter', function() {
+            it('should the twitter source', function() {
+                expect(loader.config.twitter.src).toBe('https://platform.twitter.com/oct.js');
+            });
+
+            describe('postload()', function() {
+                beforeEach(function() {
+                    window.twttr = {
+                        conversion: {
+                            trackPid: jasmine.createSpy('twttr.conversion.trackPid()')
+                        }
+                    };
+
+                    this.result = loader.config.twitter.postload();
+                });
+
+                afterEach(function() {
+                    delete window.twttr;
+                });
+
+                it('should return window.twttr', function() {
+                    expect(this.result).toBe(window.twttr);
+                });
+            });
+        });
     });
 });
