@@ -25,13 +25,9 @@
   "peerDependencies": {
     "babelify": "^7.2.0"
   },
-  "browserify-shim": {
-    "adwords-track-conversion": "global:google_trackConversion"
-  },
   "browserify": {
     "transform": [
-      "babelify",
-      "browserify-shim"
+      "babelify"
     ]
   },
   "devDependencies": {
@@ -84,8 +80,7 @@
     "react-addons-test-utils": "^15.0.1",
     "redux-mock-store": "^1.0.2",
     "uglifyify": "^3.0.1",
-    "watchify": "^3.7.0",
-    "browserify-shim": "~3.8.12"
+    "watchify": "^3.7.0"
   },
   "optionalDependencies": {
     "posix": "^4.0.1"
@@ -97,9 +92,9 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.5.0",
     "babel-runtime": "^6.6.1",
+    "babelify": "^7.3.0",
     "braintree-web": "^2.24.0",
     "c6embed": "^3.11.0",
-    "chartist": "^0.9.7",
     "chart.js": "^2.1.6",
     "classnames": "^2.2.5",
     "clipboard": "^1.5.10",

@@ -1,5 +1,8 @@
 import loader, { Loader } from '../../src/utils/loader';
 import { intercomId } from '../../config';
+import {
+    noop
+} from 'lodash';
 
 describe('loader utils', function() {
     describe('Loader(config)', function() {
@@ -211,6 +214,42 @@ describe('loader utils', function() {
 
                 it('should return window.Intercom', function() {
                     expect(this.result).toBe(window.Intercom);
+                });
+            });
+        });
+
+        describe('adwords', function() {
+            it('should load the adwords source', function() {
+                expect(loader.config.adwords.src).toBe('http://www.googleadservices.com/pagead/conversion_async.js');
+            });
+
+            describe('postload()', function() {
+                describe('if window.google_trackConversion is undefined', function() {
+                    beforeEach(function() {
+                        delete window.google_trackConversion;
+
+                        this.result = loader.config.adwords.postload();
+                    });
+
+                    it('should return a noop()', function() {
+                        expect(this.result).toBe(noop);
+                    });
+                });
+
+                describe(' if window.google_trackConversion is defined', function() {
+                    beforeEach(function() {
+                        window.google_trackConversion = jasmine.createSpy('google_trackConversion()');
+
+                        this.result = loader.config.adwords.postload();
+                    });
+
+                    afterEach(function() {
+                        delete window.google_trackConversion;
+                    });
+
+                    it('should return window.google_trackConversion', function() {
+                        expect(this.result).toBe(window.google_trackConversion);
+                    });
                 });
             });
         });

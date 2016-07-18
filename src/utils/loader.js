@@ -48,4 +48,8 @@ export default new Loader({
         src: `https://widget.intercom.io/widget/${intercomId}`,
         postload: () => window.Intercom,
     },
+    adwords: {
+        src: 'http://www.googleadservices.com/pagead/conversion_async.js',
+        postload: () => window.google_trackConversion || noop,
+    },
 });
