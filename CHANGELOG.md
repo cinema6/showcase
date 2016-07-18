@@ -1,7 +1,8 @@
 # Showcase
 
-* *[v0.11.2-rc1]*
+* *[v0.12.0-rc1]*
   * [FIX]: Fix iOS whitespace issue
+  * Add support for Facebook and Twitter conversion tracking
 
 ## v0.11.1 (June 24, 2016)
 * *[v0.11.1-rc2]*
