@@ -279,5 +279,77 @@ describe('loader utils', function() {
                 });
             });
         });
+
+        describe('facebook', function() {
+            it('should load the facebook source', function() {
+                expect(loader.config.facebook.src).toBe('https://connect.facebook.net/en_US/fbevents.js');
+            });
+
+            describe('preload()', function() {
+                beforeEach(function() {
+                    loader.config.facebook.preload();
+                });
+
+                afterEach(function() {
+                    delete window._fbq;
+                    delete window.fbq;
+                });
+
+                it('should define a window.fbq Function', function() {
+                    expect(window.fbq).toEqual(jasmine.any(Function));
+                    expect(window._fbq).toBe(window.fbq);
+                    expect(window.fbq.push).toBe(window._fbq);
+                    expect(window.fbq.loaded).toBe(true);
+                    expect(window.fbq.version).toBe('2.0');
+                    expect(window.fbq.queue).toEqual([]);
+                });
+
+                describe('the fbq Function', function() {
+                    describe('if fbq.callMethod is defined', function() {
+                        beforeEach(function() {
+                            window.fbq.callMethod = jasmine.createSpy('fbq.callMethod()');
+
+                            window.fbq('foo', 'bar');
+                        });
+
+                        it('should call it', function() {
+                            expect(window.fbq.callMethod).toHaveBeenCalledWith('foo', 'bar');
+                        });
+                    });
+
+                    describe('if window.fbq.callMethod is not defined', function() {
+                        beforeEach(function() {
+                            delete window.fbq.callMethod;
+
+                            window.fbq('foo', 'bar');
+                        });
+
+                        it('should push the arguments into the queue', function() {
+                            expect(window.fbq.queue[0]).toEqual(['foo', 'bar']);
+                        });
+                    });
+                });
+            });
+
+            describe('postload()', function() {
+                beforeEach(function() {
+                    window.fbq = jasmine.createSpy('fbq()');
+
+                    this.result = loader.config.facebook.postload();
+                });
+
+                afterEach(function() {
+                    delete window.fbq;
+                });
+
+                it('should call fbq(\'init\', ...)', function() {
+                    expect(window.fbq).toHaveBeenCalledWith('init', '202344783438882');
+                });
+
+                it('should return window.fbq', function() {
+                    expect(this.result).toBe(window.fbq);
+                });
+            });
+        });
     });
 });

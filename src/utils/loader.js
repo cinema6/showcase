@@ -56,4 +56,25 @@ export default new Loader({
         src: 'https://platform.twitter.com/oct.js',
         postload: () => window.twttr,
     },
+    facebook: {
+        src: 'https://connect.facebook.net/en_US/fbevents.js',
+        preload: () => {
+            /* eslint-disable no-underscore-dangle */
+            const fbq = window._fbq = window.fbq = (...args) => (
+                fbq.callMethod ? fbq.callMethod(...args) : fbq.queue.push(args)
+            );
+
+            fbq.push = fbq;
+            fbq.loaded = true;
+            fbq.version = '2.0';
+            fbq.queue = [];
+        },
+        postload: () => {
+            const { fbq } = window;
+
+            fbq('init', '202344783438882');
+
+            return fbq;
+        },
+    },
 });

@@ -101,7 +101,12 @@ export const signUp = createThunk((data) => (
         })).then(response => Promise.all([
             loader.load('adwords'),
             loader.load('twitter'),
-        ]).then(([adwords, twitter]) => {
+            loader.load('facebook'),
+        ]).then(([
+            adwords,
+            twitter,
+            facebook,
+        ]) => {
             adwords({
                 google_conversion_id: config.adWords.conversionID,
                 google_conversion_language: 'en',
@@ -115,6 +120,8 @@ export const signUp = createThunk((data) => (
                 tw_sale_amount: 0,
                 tw_order_quantity: 0,
             });
+
+            facebook('track', 'CompleteRegistration');
 
             return response;
         }).catch(() => response));

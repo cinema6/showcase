@@ -31,7 +31,7 @@ import loader from '../../src/utils/loader';
 const proxyquire = require('proxyquire');
 
 describe('user actions', function() {
-    let adwords, twitter;
+    let adwords, twitter, facebook;
     let realCreateDbActions, createDbActions;
     let actions;
     let changeEmail, changePassword, user, signUp, confirmUser, resendConfirmationEmail;
@@ -47,6 +47,7 @@ describe('user actions', function() {
                 trackPid: jasmine.createSpy('twttr.conversion.trackPid()')
             }
         };
+        facebook = jasmine.createSpy('facebook()');
 
         spyOn(loader, 'load').and.callFake(name => {
             switch (name) {
@@ -54,6 +55,8 @@ describe('user actions', function() {
                 return Promise.resolve(adwords);
             case 'twitter':
                 return Promise.resolve(twitter);
+            case 'facebook':
+                return Promise.resolve(facebook);
             default:
                 return Promise.reject(new Error(`Unknown: ${name}`));
             }
@@ -339,6 +342,10 @@ describe('user actions', function() {
                         tw_sale_amount: 0,
                         tw_order_quantity: 0
                     });
+                });
+
+                it('should track the facebook conversion', function() {
+                    expect(facebook).toHaveBeenCalledWith('track', 'CompleteRegistration');
                 });
 
                 it('should fulfill with the response', function() {
