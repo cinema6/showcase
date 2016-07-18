@@ -1,4 +1,5 @@
 import loader, { Loader } from '../../src/utils/loader';
+import { intercomId } from '../../config';
 
 describe('loader utils', function() {
     describe('Loader(config)', function() {
@@ -190,6 +191,28 @@ describe('loader utils', function() {
     describe('loader', function() {
         it('should exist', function() {
             expect(loader).toEqual(jasmine.any(Loader));
+        });
+
+        describe('intercom', function() {
+            it('should load the intercom src', function() {
+                expect(loader.config.intercom.src).toBe(`https://widget.intercom.io/widget/${intercomId}`);
+            });
+
+            describe('postload()', function() {
+                beforeEach(function() {
+                    window.Intercom = jasmine.createSpy('Intercom()');
+
+                    this.result = loader.config.intercom.postload();
+                });
+
+                afterEach(function() {
+                    delete window.Intercom;
+                });
+
+                it('should return window.Intercom', function() {
+                    expect(this.result).toBe(window.Intercom);
+                });
+            });
         });
     });
 });

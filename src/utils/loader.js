@@ -2,6 +2,7 @@ import {
     cloneDeep as clone,
     noop,
 } from 'lodash';
+import { intercomId } from '../../config';
 
 export class Loader {
     constructor(config) {
@@ -42,4 +43,9 @@ export class Loader {
     }
 }
 
-export default new Loader({});
+export default new Loader({
+    intercom: {
+        src: `https://widget.intercom.io/widget/${intercomId}`,
+        postload: () => window.Intercom,
+    },
+});

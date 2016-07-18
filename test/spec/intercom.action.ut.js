@@ -1,28 +1,22 @@
 import { getThunk } from '../../src/middleware/fsa_thunk';
-
-const proxyquire = require('proxyquire');
+import { trackLogin, trackLogout } from '../../src/actions/intercom';
+import loader from '../../src/utils/loader';
+import { intercomId } from '../../config';
 
 describe('actions: intercom', function() {
-    let intercomUtil;
-    let actions;
-    let trackLogin;
-    let trackLogout;
+    let intercom;
 
     beforeEach(function() {
-        intercomUtil = {
-            id: 'xyz123',
-            track: jasmine.createSpy('intercom.track()')
-        };
+        intercom = jasmine.createSpy('intercom()');
 
-        actions = proxyquire('../../src/actions/intercom', {
-            '../utils/intercom': {
-                default: intercomUtil,
-                __esModule: true
+        spyOn(loader, 'load').and.callFake(name => {
+            switch (name) {
+            case 'intercom':
+                return Promise.resolve(intercom);
+            default:
+                return Promise.reject(new Error(`Unknown: ${name}`));
             }
         });
-
-        trackLogin = actions.trackLogin;
-        trackLogout = actions.trackLogout;
     });
 
     describe('trackLogin', function() {
@@ -45,11 +39,14 @@ describe('actions: intercom', function() {
         });
 
         describe('when called', function() {
-            it('should call intercom.track()', function() {
+            beforeEach(function(done) {
                 thunk();
+                setTimeout(done);
+            });
 
-                expect(intercomUtil.track).toHaveBeenCalledWith('boot', {
-                    app_id: 'xyz123',
+            it('should call intercom()', function() {
+                expect(intercom).toHaveBeenCalledWith('boot', {
+                    app_id: intercomId,
                     name: 'Scott Munson',
                     email: 'scott@cinema6.com',
                     created_at: '2014-03-13T15:28:23.653Z',
@@ -71,10 +68,13 @@ describe('actions: intercom', function() {
         });
 
         describe('when called', function() {
-            it('should call intercom.track()', function() {
+            beforeEach(function(done) {
                 thunk();
+                setTimeout(done);
+            });
 
-                expect(intercomUtil.track).toHaveBeenCalledWith('shutdown');
+            it('should call intercom()', function() {
+                expect(intercom).toHaveBeenCalledWith('shutdown');
             });
         });
     });
