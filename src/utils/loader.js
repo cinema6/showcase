@@ -49,7 +49,7 @@ export default new Loader({
         postload: () => window.Intercom,
     },
     adwords: {
-        src: 'http://www.googleadservices.com/pagead/conversion_async.js',
+        src: 'https://www.googleadservices.com/pagead/conversion_async.js',
         postload: () => window.google_trackConversion || noop,
     },
     twitter: {

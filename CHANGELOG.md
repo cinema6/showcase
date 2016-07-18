@@ -1,6 +1,10 @@
 # Showcase
 
 ## v0.12.0 (July 18, 2016)
+* *[v0.12.0-rc2]*
+  * [FIX]: Make adwords conversion tracking work via a secure connection
+* *[/v0.12.0-rc2]*
+
 * *[v0.12.0-rc1]*
   * [FIX]: Fix iOS whitespace issue
   * Add support for Facebook and Twitter conversion tracking
