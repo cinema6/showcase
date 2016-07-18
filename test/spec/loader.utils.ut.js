@@ -220,7 +220,7 @@ describe('loader utils', function() {
 
         describe('adwords', function() {
             it('should load the adwords source', function() {
-                expect(loader.config.adwords.src).toBe('http://www.googleadservices.com/pagead/conversion_async.js');
+                expect(loader.config.adwords.src).toBe('https://www.googleadservices.com/pagead/conversion_async.js');
             });
 
             describe('postload()', function() {
