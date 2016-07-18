@@ -27,6 +27,13 @@ npm test
 npm run tdd
 ```
 
+It is also possible to only watch and run a subset of unit tests with the `--only` param. Unlike just using `fdescribe` in a test file, `--only` will cause `browserify`/`babel` to only transpile the relevant files, making the initial and subsequent builds much faster:
+
+```bash
+# Only build/run component tests
+npm run tdd -- --only "*.component.ut.js"
+```
+
 ### Start a Development Server
 ```bash
 npm start
