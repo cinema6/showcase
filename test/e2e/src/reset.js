@@ -3,6 +3,7 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Password Reset Test': function (browser) {
+        var page = browser.page.page_object();
 
         utils.login(browser)
 
@@ -10,24 +11,25 @@ module.exports = {
       .url(browser.launchUrl + '#/dashboard/account/password')
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(browser)
+        utils.allDashboardTest(browser);
+      
+        page
+      .waitForElementVisible('@oldPasswordInput', 10000)
+      .assert.elementPresent('@oldPasswordInput')
+      .assert.elementPresent('@newPasswordInput')
+      .assert.elementPresent('@repeatPasswordInput')
 
-      .waitForElementVisible('input[name=oldPassword]', 10000)
-      .assert.elementPresent('input[name=oldPassword]')
-      .assert.elementPresent('input[name=newPassword]')
-      .assert.elementPresent('input[name=newPasswordRepeat]')
+      .clearValue('@oldPasswordInput')
+      .clearValue('@newPasswordInput')
+      .clearValue('@repeatPasswordInput')
 
-      .clearValue('input[name=oldPassword]')
-      .clearValue('input[name=newPassword]')
-      .clearValue('input[name=newPasswordRepeat]')
+      .setValue('@oldPasswordInput', browser.globals.password)
+      .setValue('@newPasswordInput', browser.globals.password)
+      .setValue('@repeatPasswordInput', browser.globals.password)
+      .click('@submitButton')
 
-      .setValue('input[name=oldPassword]', browser.globals.password)
-      .setValue('input[name=newPassword]', browser.globals.password)
-      .setValue('input[name=newPasswordRepeat]', browser.globals.password)
-      .click('button[type=submit]')
-
-      .waitForElementVisible('div[role=alert]', 10000)
-      .assert.elementPresent('div[role=alert]');
+      .waitForElementVisible('@alert', 10000)
+      .assert.elementPresent('@alert');
 
         utils.logout(browser)
 

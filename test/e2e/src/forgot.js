@@ -1,21 +1,26 @@
 module.exports = {
 
     'Reelcontent Forgot Password Test': function (browser) {
+        var page = browser.page.page_object();
+
         browser
       .url(browser.launchUrl + '#/forgot-password')
       .waitForElementVisible('body', 10000)
           
-      .assert.urlContains('password')
-      .assert.elementPresent('input[type=email]')
-      .assert.elementPresent('button[type=submit]')
+      .assert.urlContains('password');
 
-      .setValue('input[name=email]', browser.globals.email)
-      .click('button[type=submit]')
+        page
+      .assert.visible('@emailInput')
+      .assert.visible('@submitButton')
 
-      .waitForElementVisible('div[role=alert', 10000)
+      .setValue('@emailInput', browser.globals.email)
+      .click('@submitButton')
 
-      .assert.elementPresent('div[role=alert]')
+      .waitForElementVisible('@alert', 10000)
 
+      .assert.visible('@alert');
+
+        browser
       .end();
     }
 };

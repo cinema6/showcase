@@ -3,6 +3,7 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Profile Test': function (browser) {
+        var page = browser.page.page_object();
 
         utils.login(browser)
 
@@ -11,31 +12,32 @@ module.exports = {
       .url(browser.launchUrl + '#/dashboard/account/profile')
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(browser)
+        utils.allDashboardTest(browser);
+      
+        page
+      .waitForElementVisible('@firstNameInput', 10000)
+      .assert.elementPresent('@firstNameInput')
+      .assert.elementPresent('@lastNameInput')
+      .assert.elementPresent('@companyInput')
+      .assert.elementPresent('@phoneNumberInput')
 
-      .waitForElementVisible('input[name=firstName]', 10000)
-      .assert.elementPresent('input[name=firstName]')
-      .assert.elementPresent('input[name=lastName]')
-      .assert.elementPresent('input[name=company]')
-      .assert.elementPresent('input[name=phoneNumber]')
+      .clearValue('@firstNameInput')
+      .clearValue('@lastNameInput')
+      .clearValue('@companyInput')
+      .clearValue('@phoneNumberInput')
 
-      .clearValue('input[name=firstName]')
-      .clearValue('input[name=lastName]')
-      .clearValue('input[name=company]')
-      .clearValue('input[name=phoneNumber]')
-
-      .setValue('input[name=firstName]', browser.globals.firstName)
-      .setValue('input[name=lastName]', browser.globals.lastName)
-      .setValue('input[name=company]', browser.globals.company)
-      .setValue('input[name=phoneNumber]',
+      .setValue('@firstNameInput', browser.globals.firstName)
+      .setValue('@lastNameInput', browser.globals.lastName)
+      .setValue('@companyInput', browser.globals.company)
+      .setValue('@phoneNumberInput',
         '(' + Math.round(Math.random() * 1000) + ') '
         + Math.round(Math.random() * 1000) + '-'
         + Math.round(Math.random() * 10000))
 
-      .click('button[type=submit]')
+      .click('@submitButton')
 
-      .waitForElementVisible('div[role=alert]', 10000)
-      .assert.elementPresent('div[role=alert]');
+      .waitForElementVisible('@alert', 10000)
+      .assert.elementPresent('@alert');
 
         utils.logout(browser)
 

@@ -3,6 +3,7 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Email Test': function (browser) {
+        var page = browser.page.page_object();
 
         utils.login(browser)
 
@@ -11,22 +12,23 @@ module.exports = {
       .url(browser.launchUrl + '#/dashboard/account/email')
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(browser)
-          
-      .waitForElementVisible('input[type=email]', 10000)
-      .assert.elementPresent('input[type=email]')
-      .assert.elementPresent('input[type=password]')
+        utils.allDashboardTest(browser);
 
-      .clearValue('input[name=email]')
-      .clearValue('input[name=password]')
+        page
+      .waitForElementVisible('@emailInput', 10000)
+      .assert.elementPresent('@emailInput')
+      .assert.elementPresent('@passwordInput')
 
-      .setValue('input[name=email]', browser.globals.email)
-      .setValue('input[name=password]', browser.globals.password)
-      .click('button[type=submit]')
+      .clearValue('@emailInput')
+      .clearValue('@passwordInput')
 
-      .waitForElementVisible('div[role=alert]', 40000)
+      .setValue('@emailInput', browser.globals.email)
+      .setValue('@passwordInput', browser.globals.password)
+      .click('@submitButton')
 
-      .assert.elementPresent('div[role=alert]');
+      .waitForElementVisible('@alert', 40000)
+
+      .assert.elementPresent('@alert');
 
         utils.logout(browser)
 
