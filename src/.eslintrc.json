@@ -12,13 +12,6 @@
         "indent": [
             "error",
             4
-        ],
-        "import/no-unresolved": [
-            2,
-            {
-                "commonjs": true,
-                "ignore": ["adwords-track-conversion"]
-            }
         ]
     }
 }

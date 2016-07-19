@@ -1,6 +1,44 @@
 # Showcase
 
+## v0.12.0 (July 18, 2016)
+* *[v0.12.0-rc2]*
+  * [FIX]: Make adwords conversion tracking work via a secure connection
+* *[/v0.12.0-rc2]*
+
+* *[v0.12.0-rc1]*
+  * [FIX]: Fix iOS whitespace issue
+  * Add support for Facebook and Twitter conversion tracking
+* *[/v0.12.0-rc1]*
+
+## v0.11.1 (June 24, 2016)
+* *[v0.11.1-rc2]*
+  * [FIX]: hide blank space if the app has no rating
+  * [FIX]: Make sure a payment method is required by default in
+    production
+* *[/v0.11.1-rc2]*
+
+* *[v0.11.1-rc1]*
+  * [FIX]: Ensure the user does not get stuck on the password reset page
+    after successfully resetting their password
+  * [FIX]: Ensure users cannot submit the signup form without filling
+    anything out
+  * [FIX]: Allow the user to logout if they login before their account
+    is activated
+  * [FIX]: Make the dashboard look better on mobile
+  * [FIX]: Fix strange marketing messaging if the user has no free trial
+* *[/v0.11.1-rc1]*
+
 ## v0.11.0 (June 21, 2016)
+* *[v0.11.0-rc3]*
+  * Add the industry CTR to the dashboard chart
+* *[/v0.11.0-rc3]*
+
+* *[v0.11.0-rc2]*
+  * Initialize Intercom on page load for logged in user
+  * Render CTR on the dashboard chart instead of clicks
+  * Show CTR in the table on the dashboard
+* *[/v0.11.0-rc2]*
+
 * *[v0.11.0-rc1]*
   * [FIX]: Prevent failures that would occur if an API operation were to
     take a long time to complete

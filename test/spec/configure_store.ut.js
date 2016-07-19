@@ -69,7 +69,7 @@ describe('configureStore(initialState)', function() {
         };
 
         reduxPromiseMiddleware = {
-            default: jasmine.createSpy('promiseMiddleware()').and.callFake(require('redux-promise-middleware').default),
+            default: jasmine.createSpy('promiseMiddleware()').and.callFake((module => module.__esModule ? module.default : module)(require('redux-promise-middleware'))),
 
             __esModule: true
         };

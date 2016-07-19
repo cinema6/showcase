@@ -60,4 +60,14 @@ describe('CampaignDetailInfo', function() {
         expect(button.length).toBe(1, '<Button> not rendered.');
         expect(button.prop('onClick')).toBe(this.component.prop('onReplace'));
     });
+
+    describe('if there is no rating', function() {
+        beforeEach(function() {
+            this.component.setProps({ rating: null });
+        });
+
+        it('should not render a StarRating', function() {
+            expect(this.component.find('.campaign-app-info').length).toBe(0, '.campaign-app-info is rendered.');
+        });
+    });
 });

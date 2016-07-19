@@ -12,6 +12,12 @@ function formatDate(date) {
     return moment(date).format('MMM D');
 }
 
+function formatCTR({ users, clicks }) {
+    const percent = Math.round((Math.min(users, clicks) / users) * 100);
+
+    return (percent && `${percent}%`) || DASH;
+}
+
 export default function CampaignDetailTable({
     items,
 }) {
@@ -27,6 +33,9 @@ export default function CampaignDetailTable({
                 <th className="text-center">
                     <h4>Clicks</h4>
                 </th>
+                <th className="text-center">
+                    <h4>CTR</h4>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -35,10 +44,13 @@ export default function CampaignDetailTable({
                     <h4>{formatDate(date)}</h4>
                 </th>
                 <td>
-                    <h4>{formatNumber(users)}</h4>
+                    <h4 className="stats-col-reach">{formatNumber(users)}</h4>
                 </td>
                 <td>
-                    <h4>{formatNumber(clicks)}</h4>
+                    <h4 className="stats-col-clicks">{formatNumber(clicks)}</h4>
+                </td>
+                <td>
+                    <h4 className="stats-col-ctr">{formatCTR({ users, clicks })}</h4>
                 </td>
             </tr>))}
         </tbody>

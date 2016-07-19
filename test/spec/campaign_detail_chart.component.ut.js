@@ -20,6 +20,9 @@ function getChartOptions() {
                     display: true,
                     gridLines: jasmine.objectContaining({
                         offsetGridLines: false
+                    }),
+                    ticks: jasmine.objectContaining({
+                        callback: jasmine.any(Function)
                     })
                 })
             ]),
@@ -28,47 +31,76 @@ function getChartOptions() {
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    id: 'users'
+                    id: 'users',
+
+                    ticks: jasmine.objectContaining({
+                        suggestedMin: 25
+                    })
                 }),
                 jasmine.objectContaining({
                     type: 'linear',
                     display: true,
                     position: 'right',
-                    id: 'clicks',
+                    id: 'ctr',
 
                     gridLines: jasmine.objectContaining({
                         drawOnChartArea: false
+                    }),
+                    ticks: jasmine.objectContaining({
+                        callback: jasmine.any(Function),
+                        suggestedMin: 0,
+                        suggestedMax: 20
                     })
                 })
             ])
+        }),
+        tooltips: jasmine.objectContaining({
+            callbacks: jasmine.objectContaining({
+                label: jasmine.any(Function)
+            })
         })
     });
 }
-function getChartData(items) {
+
+function getChartData(items, industryCTR) {
     return jasmine.objectContaining({
-        labels: items.map(({ date }) => moment(date).format('dddd M/D')),
         datasets: [
+            jasmine.objectContaining({
+                label: 'CTR',
+                data: items.map(({ clicks, users }) => {
+                    if (!users) { return null; }
+
+                    return Math.round((clicks / users) * 100) || null;
+                }),
+                fill: false,
+                backgroundColor: 'rgba(250, 169, 22,1)',
+                borderColor: 'rgba(250, 169, 22,1)',
+                pointBorderColor: 'rgba(250, 169, 22,1)',
+                pointBackgroundColor: 'rgba(250, 169, 22,1)',
+                lineTension: 0.1,
+                pointRadius: 0,
+                yAxisID: 'ctr'
+            }),
+            jasmine.objectContaining({
+                label: 'Industry CTR',
+                data: items.map(() => industryCTR),
+                fill: false,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                borderColor: 'rgba(0, 0, 0, 0.5)',
+                lineTension: 0.1,
+                pointRadius: 0,
+                yAxisID: 'ctr'
+            }),
             jasmine.objectContaining({
                 label: 'Unique Views',
                 data: items.map(({ users }) => users || null),
-                fill: false,
-                backgroundColor: 'rgba(38, 173, 228,1)',
+                fill: true,
+                backgroundColor: 'rgba(38, 173, 228,0.15)',
                 borderColor: 'rgba(38, 173, 228,1)',
                 pointBorderColor: 'rgba(38, 173, 228,1)',
                 pointBackgroundColor: 'rgba(38, 173, 228,1)',
-                lineTension: 0,
+                lineTension: 0.1,
                 yAxisID: 'users'
-            }),
-            jasmine.objectContaining({
-                label: 'Clicks',
-                data: items.map(({ clicks }) => clicks || null),
-                fill: false,
-                backgroundColor: 'rgba(122, 179, 23,1)',
-                borderColor: 'rgba(122, 179, 23,1)',
-                pointBorderColor: 'rgba(122, 179, 23,1)',
-                pointBackgroundColor: 'rgba(122, 179, 23,1)',
-                lineTension: 0,
-                yAxisID: 'clicks'
             })
         ]
     });
@@ -82,15 +114,20 @@ describe('CampaignDetailChart', function() {
                 { date: '2016-05-07', views: 283, users: 221, clicks: 0, installs: 0, launches: 0 },
                 { date: '2016-05-08', views: 245, users: 195, clicks: 3 , installs: 3, launches: 0 },
                 { date: '2016-05-09', views: 433, users: 0, clicks: 50, installs: 0, launches: 0 },
-                { date: '2016-05-10', views: 250, users: 200, clicks: 0, installs: 5, launches: 0 },
-                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 0, launches: 0 },
+                { date: '2016-05-10', views: 0, users: 0, clicks: 0, installs: 0, launches: 0 },
+                { date: '2016-05-11', views: 125, users: 0, clicks: 3 , installs: 2, launches: 0 },
                 { date: '2016-05-12', views: 193, users: 125, clicks: 15, installs: 0, launches: 0 }
-            ]
+            ],
+            industryCTR: 2
         };
 
         this.component = mount(
             <CampaignDetailChart {...this.props} />
         );
+
+        const canvas = this.component.find('canvas').node;
+        canvas.width = 800;
+        canvas.height = 600;
     });
 
     it('should exist', function() {
@@ -108,7 +145,105 @@ describe('CampaignDetailChart', function() {
         expect(chart.chart.canvas).toBe(canvas);
         expect(chart.config.type).toBe('line');
         expect(chart.config.options).toEqual(getChartOptions());
-        expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+        expect(chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
+        expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
+    });
+
+    describe('the tooltips.label Function', function() {
+        beforeEach(function() {
+            this.tooltip = {
+                xLabel: 'Monday 5/9',
+                yLabel: '13',
+                datasetIndex: 0,
+                index: 2
+            };
+            this.data = this.component.instance().chart.config.data;
+
+            this.label = this.component.instance().chart.config.options.tooltips.callbacks.label;
+        });
+
+        describe('if the dataset is 0', function() {
+            beforeEach(function() {
+                this.tooltip.datasetIndex = 0;
+            });
+
+            it('should add a %', function() {
+                expect(this.label(this.tooltip, this.data)).toBe(`CTR: ${this.tooltip.yLabel}%`);
+            });
+        });
+
+        [1, 2].forEach(function(index) {
+            describe(`if the dataset is ${index}`, function() {
+                beforeEach(function() {
+                    this.tooltip.datasetIndex = index;
+                });
+
+                it('should not add a %', function() {
+                    expect(this.label(this.tooltip, this.data)).toBe(`${this.component.instance().chart.config.data.datasets[index].label}: ${this.tooltip.yLabel}`);
+                });
+            });
+        });
+    });
+
+    describe('the yAxes callback', function() {
+        beforeEach(function() {
+            this.callback = this.component.instance().chart.options.scales.yAxes[1].ticks.callback;
+        });
+
+        it('should format the number as a percent', function() {
+            expect(this.callback(8, 0, [8])).toBe('8%');
+        });
+    });
+
+    describe('the xAxes callback', function() {
+        beforeEach(function() {
+            this.dates = this.component.prop('items').map(({ date }) => moment(date));
+
+            this.callback = this.component.instance().chart.options.scales.xAxes[0].ticks.callback;
+        });
+
+        it('should format the date', function() {
+            this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('ddd M/D')));
+        });
+
+        describe('if the canvas is under 700px wide', function() {
+            beforeEach(function() {
+                this.component.find('canvas').node.width = 699;
+            });
+
+            it('should use smaller labels', function() {
+                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('M/D')));
+            });
+        });
+
+        describe('if there are 30 items', function() {
+            beforeEach(function() {
+                this.component.setProps({
+                    items: Array.apply([], new Array(30)).map((_, index) => ({
+                        users: random(100, 125),
+                        clicks: random(10, 20),
+                        date: moment().add(index, 'days').format('YYYY-MM-DD')
+                    }))
+                });
+                this.dates = this.component.prop('items').map(({ date }) => moment(date));
+            });
+
+            it('should only show the date', function() {
+                this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(date.format('M/D')));
+            });
+
+            describe('if the canvas is under 700px wide', function() {
+                beforeEach(function() {
+                    this.component.find('canvas').node.width = 699;
+                });
+
+                it('should only show every other item', function() {
+                    this.dates.forEach((date, index, dates) => expect(this.callback(date, index, dates)).toBe(
+                        index % 2 === 0 ? date.format('M/D') : ' '
+                    ));
+                });
+            });
+        });
     });
 
     describe('if the items does not change', function() {
@@ -136,29 +271,23 @@ describe('CampaignDetailChart', function() {
         });
 
         it('should update the chart', function() {
-            expect(this.component.instance().chart.data.datasets[0].data).toEqual(this.component.prop('items').map(({ users }) => users || null));
-            expect(this.component.instance().chart.data.datasets[1].data).toEqual(this.component.prop('items').map(({ clicks }) => clicks || null));
-
+            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
             expect(this.component.instance().chart.update).toHaveBeenCalledWith();
         });
+    });
 
-        describe('to 30 days', function() {
-            beforeEach(function() {
-                this.component.instance().chart.update.calls.reset();
+    describe('if the industryCTR changes', function() {
+        beforeEach(function() {
+            spyOn(this.component.instance().chart, 'update').and.callThrough();
 
-                this.component.setProps({
-                    items: Array.apply([], new Array(30)).map((_, index) => ({
-                        users: random(100, 125),
-                        clicks: random(10, 20),
-                        date: moment().add(index, 'days').format('YYYY-MM-DD')
-                    }))
-                });
+            this.component.setProps({
+                industryCTR: 10
             });
+        });
 
-            it('should update the labels', function() {
-                expect(this.component.instance().chart.data.labels).toEqual(this.component.prop('items').map(({ date }) => moment(date).format('M/D')));
-                expect(this.component.instance().chart.update).toHaveBeenCalledWith();
-            });
+        it('should update the chart', function() {
+            expect(this.component.instance().chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
+            expect(this.component.instance().chart.update).toHaveBeenCalledWith();
         });
     });
 
@@ -173,24 +302,6 @@ describe('CampaignDetailChart', function() {
         it('should destroy the chart', function() {
             expect(this.chart.destroy).toHaveBeenCalledWith();
             expect(this.component.node.chart).toBeNull();
-        });
-    });
-
-    describe('if there are 30 items', function() {
-        beforeEach(function() {
-            this.props.items = Array.apply([], new Array(30)).map((_, index) => ({
-                users: random(100, 125),
-                clicks: random(10, 20),
-                date: moment().add(index, 'days').format('YYYY-MM-DD')
-            }));
-
-            this.component = mount(
-                <CampaignDetailChart {...this.props} />
-            );
-        });
-
-        it('should use shorter labels', function() {
-            expect(this.component.instance().chart.data.labels).toEqual(this.props.items.map(({ date }) => moment(date).format('M/D')));
         });
     });
 
@@ -294,7 +405,8 @@ describe('CampaignDetailChart', function() {
                 expect(chart.chart.canvas).toBe(canvas);
                 expect(chart.config.type).toBe('line');
                 expect(chart.config.options).toEqual(getChartOptions());
-                expect(chart.config.data).toEqual(getChartData(this.component.prop('items')));
+                expect(chart.config.data).toEqual(getChartData(this.component.prop('items'), this.component.prop('industryCTR')));
+                expect(chart.config.data.labels.map(label => label.format())).toEqual(this.component.prop('items').map(({ date }) => moment(date).format()));
             });
         });
     });

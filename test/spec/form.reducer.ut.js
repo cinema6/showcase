@@ -4,7 +4,6 @@ import { reducer } from 'redux-form';
 import accountEmailReducer from '../../src/reducers/form/account_email';
 import accountPasswordReducer from '../../src/reducers/form/account_password';
 import forgotPasswordReducer from '../../src/reducers/form/forgot_password';
-import resetPasswordReducer from '../../src/reducers/form/reset_password';
 import productWizardReducer, { plugin as productWizardPlugin } from '../../src/reducers/form/product_wizard';
 import signUpReducer from '../../src/reducers/form/sign_up';
 import formReducer from '../../src/reducers/form';
@@ -15,7 +14,6 @@ describe('formReducer()', function() {
             accountEmail: accountEmailReducer,
             accountPassword: accountPasswordReducer,
             forgotPassword: forgotPasswordReducer,
-            resetPassword: resetPasswordReducer,
             productWizard: productWizardReducer,
             signUp: signUpReducer
         }).normalize({

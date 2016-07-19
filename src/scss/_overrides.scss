@@ -356,6 +356,7 @@
     $stats-reach:         #26ADE4;
     $stats-clicks:        #7AB317;
     $stats-installs:      #353A47;
+    $stats-ctr:           #FAA916;
  /***
  Navigation
  ----------------------------
@@ -927,6 +928,7 @@
             display: block;
             /*overflow: hidden;
             border-bottom: 1px dotted $brand-primary;*/
+            margin-top: 30px;
             padding-left: 0;
         }
     .campaign-overview {
@@ -950,8 +952,15 @@
         .campaign-app-preview .create-app-campaign {
             max-width: 100%;
         }
+        .campaign-overview .app-info-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
         .campaign-overview .campaign-actions {
             margin-bottom: 20px;
+            margin-top: 20px;
         }
         .campaign-overview,
         .campaign-stats-overview {
@@ -1341,6 +1350,9 @@
     }
     .stats-col-clicks {
         color: $stats-clicks;
+    }
+    .stats-col-ctr {
+        color: $stats-ctr;
     }
     .stats-col-installs {
         color: $stats-installs;
@@ -1822,6 +1834,24 @@
     @media (max-width: 992px) {
         .phone-wrap {
             max-width: 100%;
+        }
+        .campaign-overview,
+        .campaign-stats-overview {
+            min-height: 160px;
+            padding-top: 15px;
+            margin-bottom: 20px;
+        }
+        .campaign-stats-chart {
+            padding: 10px 0 0 0;
+        }
+        .campaign-stats .campaign-overview {
+            margin-top: 0;
+        }
+        .campaign-overview .app-info-wrapper {
+            position: relative;
+            top: initial;
+            left: initial;
+            transform: translate(0,0);
         }
     }
 

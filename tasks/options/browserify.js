@@ -27,7 +27,6 @@ module.exports = {
                 debug: false
             },
             transform: [
-                ['babelify'],
                 ['envify', {
                     global: true,
                     NODE_ENV: 'production',

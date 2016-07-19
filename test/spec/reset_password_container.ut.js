@@ -5,26 +5,19 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import defer from 'promise-defer';
 import { createUuid } from 'rc-uuid';
-import { validate } from '../../src/containers/ResetPassword';
+import { validate, ResetPassword } from '../../src/containers/ResetPassword';
+import { resetPassword } from '../../src/actions/auth';
+import { notify } from '../../src/actions/notification';
+import { TYPE as NOTIFICATION } from '../../src/enums/notification';
+import { replace } from 'react-router-redux';
 
 const proxyquire = require('proxyquire');
 
 describe('ResetPassword', function() {
-    let ResetPassword, resetPassword;
     let props;
     let component;
 
     beforeEach(function() {
-        resetPassword = jasmine.createSpy('resetPassword()').and.callFake(require('../../src/actions/auth').resetPassword);
-
-        ResetPassword = proxyquire('../../src/containers/ResetPassword', {
-            '../actions/auth': {
-                resetPassword,
-
-                __esModule: true
-            }
-        }).ResetPassword;
-
         props = {
             fields: {
                 newPassword: {},
@@ -74,8 +67,7 @@ describe('ResetPassword', function() {
             });
 
             it('should dispatch a resetPassword() action', function() {
-                expect(resetPassword).toHaveBeenCalledWith({ newPassword: values.newPassword, id: props.location.query.id, token: props.location.query.token });
-                expect(dispatch).toHaveBeenCalledWith(resetPassword.calls.mostRecent().returnValue);
+                expect(dispatch).toHaveBeenCalledWith(resetPassword({ newPassword: values.newPassword, id: props.location.query.id, token: props.location.query.token }));
             });
 
             describe('if successful', function() {
@@ -85,6 +77,17 @@ describe('ResetPassword', function() {
                     dispatch.and.returnValue(Promise.resolve(undefined));
 
                     setTimeout(done);
+                });
+
+                it('should show a success message', function() {
+                    expect(dispatch).toHaveBeenCalledWith(notify({
+                        type: NOTIFICATION.SUCCESS,
+                        message: 'Your password has been reset!'
+                    }));
+                });
+
+                it('should redirect to the login page', function() {
+                    expect(dispatch).toHaveBeenCalledWith(replace('/login'));
                 });
 
                 it('should fulfill with undefined', function() {
