@@ -6,6 +6,10 @@
     "name": "Free Trial",
     "type": "freeTrial",
     "data": {
-        "trialLength": 14
+        "pp-0Ekdsm05KVZ43Aqj": {
+            "trialLength": 14,
+            "paymentMethodRequired": false,
+            "targetUsers": 2000
+        }
     }
 }
