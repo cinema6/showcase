@@ -13,7 +13,6 @@ import { Button } from 'react-bootstrap';
 import DocumentTitle from 'react-document-title';
 import config from '../../../config';
 import moment from 'moment';
-import { estimateImpressions } from '../../utils/billing';
 import numeral from 'numeral';
 
 const DASH = '\u2014';
@@ -39,8 +38,7 @@ class Billing extends Component {
             showAlert,
         } = this.props;
 
-        const billingStart = billingPeriod && moment(billingPeriod.start);
-        const billingEnd = billingPeriod && moment(billingPeriod.end);
+        const billingEnd = billingPeriod && moment(billingPeriod.cycleEnd);
         const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
 
         return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
@@ -55,11 +53,12 @@ class Billing extends Component {
                             <div className="col-md-8">
                                 <div className="data-stacked">
                                     <h4>Your subscription provides</h4>
-                                    <h3>{(billingPeriod && numeral(estimateImpressions({
-                                        start: billingStart,
-                                        end: billingEnd,
-                                        viewsPerDay: paymentPlan.viewsPerDay,
-                                    })).format('0,0')) || DASH} views</h3>
+                                    <h3>
+                                        {(
+                                            billingPeriod &&
+                                            numeral(billingPeriod.totalViews).format('0,0')
+                                        ) || DASH} views
+                                    </h3>
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
@@ -137,8 +136,9 @@ Billing.propTypes = {
         showChangeModal: PropTypes.bool.isRequired,
     }).isRequired,
     billingPeriod: PropTypes.shape({
-        start: PropTypes.string.isRequired,
-        end: PropTypes.string.isRequired,
+        cycleStart: PropTypes.string.isRequired,
+        cycleEnd: PropTypes.string.isRequired,
+        totalViews: PropTypes.number.isRequired,
     }),
 
     loadPageData: PropTypes.func.isRequired,

@@ -7,7 +7,6 @@ import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodMo
 import { showAlert } from '../../src/actions/alert';
 import moment from 'moment';
 import config from '../../config';
-import { estimateImpressions } from '../../src/utils/billing';
 import numeral from 'numeral';
 
 const proxyquire = require('proxyquire');
@@ -56,8 +55,9 @@ describe('Billing', function() {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
                 billingPeriod: {
-                    start: moment().subtract(5, 'days').format(),
-                    end: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format()
+                    cycleStart: moment().subtract(5, 'days').format(),
+                    cycleEnd: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format(),
+                    totalViews: 12345
                 }
             };
             state = {
@@ -111,11 +111,11 @@ describe('Billing', function() {
         });
 
         it('should render the paymentPlan price and due date', function() {
-            expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${config.paymentPlans[0].price} on ${moment(session.billingPeriod.end).add(1, 'day').format('MMM D, YYYY')}`);
+            expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${config.paymentPlans[0].price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
         });
 
         it('should render the estimated amount of views for the billing period', function() {
-            expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(estimateImpressions({ start: moment(session.billingPeriod.start), end: moment(session.billingPeriod.end), viewsPerDay: config.paymentPlans[0].viewsPerDay })).format('0,0')} views`);
+            expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(session.billingPeriod.totalViews).format('0,0')} views`);
         });
 
         describe('if the billing period is unknown', function() {

@@ -19,8 +19,6 @@ import CampaignDetailInfo from '../../src/components/CampaignDetailInfo';
 import _, { find, assign } from 'lodash';
 import CampaignDetailStatsOverview from '../../src/components/CampaignDetailStatsOverview';
 import moment from 'moment';
-import config from '../../config';
-import { estimateImpressions } from '../../src/utils/billing';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { productDataFromCampaign } from '../../src/utils/campaign';
@@ -219,8 +217,8 @@ describe('CampaignDetail', function() {
             },
             session: {
                 billingPeriod: {
-                    start: moment().format(),
-                    end: moment().add(1, 'month').subtract(1, 'day').format()
+                    cycleStart: moment().format(),
+                    cycleEnd: moment().add(1, 'month').subtract(1, 'day').format()
                 }
             }
         };
@@ -344,8 +342,8 @@ describe('CampaignDetail', function() {
             expect(billingPeriod).toEqual(jasmine.objectContaining({
                 targetViews: this.campaign.targetUsers
             }));
-            expect(billingPeriod.start.format()).toBe(this.state.session.billingPeriod.start);
-            expect(billingPeriod.end.format()).toBe(this.state.session.billingPeriod.end);
+            expect(billingPeriod.start.format()).toBe(this.state.session.billingPeriod.cycleStart);
+            expect(billingPeriod.end.format()).toBe(this.state.session.billingPeriod.cycleEnd);
         });
 
         describe('if the billingPeriod is unknown', function() {

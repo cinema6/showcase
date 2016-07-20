@@ -51,8 +51,8 @@ class CampaignDetail extends Component {
             removeCampaign,
             updateChartSelection,
         } = this.props;
-        const billingPeriodStart = billingPeriod && moment(billingPeriod.start);
-        const billingPeriodEnd = billingPeriod && moment(billingPeriod.end);
+        const billingPeriodStart = billingPeriod && moment(billingPeriod.cycleStart);
+        const billingPeriodEnd = billingPeriod && moment(billingPeriod.cycleEnd);
 
         return (<div>
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
@@ -186,8 +186,8 @@ CampaignDetail.propTypes = {
         }).isRequired,
     }),
     billingPeriod: PropTypes.shape({
-        start: PropTypes.string.isRequired,
-        end: PropTypes.string.isRequired,
+        cycleStart: PropTypes.string.isRequired,
+        cycleEnd: PropTypes.string.isRequired,
     }),
 
     loadPageData: PropTypes.func.isRequired,
