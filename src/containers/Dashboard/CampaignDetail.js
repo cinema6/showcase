@@ -10,8 +10,6 @@ import { TYPE as NOTIFICATION } from '../../enums/notification';
 import DocumentTitle from 'react-document-title';
 import CampaignDetailInfo from '../../components/CampaignDetailInfo';
 import CampaignDetailStatsOverview from '../../components/CampaignDetailStatsOverview';
-import config from '../../../config';
-import { estimateImpressions } from '../../utils/billing';
 import moment from 'moment';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { productDataFromCampaign } from '../../utils/campaign';
@@ -29,8 +27,6 @@ const PLACEMENT_OPTIONS = {
     type: 'mobile-card',
     branding: 'showcase-app--interstitial',
 };
-
-const [paymentPlan] = config.paymentPlans;
 
 class CampaignDetail extends Component {
     componentWillMount() {
@@ -100,11 +96,7 @@ class CampaignDetail extends Component {
                             billingPeriod={(billingPeriod || undefined) && {
                                 start: billingPeriodStart,
                                 end: billingPeriodEnd,
-                                targetViews: estimateImpressions({
-                                    start: billingPeriodStart,
-                                    end: billingPeriodEnd,
-                                    viewsPerDay: paymentPlan.viewsPerDay,
-                                }),
+                                targetViews: get(campaign, 'targetUsers', 0),
                             }}
                         />
                     </div>

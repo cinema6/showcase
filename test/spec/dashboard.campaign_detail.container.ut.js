@@ -53,7 +53,8 @@ describe('CampaignDetail', function() {
                         type: 'thumbnail'
                     }
                 ]
-            }
+            },
+            targetUsers: 1050
         };
         this.state = {
             page: {
@@ -341,11 +342,7 @@ describe('CampaignDetail', function() {
             const billingPeriod = this.overview.prop('billingPeriod');
 
             expect(billingPeriod).toEqual(jasmine.objectContaining({
-                targetViews: estimateImpressions({
-                    start: moment(this.state.session.billingPeriod.start),
-                    end: moment(this.state.session.billingPeriod.end),
-                    viewsPerDay: config.paymentPlans[0].viewsPerDay
-                })
+                targetViews: this.campaign.targetUsers
             }));
             expect(billingPeriod.start.format()).toBe(this.state.session.billingPeriod.start);
             expect(billingPeriod.end.format()).toBe(this.state.session.billingPeriod.end);
@@ -364,6 +361,26 @@ describe('CampaignDetail', function() {
 
             it('should set billingPeriod to undefined', function() {
                 expect(this.overview.prop('billingPeriod')).toBeUndefined();
+            });
+        });
+
+        describe('if the campaign has no targetUsers', function() {
+            beforeEach(function() {
+                this.state = assign({}, this.state, {
+                    db: assign({}, this.state.db, {
+                        campaign: assign({}, this.state.db.campaign, {
+                            [this.campaign.id]: assign({}, this.campaign, {
+                                targetUsers: undefined
+                            })
+                        })
+                    })
+                });
+                this.store.dispatch.and.callThrough();
+                this.store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should set the billingPeriod.targetViews to 0', function() {
+                expect(this.overview.prop('billingPeriod').targetViews).toBe(0);
             });
         });
     });
