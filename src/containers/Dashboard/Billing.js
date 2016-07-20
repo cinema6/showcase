@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { assign, find } from 'lodash';
+import { assign, find, get } from 'lodash';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentHistory from '../../components/PaymentHistory';
 import ChangePaymentMethodModal from '../../components/ChangePaymentMethodModal';
@@ -11,12 +11,10 @@ import * as paymentActions from '../../actions/payment';
 import * as alertActions from '../../actions/alert';
 import { Button } from 'react-bootstrap';
 import DocumentTitle from 'react-document-title';
-import config from '../../../config';
 import moment from 'moment';
 import numeral from 'numeral';
 
 const DASH = '\u2014';
-const [paymentPlan] = config.paymentPlans;
 
 const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
@@ -31,6 +29,7 @@ class Billing extends Component {
             payments,
             page,
             billingPeriod,
+            paymentPlan,
 
             showChangeModal,
             getClientToken,
@@ -55,15 +54,15 @@ class Billing extends Component {
                                     <h4>Your subscription provides</h4>
                                     <h3>
                                         {(
-                                            billingPeriod &&
-                                            numeral(billingPeriod.totalViews).format('0,0')
+                                            paymentPlan &&
+                                            numeral(paymentPlan.viewsPerMonth).format('0,0')
                                         ) || DASH} views
                                     </h3>
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
                                     <h3>
-                                        ${paymentPlan.price} on {
+                                        ${get(paymentPlan, 'price', DASH)} on {
                                             (nextDueDate && nextDueDate.format('MMM D, YYYY')) ||
                                             DASH
                                         }
@@ -140,6 +139,9 @@ Billing.propTypes = {
         cycleEnd: PropTypes.string.isRequired,
         totalViews: PropTypes.number.isRequired,
     }),
+    paymentPlan: PropTypes.shape({
+        viewsPerMonth: PropTypes.number.isRequired,
+    }),
 
     loadPageData: PropTypes.func.isRequired,
     showChangeModal: PropTypes.func.isRequired,
@@ -151,9 +153,11 @@ Billing.propTypes = {
 function mapStateToProps(state) {
     const payments = state.session.payments.map(id => state.db.payment[id]);
     const paymentMethods = state.session.paymentMethods.map(token => state.db.paymentMethod[token]);
+    const paymentPlan = state.db.paymentPlan[state.session.paymentPlan];
 
     return {
         payments,
+        paymentPlan,
         defaultPaymentMethod: find(paymentMethods, { default: true }),
         billingPeriod: state.session.billingPeriod,
     };

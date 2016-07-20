@@ -6,7 +6,6 @@ import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
 import { showAlert } from '../../src/actions/alert';
 import moment from 'moment';
-import config from '../../config';
 import numeral from 'numeral';
 
 const proxyquire = require('proxyquire');
@@ -45,12 +44,17 @@ describe('Billing', function() {
     });
 
     describe('when rendered', function() {
-        let session;
+        let session, paymentPlan;
         let store, state;
         let props;
         let wrapper, component;
 
         beforeEach(function() {
+            paymentPlan = {
+                id: `pp-${createUuid()}`,
+                viewsPerMonth: 2000,
+                price: 149.99
+            };
             session = {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
@@ -58,7 +62,8 @@ describe('Billing', function() {
                     cycleStart: moment().subtract(5, 'days').format(),
                     cycleEnd: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format(),
                     totalViews: 12345
-                }
+                },
+                paymentPlan: paymentPlan.id
             };
             state = {
                 session,
@@ -77,7 +82,10 @@ describe('Billing', function() {
                         token,
                         last4: '1234',
                         default: false
-                    })), 'token')
+                    })), 'token'),
+                    paymentPlan: {
+                        [paymentPlan.id]: paymentPlan
+                    }
                 },
                 page: {
                     'dashboard.billing': {
@@ -111,11 +119,11 @@ describe('Billing', function() {
         });
 
         it('should render the paymentPlan price and due date', function() {
-            expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${config.paymentPlans[0].price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
+            expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${paymentPlan.price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
         });
 
-        it('should render the estimated amount of views for the billing period', function() {
-            expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(session.billingPeriod.totalViews).format('0,0')} views`);
+        it('should render the amount of views for the payment plan', function() {
+            expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
         });
 
         describe('if the billing period is unknown', function() {
@@ -132,9 +140,28 @@ describe('Billing', function() {
 
             it('should render dashes in place of data', function() {
                 const nextDueDate = component.find('.billing-summary .data-stacked h3').at(1);
+
+                expect(nextDueDate.text()).toBe(`$${paymentPlan.price} on ${DASH}`);
+            });
+        });
+
+        describe('if the payment plan is unknown', function() {
+            beforeEach(function() {
+                store.dispatch.and.callThrough();
+
+                state = assign({}, state, {
+                    session: assign({}, state.session, {
+                        paymentPlan: null
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should render dashes in place of data', function() {
+                const nextDueDate = component.find('.billing-summary .data-stacked h3').at(1);
                 const numOfImpressions = component.find('.billing-summary .data-stacked h3').at(0);
 
-                expect(nextDueDate.text()).toBe(`$${config.paymentPlans[0].price} on ${DASH}`);
+                expect(nextDueDate.text()).toBe(`$${DASH} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
                 expect(numOfImpressions.text()).toBe(`${DASH} views`);
             });
         });

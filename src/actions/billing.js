@@ -2,7 +2,7 @@ import payment, { paymentMethod } from './payment';
 import { createAction } from 'redux-actions';
 import { find } from 'lodash';
 import { createThunk } from '../middleware/fsa_thunk';
-import { getBillingPeriod } from './session';
+import { getBillingPeriod, getPaymentPlan } from './session';
 
 function prefix(type) {
     return `BILLING/${type}`;
@@ -29,6 +29,7 @@ export const loadPageData = createThunk(() => (
             dispatch(getPayments()),
             dispatch(getPaymentMethods()),
             dispatch(getBillingPeriod()),
+            dispatch(getPaymentPlan()),
         ])));
     }
 ));
