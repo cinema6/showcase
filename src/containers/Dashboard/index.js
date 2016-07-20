@@ -60,7 +60,8 @@ class Dashboard extends Component {
                         </ul>
                     </div>
                     <a href="#" className="btn btn-danger hidden-xs btn-header">
-                    <i className="fa fa-plus" /> Add New App</a>
+                    <i className="fa fa-plus" /> Add New App</a> {/*show alert asking to upgrade if 
+                    users have maximum allowed apps on current plan */}
                 </div>
             </nav>
             {/* account summary horizontal bar*/}
@@ -102,13 +103,15 @@ class Dashboard extends Component {
                 <ul className="menu-item-list">
                     <li className="menu-item">
                         <Link to="/dashboard" className="bg-danger"> {/*link to add new app*/}
-                        <i className="fa fa-plus" /> Add New App</Link>
+                        <i className="fa fa-plus" /> Add New App</Link> {/*show alert asking to upgrade if 
+                    users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-archive" /> Archive</Link>
+                        {/*link to archive*/}
                     </li>
                     <li className="menu-item">
                         <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
@@ -144,6 +147,7 @@ class Dashboard extends Component {
                     <li className="menu-item">
                         <Link to="/dashboard"><i className="fa fa-archive" />
                             <span className="menu-item-label">Archive</span>
+                            {/*link to archive*/}
                         </Link>
                     </li>
                     <li className="menu-item">

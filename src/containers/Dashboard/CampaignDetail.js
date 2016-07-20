@@ -56,6 +56,11 @@ class CampaignDetail extends Component {
 
         return (<div>
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
+            <ol className="breadcrumb hidden-xs">
+                <li><a href="#">Back to Dashboard</a></li> {/*Add link to dashboard*/}
+                <li className="active">Letgo: Buy &amp; Sell stuff online now using this 
+                awesome app</li>{/*show the selected campaign name/app title*/}
+            </ol>
             <div className="container main-section campaign-stats">
                 
                 <div className="row">

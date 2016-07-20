@@ -75,15 +75,14 @@ class Billing extends Component {
                                     bsStyle="primary"                                    
                                     onClick={() => showAlert({
                                         title: 'Cancel Your Subscription',
-                                        description: (<div><span className="text-center">
-                                            <strong className="text-center">
+                                        description: (<div><span>
+                                            <strong>
                                             Are you sure you want to cancel your subscription?
                                             </strong> <br />
-                                            All 3 of your apps will lose the exposure they have been
-                                            getting! Your membership will be suspended at the end 
-                                            of current billing period.
+                                            <p><br />All 3 of your apps will lose the exposure they have been
+                                            getting!</p>
                                         </span>
-                                        <div>
+                                        <div className="cancel-stats">
                                             <div className="campaign-mini-stats col-md-6 
                                             text-center">
                                                 <span>Current period</span>
@@ -100,14 +99,25 @@ class Billing extends Component {
                                         </div>),
                                         buttons: [
                                             { text: 'Cancel my subscription',
-                                            type: 'danger',
-                                            bsSize: 'large',
+                                            type: 'danger' + ' btn-block',                                           
+                                            size: 'large',
                                             onSelect: dismiss => dismiss() },
                                         ],
                                     })}
                                 >
-                                    Cancel
+                                    Update Plan
                                 </Button>
+                                {/*When users click on "cancel my subscription", close modal and 
+                                show the success alert on top center of the page*/}
+                                {/*
+                                <div className="alert alert-dismissible alert-success alert-fixed" 
+                                role="alert">
+                                    <button type="button" className="close" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    Your subscription will be suspended at the end of current 
+                                    billing period (Mar 25 - Apr 24).
+                                </div>*/}
                             </div>
                         </div>
                     </div>
