@@ -13,7 +13,8 @@ import { assign } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import {
     GET_PROMOTIONS,
-    GET_BILLING_PERIOD
+    GET_BILLING_PERIOD,
+    GET_PAYMENT_PLAN
 } from '../../src/actions/session';
 import moment from 'moment';
 
@@ -25,7 +26,8 @@ describe('sessionReducer()', function() {
             payments: [],
             paymentMethods: [],
             campaigns: null,
-            billingPeriod: null
+            billingPeriod: null,
+            paymentPlan: null
         });
     });
 
@@ -43,7 +45,8 @@ describe('sessionReducer()', function() {
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
                 campaigns: Array.apply([], new Array(10)).map(() => createUuid()),
 
-                billingPeriod: null
+                billingPeriod: null,
+                paymentPlan: null
             };
         });
 
@@ -108,6 +111,20 @@ describe('sessionReducer()', function() {
             it('should update the billingPeriod', function() {
                 expect(newState).toEqual(assign({}, state, {
                     billingPeriod: this.billingPeriod
+                }));
+            });
+        });
+
+        describe(`${GET_PAYMENT_PLAN}_FULFILLED`, function() {
+            beforeEach(function() {
+                this.paymentPlanId = `pp-${createUuid()}`;
+
+                newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)([this.paymentPlanId]));
+            });
+
+            it('should update the paymentPlan', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    paymentPlan: this.paymentPlanId
                 }));
             });
         });

@@ -3,6 +3,7 @@ import campaign from './campaign';
 import { createThunk } from '../middleware/fsa_thunk';
 import orgs from './org';
 import promotions from './promotion';
+import paymentPlans from './payment_plan';
 import { getCurrentPayment } from './transaction';
 
 function prefix(type) {
@@ -54,4 +55,20 @@ export const getBillingPeriod = createThunk(() => (dispatch, getState) => (
             throw reason;
         })
     )))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
+));
+
+export const GET_PAYMENT_PLAN = prefix('GET_PAYMENT_PLAN');
+export const getPaymentPlan = createThunk(() => (dispatch, getState) => (
+    dispatch(createAction(GET_PAYMENT_PLAN)(Promise.resolve().then(() => {
+        const state = getState();
+        const paymentPlan = state.db.paymentPlan[state.session.paymentPlan];
+
+        return (paymentPlan && [paymentPlan.id]) || dispatch(getOrg()).then(([orgId]) => {
+            const org = getState().db.org[orgId];
+
+            if (!org.paymentPlanId) { return null; }
+
+            return dispatch(paymentPlans.get({ id: org.paymentPlanId }));
+        });
+    }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));
