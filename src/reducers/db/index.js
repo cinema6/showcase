@@ -10,4 +10,5 @@ export default createDbReducer({
     advertiser: identity,
     org: identity,
     promotion: identity,
+    paymentPlan: identity,
 });

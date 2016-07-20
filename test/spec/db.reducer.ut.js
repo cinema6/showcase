@@ -12,7 +12,8 @@ describe('dbReducer()', function() {
             campaign: identity,
             advertiser: identity,
             org: identity,
-            promotion: identity
+            promotion: identity,
+            paymentPlan: identity
         })(undefined, 'INIT'));
     });
 });
