@@ -3,12 +3,13 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Password Reset Test': function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.resetPage();
 
-        utils.login(browser)
+        utils.login(browser);
 
+        page
       .waitForElementVisible('body', 10000)
-      .url(browser.launchUrl + '#/dashboard/account/password')
+      .navigate()
       .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser);

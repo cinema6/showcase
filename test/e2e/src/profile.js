@@ -3,13 +3,14 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Profile Test': function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.profilePage();
 
-        utils.login(browser)
+        utils.login(browser);
 
+        page
       .waitForElementVisible('body', 10000)
       .waitForElementVisible('div[class=phone-frame]', 10000)
-      .url(browser.launchUrl + '#/dashboard/account/profile')
+      .navigate()
       .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser);

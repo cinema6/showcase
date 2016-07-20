@@ -3,11 +3,13 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Billing Test': function (browser) {
+        var page = browser.page.billingPage();
 
-        utils.login(browser)
+        utils.login(browser);
 
+        page
       .waitForElementVisible('div[class=phone-frame]', 40000)
-      .url(browser.launchUrl + '#/dashboard/billing')
+      .navigate()
 
       .waitForElementVisible('#sidePanelDesktop', 100000)
 

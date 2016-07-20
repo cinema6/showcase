@@ -3,13 +3,11 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Login / Logout Test': function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.loginPage();
 
-        browser
-      .url(browser.launchUrl + '#/login')
-      .waitForElementVisible('body', 10000);
-        
         page
+      .navigate()
+      .waitForElementVisible('body', 10000)
       .waitForElementVisible('@emailInput', 10000)
 
       .assert.urlContains('login')

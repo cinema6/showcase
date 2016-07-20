@@ -3,13 +3,14 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Email Test': function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.emailPage();
 
-        utils.login(browser)
+        utils.login(browser);
 
+        page
       .waitForElementVisible('body', 10000)
       .waitForElementVisible('div[class=phone-frame]', 40000)
-      .url(browser.launchUrl + '#/dashboard/account/email')
+      .navigate()
       .waitForElementVisible('body', 10000);
 
         utils.allDashboardTest(browser);

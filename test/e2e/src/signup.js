@@ -1,14 +1,13 @@
 module.exports = {
 
     'Reelcontent Sign Up Test': function (browser) {
-        var page = browser.page.page_object();
-
-        browser
-      .url(browser.launchUrl + '#/sign-up')
-      .waitForElementVisible('body', 10000)
-      .assert.urlContains('sign-up');
+        var page = browser.page.signupPage();
 
         page
+      .navigate()
+      .waitForElementVisible('body', 10000)
+      .assert.urlContains('sign-up')
+
       .waitForElementVisible('@firstNameInput', 10000)
       .assert.elementPresent('@firstNameInput')
       .assert.elementPresent('@lastNameInput')

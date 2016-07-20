@@ -1,13 +1,12 @@
 module.exports = {
 
     login: function (browser) {
-        var page = browser.page.page_object();
-
-        browser
-      .url(browser.launchUrl + '#/login')
-      .waitForElementVisible('body', 10000);
+        var page = browser.page.loginPage();
 
         page
+      .navigate()
+      .waitForElementVisible('body', 10000)
+
       .waitForElementVisible('@emailInput', 10000)
       .assert.elementPresent('@emailInput')
       .assert.elementPresent('@passwordInput')
@@ -19,7 +18,7 @@ module.exports = {
     },
 
     logout: function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.dashboardPage();
 
         page
       .waitForElementVisible('@logoutButton', 10000)
@@ -30,7 +29,7 @@ module.exports = {
     },
 
     allDashboardTest: function (browser) {
-        var page = browser.page.page_object();
+        var page = browser.page.dashboardPage();
 
         page
       .waitForElementVisible('@logo', 10000)
