@@ -92,9 +92,12 @@ class ProductWizard extends Component {
             productData,
             targeting,
             promotions,
+            paymentPlanId,
 
             page: { step, previewLoaded, checkingIfPaymentRequired },
         } = this.props;
+
+        const promotionConfigs = _(promotions).map(`data[${paymentPlanId}]`);
 
         return (<div className="container main-section">
             <DocumentTitle
@@ -226,7 +229,8 @@ class ProductWizard extends Component {
                     productData: this.getProductData(),
                     targeting: this.getTargeting(),
                 })}
-                trialLength={_(promotions).map('data.trialLength').sum()}
+                trialLength={promotionConfigs.map('trialLength').sum()}
+                freeViews={promotionConfigs.map('targetUsers').sum()}
             />
             {step === 4 && (
                 <WizardConfirmationModal
@@ -276,6 +280,7 @@ ProductWizard.propTypes = {
     promotions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
     }).isRequired),
+    paymentPlanId: PropTypes.string,
 };
 
 function mapStateToProps(state) {

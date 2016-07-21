@@ -10,7 +10,7 @@ import { campaignFromData } from '../utils/campaign';
 import { createThunk } from '../../src/middleware/fsa_thunk';
 import { getPromotions, getOrg } from './session';
 import moment from 'moment';
-import { find } from 'lodash';
+import _, { find } from 'lodash';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -153,26 +153,25 @@ export const COLLECT_PAYMENT = prefix('COLLECT_PAYMENT');
 export const collectPayment = createThunk(({ productData, targeting }) => (dispatch, getState) => {
     const collectPaymentMethod = () => goToStep(4);
 
-    return dispatch(createAction(COLLECT_PAYMENT)(dispatch(getPromotions()).then(promotionIds => {
-        const promotions = promotionIds.map(id => getState().db.promotion[id]);
-        const paymentMethodRequired = promotions.every(promotion => (
-            promotion.data.paymentMethodRequired
-        ));
+    return dispatch(createAction(COLLECT_PAYMENT)(Promise.all([
+        dispatch(getPromotions()),
+        dispatch(getOrg()),
+    ]).then(([promotionIds, orgId]) => {
+        const state = getState();
+        const promotions = promotionIds.map(id => state.db.promotion[id]);
+        const org = state.db.org[orgId];
+        const paymentMethodRequired = _(promotions).every(
+            `data[${org.paymentPlanId}].paymentMethodRequired`
+        );
+        const paymentPlanStart = (org.paymentPlanStart || null) &&
+            moment(org.paymentPlanStart);
+        const now = moment();
 
-        if (paymentMethodRequired) { return dispatch(collectPaymentMethod()); }
-
-        return dispatch(getOrg()).then(([orgId]) => {
-            const org = getState().db.org[orgId];
-            const paymentPlanStart = (org.paymentPlanStart || null) &&
-                moment(org.paymentPlanStart);
-            const now = moment();
-
-            if (!paymentPlanStart || paymentPlanStart.isAfter(now)) {
-                return dispatch(createCampaign({ productData, targeting }));
-            }
-
+        if (paymentMethodRequired || (paymentPlanStart && !paymentPlanStart.isAfter(now))) {
             return dispatch(collectPaymentMethod());
-        });
+        }
+
+        return dispatch(createCampaign({ productData, targeting }));
     })
     .then(() => undefined)
     .catch(reason => {

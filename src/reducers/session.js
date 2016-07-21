@@ -12,21 +12,20 @@ import {
     GET_PROMOTIONS,
     GET_BILLING_PERIOD,
     GET_PAYMENT_PLAN,
+    GET_ORG,
 } from '../actions/session';
 import { assign, reject, includes } from 'lodash';
 
 const DEFAULT_STATE = {
     user: null,
-
+    org: null,
     promotions: null,
-
     payments: [],
     paymentMethods: [],
-
     campaigns: null,
+    paymentPlan: null,
 
     billingPeriod: null,
-    paymentPlan: null,
 };
 
 function addUserToSession(state, { payload: user }) {
@@ -48,6 +47,9 @@ export default handleActions({
     }),
     [`${GET_PAYMENT_PLAN}_FULFILLED`]: (state, { payload: [paymentPlanId] }) => assign({}, state, {
         paymentPlan: paymentPlanId,
+    }),
+    [`${GET_ORG}_FULFILLED`]: (state, { payload: [orgId] }) => assign({}, state, {
+        org: orgId,
     }),
 
     [payment.list.SUCCESS]: (state, { payload: payments }) => assign({}, state, {

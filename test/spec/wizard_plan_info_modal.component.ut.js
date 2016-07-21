@@ -7,9 +7,6 @@ import {
     findRenderedDOMComponentWithTag
 } from 'react-addons-test-utils';
 import { findDOMNode } from 'react-dom';
-import { estimateImpressions } from '../../src/utils/billing';
-import moment from 'moment';
-import config from '../../config';
 import numeral from 'numeral';
 
 describe('WizardPlanInfoModal', function() {
@@ -19,7 +16,8 @@ describe('WizardPlanInfoModal', function() {
             onClose: jasmine.createSpy('onClose()'),
             onContinue: jasmine.createSpy('onContinue()'),
             actionPending: false,
-            trialLength: 17
+            trialLength: 17,
+            freeViews: 2500
         };
         this.component = mount(
             <WizardPlanInfoModal {...this.props} />
@@ -54,8 +52,19 @@ describe('WizardPlanInfoModal', function() {
         });
 
         it('should use generic text', function() {
-            expect(this.header.textContent).toBe('Reach thousands of people');
             expect(this.button.textContent).toBe('Continue');
+        });
+    });
+
+    describe('if the freeViews is 0', function() {
+        beforeEach(function() {
+            this.component.setProps({ freeViews: 0 });
+
+            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
+        });
+
+        it('should use generic text', function() {
+            expect(this.header.textContent).toBe('Reach thousands of people');
         });
     });
 
@@ -64,13 +73,8 @@ describe('WizardPlanInfoModal', function() {
             this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
         });
 
-        it('should be calculated', function() {
-            expect(this.header.textContent).toBe(`Reach ${
-                numeral(estimateImpressions({
-                    end: moment().add(this.component.prop('trialLength'), 'days'),
-                    viewsPerDay: config.paymentPlans[0].viewsPerDay
-                })).format('0,0')
-            } people for FREE`);
+        it('should be formatted', function() {
+            expect(this.header.textContent).toBe(`Reach ${numeral(this.props.freeViews).format('0,0')} people for FREE`);
         });
     });
 

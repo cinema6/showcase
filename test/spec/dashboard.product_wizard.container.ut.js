@@ -108,6 +108,8 @@ describe('ProductWizard', function() {
         let wrapper, component;
 
         beforeEach(function() {
+            const paymentPlanId = `pp-${createUuid()}`;
+
             jasmine.clock().install();
             jasmine.clock().mockDate();
 
@@ -144,6 +146,8 @@ describe('ProductWizard', function() {
             spyOn(store, 'dispatch').and.callThrough();
 
             props = {
+                paymentPlanId,
+
                 page: {
                     step: 0,
                     productData: null,
@@ -162,14 +166,20 @@ describe('ProductWizard', function() {
                         id: `pro-${createUuid()}`,
                         type: 'freeTrial',
                         data: {
-                            trialLength: 10
+                            [paymentPlanId]: {
+                                trialLength: 10,
+                                targetUsers: 500
+                            }
                         }
                     },
                     {
                         id: `pro-${createUuid()}`,
                         type: 'freeTrial',
                         data: {
-                            trialLength: 4
+                            [paymentPlanId]: {
+                                trialLength: 4,
+                                targetUsers: 700
+                            }
                         }
                     }
                 ],
@@ -305,15 +315,31 @@ describe('ProductWizard', function() {
                         expect(this.planInfoModal.prop('trialLength')).toBe(14);
                     });
 
-                    describe('if there are no promotions', function() {
+                    ['promotions', 'paymentPlanId'].forEach(prop => describe(`if there is/are no ${prop}`, function() {
                         beforeEach(function() {
-                            wrapper.setProps({ promotions: null });
+                            wrapper.setProps({ [prop]: null });
                         });
 
                         it('should be 0', function() {
                             expect(this.planInfoModal.prop('trialLength')).toBe(0);
                         });
+                    }));
+                });
+
+                describe('freeViews', function() {
+                    it('should be calculated from the promotions', function() {
+                        expect(this.planInfoModal.prop('freeViews')).toBe(1200);
                     });
+
+                    ['promotions', 'paymentPlanId'].forEach(prop => describe(`if there is/are no ${prop}`, function() {
+                        beforeEach(function() {
+                            wrapper.setProps({ [prop]: null });
+                        });
+
+                        it('should be 0', function() {
+                            expect(this.planInfoModal.prop('freeViews')).toBe(0);
+                        });
+                    }));
                 });
             });
         });
