@@ -14,7 +14,6 @@ function ratio(num, denom) {
 export default function StatsSummaryBar({
     startDate,
     endDate,
-    today,
     views,
     viewGoals,
     appsUsed,
@@ -31,7 +30,7 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text">Days left</span>
                 <h4 className="stats-header">
-                    {endDate.diff(today, 'days')}
+                    {endDate.diff(moment(), 'days')}
                 </h4>
             </div>
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
