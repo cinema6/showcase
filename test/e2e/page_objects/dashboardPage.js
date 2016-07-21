@@ -5,6 +5,9 @@ module.exports = {
     elements: {
         logo: 'img[alt=logo]',
         dropdown: 'a[id=user-management-dropdown]',
-        logoutButton: '#sidePanelDesktop ul li button'
+        dropdownMenu: '#navbar ul li div ul.dropdown-menu',
+        logoutButton: '#sidePanelDesktop ul li button',
+        sidePanel: '#sidePanelDesktop',
+        phoneFrame: 'div[class=phone-frame]'
     }
 };

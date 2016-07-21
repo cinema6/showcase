@@ -2,7 +2,6 @@ module.exports = {
 
     'Reelcontent Forgot Password Test': function (browser) {
         var page = browser.page.forgotPage();
-
         page
       .navigate()
       .waitForElementVisible('body', 10000)

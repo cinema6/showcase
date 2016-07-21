@@ -3,15 +3,16 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Dashboard Test': function (browser) {
+        utils.login(browser);
+        var page = browser.page.dashboardPage();
 
-        utils.login(browser)
-
-      .waitForElementVisible('#sidePanelDesktop', 10000)
+        page
+      .waitForElementVisible('@sidePanel', 10000)
       .assert.urlContains('dashboard');
 
-        utils.allDashboardTest(browser);
+        utils.allDashboardTest(page);
 
-        utils.phoneFrameTest(browser);
+        utils.phoneFrameTest(page);
 
         utils.logout(browser)
 

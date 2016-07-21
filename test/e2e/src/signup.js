@@ -2,7 +2,6 @@ module.exports = {
 
     'Reelcontent Sign Up Test': function (browser) {
         var page = browser.page.signupPage();
-
         page
       .navigate()
       .waitForElementVisible('body', 10000)

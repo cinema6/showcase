@@ -4,7 +4,6 @@ module.exports = {
 
     'Reelcontent Login / Logout Test': function (browser) {
         var page = browser.page.loginPage();
-
         page
       .navigate()
       .waitForElementVisible('body', 10000)
@@ -23,11 +22,13 @@ module.exports = {
       .click('@submitButton')
       .waitForElementVisible('@alert', 10000);
 
-        utils.login(browser)
+        utils.login(browser);
+        page = browser.page.dashboardPage();
 
-      .waitForElementVisible('div[class=phone-frame]', 10000)
+        page
+      .waitForElementVisible('@phoneFrame', 10000)
       .assert.urlContains('dashboard')
-      .waitForElementVisible('nav[id=sidePanelDesktop]', 10000);
+      .waitForElementVisible('@sidePanel', 10000);
 
         utils.logout(browser)
 

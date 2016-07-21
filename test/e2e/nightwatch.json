@@ -91,7 +91,7 @@
         "start_process": true
       },
       "test_workers": {
-        "enabled": false,
+        "enabled": true,
         "workers": "auto"
       }
     }

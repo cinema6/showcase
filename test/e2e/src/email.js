@@ -3,19 +3,16 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Email Test': function (browser) {
-        var page = browser.page.emailPage();
-
-        utils.login(browser);
-
-        page
-      .waitForElementVisible('body', 10000)
-      .waitForElementVisible('div[class=phone-frame]', 40000)
-      .navigate()
+        utils.login(browser)
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(browser);
-
+        var page = browser.page.emailPage();
         page
+      .navigate()
+      .waitForElementVisible('@sidePanel', 10000);
+
+        utils.allDashboardTest(page)
+
       .waitForElementVisible('@emailInput', 10000)
       .assert.elementPresent('@emailInput')
       .assert.elementPresent('@passwordInput')

@@ -3,19 +3,16 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Profile Test': function (browser) {
+        utils.login(browser)
+      .waitForElementVisible('body', 10000);
+
         var page = browser.page.profilePage();
-
-        utils.login(browser);
-
         page
-      .waitForElementVisible('body', 10000)
-      .waitForElementVisible('div[class=phone-frame]', 10000)
       .navigate()
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(browser);
-      
-        page
+        utils.allDashboardTest(page)
+
       .waitForElementVisible('@firstNameInput', 10000)
       .assert.elementPresent('@firstNameInput')
       .assert.elementPresent('@lastNameInput')
