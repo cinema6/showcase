@@ -5,6 +5,11 @@ import moment from 'moment';
 
 describe('StatsSummaryBar', function() {
     beforeEach(function() {
+
+        jasmine.clock().install();
+        var baseTime = new Date(2016, 7, 21);
+        jasmine.clock().mockDate(baseTime);
+
         this.props = {
             startDate: moment().subtract(1, 'week'),
             endDate: moment().add(23, 'days'),
@@ -41,6 +46,10 @@ describe('StatsSummaryBar', function() {
     });
     it('should render the apps available bar width', function() {
         expect(this.component.find('.bar-fill').last().prop('style')).toEqual({ width: `${this.props.appsUsed / this.props.maxApps * 100}%` });
+    });
+
+    afterEach(function() {
+        jasmine.clock().uninstall();
     });
 
 });

@@ -68,7 +68,6 @@ export default function StatsSummaryBar({
 StatsSummaryBar.propTypes = {
     startDate: PropTypes.instanceOf(moment),
     endDate: PropTypes.instanceOf(moment),
-    today: PropTypes.instanceOf(moment).isRequired,
     views: PropTypes.number.isRequired,
     viewGoals: PropTypes.number.isRequired,
     appsUsed: PropTypes.number.isRequired,
