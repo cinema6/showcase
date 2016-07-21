@@ -8,7 +8,6 @@ describe('StatsSummaryBar', function() {
         this.props = {
             startDate: moment().subtract(1, 'week'),
             endDate: moment().add(23, 'days'),
-            today: moment(),
             views: 200,
             viewGoals: 450,
             appsUsed: 2,
@@ -29,7 +28,7 @@ describe('StatsSummaryBar', function() {
         expect(this.component.find('.stats-header').first().text()).toBe(`${this.props.startDate.format('MMM D')} - ${this.props.endDate.format('MMM D')}`);
     });
     it('should render the days left', function() {
-        expect(this.component.find('.stats-header').at(1).text()).toBe(`${this.props.endDate.diff(this.props.today, 'days')}`);
+        expect(this.component.find('.stats-header').at(1).text()).toBe(`${this.props.endDate.diff(moment(), 'days')}`);
     });
     it('should render the views ratio', function() {
         expect(this.component.find('.lighter-text').at(3).text()).toBe(`${this.props.views} / ${this.props.viewGoals}`);
