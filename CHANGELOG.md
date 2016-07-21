@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.13.0-rc1]*
+  * [REFACTOR]: Move a bunch of billing cycle logic to the backend
+
 ## v0.12.1 (July 22, 2016)
 * *[v0.12.1-rc1]*
   * [FIX]: Fix for an issue that caused the app to break if a server API
