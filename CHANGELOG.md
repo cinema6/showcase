@@ -1,5 +1,11 @@
 # Showcase
 
+## v0.12.1 (July 22, 2016)
+* *[v0.12.1-rc1]*
+  * [FIX]: Fix for an issue that caused the app to break if a server API
+    response took too long
+* *[/v0.12.1-rc1]*
+
 ## v0.12.0 (July 18, 2016)
 * *[v0.12.0-rc2]*
   * [FIX]: Make adwords conversion tracking work via a secure connection
