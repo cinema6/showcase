@@ -58,7 +58,7 @@ function checkFor202(response, remainingChecks) {
     }
 
     return getBody(response).then(body => {
-        if (response.status === 202 && !hostname) {
+        if (response.status === 202 && hostname === window.location.hostname) {
             return wait(2000).then(() => fetch(body.url, {
                 method: HTTP.GET,
                 headers: {
