@@ -20,7 +20,7 @@ describe('api actions', function() {
     describe('callAPI(config)', function() {
         beforeEach(function() {
             this.config = {
-                endpoint: '/foo/bar',
+                endpoint: `${window.location.protocol}//${window.location.hostname}/foo/bar`,
                 types: [REQUEST, REQUEST_SUCCESS, REQUEST_FAILURE]
             };
 
@@ -156,7 +156,7 @@ describe('api actions', function() {
                     this.response = {
                         status: 202,
                         body: {
-                            url: '/request/me/to/check'
+                            url: `${window.location.protocol}//${window.location.hostname}/request/me/to/check`
                         },
                         headers: {
                             'x-powered-by': 'express',
