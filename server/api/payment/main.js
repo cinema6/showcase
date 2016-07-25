@@ -275,6 +275,23 @@ module.exports = function(http) {
         this.respond(200, allTransactions);
     });
 
+    http.whenGET('/api/transactions/showcase/current-payment')
+        .respond(200, {
+            "application": "showcase",
+            "transactionId": "t-0gW11508KfJkbQ0O",
+            "transactionTimestamp": "2016-06-17T02:11:24.891Z",
+            "orgId": "o-0aZ1iv08KfjiQa-O",
+            "amount": "299.9400",
+            "braintreeId": null,
+            "promotionId": "pro-0gW2wr07ZpSlkxlE",
+            "paymentPlanId": "pp-0Ekdsm05KVZ43Aqj",
+            "cycleStart": "2016-06-17T00:00:00.000Z",
+            "cycleEnd": "2016-12-14T23:59:59.000Z",
+            "planViews": 12850,
+            "bonusViews": 0,
+            "totalViews": 12850
+        });
+
     http.whenGET('/api/transactions', function(request) {
         var filters = pluckExcept(request.query, ['sort','limit','skip','fields']),
             page = withDefaults(mapObject(pluck(request.query, ['limit','skip']), parseFloat), {

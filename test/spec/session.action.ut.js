@@ -6,17 +6,20 @@ import {
     GET_CAMPAIGNS,
     GET_ORG,
     GET_PROMOTIONS,
-    GET_BILLING_PERIOD
+    GET_BILLING_PERIOD,
+    GET_PAYMENT_PLAN
 } from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-import { getCampaigns, getOrg, getPromotions, getBillingPeriod } from '../../src/actions/session';
+import { getCampaigns, getOrg, getPromotions, getBillingPeriod, getPaymentPlan } from '../../src/actions/session';
 import { dispatch } from '../helpers/stubs';
 import org from '../../src/actions/org';
 import promotion from '../../src/actions/promotion';
+import paymentPlan from '../../src/actions/payment_plan';
 import { assign } from 'lodash';
 import moment from 'moment';
+import { getCurrentPayment } from '../../src/actions/transaction';
 
 describe('session actions', function() {
     describe('getPromotions()', function() {
@@ -419,19 +422,131 @@ describe('session actions', function() {
                 });
             });
 
-            it('should fetch the org', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(getOrg());
+            it('should fetch the current payment', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getCurrentPayment());
             });
 
-            describe('if there is a problem', function() {
+            describe('if there is a problem GETting the current payment', function() {
                 beforeEach(function(done) {
-                    this.reason = new Error('I suck.');
+                    this.reason = new Error('I failed!');
+                    this.reason.status = 500;
 
-                    this.dispatch.getDeferred(this.dispatch.calls.mostRecent().args[0]).reject(this.reason);
+                    this.dispatch.getDeferred(getCurrentPayment()).reject(this.reason);
                     setTimeout(done);
                 });
 
-                it('should reject with the reason', function() {
+                it('should reject the Promise', function() {
+                    expect(this.failure).toHaveBeenCalledWith(this.reason);
+                });
+            });
+
+            describe('if the current payment cannot be found', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('I failed!');
+                    this.reason.status = 404;
+
+                    this.dispatch.getDeferred(getCurrentPayment()).reject(this.reason);
+                    setTimeout(done);
+                });
+
+                it('should fulfill the Promise with null', function() {
+                    expect(this.success).toHaveBeenCalledWith(null);
+                });
+            });
+
+            describe('when the payment is fetched', function() {
+                beforeEach(function(done) {
+                    this.response = {
+                        cycleStart: moment().utcOffset(0).startOf('day').format(),
+                        cycleEnd: moment().utcOffset(0).add(1, 'month').subtract(1, 'day').endOf('day').format()
+                    };
+
+                    this.dispatch.getDeferred(getCurrentPayment()).resolve(this.response);
+                    setTimeout(done);
+                });
+
+                it('should fulfill with the response', function() {
+                    expect(this.success).toHaveBeenCalledWith(this.response);
+                });
+            });
+
+            describe('if there is already a billingPeriod', function() {
+                beforeEach(function(done) {
+                    this.state.session.billingPeriod = {
+                        cycleStart: moment().utcOffset(0).startOf('day').format(),
+                        cycleEnd: moment().utcOffset(0).add(1, 'month').subtract(1, 'day').endOf('day').format()
+                    };
+
+                    this.dispatch.calls.reset();
+
+                    this.success.calls.reset();
+                    this.failure.calls.reset();
+
+                    getThunk(getBillingPeriod())(this.dispatch, this.getState).then(this.success, this.failure);
+                    setTimeout(done);
+                });
+
+                it('should not get the current payment', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(getCurrentPayment());
+                });
+
+                it('should fulfill with the billingPeriod', function() {
+                    expect(this.success).toHaveBeenCalledWith(this.state.session.billingPeriod);
+                });
+            });
+        });
+    });
+
+    describe('getPaymentPlan()', function() {
+        beforeEach(function() {
+            this.thunk = getThunk(getPaymentPlan());
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.state = {
+                    session: {
+                        paymentPlan: null
+                    },
+                    db: {
+                        org: {},
+                        paymentPlan: {}
+                    }
+                };
+
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.callFake(() => this.state);
+
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                setTimeout(done);
+            });
+
+            it('should dispatch GET_PAYMENT_PLAN', function() {
+                expect(this.dispatch).toHaveBeenCalledWith({
+                    type: GET_PAYMENT_PLAN,
+                    payload: jasmine.any(Promise)
+                });
+            });
+
+            it('should get the org', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getOrg());
+            });
+
+            describe('if there is a problem GETting the org', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('Bad news...');
+                    this.dispatch.getDeferred(getOrg()).reject(this.reason);
+                    setTimeout(done);
+                });
+
+                it('should reject the Promise', function() {
                     expect(this.failure).toHaveBeenCalledWith(this.reason);
                 });
             });
@@ -450,10 +565,9 @@ describe('session actions', function() {
                     });
                 });
 
-                describe('has no paymentPlanStart', function() {
+                describe('has no paymentPlanId', function() {
                     beforeEach(function(done) {
-                        this.org.paymentPlanStart = null;
-
+                        this.org.paymentPlanId = null;
                         this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                         setTimeout(done);
                     });
@@ -463,151 +577,77 @@ describe('session actions', function() {
                     });
                 });
 
-                describe('has a paymentPlanStart after today', function() {
+                describe('has a paymentPlanId', function() {
                     beforeEach(function(done) {
-                        this.org.paymentPlanStart = moment().add(3, 'days').format();
-                        this.org.nextPaymentDate = this.org.paymentPlanStart;
-
+                        this.org.paymentPlanId = `pp-${createUuid()}`;
                         this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                         setTimeout(done);
                     });
 
-                    it('should query for all of the user\'s campaigns', function() {
-                        expect(this.dispatch).toHaveBeenCalledWith(campaign.query({
-                            org: this.org.id,
-                            sort: 'created,1',
-                            limit: 1
-                        }));
+                    it('should make a request for the paymentPlan', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(paymentPlan.get({ id: this.org.paymentPlanId }));
                     });
 
-                    describe('when the campaign is fetched', function() {
+                    describe('if the paymentPlan cannot be fetched', function() {
                         beforeEach(function(done) {
-                            this.campaign = {
-                                id: `cam-${createUuid()}`,
-                                created: moment(this.org.paymentPlanStart).subtract(14, 'days').format()
+                            this.reason = new Error('Something bad happened.');
+                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).reject(this.reason);
+                            setTimeout(done);
+                        });
+
+                        it('should reject the Promise', function() {
+                            expect(this.failure).toHaveBeenCalledWith(this.reason);
+                        });
+                    });
+
+                    describe('when the paymentPlan is fetched', function() {
+                        beforeEach(function(done) {
+                            this.paymentPlan = {
+                                id: this.org.paymentPlanId,
+                                viewsPerMonth: 200
                             };
                             this.state = assign({}, this.state, {
                                 db: assign({}, this.state.db, {
-                                    campaign: assign({}, this.state.db.campaign, {
-                                        [this.campaign.id]: this.campaign
+                                    paymentPlan: assign({}, this.state.paymentPlan, {
+                                        [this.paymentPlan.id]: this.paymentPlan
                                     })
                                 })
                             });
-
-                            this.dispatch.getDeferred(this.dispatch.calls.mostRecent().args[0]).resolve([this.campaign.id]);
+                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).resolve([this.paymentPlan.id]);
                             setTimeout(done);
                         });
 
-                        it('should fulfill with a billingPeriod Object', function() {
-                            expect(this.success).toHaveBeenCalledWith({
-                                start: this.campaign.created,
-                                end: moment(this.org.paymentPlanStart).subtract(1, 'day').format()
-                            });
-                        });
-                    });
-                });
-
-                describe('has a paymentPlanStart of today', function() {
-                    beforeEach(function(done) {
-                        this.org.paymentPlanStart = moment().subtract(45, 'minutes').format();
-                        this.org.nextPaymentDate = this.org.paymentPlanStart;
-
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
-                        setTimeout(done);
-                    });
-
-                    it('should not get any campaigns', function() {
-                        expect(this.dispatch).not.toHaveBeenCalledWith(campaign.query(jasmine.any(Object)));
-                    });
-
-                    it('should fulfill with a billingPeriod Object', function() {
-                        expect(this.success).toHaveBeenCalledWith({
-                            start: this.org.paymentPlanStart,
-                            end: moment(this.org.paymentPlanStart).add(1, 'month').subtract(1, 'day').format()
-                        });
-                    });
-                });
-
-                describe('has a paymentPlanStart before today', function() {
-                    beforeEach(function() {
-                        this.org.paymentPlanStart = moment().subtract(3, 'days').format();
-                    });
-
-                    describe('and a nextPaymentDate after today', function() {
-                        beforeEach(function(done) {
-                            this.org.nextPaymentDate = moment(this.org.paymentPlanStart).add(3, 'months').subtract(2, 'days');
-
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
-                            setTimeout(done);
-                        });
-
-                        it('should not get any campaigns', function() {
-                            expect(this.dispatch).not.toHaveBeenCalledWith(campaign.query(jasmine.any(Object)));
-                        });
-
-                        it('should fulfill with a billingPeriod Object', function() {
-                            expect(this.success).toHaveBeenCalledWith({
-                                start: moment(this.org.nextPaymentDate).subtract(1, 'month').format(),
-                                end: moment(this.org.nextPaymentDate).subtract(1, 'day').format()
-                            });
-                        });
-                    });
-
-                    describe('and a nextPaymentDate of today', function() {
-                        beforeEach(function(done) {
-                            this.org.nextPaymentDate = moment().subtract(1, 'hour');
-
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
-                            setTimeout(done);
-                        });
-
-                        it('should not get any campaigns', function() {
-                            expect(this.dispatch).not.toHaveBeenCalledWith(campaign.query(jasmine.any(Object)));
-                        });
-
-                        it('should fulfill with a billingPeriod Object', function() {
-                            expect(this.success).toHaveBeenCalledWith({
-                                start: moment(this.org.nextPaymentDate).format(),
-                                end: moment(this.org.nextPaymentDate).add(1, 'month').subtract(1, 'day').format()
-                            });
-                        });
-                    });
-
-                    describe('and a nextPaymentDate before today', function() {
-                        beforeEach(function(done) {
-                            this.org.nextPaymentDate = moment().subtract(1, 'day');
-
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
-                            setTimeout(done);
-                        });
-
-                        it('should not get any campaigns', function() {
-                            expect(this.dispatch).not.toHaveBeenCalledWith(campaign.query(jasmine.any(Object)));
-                        });
-
-                        it('should fulfill with a billingPeriod Object', function() {
-                            expect(this.success).toHaveBeenCalledWith({
-                                start: moment(this.org.nextPaymentDate).format(),
-                                end: moment(this.org.nextPaymentDate).add(1, 'month').subtract(1, 'day').format()
-                            });
+                        it('should fulfill the Promise', function() {
+                            expect(this.success).toHaveBeenCalledWith([this.paymentPlan.id]);
                         });
                     });
                 });
             });
 
-            describe('if there is already a billingPeriod', function() {
+            describe('if the paymentPlan has already been fetched', function() {
                 beforeEach(function(done) {
-                    this.state.session.billingPeriod = {
-                        start: moment().format(),
-                        end: moment().add(1, 'month').subtract(1, 'day')
+                    this.paymentPlan = {
+                        id: `pp-${createUuid()}`,
+                        viewsPerMonth: 2000
                     };
+
+                    this.state = assign({}, this.state, {
+                        session: assign({}, this.state.session, {
+                            paymentPlan: this.paymentPlan.id
+                        }),
+                        db: assign({}, this.state.db, {
+                            paymentPlan: assign({}, this.state.paymentPlan, {
+                                [this.paymentPlan.id]: this.paymentPlan
+                            })
+                        })
+                    });
 
                     this.dispatch.calls.reset();
 
                     this.success.calls.reset();
                     this.failure.calls.reset();
 
-                    getThunk(getBillingPeriod())(this.dispatch, this.getState).then(this.success, this.failure);
+                    getThunk(getPaymentPlan())(this.dispatch, this.getState).then(this.success, this.failure);
                     setTimeout(done);
                 });
 
@@ -615,8 +655,8 @@ describe('session actions', function() {
                     expect(this.dispatch).not.toHaveBeenCalledWith(getOrg());
                 });
 
-                it('should fulfill with the billingPeriod', function() {
-                    expect(this.success).toHaveBeenCalledWith(this.state.session.billingPeriod);
+                it('should fulfill the Promise', function() {
+                    expect(this.success).toHaveBeenCalledWith([this.state.session.paymentPlan]);
                 });
             });
         });

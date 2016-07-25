@@ -3,14 +3,18 @@ import ProductWizard from './ProductWizard';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
 import { wizardComplete, autofill } from '../../actions/product_wizard';
-import { getPromotions } from '../../actions/session';
+import { getPromotions, getOrg } from '../../actions/session';
 import { assign } from 'lodash';
 
 function mapStateToProps(state, props) {
     const {
-        session: { promotions },
+        session: {
+            promotions,
+            org: orgId,
+        },
         db,
     } = state;
+    const org = db.org[orgId] || null;
 
     return {
         steps: [0, 1, 2, 3],
@@ -19,13 +23,18 @@ function mapStateToProps(state, props) {
 
         productData: props.page.productData,
         targeting: props.page.targeting,
+        paymentPlanId: org && org.paymentPlanId,
     };
 }
 
 function mapDispatchToProps(dispatch, props) {
     return {
         loadData() {
-            return Promise.all([dispatch(getPromotions()), dispatch(autofill())]);
+            return Promise.all([
+                dispatch(getPromotions()),
+                dispatch(autofill()),
+                dispatch(getOrg()),
+            ]);
         },
 
         onFinish({ targeting, productData }) {

@@ -1,19 +1,15 @@
 'use strict';
 
-import {
-    renderIntoDocument,
-    findRenderedComponentWithType
-} from 'react-addons-test-utils';
 import React from 'react';
-import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import ProductWizard from '../../src/containers/Dashboard/ProductWizard';
 import { reducer as formReducer } from 'redux-form';
 import { assign } from 'lodash';
 import { wizardComplete, autofill } from '../../src/actions/product_wizard';
-import { getPromotions } from '../../src/actions/session';
+import { getPromotions, getOrg } from '../../src/actions/session';
 import AddProduct from '../../src/containers/Dashboard/AddProduct';
 import { createUuid } from 'rc-uuid';
+import { mount } from 'enzyme';
 
 describe('AddProduct', function() {
     it('should wrap the ProductWizard component', function() {
@@ -23,12 +19,13 @@ describe('AddProduct', function() {
     describe('when rendered', function() {
         let store, state;
         let props;
-        let component;
+        let wrapper, component;
 
         beforeEach(function() {
             state = {
                 session: {
-                    promotions: [`pro-${createUuid()}`, `pro-${createUuid()}`]
+                    promotions: [`pro-${createUuid()}`, `pro-${createUuid()}`],
+                    org: `o-${createUuid()}`
                 },
                 db: {},
                 page: {
@@ -55,6 +52,11 @@ describe('AddProduct', function() {
                 };
                 return result;
             }, {});
+            state.db.org = {
+                [state.session.org]: {
+                    paymentPlanId: `pp-${createUuid()}`
+                }
+            };
             store = createStore(compose(
                 (s, action) => assign({}, s, {
                     form: formReducer(s.form, action)
@@ -64,45 +66,69 @@ describe('AddProduct', function() {
 
             spyOn(store, 'dispatch').and.callThrough();
 
-            component = findRenderedComponentWithType(renderIntoDocument(
-                <Provider store={store}>
-                    <AddProduct {...props} />
-                </Provider>
-            ), ProductWizard);
+            wrapper = mount(
+                <AddProduct {...props} />,
+                {
+                    attachTo: document.createElement('div'),
+                    context: { store }
+                }
+            );
+            component = wrapper.find(ProductWizard);
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1, 'AddProduct not rendered.');
         });
 
         it('should inject the dashboard.add_product page', function() {
-            expect(component.props.page).toEqual(state.page['dashboard.add_product']);
+            expect(component.prop('page')).toEqual(state.page['dashboard.add_product']);
         });
 
         it('should map the state to some props', function() {
-            expect(component.props).toEqual(jasmine.objectContaining({
+            expect(component.props()).toEqual(jasmine.objectContaining({
                 steps: [0, 1, 2, 3],
 
                 promotions: state.session.promotions.map(id => state.db.promotion[id]),
 
                 productData: state.page['dashboard.add_product'].productData,
-                targeting: state.page['dashboard.add_product'].targeting
+                targeting: state.page['dashboard.add_product'].targeting,
+                paymentPlanId: state.db.org[state.session.org].paymentPlanId
             }));
         });
 
         describe('if no promotions have been fetched', function() {
             beforeEach(function() {
-                state.session.promotions = null;
-                component = findRenderedComponentWithType(renderIntoDocument(
-                    <Provider store={store}>
-                        <AddProduct {...props} />
-                    </Provider>
-                ), ProductWizard);
+                state = assign({}, state, {
+                    session: assign({}, state.session, {
+                        promotions: null
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
             });
 
             it('should pass in promotions as null', function() {
-                expect(component.props).toEqual(jasmine.objectContaining({
+                expect(component.props()).toEqual(jasmine.objectContaining({
                     promotions: null
+                }));
+            });
+        });
+
+        describe('if the org has not been fetched', function() {
+            beforeEach(function() {
+                state = assign({}, state, {
+                    session: assign({}, state.session, {
+                        org: null
+                    }),
+                    db: assign({}, state.db, {
+                        org: {}
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should pass in the paymentPlanId as null', function() {
+                expect(component.props()).toEqual(jasmine.objectContaining({
+                    paymentPlanId: null
                 }));
             });
         });
@@ -116,15 +142,20 @@ describe('AddProduct', function() {
 
             describe('loadData()', function() {
                 beforeEach(function(done) {
-                    result = component.props.loadData();
+                    result = component.prop('loadData')();
                     setTimeout(done);
                 });
 
                 it('should get the promotions', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(getPromotions());
                 });
+
                 it('should get app data', function(){
                     expect(store.dispatch).toHaveBeenCalledWith(autofill());
+                });
+
+                it('should get the org', function() {
+                    expect(store.dispatch).toHaveBeenCalledWith(getOrg());
                 });
             });
 
@@ -141,7 +172,7 @@ describe('AddProduct', function() {
                         description: 'It is really great!'
                     };
 
-                    result = component.props.onFinish({ targeting, productData });
+                    result = component.prop('onFinish')({ targeting, productData });
                 });
 
                 it('should dispatch wizardComplete()', function() {
