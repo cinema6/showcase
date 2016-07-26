@@ -182,6 +182,16 @@
                 textarea.form-control {
                     line-height: 24px;
                 }
+            .input-group .form-control {
+                font-size: initial;
+                height: initial;
+                line-height: initial;
+            }
+            .input-group-btn-primary {
+                border: 1px solid #0dbeb2;
+                border-radius: 0 5px 5px 0;
+                background: #0dbeb2;
+            }
     .fa-spin {
         -webkit-animation: fa-spin 1.75s infinite linear;
         animation: fa-spin 1.75s infinite linear;
@@ -347,6 +357,9 @@
     }
     .text-block {
         display: block;
+    }
+    .bottom-margin {
+        margin-bottom: 20px;
     }
  /***
  CSS Variables
@@ -826,13 +839,27 @@
             box-shadow: inset 0 0 3px #bbb;
         }
         .phone-frame .text-animation-wrap,
-        .phone-frame iframe, {
+        .phone-frame iframe {
             margin-top: 12%;
             border: 1px solid #ccc !important;
             height: 86% !important;
             width: 92% !important;
             left: 4% !important;
         }
+        .phone-frame .no-video-preview {
+            border: 1px solid #ccc !important;
+            margin-top: 14%;
+            height: 83% !important;
+            width: 92% !important;
+            left: 4% !important;
+            display: block;
+            position: absolute;
+            background: #ddd;
+        }
+            .phone-frame .no-video-preview .upsell-message {
+                margin: 60% 5% 5%;
+                font-size: 18px;
+            }
     @media only screen and (max-height: 700px){
         .phone-wrap {
             height: 580px;
@@ -890,6 +917,16 @@
                 width: 92% !important;
                 left: 4% !important;
             }
+            .phone-frame .no-video-preview {
+                border: 1px solid #ccc !important;
+                margin-top: 14%;
+                height: 81% !important;
+                width: 92% !important;
+                left: 4% !important;
+                display: block;
+                position: absolute;
+                background: #ddd;
+            }
     }
     .app-preview-modal .create-app-campaign {
         width: 100%;
@@ -898,6 +935,9 @@
     }
     .app-preview-modal .phone-frame {
         top: 0;
+    }
+    .modal-dialog .embed-responsive {
+        margin-bottom: 20px;
     }
     /***targeting***/
     .app-categories .label.label-primary {
@@ -1194,6 +1234,9 @@
                 margin: 0;
                 font-weight: 400;
             }
+            .stats-details, .stats-range {
+                margin-bottom: 20px;
+            }
     .campaign-stats .nav-justified {
         margin-bottom: 10px;
         border: 1px solid $brand-primary;
@@ -1231,6 +1274,14 @@
     .timeline-stacked .text-block {
         margin: 5px 0;
     }
+    .create-app-campaign .btn-group {
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+    .right-col.campaign-stats {
+        margin-top: 10px;
+    }
+
 /*** Chartist styles ***/
     .ct-label {
         font-size: 12px;
@@ -1829,6 +1880,10 @@
             .campaign-stats-totals .stats-header {
                 margin-top: 10px;
             }
+            .stats-details,
+            .stats-range {
+                text-align: center;
+            }
 
     }
     @media (max-width: 992px) {
@@ -1882,7 +1937,7 @@
 }
 /***button spinner***/
 .btn-waiting {
-    padding-right: 2.5rem;
+    padding-right: 3.5rem;
     transition: padding 0.2s ease-in;
 }
     .btn-waiting:after {

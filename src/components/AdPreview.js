@@ -104,7 +104,17 @@ export default class AdPreview extends Component {
 
         return (<div
             className="create-app-campaign step-2 col-middle text-center"
-        >
+        >   
+            <div className="visible-xs">
+                <div className="btn-group" role="group" aria-label="...">
+                    <button type="button" className="btn btn-primary active">
+                        <i className="fa fa-th-large" aria-hidden="true"></i> App</button>
+                    <button type="button" className="btn btn-primary">
+                        <i className="fa fa-file-video-o" aria-hidden="true"></i> Video</button>
+                </div>
+                <div className="clearfix"></div>
+            </div>
+            
             <div className="phone-wrap">
                 <div ref="root" className="phone-frame">
                     {showLoadingAnimation && (
@@ -122,8 +132,24 @@ export default class AdPreview extends Component {
                             </div>
                         </div>
                     )}
+                    <div className="no-video-preview">
+                        <div className="upsell-message">
+                            Video ads are only available to Pro Plan users only. 
+                            However, you can preview how your video ad would look like.
+                        </div>
+                        <button className="btn btn-danger">Upgrade Now</button>
+                    </div>
                 </div>
                 <p>This is how your ad will appear</p>
+            </div>
+            <div className="hidden-xs bottom-margin">
+                <div className="clearfix"></div>
+                <div className="btn-group" role="group" aria-label="...">
+                    <button type="button" className="btn btn-primary active">
+                        <i className="fa fa-th-large" aria-hidden="true"></i> App</button>
+                    <button type="button" className="btn btn-primary">
+                        <i className="fa fa-file-video-o" aria-hidden="true"></i> Video</button>
+                </div>
             </div>
         </div>);
     }

@@ -53,6 +53,9 @@ export default function CampaignDetailTable({
                     <h4 className="stats-col-ctr">{formatCTR({ users, clicks })}</h4>
                 </td>
             </tr>))}
+            {/*When there is no data to show, show an empty row with following message
+            <tr><td colspan="4">Not enough data to show stats</td></tr>
+            */}
         </tbody>
     </table>);
 }

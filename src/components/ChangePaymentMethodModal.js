@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import BraintreeCreditCardForm from './BraintreeCreditCardForm';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default function ChangePaymentMethodModal({
     getToken,

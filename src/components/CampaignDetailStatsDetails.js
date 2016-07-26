@@ -19,25 +19,56 @@ export default function CampaignDetailStatsDetails({
     onChangeView,
 }) {
     return (<div className="right-col  campaign-stats col-md-8">
-        <ul className="switch-chart-range nav nav-pills">
-            {[
-                { type: CHART_7DAY, days: 7 },
-                { type: CHART_30DAY, days: 30 },
-            ].map(({ type, days }) => (<li
-                key={type}
-                role="presentation"
-            >
-                <div className="clearfix"></div>
-                <br />
-                <button
-                    className={classnames('btn', 'btn-primary', {
-                        active: range === type,
-                    })}
-                    onClick={() => onChangeView(type)}
-                >Past {days} Days
-                </button>
-            </li>))}
-        </ul>
+        <div className="stats-details col-md-4 col-sm-6 col-xs-12">
+            <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                <div className="btn-group" role="group">
+                    <button type="button" className="btn btn-default active">All</button>
+                </div>
+                <div className="btn-group" role="group">
+                    <button type="button" className="btn btn-default">App</button>
+                </div>
+                <div className="btn-group" role="group">
+                    <button type="button" className="btn btn-default">Video</button>
+                </div>
+            </div>
+        </div>
+        <div className="stats-range col-md-5 col-md-offset-3 col-sm-6 col-xs-12 text-right">
+            <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                {[
+                    { type: CHART_7DAY, days: 7 },
+                    { type: CHART_30DAY, days: 30 },
+                ].map(({ type, days }) => (<div className="btn-group" role="group">
+                    <button
+                        key={type}
+                        role="presentation"
+                        className={classnames('btn', 'btn-default', {
+                            active: range === type,
+                        })}
+                        onClick={() => onChangeView(type)}
+                    >Past {days} Days
+                    </button>
+                </div>))}
+            </div>
+            {/*<ul className="switch-chart-range nav nav-pills">
+                {[
+                    { type: CHART_7DAY, days: 7 },
+                    { type: CHART_30DAY, days: 30 },
+                ].map(({ type, days }) => (<li
+                    key={type}
+                    role="presentation"
+                >
+                    <div className="clearfix"></div>
+                    <br />
+                    <button
+                        className={classnames('btn', 'btn-primary', {
+                            active: range === type,
+                        })}
+                        onClick={() => onChangeView(type)}
+                    >Past {days} Days
+                    </button>
+                </li>))}
+            </ul>*/}
+        </div>
         <div className="clearfix" />
         <CampaignDetailStatsTotals
             views={sum(items, 'users')}
