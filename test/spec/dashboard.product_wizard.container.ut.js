@@ -727,11 +727,9 @@ describe('ProductWizard', function() {
                 });
 
                 describe('props', function() {
-                    describe('startDate', function() {
+                    describe('freeViews', function() {
                         it('should be computed from the promotions', function() {
-                            const expected = getPaymentPlanStart(props.promotions);
-
-                            expect(modal.props().startDate.isSame(expected)).toBe(true, `Expected: ${expected.format()}; got: ${modal.props().startDate.format()}`);
+                            expect(modal.prop('freeViews')).toBe(1200);
                         });
 
                         describe('if there are no promotions', function() {
@@ -739,8 +737,8 @@ describe('ProductWizard', function() {
                                 wrapper.setProps({ promotions: null });
                             });
 
-                            it('should be null', function() {
-                                expect(modal.props().startDate).toBeNull();
+                            it('should be 0', function() {
+                                expect(modal.prop('freeViews')).toBe(0);
                             });
                         });
                     });

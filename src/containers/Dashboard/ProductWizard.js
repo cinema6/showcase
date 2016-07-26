@@ -13,7 +13,6 @@ import AdPreview from '../../components/AdPreview';
 import _, { pick, /* includes, */ assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
-import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
 
 const PREVIEW = {
@@ -98,6 +97,8 @@ class ProductWizard extends Component {
         } = this.props;
 
         const promotionConfigs = _(promotions).map(`data[${paymentPlanId}]`);
+        const freeViews = promotionConfigs.map('targetUsers').sum();
+        const trialLength = promotionConfigs.map('trialLength').sum();
 
         return (<div className="container main-section">
             <DocumentTitle
@@ -264,12 +265,12 @@ class ProductWizard extends Component {
                     productData: this.getProductData(),
                     targeting: this.getTargeting(),
                 })}
-                trialLength={promotionConfigs.map('trialLength').sum()}
-                freeViews={promotionConfigs.map('targetUsers').sum()}
+                trialLength={trialLength}
+                freeViews={freeViews}
             />
             {step === 4 && (
                 <WizardConfirmationModal
-                    startDate={promotions && getPaymentPlanStart(promotions)}
+                    freeViews={freeViews}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({

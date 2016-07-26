@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react';
 import BraintreeCreditCardForm from './BraintreeCreditCardForm';
+import numeral from 'numeral';
+
+function format(number) {
+    return numeral(number).format('0,0');
+}
 
 export default function WizardConfirmationModal({
-    // startDate,
+    freeViews,
 
     getToken,
     onSubmit,
     handleClose,
 }) {
-    // const start = (startDate && startDate.format('MM/DD/YYYY')) || '...';
-
     return (<div className="modal payment-modal fade in show" id="pmtModal" role="dialog">
         <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -23,11 +26,12 @@ export default function WizardConfirmationModal({
                         <span aria-hidden="true">×</span>
                     </button>
                     <h1 className="modal-title" id="myPaymentModal">Start promoting your app</h1>
-                    <h4>Get 1000 views for FREE. {/* Show the count of free views based on
-                    promotion*/}
-                    Cancel anytime.</h4>
-                    <h4>Reach thousands fo potential app users</h4> {/* Show this message if
-                    there is no promotion associated with the product*/}
+                    {!!freeViews && (
+                        <h4>Get {format(freeViews)} views for FREE. Cancel anytime.</h4>
+                    )}
+                    {!freeViews && (
+                        <h4>Reach thousands of potential app users</h4>
+                    )}
                 </div>
                 <div className="modal-body text-center">
                     <BraintreeCreditCardForm
@@ -35,9 +39,6 @@ export default function WizardConfirmationModal({
                         getToken={getToken}
                         onSubmit={onSubmit}
                     />
-                    {/* <div className="payment-charge-info">
-                        Reach 2,000 users for only $49.99/month after your trial
-                    </div>*/}
                     <div className="secured-locked">
                         <div className="signup__secured">
                             <span className="signup__secured--icon">
@@ -64,7 +65,13 @@ WizardConfirmationModal.propTypes = {
     getToken: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
+
     startDate: PropTypes.shape({
         format: PropTypes.func.isRequired,
     }),
+    freeViews: PropTypes.number.isRequired,
+};
+
+WizardConfirmationModal.defaultProps = {
+    freeViews: 0,
 };
