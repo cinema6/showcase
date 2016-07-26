@@ -1,12 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import classnames from 'classnames';
-import moment from 'moment';
-import config from '../../config';
-import { estimateImpressions } from '../utils/billing';
 import numeral from 'numeral';
-
-const [paymentPlan] = config.paymentPlans;
 
 function trialText(length) {
     const denomination = (() => {
@@ -35,22 +30,16 @@ function trialText(length) {
     return `${amount} ${denomination}${amount > 1 ? 's' : ''}`;
 }
 
-function impressions(length) {
-    return numeral(estimateImpressions({
-        end: moment().add(length, 'days'),
-        viewsPerDay: paymentPlan.viewsPerDay,
-    })).format('0,0');
-}
-
 export default function WizardPlanInfoModal({
     show,
     actionPending,
     onClose,
     onContinue,
     trialLength,
+    freeViews,
 }) {
-    const title = trialLength ?
-        `Reach ${impressions(trialLength)} people for FREE` :
+    const title = freeViews ?
+        `Reach ${numeral(freeViews).format('0,0')} people for FREE` :
         'Reach thousands of people';
     const cta = trialLength ?
         `Get ${trialText(trialLength)} FREE trial` :
@@ -187,6 +176,7 @@ WizardPlanInfoModal.propTypes = {
     show: PropTypes.bool.isRequired,
     actionPending: PropTypes.bool.isRequired,
     trialLength: PropTypes.number.isRequired,
+    freeViews: PropTypes.number.isRequired,
 
     onClose: PropTypes.func.isRequired,
     onContinue: PropTypes.func.isRequired,
@@ -194,4 +184,5 @@ WizardPlanInfoModal.propTypes = {
 WizardPlanInfoModal.defaultProps = {
     actionPending: false,
     trialLength: 0,
+    freeViews: 0,
 };

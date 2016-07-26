@@ -41,11 +41,13 @@ module.exports = {
                         '/api/auth': 'server/api/auth/main.js',
                         '/api/account': 'server/api/account/main.js',
                         '/api/payments': 'server/api/payment/main.js',
+                        '/api/transactions': 'server/api/payment/main.js',
                         '/api/search': 'server/api/search/main.js',
                         '/api/collateral': 'server/api/collateral/main.js',
                         '/api/campaigns': 'server/api/campaign/main.js',
                         '/api/analytics': 'server/api/analytics/main.js',
                         '/api/promotions': 'server/api/promotion/main.js',
+                        '/api/payment-plans': 'server/api/payment-plan/main.js',
 
                         '@verbosity': verbosity,
                         '@delay': [500, 1000]

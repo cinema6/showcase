@@ -919,7 +919,7 @@ describe('product wizard actions', function() {
                     }
                 };
                 this.dispatch = dispatch();
-                this.getState = jasmine.createSpy('getState()').and.returnValue(this.state);
+                this.getState = jasmine.createSpy('getState()').and.callFake(() => this.state);
 
                 this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
                 setTimeout(done);
@@ -934,6 +934,10 @@ describe('product wizard actions', function() {
 
             it('should get the user\'s promotions', function() {
                 expect(this.dispatch).toHaveBeenCalledWith(getPromotions());
+            });
+
+            it('should get the user\'s org', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getOrg());
             });
 
             describe('if the promotions cannot be fetched', function() {
@@ -956,10 +960,44 @@ describe('product wizard actions', function() {
                 });
             });
 
+            describe('if the org cannot be fetched', function() {
+                beforeEach(function(done) {
+                    this.reason = new Error('I failed!');
+                    this.dispatch.getDeferred(getOrg()).reject(this.reason);
+                    setTimeout(done);
+                });
+
+                it('should show a notification', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(notify({
+                        type: NOTIFICATION_TYPE.DANGER,
+                        message: `Unexpected error: ${this.reason.message}`,
+                        time: 10000
+                    }));
+                });
+
+                it('should reject the promise', function() {
+                    expect(this.failure).toHaveBeenCalledWith(this.reason);
+                });
+            });
+
             describe('if the user has no promotions', function() {
                 beforeEach(function(done) {
+                    this.org = {
+                        id: `o-${createUuid()}`,
+                        paymentPlanId: `pp-${createUuid()}`
+                    };
                     this.promotions = [];
+
+                    this.state = assign({}, this.state, {
+                        db: assign({}, this.state.db, {
+                            org: assign({}, this.state.db.org, {
+                                [this.org.id]: this.org
+                            })
+                        })
+                    });
+
                     this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                     setTimeout(done);
                 });
 
@@ -974,86 +1012,62 @@ describe('product wizard actions', function() {
 
             describe('if the user has a promotion that does not require a payment method', function() {
                 beforeEach(function(done) {
+                    this.org = {
+                        id: `o-${createUuid()}`,
+                        paymentPlanId: `pp-${createUuid()}`
+                    };
                     this.promotions = [
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 30,
-                                paymentMethodRequired: true
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 30,
+                                    paymentMethodRequired: true
+                                }
                             }
                         },
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 10,
-                                paymentMethodRequired: false
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 10,
+                                    paymentMethodRequired: false
+                                }
                             }
                         },
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 11,
-                                paymentMethodRequired: true
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 11,
+                                    paymentMethodRequired: true
+                                }
                             }
                         }
                     ];
+
                     this.state = assign({}, this.state, {
                         db: assign({}, this.state.db, {
                             promotion: assign({}, this.state.db.promotion, this.promotions.reduce((result, promotion) => {
                                 result[promotion.id] = promotion;
                                 return result;
-                            }, {}))
+                            }, {})),
+                            org: assign({}, this.state.db.org, {
+                                [this.org.id]: this.org
+                            })
                         })
                     });
-                    this.getState.and.returnValue(this.state);
+
                     this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
                     setTimeout(done);
                 });
 
-                it('should not go to a different page', function() {
-                    expect(this.dispatch).not.toHaveBeenCalledWith(goToStep(jasmine.anything()));
-                });
-
-                it('should fetch the org', function() {
-                    expect(this.dispatch).toHaveBeenCalledWith(getOrg());
-                });
-
-                describe('if the org cannot be fetched', function() {
+                describe('and the org has no payment plan', function() {
                     beforeEach(function(done) {
-                        this.reason = new Error('I failed!');
-                        this.dispatch.getDeferred(getOrg()).reject(this.reason);
-                        setTimeout(done);
-                    });
-
-                    it('should show a notification', function() {
-                        expect(this.dispatch).toHaveBeenCalledWith(notify({
-                            type: NOTIFICATION_TYPE.DANGER,
-                            message: `Unexpected error: ${this.reason.message}`,
-                            time: 10000
-                        }));
-                    });
-
-                    it('should reject the promise', function() {
-                        expect(this.failure).toHaveBeenCalledWith(this.reason);
-                    });
-                });
-
-                describe('if the org has no payment plan', function() {
-                    beforeEach(function(done) {
-                        this.org = {
-                            id: `o-${createUuid()}`
-                        };
-                        this.state = assign({}, this.state, {
-                            db: assign({}, this.state.db, {
-                                org: assign({}, this.state.db.org, {
-                                    [this.org.id]: this.org
-                                })
-                            })
-                        });
-                        this.getState.and.returnValue(this.state);
+                        delete this.org.paymentPlanId;
                         this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                         setTimeout(done);
                     });
@@ -1112,18 +1126,8 @@ describe('product wizard actions', function() {
 
                 describe('if the org has a paymentPlanStart in the future', function() {
                     beforeEach(function(done) {
-                        this.org = {
-                            id: `o-${createUuid()}`,
-                            paymentPlanStart: moment().add(2, 'days').format()
-                        };
-                        this.state = assign({}, this.state, {
-                            db: assign({}, this.state.db, {
-                                org: assign({}, this.state.db.org, {
-                                    [this.org.id]: this.org
-                                })
-                            })
-                        });
-                        this.getState.and.returnValue(this.state);
+                        this.org.paymentPlanStart = moment().add(2, 'days').format();
+
                         this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                         setTimeout(done);
                     });
@@ -1182,18 +1186,8 @@ describe('product wizard actions', function() {
 
                 describe('if the org has a paymentPlanStart in the past', function() {
                     beforeEach(function(done) {
-                        this.org = {
-                            id: `o-${createUuid()}`,
-                            paymentPlanStart: moment().subtract(2, 'days').format()
-                        };
-                        this.state = assign({}, this.state, {
-                            db: assign({}, this.state.db, {
-                                org: assign({}, this.state.db.org, {
-                                    [this.org.id]: this.org
-                                })
-                            })
-                        });
-                        this.getState.and.returnValue(this.state);
+                        this.org.paymentPlanStart = moment().subtract(2, 'days').format();
+
                         this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
                         setTimeout(done);
                     });
@@ -1214,29 +1208,40 @@ describe('product wizard actions', function() {
 
             describe('if the promotions all require a paymentMethod', function() {
                 beforeEach(function(done) {
+                    this.org = {
+                        id: `o-${createUuid()}`,
+                        paymentPlanId: `pp-${createUuid()}`,
+                        paymentPlanStart: moment().utcOffset(0).startOf('day').add(5, 'days').format()
+                    };
                     this.promotions = [
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 30,
-                                paymentMethodRequired: true
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 30,
+                                    paymentMethodRequired: true
+                                }
                             }
                         },
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 10,
-                                paymentMethodRequired: true
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 10,
+                                    paymentMethodRequired: true
+                                }
                             }
                         },
                         {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                trialLength: 11,
-                                paymentMethodRequired: true
+                                [this.org.paymentPlanId]: {
+                                    trialLength: 11,
+                                    paymentMethodRequired: true
+                                }
                             }
                         }
                     ];
@@ -1245,16 +1250,16 @@ describe('product wizard actions', function() {
                             promotion: assign({}, this.state.db.promotion, this.promotions.reduce((result, promotion) => {
                                 result[promotion.id] = promotion;
                                 return result;
-                            }, {}))
+                            }, {})),
+                            org: assign({}, this.state.db.org, {
+                                [this.org.id]: this.org
+                            })
                         })
                     });
-                    this.getState.and.returnValue(this.state);
-                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
-                    setTimeout(done);
-                });
 
-                it('should not get the org', function() {
-                    expect(this.dispatch).not.toHaveBeenCalledWith(getOrg());
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                    setTimeout(done);
                 });
 
                 it('should ask for a credit card', function() {
