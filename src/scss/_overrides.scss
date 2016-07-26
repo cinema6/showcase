@@ -1069,7 +1069,8 @@
     .select-target-options {
         display: block;
     }
-/***
+
+ /***
  Campaign Dashboard
  ----------------------------
  ***/
@@ -2051,9 +2052,9 @@
                 float: none !important;
                 display: block;
             }
-        /*.main-section.campaign-stats {
-            margin-top: 100px;
-        }*/
+        .main-section.campaign-stats {
+            margin-top: 40px;
+        }
         .navbar-inverse .container-fluid > .navbar-header {
             margin-left: 0;
         }
