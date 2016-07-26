@@ -6,6 +6,8 @@ import * as dashboardActions from '../../actions/dashboard';
 import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
+import StatsSummaryBar from '../../components/StatsSummaryBar.js';
+import moment from 'moment';
 
 class Dashboard extends Component {
     componentDidMount() {
@@ -61,6 +63,16 @@ class Dashboard extends Component {
                     </div>
                 </div>
             </nav>
+            {/* account summary horizontal bar*/}
+            < StatsSummaryBar
+                startDate={moment().subtract(1, 'week')}
+                endDate={moment().add(23, 'days')}
+                today={moment()}
+                views={200}
+                viewGoals={450}
+                appsUsed={2}
+                maxApps={3}
+            />
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
                 id="sidePanel"
