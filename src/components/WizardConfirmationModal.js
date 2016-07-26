@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import BraintreeCreditCardForm from './BraintreeCreditCardForm';
 
 export default function WizardConfirmationModal({
-    startDate,
+    // startDate,
 
     getToken,
     onSubmit,
     handleClose,
 }) {
-    const start = (startDate && startDate.format('MM/DD/YYYY')) || '...';
+    // const start = (startDate && startDate.format('MM/DD/YYYY')) || '...';
 
     return (<div className="modal payment-modal fade in show" id="pmtModal" role="dialog">
         <div className="modal-dialog" role="document">
@@ -23,10 +23,10 @@ export default function WizardConfirmationModal({
                         <span aria-hidden="true">×</span>
                     </button>
                     <h1 className="modal-title" id="myPaymentModal">Start promoting your app</h1>
-                    <h4>Get 1000 views for FREE. {/*Show the count of free views based on 
+                    <h4>Get 1000 views for FREE. {/* Show the count of free views based on
                     promotion*/}
                     Cancel anytime.</h4>
-                    <h4>Reach thousands fo potential app users</h4> {/*Show this message if 
+                    <h4>Reach thousands fo potential app users</h4> {/* Show this message if
                     there is no promotion associated with the product*/}
                 </div>
                 <div className="modal-body text-center">
@@ -35,7 +35,7 @@ export default function WizardConfirmationModal({
                         getToken={getToken}
                         onSubmit={onSubmit}
                     />
-                    {/*<div className="payment-charge-info">
+                    {/* <div className="payment-charge-info">
                         Reach 2,000 users for only $49.99/month after your trial
                     </div>*/}
                     <div className="secured-locked">

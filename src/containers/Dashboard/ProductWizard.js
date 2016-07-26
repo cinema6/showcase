@@ -9,8 +9,8 @@ import WizardEditTargeting from '../../components/WizardEditTargeting';
 import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
-import classnames from 'classnames';
-import _, { pick, includes, assign } from 'lodash';
+// import classnames from 'classnames';
+import _, { pick, /* includes, */ assign } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { getPaymentPlanStart } from 'showcase-core/dist/billing';
@@ -88,7 +88,7 @@ class ProductWizard extends Component {
 
             onFinish,
 
-            steps,
+            // steps,
             productData,
             targeting,
             promotions,
@@ -105,7 +105,7 @@ class ProductWizard extends Component {
                     productData ? `Edit "${productData.name}"` : 'Add'
                 }`}
             />
-            {/*<div className="row">
+            {/* <div className="row">
                 <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
                     <ul className="nav nav-pills nav-justified">
                         {includes(steps, 0) && (<li
@@ -174,31 +174,35 @@ class ProductWizard extends Component {
             </div>*/}
             <div className="row">
                 <ul className="nav nav-pills nav-justified campaign-progressbar">
-                    <li className="progressbar-step completed">{/*Add "completed" class for the 
+                    <li className="progressbar-step completed">{/* Add "completed" class for the
                     completed steps*/}
                         <div className="text-center progressbar-step-stepnum">Search</div>
                         <div className="progress-wrapper">
-                        <div className="progress-bar" /></div>
-                        <a href="#" className="progressbar-step-dot search-icon" />              
+                            <div className="progress-bar" />
+                        </div>
+                        <a href="#" className="progressbar-step-dot search-icon" />
                     </li>
-                    <li className="progressbar-step active disabled">{/*Add "active" and "disabled"
+                    <li className="progressbar-step active disabled">{/* Add "active" and "disabled"
                     class for the current progress step*/}
                         <div className="text-center progressbar-step-stepnum">Create</div>
                         <div className="progress-wrapper">
-                        <div className="progress-bar" /></div>
-                        <a href="#" className="progressbar-step-dot create-icon" /> 
+                            <div className="progress-bar" />
+                        </div>
+                        <a href="#" className="progressbar-step-dot create-icon" />
                     </li>
-                    <li className="progressbar-step disabled">{/*Add "disabled" class when 
+                    <li className="progressbar-step disabled">{/* Add "disabled" class when
                     progress step hasn't been filled*/}
                         <div className="text-center progressbar-step-stepnum">Target</div>
                         <div className="progress-wrapper">
-                        <div className="progress-bar" /></div>
+                            <div className="progress-bar" />
+                        </div>
                         <a href="#" className="progressbar-step-dot target-icon" />
                     </li>
                     <li className="progressbar-step disabled">
                         <div className="text-center progressbar-step-stepnum">Promote</div>
                         <div className="progress-wrapper">
-                        <div className="progress-bar" /></div>
+                            <div className="progress-bar" />
+                        </div>
                         <a href="#" className="progressbar-step-dot promote-icon" />
                     </li>
                 </ul>

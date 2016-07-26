@@ -16,7 +16,7 @@ import numeral from 'numeral';
 
 const DASH = '\u2014';
 
-const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
+// const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
 class Billing extends Component {
     componentWillMount() {
@@ -72,34 +72,45 @@ class Billing extends Component {
                             <div className="col-md-4 btn-wrap">
                                 <Button
                                     bsSize="lg"
-                                    bsStyle="primary"                                    
+                                    bsStyle="primary"
                                     onClick={() => showAlert({
                                         title: 'Cancel Your Subscription',
-                                        description: (<div><span>
-                                            <strong>
-                                            Are you sure you want to cancel your subscription?
-                                            </strong> <br />
-                                            <p><br />All 3 of your apps will lose the exposure they have been
-                                            getting!</p>
-                                        </span>
-                                        <div className="cancel-stats">
-                                            <div className="campaign-mini-stats col-md-6 
-                                            text-center">
-                                                <span>Current period</span>
-                                                <h3>3,500</h3>
-                                                <span>views</span>
+                                        description: (<div>
+                                            <span>
+                                                <strong>
+                                                    Are you sure you want to cancel your
+                                                    subscription?
+                                                </strong>
+                                                <br />
+                                                <p>
+                                                    <br />
+                                                    All 3 of your apps will lose the
+                                                    exposure they have been
+                                                    getting!
+                                                </p>
+                                            </span>
+                                            <div className="cancel-stats">
+                                                <div
+                                                    className="campaign-mini-stats
+                                                    col-md-6 text-center"
+                                                >
+                                                    <span>Current period</span>
+                                                    <h3>3,500</h3>
+                                                    <span>views</span>
+                                                </div>
+                                                <div
+                                                    className="campaign-mini-stats
+                                                    col-md-6 text-center"
+                                                >
+                                                    <span>Later</span>
+                                                    <h3>0</h3>
+                                                    <span>views</span>
+                                                </div>
                                             </div>
-                                            <div className="campaign-mini-stats col-md-6 
-                                            text-center">
-                                                <span>Later</span>
-                                                <h3>0</h3>
-                                                <span>views</span>
-                                            </div>
-                                        </div>
                                         </div>),
                                         buttons: [
                                             { text: 'Cancel my subscription',
-                                            type: 'danger' + ' btn-block',                                           
+                                            type: 'danger btn-block',
                                             size: 'large',
                                             onSelect: dismiss => dismiss() },
                                         ],
@@ -107,15 +118,15 @@ class Billing extends Component {
                                 >
                                     Update Plan
                                 </Button>
-                                {/*When users click on "cancel my subscription", close modal and 
+                                {/* When users click on "cancel my subscription", close modal and
                                 show the success alert on top center of the page*/}
                                 {/*
-                                <div className="alert alert-dismissible alert-success alert-fixed" 
+                                <div className="alert alert-dismissible alert-success alert-fixed"
                                 role="alert">
                                     <button type="button" className="close" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    Your subscription will be suspended at the end of current 
+                                    Your subscription will be suspended at the end of current
                                     billing period (Mar 25 - Apr 24).
                                 </div>*/}
                             </div>
