@@ -215,3 +215,13 @@ export const autofill = createThunk(() => (dispatch) => {
 
     return undefined;
 });
+
+export const SHOW_VIDEO_MODAL = prefix('SHOW_VIDEO_MODAL');
+export const showVideoModal = createAction(SHOW_VIDEO_MODAL);
+
+export const ADD_VIDEO_LINK = prefix('ADD_VIDEO_LINK');
+export const addVideoLink = createThunk(({ productData, targeting }) => (dispatch, getState) => {
+    console.log(productData);
+
+    return dispatch(createAction(ADD_VIDEO_LINK));
+});

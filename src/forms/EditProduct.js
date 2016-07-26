@@ -5,6 +5,7 @@ import classnames from 'classnames';
 function EditProduct({
     fields: { name, description },
     handleSubmit,
+    addVideo,
     submitting,
 }) {
     return (<form onSubmit={handleSubmit}>
@@ -16,6 +17,12 @@ function EditProduct({
             <label htmlFor="adDesc-textarea">Description</label>
             <textarea {...description} className="form-control" id="adDesc-textarea" rows={3} />
         </div>
+        <button
+            type="button"
+            onClick={addVideo}
+        >
+            Add Video
+        </button>
         <button
             type="submit"
             className={classnames('col-sm-6 col-xs-12 btn btn-danger btn-lg', {
@@ -35,6 +42,7 @@ EditProduct.propTypes = {
     submitting: PropTypes.bool.isRequired,
 
     handleSubmit: PropTypes.func.isRequired,
+    addVideo: PropTypes.func.isRequired,
 };
 
 export default reduxForm({

@@ -4,6 +4,7 @@ import EditProductForm from '../forms/EditProduct';
 export default function WizardEditProduct({
     productData,
     onFinish,
+    onAddVideo,
 }) {
     if (!productData) {
         return (<div className="app-details col-md-5 col-sm-6 col-xs-12 col-middle">
@@ -23,6 +24,7 @@ export default function WizardEditProduct({
         <EditProductForm
             initialValues={{ name, description }}
             onSubmit={values => onFinish(values)}
+            addVideo={onAddVideo}
         />
     </div>);
 }
@@ -33,5 +35,6 @@ WizardEditProduct.propTypes = {
         description: PropTypes.string.isRequired,
     }),
 
+    onAddVideo: PropTypes.func.isRequired,
     onFinish: PropTypes.func.isRequired,
 };

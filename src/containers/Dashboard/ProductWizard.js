@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as searchActions from '../../actions/search';
 import * as productWizardActions from '../../actions/product_wizard';
 import * as paymentActions from '../../actions/payment';
+import AddVideoModal from '../../components/AddVideoModal';
 import WizardSearch from '../../components/WizardSearch';
 import WizardEditProduct from '../../components/WizardEditProduct';
 import WizardEditTargeting from '../../components/WizardEditTargeting';
@@ -83,6 +84,8 @@ class ProductWizard extends Component {
             getClientToken,
             goToStep,
             createCampaign,
+            showVideoModal,
+            addVideoLink,
             previewLoaded: previewWasLoaded,
             collectPayment,
 
@@ -93,6 +96,7 @@ class ProductWizard extends Component {
             targeting,
             promotions,
 
+            page,
             page: { step, previewLoaded, checkingIfPaymentRequired },
         } = this.props;
 
@@ -201,6 +205,7 @@ class ProductWizard extends Component {
                     case 1:
                         return (<WizardEditProduct
                             productData={productData}
+                            onAddVideo={() => showVideoModal(true)}
                             onFinish={() => goToStep(2)}
                         />);
                     case 2:
@@ -240,6 +245,12 @@ class ProductWizard extends Component {
                     })}
                 />
             )}
+            {page.showVideoModal && (
+                <AddVideoModal
+                    handleClose={() => showVideoModal(false)}
+                    handleSubmit={addVideoLink}
+                />
+            )}
         </div>);
     }
 }
@@ -253,12 +264,15 @@ ProductWizard.propTypes = {
     createCampaign: PropTypes.func.isRequired,
     previewLoaded: PropTypes.func.isRequired,
     collectPayment: PropTypes.func.isRequired,
+    showVideoModal: PropTypes.func.isRequired,
+    addVideoLink: PropTypes.func.isRequired,
 
     formValues: PropTypes.object,
 
     page: PropTypes.shape({
         step: PropTypes.number.isRequired,
         previewLoaded: PropTypes.bool.isRequired,
+        showVideoModal: PropTypes.bool.isRequired,
     }).isRequired,
 
     loadData: PropTypes.func.isRequired,
