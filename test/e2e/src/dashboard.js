@@ -14,8 +14,8 @@ module.exports = {
 
         utils.allDashboardTest(page)
 
-      .logout(browser)
+      .logout(browser);
 
-      .end();
+        browser.end();
     }
 };

@@ -30,7 +30,6 @@ module.exports = {
       .waitForElementVisible('@alert', 10000)
       .assert.elementPresent('@alert');
 
-        browser
-      .end();
+        browser.end();
     }
 };

@@ -17,7 +17,6 @@ module.exports = {
 
       .assert.visible('@alert');
 
-        browser
-      .end();
+        browser.end();
     }
 };

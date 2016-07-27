@@ -14,12 +14,13 @@ module.exports = {
 
         utils.allDashboardTest(page)
 
+      .waitForElementVisible('@firstNameInput', 10000)
+
       .assert.containsText('body', 'First Name')
       .assert.containsText('body', 'Last Name')
       .assert.containsText('body', 'Company')
       .assert.containsText('body', 'Phone')
 
-      .waitForElementVisible('@firstNameInput', 10000)
       .assert.elementPresent('@firstNameInput')
       .assert.elementPresent('@lastNameInput')
       .assert.elementPresent('@companyInput')
@@ -43,8 +44,8 @@ module.exports = {
       .waitForElementVisible('@alert', 10000)
       .assert.elementPresent('@alert');
 
-        browser.page.dashboardPage().logout(browser)
+        browser.page.dashboardPage().logout(browser);
 
-      .end();
+        browser.end();
     }
 };

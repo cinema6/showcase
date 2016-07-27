@@ -1,10 +1,8 @@
 var dashboardCommands = {
     logout: function(browser) {
-        this
+        return this
         .waitForElementVisible('@logoutButton', 10000)
         .click('@logoutButton');
-
-        return browser;
     }
 };
 
