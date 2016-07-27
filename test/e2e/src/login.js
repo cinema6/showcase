@@ -28,7 +28,7 @@ module.exports = {
       .waitForElementVisible('@sidePanel', 10000)
       .assert.urlContains('dashboard')
 
-      .logout(browser);
+      .logout();
 
         browser.end();
     }

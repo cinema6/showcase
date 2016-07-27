@@ -1,5 +1,5 @@
 var dashboardCommands = {
-    logout: function(browser) {
+    logout: function() {
         return this
         .waitForElementVisible('@logoutButton', 10000)
         .click('@logoutButton');
