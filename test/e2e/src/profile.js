@@ -3,7 +3,8 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Profile Test': function (browser) {
-        utils.login(browser)
+        browser.page.loginPage()
+      .login(browser)
       .waitForElementVisible('body', 10000);
 
         var page = browser.page.profilePage();
@@ -40,9 +41,9 @@ module.exports = {
       .click('@submitButton')
 
       .waitForElementVisible('@alert', 10000)
-      .assert.elementPresent('@alert');
+      .assert.elementPresent('@alert')
 
-        utils.logout(browser)
+      .logout(browser)
 
       .end();
     }

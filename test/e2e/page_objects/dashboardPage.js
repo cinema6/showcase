@@ -1,4 +1,15 @@
+var dashboardCommands = {
+    logout: function(browser) {
+        this
+        .waitForElementVisible('@logoutButton', 10000)
+        .click('@logoutButton');
+
+        return browser;
+    }
+};
+
 module.exports = {
+    commands: [dashboardCommands],
     url: function() {
         return this.api.launchUrl + '#/dashboard';
     },

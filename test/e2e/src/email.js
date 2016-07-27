@@ -3,7 +3,8 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Email Test': function (browser) {
-        utils.login(browser)
+        browser.page.loginPage()
+      .login(browser)
       .waitForElementVisible('body', 10000);
 
         var page = browser.page.emailPage();
@@ -28,10 +29,9 @@ module.exports = {
       .click('@submitButton')
 
       .waitForElementVisible('@alert', 40000)
+      .assert.elementPresent('@alert')
 
-      .assert.elementPresent('@alert');
-
-        utils.logout(browser)
+      .logout(browser)
 
       .end();
     }

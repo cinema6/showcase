@@ -3,7 +3,8 @@ var utils = require('../helpers/utils.js');
 module.exports = {
 
     'Reelcontent Billing Test': function (browser) {
-        utils.login(browser)
+        browser.page.loginPage()
+      .login(browser)
       .waitForElementVisible('body', 10000);
 
         var page = browser.page.billingPage();
@@ -13,9 +14,9 @@ module.exports = {
 
       .assert.urlContains('billing');
 
-        utils.allDashboardTest(page);
+        utils.allDashboardTest(page)
 
-        utils.logout(browser)
+      .logout(browser)
 
       .end();
     }

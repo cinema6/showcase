@@ -20,16 +20,17 @@ module.exports = {
 
       .assert.elementPresent('@submitButton')
       .click('@submitButton')
-      .waitForElementVisible('@alert', 10000);
+      .waitForElementVisible('@alert', 10000)
 
-        utils.login(browser);
+      .login(browser);
+
         page = browser.page.dashboardPage();
 
         page
       .waitForElementVisible('@sidePanel', 10000)
-      .assert.urlContains('dashboard');
+      .assert.urlContains('dashboard')
 
-        utils.logout(browser)
+      .logout(browser)
 
       .end();
     }
