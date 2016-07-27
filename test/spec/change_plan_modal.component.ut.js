@@ -1,25 +1,30 @@
 import ChangePlanModal from '../../src/components/ChangePlanModal';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import SelectPlan from '../../src/forms/SelectPlan';
-import {
-    findRenderedComponentWithType,
-    scryRenderedDOMComponentsWithClass,
-    Simulate
-} from 'react-addons-test-utils';
-import { findDOMNode } from 'react-dom';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 import moment from 'moment';
 
 describe('ChangePlanModal', () => {
     let state;
     let store;
     let props;
-    let wrapper;
     let component;
     let modal;
+
+    function getModal() {
+        return new ReactWrapper(component.find('Portal').prop('children'), null, {
+            context: {
+                $bs_modal: { onHide: () => {} },
+                store
+            },
+            childContextTypes: {
+                $bs_modal: PropTypes.object.isRequired,
+                store: PropTypes.object.isRequired
+            }
+        });
+    }
 
     beforeEach(() => {
         state = {
@@ -62,20 +67,20 @@ describe('ChangePlanModal', () => {
             onCancel: jasmine.createSpy('onCancel()'),
             cycleEnd: moment().add(5, 'days').utcOffset(0).endOf('day')
         };
-        wrapper = mount(
-            <Provider store={store}>
-                <ChangePlanModal {...props} />
-            </Provider>
+        component = mount(
+            <ChangePlanModal {...props} />,
+            {
+                context: { store },
+                childContextTypes: { store: PropTypes.object.isRequired }
+            }
         );
-        component = wrapper.find(ChangePlanModal);
-        modal = component.find(Modal).node._modal;
+        modal = getModal();
     });
 
     afterEach(() => {
         state = null;
         store = null;
         props = null;
-        wrapper = null;
         component = null;
         modal = null;
     });
@@ -93,14 +98,14 @@ describe('ChangePlanModal', () => {
     });
 
     it('should show the cycleEnd', () => {
-        expect(findDOMNode(modal).querySelector('.modal-header p').textContent).toBe(`Your billing cycle ends on ${props.cycleEnd.format('MMM DD')}`);
+        expect(modal.find('.modal-header p').text()).toBe(`Your billing cycle ends on ${props.cycleEnd.format('MMM DD')}`);
     });
 
     describe('the SelectPlan form', () => {
         let form;
 
         beforeEach(() => {
-            form = findRenderedComponentWithType(modal, SelectPlan);
+            form = modal.find(SelectPlan);
         });
 
         afterEach(() => {
@@ -108,94 +113,75 @@ describe('ChangePlanModal', () => {
         });
 
         it('should exist', () => {
-            expect(form).toEqual(jasmine.any(Object));
-            expect(form.props.plans).toEqual(props.plans);
-            expect(form.props.currentPlan).toBe(props.currentPlan);
-            expect(form.props.formKey).toBe('change');
-            expect(form.props.initialValues).toEqual({ plan: props.currentPlan });
+            expect(form.length).toEqual(1, 'SelectPlan not rendered.');
+            expect(form.prop('plans')).toEqual(props.plans);
+            expect(form.prop('currentPlan')).toBe(props.currentPlan);
+            expect(form.prop('formKey')).toBe('change');
+            expect(form.prop('initialValues')).toEqual({ plan: props.currentPlan });
         });
     });
 
     describe('if the user has more apps than the selected plan', () => {
         beforeEach(() => {
-            props.selectedPlan = props.plans[1].id;
-            props.currentPlan = props.plans[2].id;
-            props.amountOfCampaigns = 7;
-
-            wrapper = mount(
-                <Provider store={store}>
-                    <ChangePlanModal {...props} />
-                </Provider>
-            );
-            component = wrapper.find(ChangePlanModal);
-            modal = component.find(Modal).node._modal;
+            component.setProps({
+                selectedPlan: props.plans[1].id,
+                currentPlan: props.plans[2].id,
+                amountOfCampaigns: 7
+            });
+            modal = getModal();
         });
 
         it('should show a warning', () => {
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert-warning').length).toBe(1);
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert').length).toBe(1);
+            expect(modal.find('.alert-warning').length).toBe(1);
+            expect(modal.find('.alert').length).toBe(1);
         });
     });
 
     describe('if the user is upgrading', () => {
         beforeEach(() => {
-            props.selectedPlan = props.plans[1].id;
-            props.currentPlan = props.plans[0].id;
-            props.amountOfCampaigns = 1;
-
-            wrapper = mount(
-                <Provider store={store}>
-                    <ChangePlanModal {...props} />
-                </Provider>
-            );
-            component = wrapper.find(ChangePlanModal);
-            modal = component.find(Modal).node._modal;
+            component.setProps({
+                selectedPlan: props.plans[1].id,
+                currentPlan: props.plans[0].id,
+                amountOfCampaigns: 1
+            });
+            modal = getModal();
         });
 
         it('should show a message', () => {
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert-success').length).toBe(1);
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert').length).toBe(1);
+            expect(modal.find('.alert-success').length).toBe(1);
+            expect(modal.find('.alert').length).toBe(1);
         });
     });
 
     describe('if the user has no current plan', () => {
         beforeEach(() => {
-            delete props.currentPlan;
-            delete props.cycleEnd;
-            props.amountOfCampaigns = 0;
-
-            wrapper = mount(
-                <Provider store={store}>
-                    <ChangePlanModal {...props} />
-                </Provider>
-            );
-            component = wrapper.find(ChangePlanModal);
-            modal = component.find(Modal).node._modal;
+            component.setProps({
+                currentPlan: undefined,
+                cycleEnd: undefined,
+                amountOfCampaigns: 0
+            });
+            modal = getModal();
         });
 
         it('should show no messages', () => {
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert').length).toBe(0);
+            expect(modal.find('.alert').length).toBe(0);
         });
 
         it('should show no subheader', () => {
-            expect(findDOMNode(modal).querySelector('.modal-header p')).toBeNull();
+            expect(modal.find('.modal-header p').length).toBe(0);
         });
     });
 
     describe('if there are no plans', () => {
         beforeEach(() => {
-            delete props.plans;
-            wrapper = mount(
-                <Provider store={store}>
-                    <ChangePlanModal {...props} />
-                </Provider>
-            );
-            component = wrapper.find(ChangePlanModal);
-            modal = component.find(Modal).node._modal;
+            component.setProps({
+                plans: undefined
+            });
+            modal = getModal();
         });
 
         it('should show no messages', () => {
-            expect(scryRenderedDOMComponentsWithClass(modal, 'alert').length).toBe(0);
+            expect(modal.find('.alert').length).toBe(0);
         });
     });
 
@@ -216,7 +202,7 @@ describe('ChangePlanModal', () => {
         let button;
 
         beforeEach(() => {
-            button = findRenderedComponentWithType(modal, Button);
+            button = modal.find(Button);
         });
 
         afterEach(() => {
@@ -224,37 +210,34 @@ describe('ChangePlanModal', () => {
         });
 
         it('should exist', () => {
-            expect(button).toEqual(jasmine.any(Object));
+            expect(button.length).toBe(1);
         });
 
         it('should not be in a submitting state', () => {
-            expect(button.props.disabled).toBe(false);
-            expect(findDOMNode(button).classList).not.toContain('btn-waiting');
+            expect(button.prop('disabled')).toBe(false);
+            expect(button.hasClass('btn-waiting')).toBe(false, 'Has .btn-waiting');
         });
 
         describe('if actionPending is true', () => {
             beforeEach(() => {
-                props.actionPending = true;
+                component.setProps({
+                    actionPending: true
+                });
 
-                wrapper = mount(
-                    <Provider store={store}>
-                        <ChangePlanModal {...props} />
-                    </Provider>
-                );
-                component = wrapper.find(ChangePlanModal);
-                modal = component.find(Modal).node._modal;
-                button = findRenderedComponentWithType(modal, Button);
+                modal = getModal();
+                button = modal.find(Button);
+
             });
 
             it('should be in a submitting state', () => {
-                expect(button.props.disabled).toBe(true);
-                expect(findDOMNode(button).classList).toContain('btn-waiting');
+                expect(button.prop('disabled')).toBe(true);
+                expect(button.prop('className').split(' ')).toContain('btn-waiting');
             });
         });
 
         describe('when clicked', () => {
             beforeEach(() => {
-                button.props.onClick();
+                button.prop('onClick')();
             });
 
             it('should call onConfirm()', () => {
@@ -267,7 +250,7 @@ describe('ChangePlanModal', () => {
         let button;
 
         beforeEach(() => {
-            button = findDOMNode(modal).querySelector('.btn-link');
+            button = modal.find('.btn-link');
         });
 
         afterEach(() => {
@@ -276,7 +259,7 @@ describe('ChangePlanModal', () => {
 
         describe('when clicked', () => {
             beforeEach(() => {
-                Simulate.click(button);
+                button.simulate('click');
             });
 
             it('should call onCancel()', () => {

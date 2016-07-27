@@ -1,19 +1,26 @@
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { mount } from 'enzyme';
-import {
-    findRenderedComponentWithType,
-    findRenderedDOMComponentWithTag
-} from 'react-addons-test-utils';
-import { findDOMNode } from 'react-dom';
+import { mount, ReactWrapper } from 'enzyme';
 import numeral from 'numeral';
 import SelectPlan from '../../src/forms/SelectPlan';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 
 describe('WizardPlanInfoModal', function() {
     beforeEach(function() {
+        this.getModal = function getModal() {
+            return new ReactWrapper(this.component.find('Portal').prop('children'), null, {
+                context: {
+                    $bs_modal: { onHide: () => {} },
+                    store: this.store
+                },
+                childContextTypes: {
+                    $bs_modal: PropTypes.object.isRequired,
+                    store: PropTypes.object.isRequired
+                }
+            });
+        };
+
         this.state = {
             form: {}
         };
@@ -53,15 +60,21 @@ describe('WizardPlanInfoModal', function() {
             selectedPlan: 'pp-0Ek6Vw0bWnqdlr61'
         };
         this.component = mount(
-            <Provider store={this.store}>
-                <WizardPlanInfoModal {...this.props} />
-            </Provider>
-        ).find(WizardPlanInfoModal);
-        this.modal = this.component.find(Modal).node._modal;
+            <WizardPlanInfoModal {...this.props} />,
+            {
+                context: {
+                    store: this.store
+                },
+                childContextTypes: {
+                    store: PropTypes.object.isRequired
+                }
+            }
+        );
+        this.modal = this.getModal();
     });
 
     it('should exist', function() {
-        expect(this.component).toEqual(jasmine.any(Object));
+        expect(this.component.length).toEqual(1);
     });
 
     it('should render a Modal', function() {
@@ -73,215 +86,170 @@ describe('WizardPlanInfoModal', function() {
     });
 
     it('should only render one subheader', function() {
-        expect(findDOMNode(this.modal).querySelectorAll('.modal-header p').length).toBe(1);
+        expect(this.modal.find('.modal-header p').length).toBe(1);
     });
 
     describe('if there are no plans', function() {
         beforeEach(function() {
-            delete this.props.plans;
-            this.component = mount(
-                <Provider store={this.store}>
-                    <WizardPlanInfoModal {...this.props} />
-                </Provider>
-            ).find(WizardPlanInfoModal);
-            this.modal = this.component.find(Modal).node._modal;
-            this.form = findRenderedComponentWithType(this.modal, SelectPlan);
+            this.component.setProps({ plans: undefined });
+            this.modal = this.getModal();
+            this.form = this.modal.find(SelectPlan);
         });
 
         it('should not set any initial form values', function() {
-            expect(this.form.props.initialValues).toBeUndefined();
+            expect(this.form.prop('initialValues')).toBeUndefined();
         });
     });
 
     describe('if the plan Array is empty', function() {
         beforeEach(function() {
-            this.props.plans = [];
-            this.component = mount(
-                <Provider store={this.store}>
-                    <WizardPlanInfoModal {...this.props} />
-                </Provider>
-            ).find(WizardPlanInfoModal);
-            this.modal = this.component.find(Modal).node._modal;
-            this.form = findRenderedComponentWithType(this.modal, SelectPlan);
+            this.component.setProps({ plans: [] });
+            this.modal = this.getModal();
+            this.form = this.modal.find(SelectPlan);
         });
 
         it('should not set any initial form values', function() {
-            expect(this.form.props.initialValues).toBeUndefined();
+            expect(this.form.prop('initialValues')).toBeUndefined();
         });
     });
 
     describe('if the trialLength is 0', function() {
         beforeEach(function() {
-            this.props.trialLength = 0;
-            this.component = mount(
-                <Provider store={this.store}>
-                    <WizardPlanInfoModal {...this.props} />
-                </Provider>
-            ).find(WizardPlanInfoModal);
-            this.modal = this.component.find(Modal).node._modal;
+            this.component.setProps({ trialLength: 0 });
+            this.modal = this.getModal();
 
-            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
-            this.subheader = findDOMNode(this.modal).querySelector('.modal-header p');
-            this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+            this.header = this.modal.find('.modal-header .modal-title');
+            this.subheader = this.modal.find('.modal-header p');
+            this.button = this.modal.find('button.btn-danger');
         });
 
         it('should use generic text', function() {
-            expect(this.subheader.textContent).toBe('Start promoting your app now');
-            expect(this.button.textContent).toBe('Continue');
+            expect(this.subheader.text()).toBe('Start promoting your app now');
+            expect(this.button.text()).toBe('Continue');
         });
     });
 
     describe('if the freeViews is 0', function() {
         beforeEach(function() {
-            this.props.freeViews = 0;
-            this.component = mount(
-                <Provider store={this.store}>
-                    <WizardPlanInfoModal {...this.props} />
-                </Provider>
-            ).find(WizardPlanInfoModal);
-            this.modal = this.component.find(Modal).node._modal;
+            this.component.setProps({ freeViews: 0 });
+            this.modal = this.getModal();
 
-            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
+            this.header = this.modal.find('.modal-header .modal-title');
         });
 
         it('should use generic text', function() {
-            expect(this.header.textContent).toBe('Reach thousands of people');
+            expect(this.header.text()).toBe('Reach thousands of people');
         });
     });
 
     describe('the number of impressions', function() {
         beforeEach(function() {
-            this.header = findDOMNode(this.modal).querySelector('.modal-header .modal-title');
+            this.header = this.modal.find('.modal-header .modal-title');
         });
 
         it('should be formatted', function() {
-            expect(this.header.textContent).toBe(`Reach ${numeral(this.props.freeViews).format('0,0')} people for FREE`);
+            expect(this.header.text()).toBe(`Reach ${numeral(this.props.freeViews).format('0,0')} people for FREE`);
         });
     });
 
     describe('the length of the trial', function() {
         beforeEach(function() {
-            this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-            this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+            this.header = this.modal.find('.modal-header p');
+            this.button = this.modal.find('button.btn-danger');
         });
 
         it('should be formatted', function() {
-            expect(this.header.textContent).toBe('Your first 17 days of advertising is on us');
-            expect(this.button.textContent).toBe('Get 17 days FREE trial');
+            expect(this.header.text()).toBe('Your first 17 days of advertising is on us');
+            expect(this.button.text()).toBe('Get 17 days FREE trial');
         });
 
         describe('if singular', function() {
             beforeEach(function() {
-                this.props.trialLength = 1;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-                this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+                this.component.setProps({ trialLength: 1 });
+                this.modal = this.getModal();
+                this.header = this.modal.find('.modal-header p');
+                this.button = this.modal.find('button.btn-danger');
             });
 
             it('should use singular text', function() {
-                expect(this.header.textContent).toBe('Your first 1 day of advertising is on us');
-                expect(this.button.textContent).toBe('Get 1 day FREE trial');
+                expect(this.header.text()).toBe('Your first 1 day of advertising is on us');
+                expect(this.button.text()).toBe('Get 1 day FREE trial');
             });
         });
 
         describe('if 7', function() {
             beforeEach(function() {
-                this.props.trialLength = 7;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-                this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+                this.component.setProps({ trialLength: 7 });
+                this.modal = this.getModal();
+                this.header = this.modal.find('.modal-header p');
+                this.button = this.modal.find('button.btn-danger');
             });
 
             it('should use singular week text', function() {
-                expect(this.header.textContent).toBe('Your first 1 week of advertising is on us');
-                expect(this.button.textContent).toBe('Get 1 week FREE trial');
+                expect(this.header.text()).toBe('Your first 1 week of advertising is on us');
+                expect(this.button.text()).toBe('Get 1 week FREE trial');
             });
         });
 
         describe('if 30', function() {
             beforeEach(function() {
-                this.props.trialLength = 30;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-                this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+                this.component.setProps({ trialLength: 30 });
+                this.modal = this.getModal();
+                this.header = this.modal.find('.modal-header p');
+                this.button = this.modal.find('button.btn-danger');
             });
 
             it('should use singular month text', function() {
-                expect(this.header.textContent).toBe('Your first 1 month of advertising is on us');
-                expect(this.button.textContent).toBe('Get 1 month FREE trial');
+                expect(this.header.text()).toBe('Your first 1 month of advertising is on us');
+                expect(this.button.text()).toBe('Get 1 month FREE trial');
             });
         });
 
         describe('if a multiple of 7', function() {
             beforeEach(function() {
-                this.props.trialLength = 21;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-                this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+                this.component.setProps({ trialLength: 21 });
+                this.modal = this.getModal();
+                this.header = this.modal.find('.modal-header p');
+                this.button = this.modal.find('button.btn-danger');
             });
 
             it('should use plural week text', function() {
-                expect(this.header.textContent).toBe('Your first 3 weeks of advertising is on us');
-                expect(this.button.textContent).toBe('Get 3 weeks FREE trial');
+                expect(this.header.text()).toBe('Your first 3 weeks of advertising is on us');
+                expect(this.button.text()).toBe('Get 3 weeks FREE trial');
             });
         });
 
         describe('if a multiple of 30', function() {
             beforeEach(function() {
-                this.props.trialLength = 120;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.header = findDOMNode(this.modal).querySelector('.modal-header p');
-                this.button = findDOMNode(this.modal).querySelector('button.btn-danger');
+                this.component.setProps({ trialLength: 120 });
+                this.modal = this.getModal();
+                this.header = this.modal.find('.modal-header p');
+                this.button = this.modal.find('button.btn-danger');
             });
 
             it('should use plural month text', function() {
-                expect(this.header.textContent).toBe('Your first 4 months of advertising is on us');
-                expect(this.button.textContent).toBe('Get 4 months FREE trial');
+                expect(this.header.text()).toBe('Your first 4 months of advertising is on us');
+                expect(this.button.text()).toBe('Get 4 months FREE trial');
             });
         });
     });
 
     describe('the SelectPlan form', function() {
         beforeEach(function() {
-            this.form = findRenderedComponentWithType(this.modal, SelectPlan);
+            this.form = this.modal.find(SelectPlan);
         });
 
         it('should exist', function() {
-            expect(this.form).toEqual(jasmine.any(Object));
-            expect(this.form.props.plans).toEqual(this.props.plans);
-            expect(this.form.props.initialValues).toEqual({ plan: this.props.plans[1].id });
-            expect(this.form.props.formKey).toBe('select');
+            expect(this.form.length).toEqual(1);
+            expect(this.form.prop('plans')).toEqual(this.props.plans);
+            expect(this.form.prop('initialValues')).toEqual({ plan: this.props.plans[1].id });
+            expect(this.form.prop('formKey')).toBe('select');
         });
 
         describe('when submitted', function() {
             beforeEach(function() {
                 this.values = { plan: this.props.plans[2].id };
-                this.form.props.onSubmit(this.values);
+                this.form.prop('onSubmit')(this.values);
             });
 
             it('should call onContinue()', function() {
@@ -292,52 +260,47 @@ describe('WizardPlanInfoModal', function() {
 
     describe('the continue button', function() {
         beforeEach(function() {
-            this.button = findRenderedComponentWithType(this.modal, Button);
-            this.form = findRenderedComponentWithType(this.modal, SelectPlan);
+            this.button = this.modal.find(Button);
+            this.form = this.modal.find(SelectPlan);
         });
 
         it('should exist', function() {
-            expect(this.button).toEqual(jasmine.any(Object));
+            expect(this.button.length).toEqual(1);
         });
 
         it('should not be disabled', function() {
-            expect(this.button.props.disabled).toBe(false);
+            expect(this.button.prop('disabled')).toBe(false);
         });
 
         it('should not be waiting', function() {
-            expect(findRenderedDOMComponentWithTag(this.button, 'button').classList).not.toContain('btn-waiting');
+            expect(this.button.prop('className').split(' ')).not.toContain('btn-waiting');
         });
 
         describe('onClick()', function() {
             beforeEach(function() {
-                spyOn(this.form, 'submit');
+                spyOn(this.form.node, 'submit');
 
-                this.button.props.onClick();
+                this.button.prop('onClick')();
             });
 
             it('should submit the form', function() {
-                expect(this.form.submit).toHaveBeenCalledWith();
+                expect(this.form.node.submit).toHaveBeenCalledWith();
             });
         });
 
         describe('when actionPending is true', function() {
             beforeEach(function() {
-                this.props.actionPending = true;
-                this.component = mount(
-                    <Provider store={this.store}>
-                        <WizardPlanInfoModal {...this.props} />
-                    </Provider>
-                ).find(WizardPlanInfoModal);
-                this.modal = this.component.find(Modal).node._modal;
-                this.button = findRenderedComponentWithType(this.modal, Button);
+                this.component.setProps({ actionPending: true });
+                this.modal = this.getModal();
+                this.button = this.modal.find(Button);
             });
 
             it('should be disabled', function() {
-                expect(this.button.props.disabled).toBe(true);
+                expect(this.button.prop('disabled')).toBe(true);
             });
 
             it('should be waiting', function() {
-                expect(findRenderedDOMComponentWithTag(this.button, 'button').classList).toContain('btn-waiting');
+                expect(this.button.prop('className').split(' ')).toContain('btn-waiting');
             });
         });
     });

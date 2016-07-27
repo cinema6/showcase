@@ -107,7 +107,7 @@
     "numeral": "^1.5.3",
     "rc-uuid": "^2.0.1",
     "react": "^15.0.1",
-    "react-bootstrap": "^0.29.3",
+    "react-bootstrap": "^0.30.0",
     "react-document-title": "^2.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
