@@ -889,7 +889,7 @@ describe('product wizard actions', function() {
         });
     });
 
-    describe('collectPayment({ productData, targeting })', function() {
+    describe('collectPayment({ productData, targeting, paymentPlan })', function() {
         beforeEach(function() {
             createCampaign = require('../../src/actions/product_wizard').createCampaign;
             this.productData = {
@@ -900,7 +900,10 @@ describe('product wizard actions', function() {
                 age: [TARGETING.AGE.ALL],
                 gender: []
             };
-            this.thunk = getThunk(collectPayment({ productData: this.productData, targeting: this.targeting }));
+            this.paymentPlan = {
+                id: `pp-${createUuid()}`
+            };
+            this.thunk = getThunk(collectPayment({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan }));
         });
 
         it('should return a thunk', function() {
@@ -1021,7 +1024,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 30,
                                     paymentMethodRequired: true
                                 }
@@ -1031,7 +1034,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 10,
                                     paymentMethodRequired: false
                                 }
@@ -1041,7 +1044,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 11,
                                     paymentMethodRequired: true
                                 }
@@ -1218,7 +1221,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 30,
                                     paymentMethodRequired: true
                                 }
@@ -1228,7 +1231,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 10,
                                     paymentMethodRequired: true
                                 }
@@ -1238,7 +1241,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 11,
                                     paymentMethodRequired: true
                                 }

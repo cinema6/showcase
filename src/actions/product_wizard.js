@@ -150,7 +150,11 @@ export const PREVIEW_LOADED = prefix('PREVIEW_LOADED');
 export const previewLoaded = createAction(PREVIEW_LOADED);
 
 export const COLLECT_PAYMENT = prefix('COLLECT_PAYMENT');
-export const collectPayment = createThunk(({ productData, targeting }) => (dispatch, getState) => {
+export const collectPayment = createThunk(({
+    productData,
+    targeting,
+    paymentPlan,
+}) => (dispatch, getState) => {
     const collectPaymentMethod = () => goToStep(4);
 
     return dispatch(createAction(COLLECT_PAYMENT)(Promise.all([
@@ -161,7 +165,7 @@ export const collectPayment = createThunk(({ productData, targeting }) => (dispa
         const promotions = promotionIds.map(id => state.db.promotion[id]);
         const org = state.db.org[orgId];
         const paymentMethodRequired = _(promotions).every(
-            `data[${org.paymentPlanId}].paymentMethodRequired`
+            `data[${paymentPlan.id}].paymentMethodRequired`
         );
         const paymentPlanStart = (org.paymentPlanStart || null) &&
             moment(org.paymentPlanStart);
