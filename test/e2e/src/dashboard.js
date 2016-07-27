@@ -12,8 +12,6 @@ module.exports = {
 
         utils.allDashboardTest(page);
 
-        utils.phoneFrameTest(page);
-
         utils.logout(browser)
 
       .end();

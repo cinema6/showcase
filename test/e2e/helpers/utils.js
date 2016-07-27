@@ -43,15 +43,5 @@ module.exports = {
       .assert.elementPresent('@dropdownMenu');
 
         return page;
-    },
-
-    phoneFrameTest: function (browserPage) {
-        var page = browserPage;
-
-        page
-      .assert.elementPresent('@phoneFrame');
-
-        return page;
-
     }
 };

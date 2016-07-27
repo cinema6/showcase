@@ -13,6 +13,11 @@ module.exports = {
 
         utils.allDashboardTest(page)
 
+      .assert.containsText('body', 'First Name')
+      .assert.containsText('body', 'Last Name')
+      .assert.containsText('body', 'Company')
+      .assert.containsText('body', 'Phone')
+
       .waitForElementVisible('@firstNameInput', 10000)
       .assert.elementPresent('@firstNameInput')
       .assert.elementPresent('@lastNameInput')

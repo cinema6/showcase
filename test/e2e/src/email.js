@@ -13,6 +13,9 @@ module.exports = {
 
         utils.allDashboardTest(page)
 
+      .assert.containsText('body', 'Email')
+      .assert.containsText('body', 'Password')
+
       .waitForElementVisible('@emailInput', 10000)
       .assert.elementPresent('@emailInput')
       .assert.elementPresent('@passwordInput')

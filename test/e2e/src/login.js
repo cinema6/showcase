@@ -26,9 +26,8 @@ module.exports = {
         page = browser.page.dashboardPage();
 
         page
-      .waitForElementVisible('@phoneFrame', 10000)
-      .assert.urlContains('dashboard')
-      .waitForElementVisible('@sidePanel', 10000);
+      .waitForElementVisible('@sidePanel', 10000)
+      .assert.urlContains('dashboard');
 
         utils.logout(browser)
 

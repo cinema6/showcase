@@ -11,9 +11,12 @@ module.exports = {
       .navigate()
       .waitForElementVisible('body', 10000);
 
-        utils.allDashboardTest(page);
-      
-        page
+        utils.allDashboardTest(page)
+
+      .assert.containsText('body', 'Current Password')
+      .assert.containsText('body', 'New Password')
+      .assert.containsText('body', 'Confirm')
+
       .waitForElementVisible('@oldPasswordInput', 10000)
       .assert.elementPresent('@oldPasswordInput')
       .assert.elementPresent('@newPasswordInput')

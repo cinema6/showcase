@@ -47,6 +47,8 @@ module.exports = {
             launch_url: 'https://apps-staging.reelcontent.com/',
             selenium_host: 'ondemand.saucelabs.com',
             selenium_port: 80,
+            /*global process*/
+            /*eslint no-undef: "error"*/
             username: process.env.SAUCE_USERNAME,
             access_key: process.env.SAUCE_KEY,
             use_ssl: false,
