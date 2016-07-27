@@ -11,7 +11,7 @@ import {
     getPaymentPlan,
     getCampaigns
 } from '../../src/actions/session';
-import { getCampaignAnalytics } from './analytics';
+import { getCampaignAnalytics } from '../../src/actions/analytics';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
 import { trackLogout as intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
