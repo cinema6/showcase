@@ -10,7 +10,7 @@ import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
 // import classnames from 'classnames';
-import _, { pick, /* includes, */ assign } from 'lodash';
+import _, { pick, /* includes, */ assign, find } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import DocumentTitle from 'react-document-title';
@@ -91,6 +91,7 @@ class ProductWizard extends Component {
             productData,
             targeting,
             promotions,
+            paymentPlans,
             paymentPlanId,
 
             page: { step, previewLoaded, checkingIfPaymentRequired },
@@ -261,12 +262,14 @@ class ProductWizard extends Component {
                 show={step === 3}
                 actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
-                onContinue={() => collectPayment({
+                onContinue={selectedPlanId => collectPayment({
                     productData: this.getProductData(),
                     targeting: this.getTargeting(),
+                    paymentPlan: find(paymentPlans, { id: selectedPlanId }),
                 })}
                 trialLength={trialLength}
                 freeViews={freeViews}
+                plans={paymentPlans}
             />
             {step === 4 && (
                 <WizardConfirmationModal
@@ -316,6 +319,9 @@ ProductWizard.propTypes = {
     promotions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
     }).isRequired),
+    paymentPlans: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+    })),
     paymentPlanId: PropTypes.string,
 };
 

@@ -26,7 +26,6 @@ import * as TARGETING from '../../src/enums/targeting';
 import { getClientToken } from '../../src/actions/payment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
-import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
 
 const proxyquire = require('proxyquire');
@@ -181,6 +180,29 @@ describe('ProductWizard', function() {
                                 targetUsers: 700
                             }
                         }
+                    }
+                ],
+                paymentPlans: [
+                    {
+                        id: 'pp-0Ek6Vw0bWnqdlr61',
+                        price: 10,
+                        viewsPerMonth: 2000,
+                        name: 'Baby',
+                        maxCampaigns: 1
+                    },
+                    {
+                        id: 'pp-0Ek6V-0bWnuhLfQl',
+                        price: 24.99,
+                        viewsPerMonth: 4000,
+                        name: 'Kid',
+                        maxCampaigns: 5
+                    },
+                    {
+                        id: 'pp-0Ek6Ws0bWnxCV-B7',
+                        price: 49.99,
+                        viewsPerMonth: 10000,
+                        name: 'Adult',
+                        maxCampaigns: 10
                     }
                 ],
 
@@ -340,6 +362,12 @@ describe('ProductWizard', function() {
                             expect(this.planInfoModal.prop('freeViews')).toBe(0);
                         });
                     }));
+                });
+
+                describe('plans', function() {
+                    it('should be the paymentPlans prop', function() {
+                        expect(this.planInfoModal.prop('plans')).toEqual(props.paymentPlans);
+                    });
                 });
             });
         });
@@ -674,13 +702,16 @@ describe('ProductWizard', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    this.planInfoModal.props().onContinue();
+                    this.paymentPlanId = props.paymentPlans[1].id;
+
+                    this.planInfoModal.props().onContinue(this.paymentPlanId);
                 });
 
                 it('should dispatch() collectPayment()', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(collectPayment({
                         productData: component.node.getProductData(),
-                        targeting: component.node.getTargeting()
+                        targeting: component.node.getTargeting(),
+                        paymentPlan: props.paymentPlans[1]
                     }));
                 });
             });
