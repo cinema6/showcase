@@ -25,7 +25,7 @@ import {
     LOAD_PAGE_DATA
 } from '../../src/actions/dashboard';
 import { replace } from 'react-router-redux';
-import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 import { dispatch } from '../helpers/stubs';
 import { paymentMethod } from '../../src/actions/payment';
 import { getOrg } from '../../src/actions/session';
@@ -316,55 +316,62 @@ describe('dashboard actions', function() {
             });
         });
     });
+
     describe('loadPageData()', function() {
-        let thunk;
 
         beforeEach(function() {
-            thunk = getThunk(loadPageData());
+            this.thunk = getThunk(loadPageData());
         });
 
         it('should return a thunk', function() {
-            expect(thunk).toEqual(jasmine.any(Function));
+            expect(this.thunk).toEqual(jasmine.any(Function));
         });
 
         describe('when executed', function() {
-            let dispatch, getState;
-            let success, failure;
-
             beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
 
-                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (action.type === createThunk()().type) { return getThunk(action)(dispatch, getState); }
-
-                    return new Promise(() => {});
-                });
-                getState = jasmine.createSpy('getState()').and.returnValue({});
-
-                success = jasmine.createSpy('success()');
-                failure = jasmine.createSpy('failure()');
-
-                thunk(dispatch, getState).then(success, failure);
+                this.dispatch = dispatch();
+                this.thunk(this.dispatch).then(this.success, this.failure);
                 setTimeout(done);
             });
 
-            it('should getCampaigns()', function() {
-                expect(dispatch).toHaveBeenCalledWith(getCampaigns());
-            });
-
-            it('should getCampaignAnalytics()', function() {
-                expect(dispatch).toHaveBeenCalledWith(getCampaignAnalytics());
-            });
-
             it('should getBillingPeriod()', function() {
-                expect(dispatch).toHaveBeenCalledWith(getBillingPeriod());
+                expect(this.dispatch).toHaveBeenCalledWith(getBillingPeriod());
             });
 
             it('should getPaymentPlan()', function() {
-                expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
+                expect(this.dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
 
             it('should dispatch LOAD_PAGE_DATA', function() {
-                expect(dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
+            });
+
+            describe('should getCampaigns()', function() {
+                let campaign;
+                beforeEach(function(done) {
+                    campaign = createUuid();
+                    this.campaigns = [campaign];
+                    this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
+                    setTimeout(done);
+                });
+
+                it('should getCampaigns()', function(){
+                    expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+                });
+
+                describe('should then getCampaignAnalytics()', function(){
+                    beforeEach(function(done) {
+                        this.dispatch.getDeferred(getCampaignAnalytics(campaign)).resolve(undefined);
+                        setTimeout(done);
+                    });
+                    it('should succeed()', function(){
+                        expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign));
+                    });
+                });
+
             });
         });
     });
