@@ -4,11 +4,15 @@ import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
-import { logoutUser, toggleNav, checkIfPaymentMethodRequired } from '../../src/actions/dashboard';
+import { logoutUser,
+    toggleNav,
+    checkIfPaymentMethodRequired,
+    loadPageData
+} from '../../src/actions/dashboard';
 import { Provider } from 'react-redux';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
-import { cloneDeep as clone } from 'lodash';
+import ld, { cloneDeep as clone } from 'lodash';
 
 const proxyquire = require('proxyquire');
 
@@ -21,6 +25,7 @@ describe('Dashboard', function() {
             logoutUser: jasmine.createSpy('logoutUser()').and.callFake(logoutUser),
             toggleNav: jasmine.createSpy('toggleNav()').and.callFake(toggleNav),
             checkIfPaymentMethodRequired,
+            loadPageData,
 
             __esModule: true
         };
@@ -33,7 +38,7 @@ describe('Dashboard', function() {
     });
 
     describe('when rendered', function() {
-        let user;
+        let user, campaign, plan;
         let store, state;
         let props;
         let component;
@@ -44,22 +49,49 @@ describe('Dashboard', function() {
                 firstName: 'Your',
                 lastName: 'Mom'
             };
-
+            plan = {
+                id: createUuid()
+            };
+            campaign = {
+                id: createUuid()
+            };
             state = {
                 db: {
                     user: {
                         [user.id]: user
-                    }
+                    },
+                    paymentPlan: plan.id
                 },
                 session: {
-                    user: user.id
+                    user: user.id,
+                    billingPeriod: {
+                        cycleStart: '2016-06-17T00:00:00.000Z',
+                        cycleEnd: '2016-12-14T23:59:59.000Z',
+                        totalViews: 800
+                    },
+                    campaigns: [campaign.id],
+                    paymentPlan: {
+                        [plan.id]: {
+                            maxCampaigns: 1
+                        }
+                    }
                 },
                 page: {
                     dashboard: {
                         showNav: false
                     }
+                },
+                analytics: {
+                    results: {
+                        [campaign.id]: {
+                            summary: {
+                                views: 400
+                            }
+                        }
+                    }
                 }
             };
+
             store = createStore(() => clone(state));
             spyOn(store, 'dispatch').and.callThrough();
 
@@ -84,14 +116,32 @@ describe('Dashboard', function() {
             expect(component.props.page).toEqual(state.page.dashboard);
         });
 
-        it('should pass in the user', function() {
+        it('should pass in the props', function() {
+            const startDate = ld.get(state, 'session.billingPeriod.cycleStart');
+            const endDate = ld.get(state, 'session.billingPeriod.cycleEnd');
+            const views = ld.get(state,
+                `analytics.results[${ld.get(state, 'session.campaigns[0]')}].summary.views`, '--');
+            const viewGoals = ld.get(state, 'session.billingPeriod.totalViews', '--');
+            const appsUsed = ld.get(state, 'session.campaigns.length', '--');
+            const maxApps = ld.get(state,
+                `db.paymentPlan[${ld.get(state, 'session.paymentPlan')}].maxCampaigns`, '--');
+                
             expect(component.props).toEqual(jasmine.objectContaining({
-                user: user
+                user: user,
+                startDate: startDate,
+                endDate: endDate,
+                views: views,
+                viewGoals: viewGoals,
+                appsUsed: appsUsed,
+                maxApps: maxApps
             }));
         });
 
         it('should dispatch checkIfPaymentMethodRequired()', function() {
             expect(store.dispatch).toHaveBeenCalledWith(checkIfPaymentMethodRequired());
+        });
+        it('should dispatch loadPageData()', function() {
+            expect(store.dispatch).toHaveBeenCalledWith(loadPageData());
         });
 
         describe('if no user is logged in', function() {

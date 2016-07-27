@@ -7,11 +7,12 @@ import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
-import moment from 'moment';
+import ld from 'lodash';
 
 class Dashboard extends Component {
     componentDidMount() {
         this.props.checkIfPaymentMethodRequired();
+        this.props.loadPageData();
     }
 
     render() {
@@ -22,6 +23,13 @@ class Dashboard extends Component {
 
             logoutUser,
             toggleNav,
+
+            startDate,
+            endDate,
+            views,
+            viewGoals,
+            appsUsed,
+            maxApps,
         } = this.props;
 
         if (!user) { return null; }
@@ -68,13 +76,12 @@ class Dashboard extends Component {
                 </div>
             </nav>
             <StatsSummaryBar
-                startDate={moment().subtract(1, 'week')}
-                endDate={moment().add(23, 'days')}
-                today={moment()}
-                views={200}
-                viewGoals={450}
-                appsUsed={2}
-                maxApps={3}
+                startDate={startDate}
+                endDate={endDate}
+                views={views}
+                viewGoals={viewGoals}
+                appsUsed={appsUsed}
+                maxApps={maxApps}
             />
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
@@ -177,13 +184,34 @@ Dashboard.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     toggleNav: PropTypes.func.isRequired,
     checkIfPaymentMethodRequired: PropTypes.func.isRequired,
+    loadPageData: PropTypes.func.isRequired,
+
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    views: PropTypes.number,
+    viewGoals: PropTypes.number,
+    appsUsed: PropTypes.number,
+    maxApps: PropTypes.number,
 };
 
 function mapStateToProps(state) {
     const user = state.db.user[state.session.user];
-
+    const startDate = ld.get(state, 'session.billingPeriod.cycleStart');
+    const endDate = ld.get(state, 'session.billingPeriod.cycleEnd');
+    const views = ld.get(state,
+        `analytics.results[${ld.get(state, 'session.campaigns[0]')}].summary.views`, '--');
+    const viewGoals = ld.get(state, 'session.billingPeriod.totalViews', '--');
+    const appsUsed = ld.get(state, 'session.campaigns.length', '--');
+    const maxApps = ld.get(state,
+        `db.paymentPlan[${ld.get(state, 'session.paymentPlan')}].maxCampaigns`, '--');
     return {
         user: user || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        views: views || null,
+        viewGoals: viewGoals || null,
+        appsUsed: appsUsed || null,
+        maxApps: maxApps || null,
     };
 }
 

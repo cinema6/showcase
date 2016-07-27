@@ -3,12 +3,13 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 
 function formatDate(date) {
-    return date.format('MMM D');
+    return (date === null) ?
+        'n/a' : moment(date).format('MMM D');
 }
 
 function ratio(num, denom) {
-    const percent = num / denom * 100;
-    return `${percent}%`;
+    return (typeof num !== 'number' && typeof denom !== 'number') ?
+        '0%' : `${num / denom * 100}%`;
 }
 
 export default function StatsSummaryBar({
@@ -30,7 +31,7 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text">Days left</span>
                 <h4 className="stats-header">
-                    {endDate.diff(moment(), 'days')}
+                    {endDate && moment(endDate).diff(moment(), 'days')}
                 </h4>
             </div>
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
@@ -66,10 +67,10 @@ export default function StatsSummaryBar({
 }
 
 StatsSummaryBar.propTypes = {
-    startDate: PropTypes.instanceOf(moment),
-    endDate: PropTypes.instanceOf(moment),
-    views: PropTypes.number.isRequired,
-    viewGoals: PropTypes.number.isRequired,
-    appsUsed: PropTypes.number.isRequired,
-    maxApps: PropTypes.number.isRequired,
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    views: PropTypes.number,
+    viewGoals: PropTypes.number,
+    appsUsed: PropTypes.number,
+    maxApps: PropTypes.number,
 };
