@@ -1,9 +1,7 @@
 module.exports = {
 
     allDashboardTest: function (browserPage) {
-        var page = browserPage;
-
-        page
+        return browserPage
       .waitForElementVisible('@logo', 10000)
       .assert.elementPresent('@logo')
       .assert.urlContains('dashboard')
@@ -13,7 +11,5 @@ module.exports = {
       .click('@dropdown')
       .assert.attributeEquals('@dropdown', 'aria-expanded', 'true')
       .assert.elementPresent('@dropdownMenu');
-
-        return page;
     }
 };

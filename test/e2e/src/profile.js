@@ -41,9 +41,9 @@ module.exports = {
       .click('@submitButton')
 
       .waitForElementVisible('@alert', 10000)
-      .assert.elementPresent('@alert')
+      .assert.elementPresent('@alert');
 
-      .logout(browser)
+        browser.page.dashboardPage().logout(browser)
 
       .end();
     }

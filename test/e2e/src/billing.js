@@ -14,9 +14,9 @@ module.exports = {
 
       .assert.urlContains('billing');
 
-        utils.allDashboardTest(page)
+        utils.allDashboardTest(page);
 
-      .logout(browser)
+        browser.page.dashboardPage().logout(browser)
 
       .end();
     }

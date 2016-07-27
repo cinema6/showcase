@@ -10,14 +10,13 @@ module.exports = {
         var page = browser.page.emailPage();
         page
       .navigate()
-      .waitForElementVisible('@sidePanel', 10000);
+      .waitForElementVisible('@emailInput', 10000);
 
         utils.allDashboardTest(page)
 
       .assert.containsText('body', 'Email')
       .assert.containsText('body', 'Password')
 
-      .waitForElementVisible('@emailInput', 10000)
       .assert.elementPresent('@emailInput')
       .assert.elementPresent('@passwordInput')
 
@@ -29,9 +28,9 @@ module.exports = {
       .click('@submitButton')
 
       .waitForElementVisible('@alert', 40000)
-      .assert.elementPresent('@alert')
+      .assert.elementPresent('@alert');
 
-      .logout(browser)
+        browser.page.dashboardPage().logout(browser)
 
       .end();
     }

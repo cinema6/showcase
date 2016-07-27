@@ -1,15 +1,4 @@
-var resetCommands = {
-    logout: function(browser) {
-        this
-        .waitForElementVisible('@logoutButton', 10000)
-        .click('@logoutButton');
-
-        return browser;
-    }
-};
-
 module.exports = {
-    commands: [resetCommands],
     url: function() {
         return this.api.launchUrl + '#/dashboard/account/password';
     },
