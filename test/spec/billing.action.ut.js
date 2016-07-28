@@ -30,7 +30,7 @@ const proxyquire = require('proxyquire');
 
 describe('billing actions', function() {
     let actions;
-    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod;
+    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod, showPlanModal;
     let paymentActions;
 
     beforeEach(function() {
@@ -43,13 +43,15 @@ describe('billing actions', function() {
                 getPaymentPlan,
 
                 __esModule: true
-            }
+            },
+            './system': require('../../src/actions/system')
         });
         getPayments = actions.getPayments;
         getPaymentMethods = actions.getPaymentMethods;
         loadPageData = actions.loadPageData;
         showChangeModal = actions.showChangeModal;
         changePaymentMethod = actions.changePaymentMethod;
+        showPlanModal = actions.showPlanModal;
     });
 
     describe('getPayments()', function() {
@@ -179,6 +181,10 @@ describe('billing actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
 
+            it('should getPaymentPlans()', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlans());
+            });
+
             it('should dispatch LOAD_PAGE_DATA', function() {
                 expect(dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
             });
@@ -189,6 +195,13 @@ describe('billing actions', function() {
         it('should dispatch an action', function() {
             expect(showChangeModal(true)).toEqual(createAction(SHOW_CHANGE_MODAL)(true));
             expect(showChangeModal(false)).toEqual(createAction(SHOW_CHANGE_MODAL)(false));
+        });
+    });
+
+    describe('showPlanModal()', () => {
+        it('should dispatch an action', () => {
+            expect(showPlanModal(true)).toEqual(createAction(SHOW_PLAN_MODAL)(true));
+            expect(showPlanModal(false)).toEqual(createAction(SHOW_PLAN_MODAL)(false));
         });
     });
 
@@ -444,7 +457,7 @@ describe('billing actions', function() {
                 beforeEach(done => {
                     response = {
                         paymentPlanId,
-                        nextPaymentPlanId: paymentPlanId,
+                        nextPaymentPlanId: null,
                         effectiveDate: moment().format()
                     };
 
@@ -496,6 +509,64 @@ describe('billing actions', function() {
                     beforeEach(done => {
                         dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
                         setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should close the modal', () => {
+                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    });
+
+                    it('should show a success message', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: 'You have successfully upgraded your account!',
+                            time: 5000
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+            });
+
+            describe('if the change will not take effect until a future date', () => {
+                let response;
+
+                beforeEach(done => {
+                    response = {
+                        paymentPlanId: `pp-${createUuid()}`,
+                        nextPaymentPlanId: paymentPlanId,
+                        effectiveDate: moment().add(2, 'days').utcOffset(0).endOf('day').format()
+                    };
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                it('should re-fetch the org', () => {
+                    expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
+                });
+
+                describe('when the org has been fetched', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should close the modal', () => {
+                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    });
+
+                    it('should show a success message', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: `Your changes will take effect at the end of the current billing period: ${moment(response.effectiveDate).format('MMM D')}.`,
+                            time: 10000
+                        }));
                     });
 
                     it('should fulfill with undefined', () => {

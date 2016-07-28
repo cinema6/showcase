@@ -39,6 +39,7 @@ export const loadPageData = createThunk(() => (
             dispatch(getPaymentMethods()),
             dispatch(getBillingPeriod()),
             dispatch(getPaymentPlan()),
+            dispatch(getPaymentPlans()),
         ])));
     }
 ));
@@ -63,6 +64,9 @@ export const changePaymentMethod = createThunk(({ cardholderName, nonce }) => (
     }
 ));
 
+export const SHOW_PLAN_MODAL = prefix('SHOW_PLAN_MODAL');
+export const showPlanModal = createAction(SHOW_PLAN_MODAL);
+
 export const CHANGE_PAYMENT_PLAN = prefix('CHANGE_PAYMENT_PLAN');
 export const changePaymentPlan = createThunk(paymentPlanId => (dispatch, getState) => dispatch(
     createAction(CHANGE_PAYMENT_PLAN)(Promise.resolve().then(() => {
@@ -74,7 +78,32 @@ export const changePaymentPlan = createThunk(paymentPlanId => (dispatch, getStat
             orgId,
             paymentPlanId,
         }))
-        .then(() => dispatch(orgs.get({ id: orgId })))
+        .then(changes => {
+            const isImmediate = !changes.nextPaymentPlanId;
+            const effectiveDate = moment(changes.effectiveDate);
+
+            return dispatch(orgs.get({
+                id: orgId,
+            }))
+            .then(() => {
+                dispatch(showPlanModal(false));
+
+                if (isImmediate) {
+                    dispatch(notify({
+                        type: NOTIFICATION.TYPE.SUCCESS,
+                        message: 'You have successfully upgraded your account!',
+                        time: 5000,
+                    }));
+                } else {
+                    dispatch(notify({
+                        type: NOTIFICATION.TYPE.SUCCESS,
+                        message: 'Your changes will take effect at the end of the current ' +
+                            `billing period: ${effectiveDate.format('MMM D')}.`,
+                        time: 10000,
+                    }));
+                }
+            });
+        })
         .catch(reason => {
             dispatch(notify({
                 type: NOTIFICATION.TYPE.DANGER,

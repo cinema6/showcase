@@ -14,6 +14,9 @@ import {
     GET_PAYMENT_PLAN,
     GET_ORG,
 } from '../actions/session';
+import {
+    CHANGE_PAYMENT_PLAN_SUCCESS,
+} from '../actions/org';
 import { assign, reject, includes } from 'lodash';
 
 const DEFAULT_STATE = {
@@ -46,6 +49,9 @@ export default handleActions({
         billingPeriod,
     }),
     [`${GET_PAYMENT_PLAN}_FULFILLED`]: (state, { payload: [paymentPlanId] }) => assign({}, state, {
+        paymentPlan: paymentPlanId,
+    }),
+    [CHANGE_PAYMENT_PLAN_SUCCESS]: (state, { payload: { paymentPlanId } }) => assign({}, state, {
         paymentPlan: paymentPlanId,
     }),
     [`${GET_ORG}_FULFILLED`]: (state, { payload: [orgId] }) => assign({}, state, {
