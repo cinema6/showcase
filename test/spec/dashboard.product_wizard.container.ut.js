@@ -250,6 +250,132 @@ describe('ProductWizard', function() {
             });
         });
 
+        describe('the steps', () => {
+            let steps;
+
+            beforeEach(() => {
+                store.dispatch.calls.reset();
+
+                steps = component.find('.progressbar-step');
+            });
+
+            it('should render all four', () => {
+                const one = steps.at(0);
+                const two = steps.at(1);
+                const three = steps.at(2);
+                const four = steps.at(3);
+
+                expect(one.find('.search-icon').length).toBe(1, 'search is not displayed.');
+                expect(one.find('.progressbar-step-stepnum').text()).toBe('Search');
+
+                expect(two.find('.create-icon').length).toBe(1, 'create is not displayed.');
+                expect(two.find('.progressbar-step-stepnum').text()).toBe('Create');
+
+                expect(three.find('.target-icon').length).toBe(1, 'target is not displayed.');
+                expect(three.find('.progressbar-step-stepnum').text()).toBe('Target');
+
+                expect(four.find('.promote-icon').length).toBe(1, 'promote is not displayed.');
+                expect(four.find('.progressbar-step-stepnum').text()).toBe('Promote');
+            });
+
+            it('should go to the correct step', () => {
+                steps.forEach((step, index) => {
+                    store.dispatch.and.returnValue(new Promise(() => {}));
+                    store.dispatch.calls.reset();
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step: index + 1
+                        })
+                    });
+
+                    step.find('button').simulate('click');
+
+                    expect(store.dispatch).toHaveBeenCalledWith(goToStep(index));
+                });
+            });
+
+            [
+                '.search-icon',
+                '.create-icon',
+                '.target-icon',
+                '.promote-icon'
+            ].forEach((selector, index) => describe(`if step ${index} is omitted`, () => {
+                let step;
+
+                beforeEach(() => {
+                    wrapper.setProps({
+                        steps: props.steps.filter(step => step !== index)
+                    });
+
+                    steps = component.find('.progressbar-step');
+                    step = steps.find(selector);
+                });
+
+                it('should remove the step', () => {
+                    expect(steps.length).toBe(3);
+                    expect(step.length).toBe(0, `${selector} is rendered.`);
+                });
+            }));
+
+            [0, 1, 2, 3].forEach(step => describe(`on step ${step}`, () => {
+                let all;
+                let current;
+                let previous;
+                let future;
+
+                beforeEach(() => {
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step
+                        })
+                    });
+
+                    all = steps.map(step => step);
+                    current = all[step];
+                    previous = all.slice(0, step);
+                    future = all.slice(step + 1);
+                });
+
+                it('should add the "completed" class to all the previous steps', () => {
+                    previous.forEach(step => expect(step.hasClass('completed')).toBe(true, `${step.html()} lacks "completed" class`));
+                    expect(current.hasClass('completed')).toBe(false, `${current.html()} has "completed" class`);
+                    future.forEach(step => expect(step.hasClass('completed')).toBe(false, `${step.html()} has "completed" class`));
+                });
+
+                it('should add "active" to the current step', () => {
+                    expect(current.hasClass('active')).toBe(true, `${current.html()} lacks class "active"`);
+                    previous.forEach(step => expect(step.hasClass('active')).toBe(false, `${step.html()} has "active" class`));
+                    future.forEach(step => expect(step.hasClass('active')).toBe(false, `${step.html()} has "active" class`));
+                });
+
+                it('should add "disabled" to the future steps', () => {
+                    future.forEach(step => expect(step.hasClass('disabled')).toBe(true, `${step.html()} lacks "disabled" class`));
+                    expect(current.hasClass('disabled')).toBe(false, `${current.html()} has "disabled" class`);
+                    previous.forEach(step => expect(step.hasClass('disabled')).toBe(false, `${step.html()} has "disabled" class`));
+                });
+
+                it('should disable the buttons of future steps', () => {
+                    future.forEach(step => expect(step.find('button').prop('disabled')).toBe(true, `${step.html()} lacks "disabled" class`));
+                    expect(current.find('button').prop('disabled')).toBe(false, `${current.html()} has "disabled" class`);
+                    previous.forEach(step => expect(step.find('button').prop('disabled')).toBe(false, `${step.html()} has "disabled" class`));
+                });
+            }));
+
+            describe('if the step exceeds the last step', () => {
+                beforeEach(() => {
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step: 7
+                        })
+                    });
+                });
+
+                it('should keep the last step active', () => {
+                    expect(steps.last().hasClass('active')).toBe(true, 'Last step lacks "active" class');
+                });
+            });
+        });
+
         describe('methods:', function() {
             beforeEach(function() {
                 wrapper.setProps({
