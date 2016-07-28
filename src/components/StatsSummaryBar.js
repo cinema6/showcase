@@ -4,7 +4,7 @@ import moment from 'moment';
 
 function formatDate(date) {
     return (date === null) ?
-        'n/a' : moment(date).format('MMM D');
+        '\u2014' : moment(date).format('MMM D');
 }
 
 function ratio(num, denom) {
@@ -31,13 +31,13 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text">Days left</span>
                 <h4 className="stats-header">
-                    {endDate && moment(endDate).diff(moment(), 'days')}
+                    {(endDate && moment(endDate).diff(moment(), 'days')) || '\u2014'}
                 </h4>
             </div>
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text text-left">Views</span>
                 <span className="lighter-text pull-right">
-                    {views} / {viewGoals}
+                    {views || '\u2014'} / {viewGoals || '\u2014'}
                 </span>
                 <div className="stats-header stas-bar view-count">
                     <div className="bar-wrap">
@@ -51,7 +51,7 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text text-left">Apps</span>
                 <span className="lighter-text pull-right">
-                    {appsUsed} / {maxApps}
+                    {appsUsed || '\u2014'} / {maxApps || '\u2014'}
                 </span>
                 <div className="stats-header stas-bar app-count">
                     <div className="bar-wrap">
@@ -67,8 +67,8 @@ export default function StatsSummaryBar({
 }
 
 StatsSummaryBar.propTypes = {
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
+    startDate: PropTypes.instanceOf(moment),
+    endDate: PropTypes.instanceOf(moment),
     views: PropTypes.number,
     viewGoals: PropTypes.number,
     appsUsed: PropTypes.number,

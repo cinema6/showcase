@@ -1,6 +1,6 @@
 'use strict';
 
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { mount } from 'enzyme';
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
@@ -9,10 +9,10 @@ import { logoutUser,
     checkIfPaymentMethodRequired,
     loadPageData
 } from '../../src/actions/dashboard';
-import { Provider } from 'react-redux';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
-import ld, { cloneDeep as clone } from 'lodash';
+import { get, cloneDeep as clone } from 'lodash';
+import moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
@@ -31,8 +31,7 @@ describe('Dashboard', function() {
         };
 
         Dashboard = proxyquire('../../src/containers/Dashboard', {
-            'react': React,
-
+            'react': React,            
             '../../actions/dashboard': dashboardActions
         }).default;
     });
@@ -41,7 +40,7 @@ describe('Dashboard', function() {
         let user, campaign, plan;
         let store, state;
         let props;
-        let component;
+        let wrapper, component;
 
         beforeEach(function() {
             user = {
@@ -99,41 +98,40 @@ describe('Dashboard', function() {
                 children: <div />
             };
 
-            component = findRenderedComponentWithType(renderIntoDocument(
-                <Provider store={store}>
-                    <Dashboard {...props} />
-                </Provider>
-            ), Dashboard.WrappedComponent.WrappedComponent);
+            wrapper = mount(
+                <Dashboard {...props} />,
+                {
+                    context: { store }
+                }
+            );
+            component = wrapper.find(Dashboard.WrappedComponent.WrappedComponent);
 
             spyOn(component, 'setState').and.callThrough();
         });
 
         it('should exist', function() {
-            expect(component).toEqual(jasmine.any(Object));
+            expect(component.length).toEqual(1);
         });
 
         it('should be a page', function() {
-            expect(component.props.page).toEqual(state.page.dashboard);
+            expect(component.props().page).toEqual(state.page.dashboard);
         });
 
         it('should pass in the props', function() {
-            const startDate = ld.get(state, 'session.billingPeriod.cycleStart');
-            const endDate = ld.get(state, 'session.billingPeriod.cycleEnd');
-            const views = ld.get(state,
-                `analytics.results[${ld.get(state, 'session.campaigns[0]')}].summary.views`, '--');
-            const viewGoals = ld.get(state, 'session.billingPeriod.totalViews', '--');
-            const appsUsed = ld.get(state, 'session.campaigns.length', '--');
-            const maxApps = ld.get(state,
-                `db.paymentPlan[${ld.get(state, 'session.paymentPlan')}].maxCampaigns`, '--');
-                
-            expect(component.props).toEqual(jasmine.objectContaining({
+            const user = state.db.user[state.session.user];
+            const billingPeriod = get(state, 'session.billingPeriod');
+            const dbPP = get(state, 'db.paymentPlan');
+            const sessionPP = get(state, 'session.paymentPlan');
+            const campaigns = get(state, 'session.campaigns');
+            const analytics = get(state, 'analytics.results');
+
+            expect(component.props()).toEqual(jasmine.objectContaining({
                 user: user,
-                startDate: startDate,
-                endDate: endDate,
-                views: views,
-                viewGoals: viewGoals,
-                appsUsed: appsUsed,
-                maxApps: maxApps
+                billingPeriod: billingPeriod,
+                dbPP: dbPP,
+                sessionPP: sessionPP,
+                campaigns: campaigns,
+                analytics: analytics
             }));
         });
 
@@ -151,9 +149,52 @@ describe('Dashboard', function() {
             });
 
             it('should pass in null', function() {
-                expect(component.props).toEqual(jasmine.objectContaining({
+                expect(component.props()).toEqual(jasmine.objectContaining({
                     user: null
                 }));
+            });
+        });
+        describe('before data loads', function() {
+            beforeEach(function() {
+                state.session.paymentPlan = null;
+                state.session.billingPeriod = null;
+                state.db.paymentPlan = null;
+                state.analytics.results = null;
+                state.session.campaigns = null;
+                store.dispatch({ type: 'foo' });
+            });
+
+            it('should pass in null', function() {
+                expect(component.props()).toEqual(jasmine.objectContaining({
+                    billingPeriod: null,
+                    dbPP: null,
+                    sessionPP: null,
+                    campaigns: null,
+                    analytics: null
+                }));
+            });
+        });
+        describe('StatsSummaryBar', function() {
+            beforeEach(function() {
+                this.info = component.find('StatsSummaryBar');
+            });
+
+            it('should be passed props', function() {
+                const info = this.info;
+
+                const billingPeriod = get(state, 'session.billingPeriod');
+                const dbPP = get(state, 'db.paymentPlan');
+                const sessionPP = get(state, 'session.paymentPlan');
+                const campaigns = get(state, 'session.campaigns');
+                const analytics = get(state, 'analytics.results');
+
+                expect((info.prop('startDate')).format()).toBe((moment(get(billingPeriod, 'cycleStart'))).format());
+                expect((info.prop('endDate')).format()).toBe((moment(get(billingPeriod, 'cycleEnd'))).format());
+                expect(info.prop('views')).toBe(get(analytics, `[${get(campaigns, '[0]')}].summary.views`));
+                expect(info.prop('viewGoals')).toBe(get(billingPeriod, 'totalViews'));
+                expect(info.prop('appsUsed')).toBe(get(campaigns, '.length'));
+                expect(info.prop('maxApps')).toBe(get(dbPP, `[${sessionPP}].maxCampaigns`));
+
             });
         });
 
@@ -168,7 +209,7 @@ describe('Dashboard', function() {
                 let result;
 
                 beforeEach(function() {
-                    result = component.props.logoutUser();
+                    result = component.props().logoutUser();
                 });
 
                 it('should dispatch the logoutUser action', function() {
@@ -182,7 +223,7 @@ describe('Dashboard', function() {
                 let result;
 
                 beforeEach(function() {
-                    result = component.props.toggleNav();
+                    result = component.props().toggleNav();
                 });
 
                 it('should dispatch the toggleNav action', function() {

@@ -76,13 +76,13 @@ export const checkIfPaymentMethodRequired = createThunk(() => (dispatch, getStat
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(() => (dispatch) =>
     dispatch(createAction(LOAD_PAGE_DATA)(
-        (Promise.all([
+        Promise.all([
             dispatch(getCampaigns())
             .then((campaigns) => Promise.all(campaigns.map((id) =>
                 (dispatch(getCampaignAnalytics(id)))
             ))),
             dispatch(getPaymentPlan()),
             dispatch(getBillingPeriod()),
-        ])))
-    )
+        ])
+    ))
 );
