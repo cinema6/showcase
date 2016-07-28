@@ -19,7 +19,7 @@ export default function CampaignDetailStatsDetails({
     onChangeView,
 }) {
     return (<div className="right-col  campaign-stats col-md-8">
-        <div className="stats-details col-md-4 col-sm-6 col-xs-12">
+        <div className="stats-details">
             <div className="btn-group btn-group-justified" role="group" aria-label="...">
                 <div className="btn-group" role="group">
                     <button type="button" className="btn btn-default active">All</button>
@@ -32,7 +32,7 @@ export default function CampaignDetailStatsDetails({
                 </div>
             </div>
         </div>
-        <div className="stats-range col-md-5 col-md-offset-3 col-sm-6 col-xs-12 text-right">
+        <div className="stats-range">
             <div className="btn-group btn-group-justified" role="group" aria-label="...">
                 {[
                     { type: CHART_7DAY, days: 7 },

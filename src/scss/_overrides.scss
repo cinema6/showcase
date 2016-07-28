@@ -1292,6 +1292,14 @@
             .stats-details, .stats-range {
                 margin-bottom: 20px;
             }
+            .stats-details {
+                float: left;
+                width: 240px;
+            }
+            .stats-range {
+                float: right;
+                width: 240px;
+            }
     .campaign-stats .nav-justified {
         margin-bottom: 10px;
         border: 1px solid $brand-primary;
@@ -1937,7 +1945,9 @@
             }
             .stats-details,
             .stats-range {
+                float: none;
                 text-align: center;
+                width: 100%;
             }
 
     }
