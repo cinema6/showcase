@@ -246,6 +246,27 @@ describe('CampaignDetail', function() {
         expect(this.store.dispatch).toHaveBeenCalledWith(loadPageData(this.campaign.id));
     });
 
+    it('should render the name of the campaign', function() {
+        expect(this.component.find('.breadcrumb li').last().text()).toBe(this.campaign.product.name);
+    });
+
+    describe('before the campaign is fetched', function() {
+        beforeEach(function() {
+            this.store.dispatch.and.callThrough();
+            this.state = assign({}, this.state, {
+                db: assign({}, this.state.db, {
+                    campaign: {}
+                })
+            });
+            this.store.dispatch({ type: '@@UPDATE' });
+        });
+
+        it('should only render one breadcrumb', function() {
+            expect(this.component.find('.breadcrumb li').length).toBe(1);
+            expect(this.component.find('.breadcrumb li').text()).toBe('Back to Dashboard');
+        });
+    });
+
     describe('when the link to setup install tracking is clicked', function() {
         beforeEach(function() {
             this.link = this.component.find('.track-installs a');

@@ -18,6 +18,7 @@ import CampaignDetailStatsDetails, {
     CHART_7DAY,
     CHART_30DAY,
 } from '../../components/CampaignDetailStatsDetails';
+import { Link } from 'react-router';
 
 const CARD_OPTIONS = {
     cardType: 'showcase-app',
@@ -57,9 +58,8 @@ class CampaignDetail extends Component {
         return (<div>
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
             <ol className="breadcrumb hidden-xs">
-                <li><a href="#">Back to Dashboard</a></li> {/* Add link to dashboard*/}
-                <li className="active">Letgo: Buy &amp; Sell stuff online now using this
-                awesome app</li>{/* show the selected campaign name/app title*/}
+                <li><Link to="/dashboard">Back to Dashboard</Link></li>
+                {campaign && <li className="active">{campaign.product.name}</li>}
             </ol>
             <div className="container main-section campaign-stats">
 
