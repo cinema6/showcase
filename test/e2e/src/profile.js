@@ -4,7 +4,7 @@ module.exports = {
 
     'Reelcontent Profile Test': function (browser) {
         browser.page.loginPage()
-      .login(browser)
+      .login(browser);
 
         var page = browser.page.profilePage();
         page
