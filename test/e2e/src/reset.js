@@ -5,12 +5,12 @@ module.exports = {
     'Reelcontent Password Reset Test': function (browser) {
         browser.page.loginPage()
       .login(browser)
-      .waitForElementVisible('body', 10000);
+      .waitForElementVisible('#sidePanelDesktop', 10000);
 
         var page = browser.page.resetPage();
         page
       .navigate()
-      .waitForElementVisible('body', 10000);
+      .waitForElementVisible('@oldPasswordInput', 10000);
 
         utils.allDashboardTest(page)
 
@@ -18,7 +18,6 @@ module.exports = {
       .assert.containsText('body', 'New Password')
       .assert.containsText('body', 'Confirm')
 
-      .waitForElementVisible('@oldPasswordInput', 10000)
       .assert.elementPresent('@oldPasswordInput')
       .assert.elementPresent('@newPasswordInput')
       .assert.elementPresent('@repeatPasswordInput')
@@ -27,8 +26,8 @@ module.exports = {
       .clearValue('@newPasswordInput')
       .clearValue('@repeatPasswordInput')
 
-      .setValue('@oldPasswordInput', browser.globals.password)
-      .setValue('@newPasswordInput', browser.globals.password)
+      .setValue('@oldPasswordInput',    browser.globals.password)
+      .setValue('@newPasswordInput',    browser.globals.password)
       .setValue('@repeatPasswordInput', browser.globals.password)
       .click('@submitButton')
 

@@ -4,7 +4,7 @@ var loginCommands = {
         .navigate()
         .waitForElementVisible('body', 10000)
         .waitForElementVisible('@emailInput', 10000)
-        .setValue('@emailInput', browser.globals.email)
+        .setValue('@emailInput',    browser.globals.email)
         .setValue('@passwordInput', browser.globals.password)
         .click('@submitButton');
     }

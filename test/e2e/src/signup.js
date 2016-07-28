@@ -21,9 +21,9 @@ module.exports = {
       .assert.elementPresent('@submitButton')
 
       .setValue('@firstNameInput', browser.globals.firstName)
-      .setValue('@lastNameInput', browser.globals.lastName)
-      .setValue('@emailInput', browser.globals.email)
-      .setValue('@passwordInput', browser.globals.password)
+      .setValue('@lastNameInput',  browser.globals.lastName)
+      .setValue('@emailInput',     browser.globals.email)
+      .setValue('@passwordInput',  browser.globals.password)
 
       .click('@submitButton')
 

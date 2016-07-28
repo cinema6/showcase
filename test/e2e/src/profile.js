@@ -5,16 +5,14 @@ module.exports = {
     'Reelcontent Profile Test': function (browser) {
         browser.page.loginPage()
       .login(browser)
-      .waitForElementVisible('body', 10000);
+      .waitForElementVisible('#sidePanelDesktop', 10000);
 
         var page = browser.page.profilePage();
         page
       .navigate()
-      .waitForElementVisible('body', 10000);
+      .waitForElementVisible('@firstNameInput', 10000);
 
         utils.allDashboardTest(page)
-
-      .waitForElementVisible('@firstNameInput', 10000)
 
       .assert.containsText('body', 'First Name')
       .assert.containsText('body', 'Last Name')
@@ -32,8 +30,8 @@ module.exports = {
       .clearValue('@phoneNumberInput')
 
       .setValue('@firstNameInput', browser.globals.firstName)
-      .setValue('@lastNameInput', browser.globals.lastName)
-      .setValue('@companyInput', browser.globals.company)
+      .setValue('@lastNameInput',  browser.globals.lastName)
+      .setValue('@companyInput',   browser.globals.company)
       .setValue('@phoneNumberInput',
         '(' + Math.round(Math.random() * 1000) + ') '
         + Math.round(Math.random() * 1000) + '-'

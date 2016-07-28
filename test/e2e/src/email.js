@@ -5,7 +5,7 @@ module.exports = {
     'Reelcontent Email Test': function (browser) {
         browser.page.loginPage()
       .login(browser)
-      .waitForElementVisible('body', 10000);
+      .waitForElementVisible('#sidePanelDesktop', 10000);
 
         var page = browser.page.emailPage();
         page
@@ -23,7 +23,7 @@ module.exports = {
       .clearValue('@emailInput')
       .clearValue('@passwordInput')
 
-      .setValue('@emailInput', browser.globals.email)
+      .setValue('@emailInput',    browser.globals.email)
       .setValue('@passwordInput', browser.globals.password)
       .click('@submitButton')
 
