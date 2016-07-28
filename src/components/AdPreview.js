@@ -105,16 +105,6 @@ export default class AdPreview extends Component {
         return (<div
             className="create-app-campaign step-2 col-middle text-center"
         >   
-            <div className="visible-xs">
-                <div className="btn-group" role="group" aria-label="...">
-                    <button type="button" className="btn btn-primary active">
-                        <i className="fa fa-th-large" aria-hidden="true"></i> App</button>
-                    <button type="button" className="btn btn-primary">
-                        <i className="fa fa-file-video-o" aria-hidden="true"></i> Video</button>
-                </div>
-                <div className="clearfix"></div>
-            </div>
-            
             <div className="phone-wrap">
                 <div ref="root" className="phone-frame">
                     {showLoadingAnimation && (
@@ -132,24 +122,66 @@ export default class AdPreview extends Component {
                             </div>
                         </div>
                     )}
-                    <div className="no-video-preview">
-                        <div className="upsell-message">
-                            Video ads are only available to Pro Plan users only. 
-                            However, you can preview how your video ad would look like.
+                    {/*remove hidden class from the div below*/}
+                    <div className="video-preview hidden">
+                    
+                        {/*toggle between iframe and no-video-preview depending on user's plan
+                        and video selection*/}
+                        
+                        <iframe 
+                        src="https://platform.reelcontent.com/api/public/players/mobile?campaign=cam-9e95d0a6d731a3&preview=true&countdown=0" 
+                        style={{
+                            border: 'none',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 'auto',
+                            opacity: 1
+                            }} />
+
+                        <div className="no-video-preview">
+                        
+                            {/*show this message and button below if user doesn't have supported plan*/}
+                            
+                            <div className="upsell-message">
+                                Video ads are only available to Pro Plan users only. 
+                                However, you can preview how your video ad would look like.
+                            </div>
+                            <button className="btn btn-danger">Upgrade Now</button>
+                            
+                            {/*show this message if user has supported plan but no video*/}
+                            
+                            <div className="upsell-message">
+                                You can add a YouTube video to promote your app. 
+                            </div>
+                            <button className="btn btn-danger">Upgrade Now</button>
+                            
                         </div>
-                        <button className="btn btn-danger">Upgrade Now</button>
+                    </div>                    
+                </div>
+                
+                {/*toggle to switch between video and app preview*/}
+                <div className="demo-toggle">
+                    
+                    <div className="clearfix" />
+                    
+                    <div className="btn-group" role="group">
+
+                      <button type="button" className="btn btn-primary active">
+                            <i className="fa fa-th-large" aria-hidden="true" />
+                                App
+                      </button>
+                      
+                      <button type="button" className="btn btn-primary">
+                            <i className="fa fa-file-video-o" aria-hidden="true" />
+                                Video
+                      </button>
+
                     </div>
                 </div>
                 <p>This is how your ad will appear</p>
-            </div>
-            <div className="hidden-xs bottom-margin">
-                <div className="clearfix"></div>
-                <div className="btn-group" role="group" aria-label="...">
-                    <button type="button" className="btn btn-primary active">
-                        <i className="fa fa-th-large" aria-hidden="true"></i> App</button>
-                    <button type="button" className="btn btn-primary">
-                        <i className="fa fa-file-video-o" aria-hidden="true"></i> Video</button>
-                </div>
             </div>
         </div>);
     }

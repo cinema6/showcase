@@ -29,24 +29,24 @@ function EditProduct({
                     <i className="fa fa-question-circle" aria-hidden="true" />
                 </OverlayTrigger>
             </label><br />
-            <a href="#">
+            <a href="#" className="btn-link">
                 http://youtube.com/xyzS4sd/astra-trasst-astar
-            </a>
-            <div role="toolbar" className="btn-toolbar">                
+            </a>            
+            <div role="toolbar" className="btn-toolbar">
                 <div className="clearfix"></div>
-                {/* Hide this button when there is an existing video tied to the app campaign*/}
+                {/* Hide this button when there is an existing video tied to the app campaign
                 <button className="btn btn-primary">
                     <i className="fa fa-file-video-o" aria-hidden="true"></i> Add Video
                 </button>
                 
-                {/* Show these buttons when video has already been added to the app campaign
+                {/* Show these buttons when video has already been added to the app campaign */}
                 <button className="btn btn-primary">
                     <i className="fa fa-file-video-o" aria-hidden="true"></i> Edit Video
                 </button>
                 <button className="btn btn-primary">
                     <i className="fa fa-trash-o" aria-hidden="true"></i> Delete Video
                 </button>
-                */}
+                
             </div>            
             {/*
                 <div>                
@@ -87,11 +87,21 @@ function EditProduct({
                             </div>
                             <div className="clearfix"></div>
                             <br />
+                            <!-- CTA for when the plan supports video-->
                             <div className="form-group">
                                 <button className="btn btn-primary btn-lg">
                                     Promote this video
                                 </button>
                             </div>
+                            <!-- CTA and message for when the plan doesn't support video-->
+                            <div className="form-group">
+                                <button className="btn btn-primary btn-lg">
+                                    Promote this video
+                                </button>
+                            </div>
+                            <div class="alert alert-warning">Video ads are available exclusively to 
+                            Pro &amp; Business users only. However, you can preview how your video 
+                            ad would look like.</div>
                         </div>
                     </div>
                 </div>
@@ -106,6 +116,13 @@ function EditProduct({
         >
             Next
         </button>
+        <div className="clearfix" />
+        {/*Show this message after user ads a video for preview but doesn't have a video 
+            supported plan*/}        
+        <div className="unsupported-plan">
+            * Video Ad is shown for preview only and will not be added to campaign. 
+            You can upgrade your plan to promote videos.
+        </div>
     </form>);
 }
 
