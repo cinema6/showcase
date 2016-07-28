@@ -5,7 +5,6 @@ module.exports = {
     'Reelcontent Profile Test': function (browser) {
         browser.page.loginPage()
       .login(browser)
-      .waitForElementVisible('#sidePanelDesktop', 10000);
 
         var page = browser.page.profilePage();
         page

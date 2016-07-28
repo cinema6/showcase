@@ -5,7 +5,6 @@ module.exports = {
     'Reelcontent Password Reset Test': function (browser) {
         browser.page.loginPage()
       .login(browser)
-      .waitForElementVisible('#sidePanelDesktop', 10000);
 
         var page = browser.page.resetPage();
         page

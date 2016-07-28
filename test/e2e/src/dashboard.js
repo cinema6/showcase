@@ -9,7 +9,6 @@ module.exports = {
         var page = browser.page.dashboardPage();
 
         page
-      .waitForElementVisible('@sidePanel', 10000)
       .assert.urlContains('dashboard');
 
         utils.allDashboardTest(page)

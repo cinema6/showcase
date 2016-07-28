@@ -4,8 +4,7 @@ module.exports = {
 
     'Reelcontent Billing Test': function (browser) {
         browser.page.loginPage()
-      .login(browser)
-      .waitForElementVisible('#sidePanelDesktop', 10000);
+      .login(browser);
 
         var page = browser.page.billingPage();
         page

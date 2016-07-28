@@ -4,8 +4,7 @@ module.exports = {
 
     'Reelcontent Email Test': function (browser) {
         browser.page.loginPage()
-      .login(browser)
-      .waitForElementVisible('#sidePanelDesktop', 10000);
+      .login(browser);
 
         var page = browser.page.emailPage();
         page

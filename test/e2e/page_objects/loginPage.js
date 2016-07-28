@@ -6,7 +6,8 @@ var loginCommands = {
         .waitForElementVisible('@emailInput', 10000)
         .setValue('@emailInput',    browser.globals.email)
         .setValue('@passwordInput', browser.globals.password)
-        .click('@submitButton');
+        .click('@submitButton')
+        .waitForElementVisible('#sidePanelDesktop', 10000);
     }
 };
 
