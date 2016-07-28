@@ -132,6 +132,18 @@ describe('sessionReducer()', function() {
                     paymentPlan: this.paymentPlanId
                 }));
             });
+
+            describe('if the user has no payment plan', () => {
+                beforeEach(() => {
+                    newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)(null));
+                });
+
+                it('should make the payment plan null', function() {
+                    expect(newState).toEqual(assign({}, state, {
+                        paymentPlan: null
+                    }));
+                });
+            });
         });
 
         describe(CHANGE_PAYMENT_PLAN_SUCCESS, () => {

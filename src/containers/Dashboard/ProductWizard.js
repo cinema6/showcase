@@ -206,6 +206,7 @@ class ProductWizard extends Component {
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({
                         payment,
+                        paymentPlan: find(paymentPlans, { id: paymentPlanId }),
                         productData: this.getProductData(),
                         targeting: this.getTargeting(),
                     })}

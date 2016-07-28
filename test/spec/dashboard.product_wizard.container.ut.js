@@ -921,7 +921,11 @@ describe('ProductWizard', function() {
                         let payment;
 
                         beforeEach(function() {
+                            wrapper.setProps({
+                                paymentPlanId: props.paymentPlans[1].id
+                            });
                             payment = { nonce: createUuid(), cardholderName: 'Buttface McGee' };
+                            store.dispatch.calls.reset();
 
                             modal.props().onSubmit(payment);
                         });
@@ -930,7 +934,8 @@ describe('ProductWizard', function() {
                             expect(store.dispatch).toHaveBeenCalledWith(createCampaign({
                                 payment,
                                 productData: component.node.getProductData(),
-                                targeting: component.node.getTargeting()
+                                targeting: component.node.getTargeting(),
+                                paymentPlan: props.paymentPlans[1]
                             }));
                         });
                     });

@@ -48,8 +48,8 @@ export default handleActions({
     [`${GET_BILLING_PERIOD}_FULFILLED`]: (state, { payload: billingPeriod }) => assign({}, state, {
         billingPeriod,
     }),
-    [`${GET_PAYMENT_PLAN}_FULFILLED`]: (state, { payload: [paymentPlanId] }) => assign({}, state, {
-        paymentPlan: paymentPlanId,
+    [`${GET_PAYMENT_PLAN}_FULFILLED`]: (state, { payload }) => assign({}, state, {
+        paymentPlan: (payload || null) && payload[0],
     }),
     [CHANGE_PAYMENT_PLAN_SUCCESS]: (state, { payload: { paymentPlanId } }) => assign({}, state, {
         paymentPlan: paymentPlanId,
