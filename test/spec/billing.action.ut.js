@@ -299,7 +299,6 @@ describe('billing actions', function() {
                     method = assign({}, newMethod, {
                         token
                     });
-                    oldMethod.default = false;
                     state.db.paymentMethod[token] = method;
 
                     spyOn(paymentActions.paymentMethod, 'remove').and.callThrough();
@@ -339,6 +338,59 @@ describe('billing actions', function() {
 
                             dispatch.calls.reset();
                             dispatch.and.returnValue((dispatchDeferred = defer()).promise);
+                        });
+
+                        it('should close the modal', function() {
+                            expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
+                        });
+                    });
+                });
+            });
+
+            describe('if the user has no payment methods', () => {
+                beforeEach(done => {
+                    success.calls.reset();
+                    failure.calls.reset();
+                    dispatch = stub.dispatch();
+
+                    state.db.paymentMethod = {};
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                describe('when the paymentMethod has been created', () => {
+                    let token;
+                    let method;
+
+                    beforeEach(done => {
+                        token = createUuid();
+                        method = assign({}, newMethod, {
+                            token
+                        });
+                        state.db.paymentMethod[token] = method;
+
+                        dispatch.getDeferred(dispatch.calls.first().args[0]).resolve(method);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        token = null;
+                        method = null;
+                    });
+
+                    it('should get all of the payment methods', function() {
+                        expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list());
+                    });
+
+                    describe('when the list has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(Object.keys(state.db.paymentMethod));
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
                         });
 
                         it('should close the modal', function() {

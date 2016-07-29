@@ -57,9 +57,16 @@ export const changePaymentMethod = createThunk(({ cardholderName, nonce }) => (
                 cardholderName,
                 paymentMethodNonce: nonce,
                 makeDefault: true,
-            } })).then(() => dispatch(paymentMethod.remove({ id: oldMethod.token })))
-                .then(() => dispatch(paymentMethod.list()))
-                .then(() => dispatch(showChangeModal(false)))
+            } }))
+            .then(() => {
+                if (oldMethod) {
+                    return dispatch(paymentMethod.remove({ id: oldMethod.token }));
+                }
+
+                return undefined;
+            })
+            .then(() => dispatch(paymentMethod.list()))
+            .then(() => dispatch(showChangeModal(false)))
         )).catch(({ reason }) => Promise.reject(new Error(reason.response)));
     }
 ));
