@@ -13,8 +13,8 @@ export default function PaymentMethod({
                 </div>
             </div>
         </div>)}
-        {method && (() => {
-            switch (method.type) {
+        {(() => {
+            switch ((method || {}).type) {
             case 'creditCard':
                 return (
                     <div className="col-md-8">
@@ -27,11 +27,17 @@ export default function PaymentMethod({
             case 'paypal':
                 return (
                     <div className="col-md-8">
+                        <h3>Active payment method</h3>
                         <h4>Paypal {method.email}</h4>
                     </div>
                 );
             default:
-                return undefined;
+                return (
+                    <div className="col-md-8">
+                        <h3>Active payment method</h3>
+                        <h4>No Payment Method on File</h4>
+                    </div>
+                );
             }
         })()}
             <div className="col-md-4 btn-wrap">
