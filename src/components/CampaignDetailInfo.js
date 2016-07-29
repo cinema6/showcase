@@ -36,9 +36,9 @@ export default function CampaignDetailInfo({
                             <i className="fa fa-pencil-square-o" />Edit
                         </Link>
                     </span>
-                    <span className="trash-campaign-link">
+                    <span className="archive-campaign-link">
                         <Button bsStyle="danger" bsSize="sm" onClick={onReplace}>
-                            <i className="fa fa-exchange" />Replace
+                            <i className="fa fa-archive" /> Archive
                         </Button>
                     </span>
                 </div>

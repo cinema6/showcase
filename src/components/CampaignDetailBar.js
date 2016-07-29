@@ -58,7 +58,7 @@ export default function CampaignDetailBar({
                                     onDeleteCampaign();
                                 }}
                             >
-                                <i className="fa fa-exchange"></i> Replace
+                                <i className="fa fa-archive"></i> Archive
                             </a>
                         </span>
                     </div>

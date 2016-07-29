@@ -61,16 +61,17 @@ export const loadPageData = createThunk(campaignId => (
 export const removeCampaign = createThunk(campaignId => (
     function thunk(dispatch) {
         return dispatch(showAlert({
-            title: 'Woah There!',
-            description: 'Are you sure you want to replace this app? Doing this '
-            + 'will erase all your stats and stop current ads. This cannot be un-done.',
+            title: 'Are you sure you want to archive this app?',
+            description: 'Your ads for this app will stop running and your unused'
+            + ' views will be allotted to other apps on your account.',
             buttons: [
                 {
-                    text: 'Keep',
+                    text: 'Cancel',
+                    type: 'muted',
                     onSelect: dismiss => dismiss(),
                 },
                 {
-                    text: 'Delete',
+                    text: 'Archive',
                     type: 'danger',
                     onSelect: dismiss => dispatch(cancelCampaign(campaignId)).then(() => {
                         dismiss();

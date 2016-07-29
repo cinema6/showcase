@@ -373,7 +373,29 @@
     $stats-reach:         #26ADE4;
     $stats-clicks:        #7AB317;
     $stats-installs:      #353A47;
-    $stats-ctr:           #FAA916;
+    $stats-ctr:           #FAA916;    
+    
+    $btn-muted-color:              #666;
+    $btn-muted-bg:                 #f5efe6;
+    $btn-muted-border:             #ccc;
+    
+    /*.btn-secondary {
+        @extend .btn-primary;
+        background-color: #fff;
+    }*/
+    $original-color-bg:    #f5f5f5;
+    .btn-muted {
+        @include button-variant($btn-muted-color, $btn-muted-bg, $btn-muted-border);
+    }
+    .btn-muted:focus, .btn-muted.focus,
+    .btn-muted:active, .btn-muted.active {
+        outline: 0;
+    }
+    .original-color-bg {
+        background: $original-color-bg;
+        color: darken($original-color-bg, 50%);
+    }
+
  /***
  Navigation
  ----------------------------
@@ -1154,8 +1176,18 @@
             .campaign-stats .campaign-overview .trash-campaign-link {
                 display: inline-block;
                 vertical-align: top;
-                margin-bottom: 10px;
                 /*margin-top: -8px;*/
+                margin-bottom: 10px;
+                margin-right: 10px;
+                
+            }
+            .campaign-stats .campaign-overview .archive-campaign-link {
+                display: inline-block;
+                vertical-align: top;
+                /*margin-top: -8px;*/
+                margin-bottom: 10px;
+                margin-right: 10px;
+                
             }
         .app__ratings--stars {
                 margin: 0;
@@ -1877,6 +1909,9 @@
                 margin-right: 10px;
                 margin-bottom: 10px;
                 /*margin-top: -8px;*/
+            }
+            .campaign-stats .campaign-overview .archive-campaign-link {
+                margin-right: 10px;
             }
         .campaign-stats .switch-chart,
         .campaign-stats .switch-chart-range {
