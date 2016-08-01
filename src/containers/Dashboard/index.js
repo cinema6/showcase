@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
-import { get } from 'lodash';
+import { get, compact } from 'lodash';
 import moment from 'moment';
 
 class Dashboard extends Component {
@@ -26,8 +26,7 @@ class Dashboard extends Component {
             toggleNav,
 
             billingPeriod,
-            dbPP,
-            sessionPP,
+            paymentPlan,
             campaigns,
             analytics,
         } = this.props;
@@ -36,12 +35,17 @@ class Dashboard extends Component {
 
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
+        let views = 0;
+        if (compact(analytics).length > 0) {    // handles intial value of [undefined]
+            analytics.forEach(campaign => {
+                views += campaign.summary.views;
+            });
+        }
         const startDate = moment(get(billingPeriod, 'cycleStart'));
         const endDate = moment(get(billingPeriod, 'cycleEnd'));
-        const views = get(analytics, `[${get(campaigns, '[0]')}].summary.views`);
         const viewGoals = get(billingPeriod, 'totalViews');
         const appsUsed = get(campaigns, '.length');
-        const maxApps = get(dbPP, `[${sessionPP}].maxCampaigns`);
+        const maxApps = get(paymentPlan, '.maxCampaigns');
 
         return (<div>
             {/* top navigation bar */}
@@ -193,25 +197,24 @@ Dashboard.propTypes = {
     loadPageData: PropTypes.func.isRequired,
 
     billingPeriod: PropTypes.object,
-    dbPP: PropTypes.object,
-    sessionPP: PropTypes.object,
+    paymentPlan: PropTypes.object,
     campaigns: PropTypes.array,
-    analytics: PropTypes.object,
+    analytics: PropTypes.array,
 };
 
 function mapStateToProps(state) {
     const user = state.db.user[state.session.user];
     const billingPeriod = get(state, 'session.billingPeriod');
-    const dbPP = get(state, 'db.paymentPlan');
-    const sessionPP = get(state, 'session.paymentPlan');
-    const campaigns = get(state, 'session.campaigns');
-    const analytics = get(state, 'analytics.results');
+    const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
+    const campaigns = state.session.campaigns &&
+        state.session.campaigns.map(id => state.db.campaign[id]);
+    const analytics = state.session.campaigns &&
+        state.session.campaigns.map(id => state.analytics.results[id]);
 
     return {
         user: user || null,
         billingPeriod: billingPeriod || null,
-        dbPP: dbPP || null,
-        sessionPP: sessionPP || null,
+        paymentPlan: paymentPlan || null,
         campaigns: campaigns || null,
         analytics: analytics || null,
     };

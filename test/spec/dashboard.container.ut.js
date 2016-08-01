@@ -11,7 +11,7 @@ import { logoutUser,
 } from '../../src/actions/dashboard';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
-import { get, cloneDeep as clone } from 'lodash';
+import { compact, get, cloneDeep as clone } from 'lodash';
 import moment from 'moment';
 
 const proxyquire = require('proxyquire');
@@ -31,7 +31,7 @@ describe('Dashboard', function() {
         };
 
         Dashboard = proxyquire('../../src/containers/Dashboard', {
-            'react': React,            
+            'react': React,
             '../../actions/dashboard': dashboardActions
         }).default;
     });
@@ -120,16 +120,16 @@ describe('Dashboard', function() {
         it('should pass in the props', function() {
             const user = state.db.user[state.session.user];
             const billingPeriod = get(state, 'session.billingPeriod');
-            const dbPP = get(state, 'db.paymentPlan');
-            const sessionPP = get(state, 'session.paymentPlan');
-            const campaigns = get(state, 'session.campaigns');
-            const analytics = get(state, 'analytics.results');
+            const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
+            const campaigns = state.session.campaigns &&
+                state.session.campaigns.map(id => state.db.campaign[id]);
+            const analytics = state.session.campaigns &&
+                state.session.campaigns.map(id => state.analytics.results[id]);
 
             expect(component.props()).toEqual(jasmine.objectContaining({
                 user: user,
                 billingPeriod: billingPeriod,
-                dbPP: dbPP,
-                sessionPP: sessionPP,
+                paymentPlan: paymentPlan,
                 campaigns: campaigns,
                 analytics: analytics
             }));
@@ -167,8 +167,7 @@ describe('Dashboard', function() {
             it('should pass in null', function() {
                 expect(component.props()).toEqual(jasmine.objectContaining({
                     billingPeriod: null,
-                    dbPP: null,
-                    sessionPP: null,
+                    paymentPlan: null,
                     campaigns: null,
                     analytics: null
                 }));
@@ -183,17 +182,24 @@ describe('Dashboard', function() {
                 const info = this.info;
 
                 const billingPeriod = get(state, 'session.billingPeriod');
-                const dbPP = get(state, 'db.paymentPlan');
-                const sessionPP = get(state, 'session.paymentPlan');
-                const campaigns = get(state, 'session.campaigns');
-                const analytics = get(state, 'analytics.results');
+                const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
+                const campaigns = state.session.campaigns &&
+                    state.session.campaigns.map(id => state.db.campaign[id]);
+                const analytics = state.session.campaigns &&
+                    state.session.campaigns.map(id => state.analytics.results[id]);
+                let views = 0;
+                if (compact(analytics).length > 0) {
+                    analytics.forEach(campaign => {
+                        views += campaign.summary.views;
+                    });
+                }
 
                 expect((info.prop('startDate')).format()).toBe((moment(get(billingPeriod, 'cycleStart'))).format());
                 expect((info.prop('endDate')).format()).toBe((moment(get(billingPeriod, 'cycleEnd'))).format());
-                expect(info.prop('views')).toBe(get(analytics, `[${get(campaigns, '[0]')}].summary.views`));
+                expect(info.prop('views')).toBe(views);
                 expect(info.prop('viewGoals')).toBe(get(billingPeriod, 'totalViews'));
                 expect(info.prop('appsUsed')).toBe(get(campaigns, '.length'));
-                expect(info.prop('maxApps')).toBe(get(dbPP, `[${sessionPP}].maxCampaigns`));
+                expect(info.prop('maxApps')).toBe(get(paymentPlan, '.maxCampaigns'));
 
             });
         });

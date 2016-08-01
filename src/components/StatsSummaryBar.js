@@ -31,7 +31,7 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text">Days left</span>
                 <h4 className="stats-header">
-                    {(endDate && moment(endDate).diff(moment(), 'days')) || '\u2014'}
+                    {(endDate && endDate.diff(moment(), 'days')) || '\u2014'}
                 </h4>
             </div>
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
