@@ -159,7 +159,7 @@ export default class AdPreview extends Component {
                             <button className="btn btn-danger">Upgrade Now</button>
                             
                         </div>
-                    </div>                    
+                    </div>               
                 </div>
                 
                 {/*toggle to switch between video and app preview*/}

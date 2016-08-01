@@ -19,6 +19,7 @@ export default function CampaignDetailStatsDetails({
     onChangeView,
 }) {
     return (<div className="right-col  campaign-stats col-md-8">
+    {/*Hide "stats-details" and it's content if there is no video attached to the app/campaign*/}
         <div className="stats-details">
             <div className="btn-group btn-group-justified" role="group" aria-label="...">
                 <div className="btn-group" role="group">

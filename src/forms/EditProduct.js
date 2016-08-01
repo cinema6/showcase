@@ -48,7 +48,7 @@ function EditProduct({
                 </button>
                 
             </div>            
-            {/*
+            {/* HTML for Add Video Modal
                 <div>                
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -96,14 +96,34 @@ function EditProduct({
                             <!-- CTA and message for when the plan doesn't support video-->
                             <div className="form-group">
                                 <button className="btn btn-primary btn-lg">
-                                    Promote this video
+                                    Preview this video
                                 </button>
                             </div>
-                            <div class="alert alert-warning">Video ads are available exclusively to 
+                            <div className="alert alert-warning">Video ads are available exclusively to 
                             Pro &amp; Business users only. However, you can preview how your video 
                             ad would look like.</div>
                         </div>
                     </div>
+                </div>
+            </div>
+            */}
+            {/*HTML for Delete video alert modal
+            <div className="modal-sm modal-dialog">
+                <div className="modal-content" role="document">
+                  <div className="modal-header">
+                    <button type="button" className="close" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                    <h4 className="modal-title">Delete Your Video</h4>
+                  </div>
+                  <div className="modal-body">
+                    <p><span><strong>Are you sure you want to delete your video? </strong><br /> 
+                    Your video ad will stop showing and the unused views will be applied to app ad.
+                    </span></p>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-default">Cancel</button>
+                    <button type="button" className="btn btn-danger">Delete</button>
+                  </div>
                 </div>
             </div>
             */}
