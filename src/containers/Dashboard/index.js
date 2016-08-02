@@ -32,16 +32,14 @@ class Dashboard extends Component {
         } = this.props;
 
         if (!user) { return null; }
-        let views = 0;
+        // let views = 0;
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
+        let views;
         if (analytics && analytics.length > 0) {
-            analytics.reduce((previousValue, campaign) => ({
-                summary: {
-                    views: previousValue.summary.views + campaign.summary.views,
-                },
-            }));
-            views = analytics[0].summary.views;
+            views = analytics.reduce((previousValue, campaign) =>
+                previousValue + campaign.summary.views, 0
+            );
         }
         const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
         const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
