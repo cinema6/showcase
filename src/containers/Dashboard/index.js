@@ -205,15 +205,15 @@ function mapStateToProps(state) {
     const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
     const campaigns = state.session.campaigns &&
         state.session.campaigns.map(id => state.db.campaign[id]);
-    const analytics = (state.session.campaigns &&
-        compact(state.session.campaigns.map(id => state.analytics.results[id])) || []);
+    const analytics = state.session.campaigns &&
+        compact(state.session.campaigns.map(id => state.analytics.results[id]));
 
     return {
         user: user || null,
         billingPeriod: billingPeriod || null,
         paymentPlan: paymentPlan || null,
         campaigns: campaigns || null,
-        analytics: analytics || null,
+        analytics: analytics || [],
     };
 }
 
