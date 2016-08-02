@@ -3,8 +3,8 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 
 function formatDate(date) {
-    return (date === null) ?
-        '\u2014' : moment(date).format('MMM D');
+    return (date) ?
+        moment(date).format('MMM D') : '\u2014';
 }
 
 function ratio(num, denom) {

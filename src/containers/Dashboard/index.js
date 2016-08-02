@@ -32,17 +32,19 @@ class Dashboard extends Component {
         } = this.props;
 
         if (!user) { return null; }
-
+        let views = 0;
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
-        let views = 0;
-        if (compact(analytics).length > 0) {    // handles intial value of [undefined]
-            analytics.forEach(campaign => {
-                views += campaign.summary.views;
-            });
+        if (analytics && analytics.length > 0) {
+            analytics.reduce((previousValue, campaign) => ({
+                summary: {
+                    views: previousValue.summary.views + campaign.summary.views,
+                },
+            }));
+            views = analytics[0].summary.views;
         }
-        const startDate = moment(get(billingPeriod, 'cycleStart'));
-        const endDate = moment(get(billingPeriod, 'cycleEnd'));
+        const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
+        const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
         const viewGoals = get(billingPeriod, 'totalViews');
         const appsUsed = get(campaigns, '.length');
         const maxApps = get(paymentPlan, '.maxCampaigns');
@@ -209,7 +211,7 @@ function mapStateToProps(state) {
     const campaigns = state.session.campaigns &&
         state.session.campaigns.map(id => state.db.campaign[id]);
     const analytics = state.session.campaigns &&
-        state.session.campaigns.map(id => state.analytics.results[id]);
+        compact(state.session.campaigns.map(id => state.analytics.results[id]));
 
     return {
         user: user || null,
