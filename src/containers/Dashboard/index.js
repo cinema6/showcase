@@ -36,8 +36,7 @@ class Dashboard extends Component {
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
         const views = analytics.reduce((previousValue, campaign) =>
-                previousValue + campaign.summary.views, 0
-            );
+                previousValue + campaign.summary.views, 0);
         const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
         const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
         const viewGoals = get(billingPeriod, 'totalViews');
@@ -196,7 +195,7 @@ Dashboard.propTypes = {
     billingPeriod: PropTypes.object,
     paymentPlan: PropTypes.object,
     campaigns: PropTypes.array,
-    analytics: PropTypes.array,
+    analytics: PropTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {
