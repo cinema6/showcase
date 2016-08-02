@@ -1,5 +1,3 @@
-var utils = require('../helpers/utils.js');
-
 module.exports = {
 
     'Reelcontent Add Product Test - Login': function (browser) {
