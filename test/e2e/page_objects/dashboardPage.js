@@ -17,6 +17,8 @@ module.exports = {
         dropdownMenu: '#navbar ul li div ul.dropdown-menu',
         logoutButton: '#sidePanelDesktop ul li button',
         sidePanel: '#sidePanelDesktop',
-        phoneFrame: 'div[class=phone-frame]'
+        phoneFrame: 'div[class=phone-frame]',
+        replaceButton: 'button.btn-sm',
+        deleteButton: 'button.btn:nth-child(2)'
     }
 };
