@@ -17,8 +17,6 @@ module.exports = {
               .click('@deleteButton');
             }
         });
-
-
     },
 
     'Reelcontent Add Product Test - Search': function (browser) {
