@@ -32,15 +32,12 @@ class Dashboard extends Component {
         } = this.props;
 
         if (!user) { return null; }
-        // let views = 0;
+
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
-        let views;
-        if (analytics && analytics.length > 0) {
-            views = analytics.reduce((previousValue, campaign) =>
+        const views = analytics.reduce((previousValue, campaign) =>
                 previousValue + campaign.summary.views, 0
             );
-        }
         const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
         const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
         const viewGoals = get(billingPeriod, 'totalViews');
@@ -208,8 +205,8 @@ function mapStateToProps(state) {
     const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
     const campaigns = state.session.campaigns &&
         state.session.campaigns.map(id => state.db.campaign[id]);
-    const analytics = state.session.campaigns &&
-        compact(state.session.campaigns.map(id => state.analytics.results[id]));
+    const analytics = (state.session.campaigns &&
+        compact(state.session.campaigns.map(id => state.analytics.results[id])) || []);
 
     return {
         user: user || null,
