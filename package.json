@@ -99,6 +99,7 @@
     "classnames": "^2.2.5",
     "clipboard": "^1.5.10",
     "core-js": "^2.3.0",
+    "fetch-coalesce": "^1.0.4",
     "flux-standard-action": "^0.6.1",
     "history": "^2.1.1",
     "isomorphic-fetch": "^2.2.1",
