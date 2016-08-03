@@ -102,9 +102,9 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard" className="bg-danger"> {/* link to add new app*/}
+                        <button className="bg-danger" onClick={addApp} > {/* link to add new app*/}
                             <i className="fa fa-plus" /> Add New App
-                        </Link> {/* show alert asking to upgrade if
+                        </button> {/* show alert asking to upgrade if
                         users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
