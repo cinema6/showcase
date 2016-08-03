@@ -8,6 +8,9 @@ import {
     noop,
 } from 'lodash';
 import { parse as parseURL } from 'url';
+import coalesce from 'fetch-coalesce';
+
+const fetch = coalesce()(window.fetch);
 
 const HTTP = {
     GET: 'GET',
