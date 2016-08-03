@@ -1,10 +1,23 @@
 module.exports = {
 
+    after: function (browser) {
+        browser.page.dashboardPage().logout();
+        browser.end();
+    },
+
     'Reelcontent Login / Logout Test': function (browser) {
         var page = browser.page.loginPage();
         page
       .navigate()
-      .waitForElementVisible('body', 10000)
+      .waitForElementVisible('body', 10000);
+
+        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
+            if (result.value && result.value.ELEMENT) {
+                browser.page.dashboardPage().click('@logoutButton');
+            }
+        });
+
+        page
       .waitForElementVisible('@emailInput', 10000)
 
       .assert.urlContains('login')
@@ -25,9 +38,6 @@ module.exports = {
         page = browser.page.dashboardPage();
 
         page
-      .assert.urlContains('dashboard')
-      .logout();
-
-        browser.end();
+      .assert.urlContains('dashboard');
     }
 };

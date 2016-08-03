@@ -2,10 +2,17 @@ var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-    'Reelcontent Billing Test': function (browser) {
+    before: function (browser) {
         browser.page.loginPage()
       .login(browser);
+    },
 
+    after: function (browser) {
+        browser.page.dashboardPage().logout();
+        browser.end();
+    },
+
+    'Reelcontent Billing Test': function (browser) {
         var page = browser.page.billingPage();
         page
       .navigate()
@@ -14,9 +21,5 @@ module.exports = {
       .assert.urlContains('billing');
 
         utils.allDashboardTest(page);
-
-        browser.page.dashboardPage().logout();
-
-        browser.end();
     }
 };

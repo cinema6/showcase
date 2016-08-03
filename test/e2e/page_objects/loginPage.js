@@ -1,8 +1,16 @@
 var loginCommands = {
     login: function(browser) {
-        return this
+        this
         .navigate()
-        .waitForElementVisible('body', 10000)
+        .waitForElementVisible('body', 10000);
+
+        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
+            if (result.value && result.value.ELEMENT) {
+                browser.page.dashboardPage().click('@logoutButton');
+            }
+        });
+
+        return this
         .waitForElementVisible('@emailInput', 10000)
         .setValue('@emailInput',    browser.globals.email)
         .setValue('@passwordInput', browser.globals.password)

@@ -2,10 +2,17 @@ var utils = require('../helpers/utils.js');
 
 module.exports = {
 
-    'Reelcontent Email Test': function (browser) {
+    before: function (browser) {
         browser.page.loginPage()
-      .login(browser);
+        .login(browser);
+    },
 
+    after: function (browser) {
+        browser.page.dashboardPage().logout();
+        browser.end();
+    },
+
+    'Reelcontent Email Test': function (browser) {
         var page = browser.page.emailPage();
         page
       .navigate()
@@ -28,9 +35,5 @@ module.exports = {
 
       .waitForElementVisible('@alert', 40000)
       .assert.elementPresent('@alert');
-
-        browser.page.dashboardPage().logout();
-
-        browser.end();
     }
 };

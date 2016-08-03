@@ -4,7 +4,15 @@ module.exports = {
         var page = browser.page.signupPage();
         page
       .navigate()
-      .waitForElementVisible('body', 10000)
+      .waitForElementVisible('body', 10000);
+
+        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
+            if (result.value && result.value.ELEMENT) {
+                browser.page.dashboardPage().click('@logoutButton');
+            }
+        });
+
+        page
       .assert.urlContains('sign-up')
 
       .assert.containsText('body', 'First')

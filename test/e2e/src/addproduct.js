@@ -1,6 +1,6 @@
 module.exports = {
 
-    'Reelcontent Add Product Test - Login': function (browser) {
+    before: function (browser) {
         var page = browser.page.loginPage();
         page.login(browser);
 
@@ -17,6 +17,12 @@ module.exports = {
               .click('@deleteButton');
             }
         });
+    },
+
+    after: function (browser) {
+        browser.page.dashboardPage().logout();
+
+        browser.end();
     },
 
     'Reelcontent Add Product Test - Search': function (browser) {
@@ -87,10 +93,6 @@ module.exports = {
 
       .waitForElementVisible('@deleteButton', 10000)
       .assert.elementPresent('@deleteButton')
-      .click('@deleteButton')
-
-      .logout();
-
-        browser.end();
+      .click('@deleteButton');
     }
 };
