@@ -16,7 +16,7 @@ import { TYPE as NOTIFICATION } from '../enums/notification';
 import React from 'react';
 import { Link } from 'react-router';
 import { showAlert } from './alert';
-import { showChangeModal } from './billing';
+import { showPlanModal } from './billing';
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -88,9 +88,9 @@ export const loadPageData = createThunk(() => (dispatch) =>
     ))
 );
 
-export const ADD_APP_REQUEST = prefix('ADD_APP_REQUEST');
-export const onAddApp = createThunk(() => (dispatch, getState) =>
-    dispatch(createAction(ADD_APP_REQUEST)(
+export const ADD_APP = prefix('ADD_APP');
+export const addApp = createThunk(() => (dispatch, getState) =>
+    dispatch(createAction(ADD_APP)(
         dispatch(getPaymentPlan()).then(id =>
             dispatch(getCampaigns()).then(campaigns => {
                 const state = getState();
@@ -108,13 +108,14 @@ export const onAddApp = createThunk(() => (dispatch, getState) =>
                             {
                                 text: 'Yes, upgrade my plan!',
                                 type: 'success',
-                                onSelect: dismiss => dispatch(showChangeModal()).then(() => {
+                                onSelect: dismiss => dispatch(push('/dashboard/billing'))
+                                .then(() => {
                                     dismiss();
-                                    return dispatch(push('/dashboard/billing'));
+                                    return dispatch(showPlanModal(true));
                                 }).catch(reason => {
                                     dispatch(notify({
                                         type: NOTIFICATION.DANGER,
-                                        message: `Failed to upgrade plan:
+                                        message: `Unexpected Error:
                                             ${reason.response || reason.message}`,
                                         time: 10000,
                                     }));

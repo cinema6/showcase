@@ -30,7 +30,7 @@ class Dashboard extends Component {
             campaigns,
             analytics,
 
-            onAddApp,
+            addApp,
         } = this.props;
 
         if (!user) { return null; }
@@ -78,7 +78,7 @@ class Dashboard extends Component {
                         </ul>
                     </div>
                     <button
-                        className="btn btn-danger hidden-xs btn-header" onClick={onAddApp}
+                        className="btn btn-danger hidden-xs btn-header" onClick={addApp}
                     >
                         <i className="fa fa-plus" /> Add New App
                     </button> {/* show alert asking to upgrade if
@@ -201,7 +201,7 @@ Dashboard.propTypes = {
     campaigns: PropTypes.array,
     analytics: PropTypes.array.isRequired,
 
-    onAddApp: PropTypes.func.isRequired,
+    addApp: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
