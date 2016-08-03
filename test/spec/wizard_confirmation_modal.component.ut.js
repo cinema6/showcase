@@ -2,6 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import WizardConfirmationModal from '../../src/components/WizardConfirmationModal';
 import BraintreeCreditCardForm from '../../src/components/BraintreeCreditCardForm';
+import numeral from 'numeral';
 
 describe('WizardConfirmationModal', function() {
     describe('when rendered', function() {
@@ -12,7 +13,8 @@ describe('WizardConfirmationModal', function() {
             props = {
                 handleClose: jasmine.createSpy('handleClose()'),
                 getToken: jasmine.createSpy('getToken()').and.returnValue(new Promise(() => {})),
-                onSubmit: jasmine.createSpy('onSubmit()')
+                onSubmit: jasmine.createSpy('onSubmit()'),
+                freeViews: 5500
             };
 
             component = mount(<WizardConfirmationModal {...props} />);
@@ -20,6 +22,22 @@ describe('WizardConfirmationModal', function() {
 
         it('should exist', function() {
             expect(component).toEqual(jasmine.any(Object));
+        });
+
+        it('should render the amount of free views', () => {
+            expect(component.find('.modal-header h4').text()).toBe(`Get ${numeral(props.freeViews).format('0,0')} views for FREE. Cancel anytime.`);
+        });
+
+        describe('if the user is not getting any free views', () => {
+            beforeEach(() => {
+                component.setProps({
+                    freeViews: undefined
+                });
+            });
+
+            it('should render a generic message', () => {
+                expect(component.find('.modal-header h4').text()).toBe('Reach thousands of potential app users');
+            });
         });
 
         describe('children', function() {

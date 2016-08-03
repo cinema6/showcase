@@ -7,7 +7,7 @@ import { createThunk } from '../../src/middleware/fsa_thunk';
 const EXECUTE = createThunk()().type;
 
 export function dispatch() {
-    const deferreds = new WeakMap();
+    let deferreds = new WeakMap();
     const stub = jasmine.createSpy('dispatch()').and.callFake(action => {
         if (action.type === EXECUTE) {
             const deferred = defer();
@@ -44,6 +44,9 @@ export function dispatch() {
     };
     stub.getDeferred = function(action) {
         return stub.getDeferreds(action)[0] || null;
+    };
+    stub.resetDeferreds = function() {
+        deferreds = new WeakMap();
     };
 
     return stub;

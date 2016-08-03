@@ -4,26 +4,31 @@ import { compose } from 'redux';
 import { pageify } from '../../utils/page';
 import { wizardComplete, autofill } from '../../actions/product_wizard';
 import { getPromotions, getOrg } from '../../actions/session';
-import { assign } from 'lodash';
+import { assign, get } from 'lodash';
+import { getPaymentPlans } from '../../actions/system';
+import { getValues } from 'redux-form';
 
 function mapStateToProps(state, props) {
     const {
         session: {
             promotions,
-            org: orgId,
+        },
+        system: {
+            paymentPlans: paymentPlanIds,
         },
         db,
     } = state;
-    const org = db.org[orgId] || null;
+    const paymentPlans = (paymentPlanIds || []).map(id => state.db.paymentPlan[id]);
 
     return {
         steps: [0, 1, 2, 3],
 
         promotions: promotions && promotions.map(id => db.promotion[id]),
+        paymentPlans: paymentPlans.filter(paymentPlan => paymentPlan.price > 0),
 
         productData: props.page.productData,
         targeting: props.page.targeting,
-        paymentPlanId: org && org.paymentPlanId,
+        paymentPlanId: (getValues(get(state, 'form.selectPlan.select')) || {}).plan || null,
     };
 }
 
@@ -34,6 +39,7 @@ function mapDispatchToProps(dispatch, props) {
                 dispatch(getPromotions()),
                 dispatch(autofill()),
                 dispatch(getOrg()),
+                dispatch(getPaymentPlans()),
             ]);
         },
 

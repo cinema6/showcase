@@ -3,20 +3,34 @@ import {
     GET_PAYMENT_METHODS,
     LOAD_PAGE_DATA,
     SHOW_CHANGE_MODAL,
-    CHANGE_PAYMENT_METHOD
+    CHANGE_PAYMENT_METHOD,
+    SHOW_PLAN_MODAL,
+    CHANGE_PAYMENT_PLAN,
+    CANCEL_SUBSCRIPTION,
+
+    changePaymentPlan,
+    cancelSubscription
 } from '../../src/actions/billing';
+import orgs, {
+    changePaymentPlan as changeOrgPaymentPlan
+} from '../../src/actions/org';
 import { createAction } from 'redux-actions';
-import { assign, find } from 'lodash';
+import { assign, find, cloneDeep as clone } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 import { getBillingPeriod, getPaymentPlan } from '../../src/actions/session';
+import { getPaymentPlans } from '../../src/actions/system';
+import * as stub from '../helpers/stubs';
+import { notify } from '../../src/actions/notification';
+import * as NOTIFICATION from '../../src/enums/notification';
+import moment from 'moment';
 
 const proxyquire = require('proxyquire');
 
 describe('billing actions', function() {
     let actions;
-    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod;
+    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod, showPlanModal;
     let paymentActions;
 
     beforeEach(function() {
@@ -29,13 +43,15 @@ describe('billing actions', function() {
                 getPaymentPlan,
 
                 __esModule: true
-            }
+            },
+            './system': require('../../src/actions/system')
         });
         getPayments = actions.getPayments;
         getPaymentMethods = actions.getPaymentMethods;
         loadPageData = actions.loadPageData;
         showChangeModal = actions.showChangeModal;
         changePaymentMethod = actions.changePaymentMethod;
+        showPlanModal = actions.showPlanModal;
     });
 
     describe('getPayments()', function() {
@@ -165,6 +181,10 @@ describe('billing actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
 
+            it('should getPaymentPlans()', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlans());
+            });
+
             it('should dispatch LOAD_PAGE_DATA', function() {
                 expect(dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
             });
@@ -175,6 +195,13 @@ describe('billing actions', function() {
         it('should dispatch an action', function() {
             expect(showChangeModal(true)).toEqual(createAction(SHOW_CHANGE_MODAL)(true));
             expect(showChangeModal(false)).toEqual(createAction(SHOW_CHANGE_MODAL)(false));
+        });
+    });
+
+    describe('showPlanModal()', () => {
+        it('should dispatch an action', () => {
+            expect(showPlanModal(true)).toEqual(createAction(SHOW_PLAN_MODAL)(true));
+            expect(showPlanModal(false)).toEqual(createAction(SHOW_PLAN_MODAL)(false));
         });
     });
 
@@ -272,7 +299,6 @@ describe('billing actions', function() {
                     method = assign({}, newMethod, {
                         token
                     });
-                    oldMethod.default = false;
                     state.db.paymentMethod[token] = method;
 
                     spyOn(paymentActions.paymentMethod, 'remove').and.callThrough();
@@ -317,6 +343,503 @@ describe('billing actions', function() {
                         it('should close the modal', function() {
                             expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
                         });
+                    });
+                });
+            });
+
+            describe('if the user has no payment methods', () => {
+                beforeEach(done => {
+                    success.calls.reset();
+                    failure.calls.reset();
+                    dispatch = stub.dispatch();
+
+                    state.db.paymentMethod = {};
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                describe('when the paymentMethod has been created', () => {
+                    let token;
+                    let method;
+
+                    beforeEach(done => {
+                        token = createUuid();
+                        method = assign({}, newMethod, {
+                            token
+                        });
+                        state.db.paymentMethod[token] = method;
+
+                        dispatch.getDeferred(dispatch.calls.first().args[0]).resolve(method);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        token = null;
+                        method = null;
+                    });
+
+                    it('should get all of the payment methods', function() {
+                        expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list());
+                    });
+
+                    describe('when the list has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(Object.keys(state.db.paymentMethod));
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
+                        });
+
+                        it('should close the modal', function() {
+                            expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('changePaymentPlan(paymentPlanId)', () => {
+        let paymentPlanId;
+        let thunk;
+
+        beforeEach(() => {
+            paymentPlanId = `pp-${createUuid()}`;
+            thunk = getThunk(changePaymentPlan(paymentPlanId));
+        });
+
+        afterEach(() => {
+            paymentPlanId = null;
+            thunk = null;
+        });
+
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let user;
+            let state;
+            let dispatch;
+            let getState;
+
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                user = {
+                    id: `u-${createUuid()}`,
+                    org: `o-${createUuid()}`
+                };
+                state = {
+                    db: {
+                        user: {
+                            [user.id]: user
+                        }
+                    },
+                    session: {
+                        user: user.id
+                    }
+                };
+
+                dispatch = stub.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            afterEach(() => {
+                user = null;
+                state = null;
+                dispatch = null;
+                getState = null;
+
+                success = null;
+                failure = null;
+            });
+
+            it('should dispatch CHANGE_PAYMENT_PLAN', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(CHANGE_PAYMENT_PLAN)(jasmine.any(Promise)));
+            });
+
+            it('should change the payment plan of the user\'s org', () => {
+                expect(dispatch).toHaveBeenCalledWith(changeOrgPaymentPlan({ paymentPlanId, orgId: user.org }));
+            });
+
+            describe('if the payment plan cannot be changed', () => {
+                let reason;
+
+                beforeEach(done => {
+                    reason = new Error('foo');
+                    reason.response = 'I failed hard.';
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                afterEach(() => {
+                    reason = null;
+                });
+
+                it('should show an error', () => {
+                    expect(dispatch).toHaveBeenCalledWith(notify({
+                        type: NOTIFICATION.TYPE.DANGER,
+                        message: jasmine.any(String),
+                        time: 10000
+                    }));
+                });
+
+                it('should fulfill the Promise with undefined', () => {
+                    expect(success).toHaveBeenCalledWith(undefined);
+                });
+            });
+
+            describe('when the plan has been changed', () => {
+                let response;
+
+                beforeEach(done => {
+                    response = {
+                        paymentPlanId,
+                        nextPaymentPlanId: null,
+                        effectiveDate: moment().format()
+                    };
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                afterEach(() => {
+                    response = null;
+                });
+
+                it('should re-fetch the org', () => {
+                    expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
+                });
+
+                describe('if the org cannot be changed', () => {
+                    let reason;
+
+                    beforeEach(done => {
+                        reason = new Error('foo');
+                        reason.response = 'I failed...';
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        reason = null;
+                    });
+
+                    it('should show an error', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.DANGER,
+                            message: jasmine.any(String),
+                            time: 10000
+                        }));
+                    });
+
+                    it('should fulfill the Promise with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+
+                describe('when the org has been fetched', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should close the modal', () => {
+                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    });
+
+                    it('should show a success message', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: 'You have successfully upgraded your account!',
+                            time: 5000
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+            });
+
+            describe('if the change will not take effect until a future date', () => {
+                let response;
+
+                beforeEach(done => {
+                    response = {
+                        paymentPlanId: `pp-${createUuid()}`,
+                        nextPaymentPlanId: paymentPlanId,
+                        effectiveDate: moment().add(2, 'days').utcOffset(0).endOf('day').format()
+                    };
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                it('should re-fetch the org', () => {
+                    expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
+                });
+
+                describe('when the org has been fetched', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should close the modal', () => {
+                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    });
+
+                    it('should show a success message', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: `Your changes will take effect at the end of the current billing period: ${moment(response.effectiveDate).format('MMM D')}.`,
+                            time: 10000
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('cancelSubscription()', () => {
+        let thunk;
+
+        beforeEach(() => {
+            thunk = getThunk(cancelSubscription());
+        });
+
+        afterEach(() => {
+            thunk = null;
+        });
+
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let user;
+            let state;
+            let dispatch;
+            let getState;
+
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                user = {
+                    id: `u-${createUuid()}`,
+                    org: `o-${createUuid()}`
+                };
+                state = {
+                    db: {
+                        user: {
+                            [user.id]: user
+                        },
+                        paymentPlan: {}
+                    },
+                    session: {
+                        user: user.id
+                    },
+                    system: {
+                        paymentPlans: null
+                    }
+                };
+
+                dispatch = stub.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            afterEach(() => {
+                user = null;
+                state = null;
+                dispatch = null;
+                getState = null;
+
+                success = null;
+                failure = null;
+            });
+
+            it('should dispatch CANCEL_SUBSCRIPTION', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(CANCEL_SUBSCRIPTION)(jasmine.any(Promise)));
+            });
+
+            it('should get all the payment plans', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlans());
+            });
+
+            describe('if the payment plans cannot be fetched', () => {
+                let reason;
+
+                beforeEach(done => {
+                    reason = new Error('foo');
+                    reason.response = 'I failed hard.';
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                afterEach(() => {
+                    reason = null;
+                });
+
+                it('should show an error', () => {
+                    expect(dispatch).toHaveBeenCalledWith(notify({
+                        type: NOTIFICATION.TYPE.DANGER,
+                        message: jasmine.any(String),
+                        time: 10000
+                    }));
+                });
+
+                it('should fulfill the Promise with undefined', () => {
+                    expect(success).toHaveBeenCalledWith(undefined);
+                });
+            });
+
+            describe('when the plans are fetched', () => {
+                let paymentPlans;
+
+                beforeEach(done => {
+                    paymentPlans = [
+                        {
+                            id: 'pp-0Ek9Sn0c02viEQGx',
+                            price: 0,
+                            viewsPerMonth: 0,
+                            name: '--canceled--',
+                            maxCampaigns: 0
+                        },
+                        {
+                            id: 'pp-0Ek6Vw0bWnqdlr61',
+                            price: 10,
+                            viewsPerMonth: 2000,
+                            name: 'Baby',
+                            maxCampaigns: 1
+                        },
+                        {
+                            id: 'pp-0Ek6V-0bWnuhLfQl',
+                            price: 24.99,
+                            viewsPerMonth: 4000,
+                            name: 'Kid',
+                            maxCampaigns: 5
+                        },
+                        {
+                            id: 'pp-0Ek6Ws0bWnxCV-B7',
+                            price: 49.99,
+                            viewsPerMonth: 10000,
+                            name: 'Adult',
+                            maxCampaigns: 10
+                        }
+                    ];
+
+                    assign(state.db.paymentPlan, paymentPlans.reduce((result, plan) => assign(result, {
+                        [plan.id]: plan
+                    }), {}));
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentPlans.map(plan => plan.id));
+                    setTimeout(done);
+
+                    dispatch.calls.reset();
+                });
+
+                it('should change the payment plan to the canceled one', () => {
+                    expect(dispatch).toHaveBeenCalledWith(changeOrgPaymentPlan({ orgId: user.org, paymentPlanId: paymentPlans[0].id }));
+                });
+
+                describe('if the payment plan cannot be changed', () => {
+                    let reason;
+
+                    beforeEach(done => {
+                        reason = new Error('foo');
+                        reason.response = 'I failed!';
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        reason = null;
+                    });
+
+                    it('should show an error', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.DANGER,
+                            message: jasmine.any(String),
+                            time: 10000
+                        }));
+                    });
+
+                    it('should fulfill the Promise with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+
+                describe('when the plan has been changed', () => {
+                    let response;
+
+                    beforeEach(done => {
+                        response = {
+                            paymentPlanId: paymentPlans[1].id,
+                            nextPaymentPlanId: paymentPlans[0].id,
+                            effectiveDate: moment().add(8, 'days').utcOffset(0).endOf('day').format()
+                        };
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        response = null;
+                    });
+
+                    it('should show a success message', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: `Your subscription will be suspended at the end of current billing period (${moment(response.effectiveDate).format('MMM D')}).`,
+                            time: 10000
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
                     });
                 });
             });

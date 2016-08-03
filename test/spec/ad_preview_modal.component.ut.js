@@ -1,9 +1,6 @@
 import AdPreviewModal from '../../src/components/AdPreviewModal';
-import { mount } from 'enzyme';
-import {
-    findRenderedComponentWithType
-} from 'react-addons-test-utils';
-import React from 'react';
+import { mount, ReactWrapper } from 'enzyme';
+import React, { PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
@@ -29,7 +26,8 @@ describe('AdPreviewModal', function() {
             onClose: jasmine.createSpy('onClose()')
         };
         this.component = mount(
-            <AdPreviewModal {...this.props} />
+            <AdPreviewModal {...this.props} />,
+            { attachTo: document.createElement('div') }
         );
     });
 
@@ -47,32 +45,35 @@ describe('AdPreviewModal', function() {
 
     describe('the Modal', function() {
         beforeEach(function() {
-            this.modal = this.component.find(Modal).node._modal;
+            this.modal = new ReactWrapper(this.component.find('Portal').prop('children'), null, {
+                context: { $bs_modal: { onHide: () => {} } },
+                childContextTypes: { $bs_modal: PropTypes.object.isRequired }
+            });
         });
 
         it('should exist', function() {
-            expect(this.modal).toEqual(jasmine.any(Object));
+            expect(this.modal.length).toBe(1);
         });
 
         describe('AdPreview', function() {
             beforeEach(function() {
-                this.preview = findRenderedComponentWithType(this.modal, AdPreview);
+                this.preview = this.modal.find(AdPreview);
             });
 
             it('should exist', function() {
-                expect(this.preview).toEqual(jasmine.any(Object));
+                expect(this.preview.length).toBe(1, 'AdPreview not rendered.');
             });
 
             describe('props', function() {
                 describe('productData', function() {
                     it('should be the campaign\'s productData', function() {
-                        expect(this.preview.props.productData).toEqual(productDataFromCampaign(this.campaign));
+                        expect(this.preview.prop('productData')).toEqual(productDataFromCampaign(this.campaign));
                     });
                 });
 
                 describe('cardOptions', function() {
                     it('should be an Object', function() {
-                        expect(this.preview.props.cardOptions).toEqual({
+                        expect(this.preview.prop('cardOptions')).toEqual({
                             cardType: 'showcase-app',
                             advanceInterval: 3
                         });
@@ -81,7 +82,7 @@ describe('AdPreviewModal', function() {
 
                 describe('placementOptions', function() {
                     it('should be some placement options', function() {
-                        expect(this.preview.props.placementOptions).toEqual({
+                        expect(this.preview.prop('placementOptions')).toEqual({
                             type: 'mobile-card',
                             branding: 'showcase-app--interstitial'
                         });
@@ -90,7 +91,7 @@ describe('AdPreviewModal', function() {
 
                 describe('factory', function() {
                     it('should be the interstitial factory', function() {
-                        expect(this.preview.props.factory).toBe(createInterstitialFactory);
+                        expect(this.preview.prop('factory')).toBe(createInterstitialFactory);
                     });
                 });
             });

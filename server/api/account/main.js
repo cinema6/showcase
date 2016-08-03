@@ -9,7 +9,8 @@ module.exports = function(http) {
         pluckExcept = fn.pluckExcept,
         idFromPath = db.idFromPath,
         extend = fn.extend,
-        genId = require('../../../tasks/resources/helpers').genId;
+        genId = require('../../../tasks/resources/helpers').genId,
+        moment = require('moment');
 
     function objectPath(type, id) {
         return path.resolve(__dirname, './' + type + '/' + id + '.json');
@@ -236,6 +237,24 @@ module.exports = function(http) {
                 });
 
         this.respond(200, orgs);
+    });
+
+    http.whenPOST('/api/account/orgs/*/payment-plan', function(request) {
+        var id = request.pathname.match(/o-[^\/]+/)[0],
+            filePath = objectPath('orgs', id),
+            current = grunt.file.readJSON(filePath),
+            updatedOrg = extend(current, {
+                paymentPlanId: request.body.id,
+                lastUpdated: new Date().toISOString()
+            });
+
+        grunt.file.write(filePath, JSON.stringify(updatedOrg, null, '    '));
+
+        this.respond(201, {
+            paymentPlanId: request.body.id,
+            nextPaymentPlanId: request.body.id,
+            effectiveDate: moment().add(8, 'days').utcOffset(0).endOf('day').format()
+        });
     });
 
     /***********************************************************************************************
