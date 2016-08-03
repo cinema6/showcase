@@ -1,4 +1,5 @@
 module.exports = {
+    '@disabled': true,
 
     before: function (browser) {
         var page = browser.page.loginPage();

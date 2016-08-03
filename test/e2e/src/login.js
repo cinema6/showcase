@@ -5,12 +5,6 @@ module.exports = {
         page
         .navigate()
         .waitForElementVisible('body', 10000);
-
-        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
-            if (result.value && result.value.ELEMENT) {
-                browser.page.dashboardPage().click('@logoutButton');
-            }
-        });
     },
 
     after: function (browser) {
