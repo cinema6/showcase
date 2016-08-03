@@ -18,7 +18,7 @@ export default function WizardEditTargeting({
         </div>);
     }
 
-    return (<div className="col-md-6 col-sm-6 col-xs-12 col-middle animated fadeIn">
+    return (<div className="app-details col-md-6 col-sm-6 col-xs-12 col-middle animated fadeIn">
         <h1>Who is your app for?</h1>
         <EditTargetingForm
             initialValues={targeting}
