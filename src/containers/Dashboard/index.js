@@ -7,11 +7,13 @@ import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
+import { get, compact } from 'lodash';
 import moment from 'moment';
 
 class Dashboard extends Component {
     componentDidMount() {
         this.props.checkIfPaymentMethodRequired();
+        this.props.loadPageData();
     }
 
     render() {
@@ -22,12 +24,24 @@ class Dashboard extends Component {
 
             logoutUser,
             toggleNav,
+
+            billingPeriod,
+            paymentPlan,
+            campaigns,
+            analytics,
         } = this.props;
 
         if (!user) { return null; }
 
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
+        const views = analytics.reduce((previousValue, campaign) =>
+                previousValue + campaign.summary.views, 0);
+        const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
+        const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
+        const viewGoals = get(billingPeriod, 'totalViews');
+        const appsUsed = get(campaigns, '.length');
+        const maxApps = get(paymentPlan, '.maxCampaigns');
 
         return (<div>
             {/* top navigation bar */}
@@ -68,13 +82,12 @@ class Dashboard extends Component {
                 </div>
             </nav>
             <StatsSummaryBar
-                startDate={moment().subtract(1, 'week')}
-                endDate={moment().add(23, 'days')}
-                today={moment()}
-                views={200}
-                viewGoals={450}
-                appsUsed={2}
-                maxApps={3}
+                startDate={startDate}
+                endDate={endDate}
+                views={views}
+                viewGoals={viewGoals}
+                appsUsed={appsUsed}
+                maxApps={maxApps}
             />
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
@@ -177,13 +190,29 @@ Dashboard.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     toggleNav: PropTypes.func.isRequired,
     checkIfPaymentMethodRequired: PropTypes.func.isRequired,
+    loadPageData: PropTypes.func.isRequired,
+
+    billingPeriod: PropTypes.object,
+    paymentPlan: PropTypes.object,
+    campaigns: PropTypes.array,
+    analytics: PropTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {
     const user = state.db.user[state.session.user];
+    const billingPeriod = get(state, 'session.billingPeriod');
+    const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
+    const campaigns = state.session.campaigns &&
+        state.session.campaigns.map(id => state.db.campaign[id]);
+    const analytics = state.session.campaigns &&
+        compact(state.session.campaigns.map(id => state.analytics.results[id]));
 
     return {
         user: user || null,
+        billingPeriod: billingPeriod || null,
+        paymentPlan: paymentPlan || null,
+        campaigns: campaigns || null,
+        analytics: analytics || [],
     };
 }
 

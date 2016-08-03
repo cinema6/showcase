@@ -3,8 +3,15 @@ import {
     logoutUser,
     showNav,
     toggleNav,
-    checkIfPaymentMethodRequired
+    checkIfPaymentMethodRequired,
+    loadPageData
 } from '../../src/actions/dashboard';
+import {
+    getBillingPeriod,
+    getPaymentPlan,
+    getCampaigns
+} from '../../src/actions/session';
+import { getCampaignAnalytics } from '../../src/actions/analytics';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
 import { trackLogout as intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
@@ -14,7 +21,8 @@ import {
     LOGOUT_FAILURE,
     SHOW_NAV,
     TOGGLE_NAV,
-    CHECK_IF_PAYMENT_METHOD_REQUIRED
+    CHECK_IF_PAYMENT_METHOD_REQUIRED,
+    LOAD_PAGE_DATA
 } from '../../src/actions/dashboard';
 import { replace } from 'react-router-redux';
 import { getThunk } from '../../src/middleware/fsa_thunk';
@@ -305,6 +313,65 @@ describe('dashboard actions', function() {
                         });
                     });
                 });
+            });
+        });
+    });
+
+    describe('loadPageData()', function() {
+
+        beforeEach(function() {
+            this.thunk = getThunk(loadPageData());
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.dispatch = dispatch();
+                this.thunk(this.dispatch).then(this.success, this.failure);
+                setTimeout(done);
+            });
+
+            it('should getBillingPeriod()', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getBillingPeriod());
+            });
+
+            it('should getPaymentPlan()', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(getPaymentPlan());
+            });
+
+            it('should dispatch LOAD_PAGE_DATA', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
+            });
+
+            describe('should getCampaigns()', function() {
+                let campaign;
+                beforeEach(function(done) {
+                    campaign = createUuid();
+                    this.campaigns = [campaign];
+                    this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
+                    setTimeout(done);
+                });
+
+                it('should getCampaigns()', function(){
+                    expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+                });
+
+                describe('should then getCampaignAnalytics()', function(){
+                    beforeEach(function(done) {
+                        this.dispatch.getDeferred(getCampaignAnalytics(campaign)).resolve(undefined);
+                        setTimeout(done);
+                    });
+                    it('should succeed()', function(){
+                        expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign));
+                    });
+                });
+
             });
         });
     });

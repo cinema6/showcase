@@ -48,6 +48,38 @@ describe('StatsSummaryBar', function() {
         expect(this.component.find('.bar-fill').last().prop('style')).toEqual({ width: `${this.props.appsUsed / this.props.maxApps * 100}%` });
     });
 
+    describe('before data loads', function() {
+        beforeEach(function() {
+            this.component.setProps( {
+                startDate: null,
+                endDate: null,
+                views: null,
+                viewGoals: null,
+                appsUsed: null,
+                maxApps: null
+            });
+        });
+
+        it('should render the cycle dates as dashes', function() {
+            expect(this.component.find('.stats-header').first().text()).toBe('\u2014 - \u2014');
+        });
+        it('should render the days left as dashes', function() {
+            expect(this.component.find('.stats-header').at(1).text()).toBe('\u2014');
+        });
+        it('should render the views ratio as dashes', function() {
+            expect(this.component.find('.lighter-text').at(3).text()).toBe('\u2014 / \u2014');
+        });
+        it('should render the views bar width as 0%', function() {
+            expect(this.component.find('.bar-fill').first().prop('style')).toEqual({ width: '0%' });
+        });
+        it('should render the app ratio as dashes', function() {
+            expect(this.component.find('.lighter-text').last().text()).toBe('\u2014 / \u2014');
+        });
+        it('should render the apps available bar width as 0%', function() {
+            expect(this.component.find('.bar-fill').last().prop('style')).toEqual({ width: '0%' });
+        });
+    });
+
     afterEach(function() {
         jasmine.clock().uninstall();
     });

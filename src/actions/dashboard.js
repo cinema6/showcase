@@ -8,8 +8,9 @@ import { createAction } from 'redux-actions';
 import { replace } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
 import { paymentMethod } from './payment';
-import { getOrg } from './session';
+import { getOrg, getBillingPeriod, getPaymentPlan, getCampaigns } from './session';
 import moment from 'moment';
+import { getCampaignAnalytics } from './analytics';
 import { addNotification } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
 import React from 'react';
@@ -71,3 +72,17 @@ export const checkIfPaymentMethodRequired = createThunk(() => (dispatch, getStat
         }).then(() => undefined)
     )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));
+
+export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
+export const loadPageData = createThunk(() => (dispatch) =>
+    dispatch(createAction(LOAD_PAGE_DATA)(
+        Promise.all([
+            dispatch(getCampaigns())
+            .then((campaigns) => Promise.all(campaigns.map((id) =>
+                (dispatch(getCampaignAnalytics(id)))
+            ))),
+            dispatch(getPaymentPlan()),
+            dispatch(getBillingPeriod()),
+        ])
+    ))
+);
