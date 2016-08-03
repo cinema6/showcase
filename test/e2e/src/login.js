@@ -1,5 +1,18 @@
 module.exports = {
 
+    before: function (browser) {
+        var page = browser.page.loginPage();
+        page
+        .navigate()
+        .waitForElementVisible('body', 10000);
+
+        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
+            if (result.value && result.value.ELEMENT) {
+                browser.page.dashboardPage().click('@logoutButton');
+            }
+        });
+    },
+
     after: function (browser) {
         browser.page.dashboardPage().logout();
         browser.end();
@@ -7,16 +20,6 @@ module.exports = {
 
     'Reelcontent Login / Logout Test': function (browser) {
         var page = browser.page.loginPage();
-        page
-      .navigate()
-      .waitForElementVisible('body', 10000);
-
-        browser.element('css selector', '#sidePanelDesktop ul li button', function(result){
-            if (result.value && result.value.ELEMENT) {
-                browser.page.dashboardPage().click('@logoutButton');
-            }
-        });
-
         page
       .waitForElementVisible('@emailInput', 10000)
 
