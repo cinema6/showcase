@@ -1,8 +1,8 @@
-import { callAPI, StatusCodeError } from '../../src/actions/api';
 import defer from 'promise-defer';
 import fetchMock from 'fetch-mock';
 import { getThunk } from '../../src/middleware/fsa_thunk';
 import { dispatch } from '../helpers/stubs';
+const proxyquire = require('proxyquire');
 
 const REQUEST = 'REQUEST';
 const REQUEST_SUCCESS = 'REQUEST_SUCCESS';
@@ -13,8 +13,48 @@ function wait(ticks = 10) {
 }
 
 describe('api actions', function() {
+    let callAPI;
+    let StatusCodeError;
+    let coalesce;
+    let decorator;
+    let decorated;
+
+    beforeEach(() => {
+        coalesce = jasmine.createSpy('coalesce()').and.callFake(() =>
+            jasmine.createSpy('decorator()').and.callFake(() =>
+                jasmine.createSpy('decorated()').and.callFake((...args) =>
+                    window.fetch(...args))));
+
+        const module = proxyquire('../../src/actions/api', {
+            '../middleware/fsa_thunk': {
+                getThunk,
+
+                __esModule: true
+            },
+            'fetch-coalesce': {
+                default: coalesce,
+
+                __esModule: true
+            }
+        });
+
+        callAPI = module.callAPI;
+        StatusCodeError = module.StatusCodeError;
+
+        decorator = coalesce.calls.mostRecent().returnValue;
+        decorated = decorator.calls.mostRecent().returnValue;
+    });
+
     afterEach(function() {
+        callAPI = null;
+        StatusCodeError = null;
+        coalesce = null;
         fetchMock.restore();
+    });
+
+    it('should create a decorated fetch', () => {
+        expect(coalesce).toHaveBeenCalledWith();
+        expect(decorator).toHaveBeenCalledWith(window.fetch);
     });
 
     describe('callAPI(config)', function() {
@@ -58,6 +98,7 @@ describe('api actions', function() {
                     },
                     credentials: 'same-origin'
                 });
+                expect(decorated).toHaveBeenCalledWith(this.config.endpoint, fetchMock.lastOptions(this.config.endpoint));
             });
 
             it('should dispatch an action', function() {
@@ -304,6 +345,7 @@ describe('api actions', function() {
                             },
                             credentials: 'same-origin'
                         });
+                        expect(decorated).toHaveBeenCalledWith(this.response.body.url, fetchMock.lastOptions(this.response.body.url));
                     });
 
                     describe('if the request succeeds', function() {
@@ -468,6 +510,7 @@ describe('api actions', function() {
                                     },
                                     credentials: 'same-origin'
                                 });
+                                expect(decorated).toHaveBeenCalledWith(this.response.body.url, fetchMock.lastOptions(this.response.body.url));
                             });
                         });
                     });
@@ -600,6 +643,7 @@ describe('api actions', function() {
                         credentials: 'same-origin',
                         body: JSON.stringify(this.config.body)
                     });
+                    expect(decorated).toHaveBeenCalledWith(this.config.endpoint, fetchMock.lastOptions(this.config.endpoint));
                 });
             });
 
@@ -634,6 +678,7 @@ describe('api actions', function() {
                         },
                         credentials: '*'
                     });
+                    expect(decorated).toHaveBeenCalledWith(this.config.endpoint, fetchMock.lastOptions(this.config.endpoint));
                 });
             });
 
