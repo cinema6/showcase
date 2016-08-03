@@ -5,16 +5,18 @@ import {
     trackLogout as intercomTrackLogout,
 } from './intercom';
 import { createAction } from 'redux-actions';
-import { replace } from 'react-router-redux';
+import { replace, push } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
 import { paymentMethod } from './payment';
 import { getOrg, getBillingPeriod, getPaymentPlan, getCampaigns } from './session';
 import moment from 'moment';
 import { getCampaignAnalytics } from './analytics';
-import { addNotification } from './notification';
+import { notify, addNotification } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
 import React from 'react';
 import { Link } from 'react-router';
+import { showAlert } from './alert';
+import { showChangeModal } from './billing';
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -84,5 +86,46 @@ export const loadPageData = createThunk(() => (dispatch) =>
             dispatch(getPaymentPlan()),
             dispatch(getBillingPeriod()),
         ])
+    ))
+);
+
+export const ADD_APP_REQUEST = prefix('ADD_APP_REQUEST');
+export const onAddApp = createThunk(() => (dispatch, getState) =>
+    dispatch(createAction(ADD_APP_REQUEST)(
+        dispatch(getPaymentPlan()).then(id =>
+            dispatch(getCampaigns()).then(campaigns => {
+                const state = getState();
+                const paymentPlan = state.db.paymentPlan[id];
+                if (campaigns.length === paymentPlan.maxCampaigns) {
+                    return dispatch(showAlert({
+                        title: 'Uh oh!',
+                        description: 'You have no unused apps remaining in your current plan. '
+                        + 'Would you like to upgrade your plan?',
+                        buttons: [
+                            {
+                                text: 'No thanks',
+                                onSelect: dismiss => dismiss(),
+                            },
+                            {
+                                text: 'Yes, upgrade my plan!',
+                                type: 'success',
+                                onSelect: dismiss => dispatch(showChangeModal()).then(() => {
+                                    dismiss();
+                                    return dispatch(push('/dashboard/billing'));
+                                }).catch(reason => {
+                                    dispatch(notify({
+                                        type: NOTIFICATION.DANGER,
+                                        message: `Failed to upgrade plan:
+                                            ${reason.response || reason.message}`,
+                                        time: 10000,
+                                    }));
+                                }),
+                            },
+                        ],
+                    }));
+                }
+                return dispatch(push('/dashboard/add-product'));
+            })
+        )
     ))
 );
