@@ -1,6 +1,7 @@
 'use strict';
 
 import { mount } from 'enzyme';
+// import StatsSummaryBar from '../../src/components/StatsSummaryBar';
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
@@ -160,26 +161,6 @@ describe('Dashboard', function() {
             });
         });
 
-        describe('before data loads', function() {
-            beforeEach(function() {
-                state.session.user = null;
-                state.db.paymentPlan = null;
-                state.session.paymentPlan = null;
-                state.session.billingPeriod = null;
-                state.session.campaigns = null;
-                store.dispatch({ type: 'foo' });
-            });
-
-            it('should pass in null', function() {
-                expect(component.props()).toEqual(jasmine.objectContaining({
-                    user: null,
-                    billingPeriod: null,
-                    paymentPlan: null,
-                    campaigns: null,
-                    analytics: []
-                }));
-            });
-        });
         describe('StatsSummaryBar', function() {
             beforeEach(function() {
                 this.info = component.find('StatsSummaryBar');
@@ -198,6 +179,27 @@ describe('Dashboard', function() {
                 expect(info.prop('appsUsed')).toBe(get(this.campaigns, '.length'));
                 expect(info.prop('maxApps')).toBe(get(this.paymentPlan, '.maxCampaigns'));
 
+            });
+
+            describe('before data loads', function() {
+                beforeEach(function() {
+                    state.session.user = null;
+                    state.db.paymentPlan = null;
+                    state.session.paymentPlan = null;
+                    state.session.billingPeriod = null;
+                    state.session.campaigns = null;
+                    store.dispatch({ type: 'foo' });
+                });
+
+                it('should pass in null', function() {
+                    expect(component.props()).toEqual(jasmine.objectContaining({
+                        user: null,
+                        billingPeriod: null,
+                        paymentPlan: null,
+                        campaigns: null,
+                        analytics: []
+                    }));
+                });
             });
         });
 
