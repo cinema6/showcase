@@ -90,7 +90,7 @@ describe('SignUp', function() {
                     it('should call signUp()', function() {
                         expect(store.dispatch).toHaveBeenCalledWith(signUp(assign({}, values, {
                             company: `${values.firstName} ${values.lastName}`,
-                            paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+                            paymentPlanId: null,
                             promotion: APP_CONFIG.defaultPromotion,
                             referralCode: props.location.query.ref
                         })));
@@ -107,7 +107,7 @@ describe('SignUp', function() {
                         it('should use the specified promotion', function() {
                             expect(store.dispatch).toHaveBeenCalledWith(signUp(assign({}, values, {
                                 company: `${values.firstName} ${values.lastName}`,
-                                paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+                                paymentPlanId: null,
                                 promotion: props.location.query.promotion,
                                 referralCode: props.location.query.ref
                             })));

@@ -3,13 +3,14 @@
 import React from 'react';
 import { createStore, compose } from 'redux';
 import ProductWizard from '../../src/containers/Dashboard/ProductWizard';
-import { reducer as formReducer } from 'redux-form';
+import { reducer as formReducer, getValues } from 'redux-form';
 import { assign } from 'lodash';
 import { wizardComplete, autofill } from '../../src/actions/product_wizard';
 import { getPromotions, getOrg } from '../../src/actions/session';
 import AddProduct from '../../src/containers/Dashboard/AddProduct';
 import { createUuid } from 'rc-uuid';
 import { mount } from 'enzyme';
+import { getPaymentPlans } from '../../src/actions/system';
 
 describe('AddProduct', function() {
     it('should wrap the ProductWizard component', function() {
@@ -27,7 +28,23 @@ describe('AddProduct', function() {
                     promotions: [`pro-${createUuid()}`, `pro-${createUuid()}`],
                     org: `o-${createUuid()}`
                 },
-                db: {},
+                system: {},
+                db: {
+                    paymentPlan: {
+                        [`pp-${createUuid()}`]: {
+                            price: 0
+                        },
+                        [`pp-${createUuid()}`]: {
+                            price: 49.99
+                        },
+                        [`pp-${createUuid()}`]: {
+                            price: 149.99
+                        },
+                        [`pp-${createUuid()}`]: {
+                            price: 499.99
+                        }
+                    }
+                },
                 page: {
                     'dashboard.add_product': {
                         step: 0,
@@ -40,8 +57,19 @@ describe('AddProduct', function() {
                         },
                         targeting: { age: 'foo', gender: 'foo' }
                     }
+                },
+                form: {
+                    selectPlan: {
+                        select: {
+                            plan: {
+                                _isFieldValue: true,
+                                value: `pp-${createUuid()}`
+                            }
+                        }
+                    }
                 }
             };
+            state.system.paymentPlans = Object.keys(state.db.paymentPlan);
             state.db.promotion = state.session.promotions.reduce((result, id) => {
                 result[id] = {
                     id,
@@ -89,11 +117,29 @@ describe('AddProduct', function() {
                 steps: [0, 1, 2, 3],
 
                 promotions: state.session.promotions.map(id => state.db.promotion[id]),
+                paymentPlans: state.system.paymentPlans.map(id => state.db.paymentPlan[id]).filter(paymentPlan => paymentPlan.price > 0),
 
                 productData: state.page['dashboard.add_product'].productData,
                 targeting: state.page['dashboard.add_product'].targeting,
-                paymentPlanId: state.db.org[state.session.org].paymentPlanId
+                paymentPlanId: getValues(state.form.selectPlan.select).plan
             }));
+        });
+
+        describe('if no paymentPlans have been fetched', () => {
+            beforeEach(() => {
+                state = assign({}, state, {
+                    system: assign({}, state.system, {
+                        paymentPlans: null
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should pass in paymentPlans as []', function() {
+                expect(component.props()).toEqual(jasmine.objectContaining({
+                    paymentPlans: []
+                }));
+            });
         });
 
         describe('if no promotions have been fetched', function() {
@@ -113,15 +159,10 @@ describe('AddProduct', function() {
             });
         });
 
-        describe('if the org has not been fetched', function() {
+        describe('if the form has not been initialized', function() {
             beforeEach(function() {
                 state = assign({}, state, {
-                    session: assign({}, state.session, {
-                        org: null
-                    }),
-                    db: assign({}, state.db, {
-                        org: {}
-                    })
+                    form: {}
                 });
                 store.dispatch({ type: '@@UPDATE' });
             });
@@ -156,6 +197,10 @@ describe('AddProduct', function() {
 
                 it('should get the org', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(getOrg());
+                });
+
+                it('should get the payment plans', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(getPaymentPlans());
                 });
             });
 

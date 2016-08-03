@@ -18,6 +18,9 @@ import {
     GET_ORG
 } from '../../src/actions/session';
 import moment from 'moment';
+import {
+    CHANGE_PAYMENT_PLAN_SUCCESS
+} from '../../src/actions/org';
 
 describe('sessionReducer()', function() {
     it('should return some initial state', function() {
@@ -127,6 +130,38 @@ describe('sessionReducer()', function() {
             it('should update the paymentPlan', function() {
                 expect(newState).toEqual(assign({}, state, {
                     paymentPlan: this.paymentPlanId
+                }));
+            });
+
+            describe('if the user has no payment plan', () => {
+                beforeEach(() => {
+                    newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)(null));
+                });
+
+                it('should make the payment plan null', function() {
+                    expect(newState).toEqual(assign({}, state, {
+                        paymentPlan: null
+                    }));
+                });
+            });
+        });
+
+        describe(CHANGE_PAYMENT_PLAN_SUCCESS, () => {
+            let paymentPlanId;
+
+            beforeEach(() => {
+                paymentPlanId = `pp-${createUuid()}`;
+
+                newState = sessionReducer(state, createAction(CHANGE_PAYMENT_PLAN_SUCCESS)({ paymentPlanId }));
+            });
+
+            afterEach(() => {
+                paymentPlanId = null;
+            });
+
+            it('should update the paymentPlan with the new paymentPlanId', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    paymentPlan: paymentPlanId
                 }));
             });
         });

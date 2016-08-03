@@ -13,10 +13,10 @@ import { Button } from 'react-bootstrap';
 import DocumentTitle from 'react-document-title';
 import moment from 'moment';
 import numeral from 'numeral';
+import ChangePlanModal from '../../components/ChangePlanModal';
+import { getValues } from 'redux-form';
 
 const DASH = '\u2014';
-
-// const CANCEL_ACCOUNT_HREF = 'mailto:billing@reelcontent.com?subject=Cancel My Account';
 
 class Billing extends Component {
     componentWillMount() {
@@ -30,15 +30,31 @@ class Billing extends Component {
             page,
             billingPeriod,
             paymentPlan,
+            paymentPlans,
+            selectedPlan,
+            numberOfCampaigns,
 
             showChangeModal,
+            showPlanModal,
             getClientToken,
             changePaymentMethod,
             showAlert,
+            changePaymentPlan,
+            cancelSubscription,
         } = this.props;
 
         const billingEnd = billingPeriod && moment(billingPeriod.cycleEnd);
         const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
+
+        const viewsPerMonth = (
+            paymentPlan &&
+            numeral(paymentPlan.viewsPerMonth).format('0,0')
+        ) || DASH;
+        const dueDate = (
+            nextDueDate &&
+            nextDueDate.format('MMM D, YYYY')
+        ) || DASH;
+        const price = get(paymentPlan, 'price', DASH);
 
         return (<div className="container main-section campaign-stats">
             <DocumentTitle title="Reelcontent Apps: Billing" />
@@ -52,83 +68,21 @@ class Billing extends Component {
                             <div className="col-md-8">
                                 <div className="data-stacked">
                                     <h4>Your subscription provides</h4>
-                                    <h3>
-                                        {(
-                                            paymentPlan &&
-                                            numeral(paymentPlan.viewsPerMonth).format('0,0')
-                                        ) || DASH} views
-                                    </h3>
+                                    <h3>{viewsPerMonth} views</h3>
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
-                                    <h3>
-                                        ${get(paymentPlan, 'price', DASH)} on {
-                                            (nextDueDate && nextDueDate.format('MMM D, YYYY')) ||
-                                            DASH
-                                        }
-                                    </h3>
+                                    <h3>${price} on {dueDate}</h3>
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
                                 <Button
                                     bsSize="lg"
                                     bsStyle="primary"
-                                    onClick={() => showAlert({
-                                        title: 'Cancel Your Subscription',
-                                        description: (<div>
-                                            <span>
-                                                <strong>
-                                                    Are you sure you want to cancel your
-                                                    subscription?
-                                                </strong>
-                                                <br />
-                                                <p>
-                                                    <br />
-                                                    All 3 of your apps will lose the
-                                                    exposure they have been
-                                                    getting!
-                                                </p>
-                                            </span>
-                                            <div className="cancel-stats">
-                                                <div
-                                                    className="campaign-mini-stats
-                                                    col-md-6 text-center"
-                                                >
-                                                    <span>Current period</span>
-                                                    <h3>3,500</h3>
-                                                    <span>views</span>
-                                                </div>
-                                                <div
-                                                    className="campaign-mini-stats
-                                                    col-md-6 text-center"
-                                                >
-                                                    <span>Later</span>
-                                                    <h3>0</h3>
-                                                    <span>views</span>
-                                                </div>
-                                            </div>
-                                        </div>),
-                                        buttons: [
-                                            { text: 'Cancel my subscription',
-                                            type: 'danger btn-block',
-                                            size: 'large',
-                                            onSelect: dismiss => dismiss() },
-                                        ],
-                                    })}
+                                    onClick={() => showPlanModal(true)}
                                 >
                                     Update Plan
                                 </Button>
-                                {/* When users click on "cancel my subscription", close modal and
-                                show the success alert on top center of the page*/}
-                                {/*
-                                <div className="alert alert-dismissible alert-success alert-fixed"
-                                role="alert">
-                                    <button type="button" className="close" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                    Your subscription will be suspended at the end of current
-                                    billing period (Mar 25 - Apr 24).
-                                </div>*/}
                             </div>
                         </div>
                     </div>
@@ -153,13 +107,64 @@ class Billing extends Component {
                 </div>
             </div>
 
-            {page.showChangeModal &&
-                <ChangePaymentMethodModal
-                    getToken={getClientToken}
-                    onSubmit={changePaymentMethod}
-                    handleClose={() => showChangeModal(false)}
-                />
-            }
+            {page.showChangeModal && (<ChangePaymentMethodModal
+                getToken={getClientToken}
+                onSubmit={changePaymentMethod}
+                handleClose={() => showChangeModal(false)}
+            />)}
+            <ChangePlanModal
+                show={page.showPlanModal}
+                actionPending={page.changingPlan}
+
+                plans={paymentPlans}
+                currentPlan={paymentPlan && paymentPlan.id}
+                selectedPlan={selectedPlan}
+                amountOfCampaigns={numberOfCampaigns}
+                cycleEnd={billingEnd}
+
+                onClose={() => showPlanModal(false)}
+                onConfirm={paymentPlanId => changePaymentPlan(paymentPlanId)}
+                onCancel={() => showAlert({
+                    title: 'Cancel Your Subscription',
+                    description: (<div>
+                        <span>
+                            <strong>Are you sure you want to cancel your subscription?</strong>
+                            <br />
+                            <p>
+                                <br />
+                                {numberOfCampaigns > 1 ?
+                                    `All ${numberOfCampaigns} of your apps will lose the ` +
+                                        'exposure they have been getting!' :
+                                    'Your app will lose the exposure it has been getting!'
+                                }
+                            </p>
+                        </span>
+                        <div className="cancel-stats">
+                            <div className="campaign-mini-stats col-md-6 text-center">
+                                <span>Current period</span>
+                                <h3>{viewsPerMonth}</h3>
+                                <span>views</span>
+                            </div>
+                            <div className="campaign-mini-stats col-md-6 text-center">
+                                <span>Later</span>
+                                <h3>0</h3>
+                                <span>views</span>
+                            </div>
+                        </div>
+                    </div>),
+                    buttons: [
+                        {
+                            text: 'Cancel my subscription',
+                            type: 'danger btn-block',
+                            size: 'large',
+                            onSelect: dismiss => cancelSubscription().then(() => Promise.all([
+                                dismiss(),
+                                showPlanModal(false),
+                            ])),
+                        },
+                    ],
+                })}
+            />
         </div>);
     }
 }
@@ -169,6 +174,8 @@ Billing.propTypes = {
     payments: PropTypes.array.isRequired,
     page: PropTypes.shape({
         showChangeModal: PropTypes.bool.isRequired,
+        showPlanModal: PropTypes.bool.isRequired,
+        changingPlan: PropTypes.bool.isRequired,
     }).isRequired,
     billingPeriod: PropTypes.shape({
         cycleStart: PropTypes.string.isRequired,
@@ -178,28 +185,44 @@ Billing.propTypes = {
     paymentPlan: PropTypes.shape({
         viewsPerMonth: PropTypes.number.isRequired,
     }),
+    paymentPlans: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+    }).isRequired),
+    selectedPlan: PropTypes.string,
+    numberOfCampaigns: PropTypes.number,
 
     loadPageData: PropTypes.func.isRequired,
     showChangeModal: PropTypes.func.isRequired,
+    showPlanModal: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
     changePaymentMethod: PropTypes.func.isRequired,
     showAlert: PropTypes.func.isRequired,
+    changePaymentPlan: PropTypes.func.isRequired,
+    cancelSubscription: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
     const payments = state.session.payments.map(id => state.db.payment[id]);
     const paymentMethods = state.session.paymentMethods.map(token => state.db.paymentMethod[token]);
-    const paymentPlan = state.db.paymentPlan[state.session.paymentPlan];
+    const paymentPlans = (state.system.paymentPlans || []).map(id => state.db.paymentPlan[id]);
+    const paymentPlan = find(paymentPlans, { id: state.session.paymentPlan });
 
     return {
         payments,
         paymentPlan,
+        paymentPlans: paymentPlans.filter(plan => plan.price > 0),
         defaultPaymentMethod: find(paymentMethods, { default: true }),
         billingPeriod: state.session.billingPeriod,
+        selectedPlan: (getValues(get(state, 'form.selectPlan.change')) || {}).plan,
+        numberOfCampaigns: get(state, 'session.campaigns.length'),
     };
 }
 
 export default compose(
     pageify({ path: 'dashboard.billing' }),
-    connect(mapStateToProps, assign({}, billingActions, paymentActions, alertActions))
+    connect(mapStateToProps, assign({},
+        billingActions,
+        paymentActions,
+        alertActions
+    ))
 )(Billing);

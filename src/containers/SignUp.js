@@ -26,7 +26,7 @@ class SignUp extends Component {
         return this.props.signUp(assign({}, formValues, {
             company: `${formValues.firstName} ${formValues.lastName}`,
 
-            paymentPlanId: APP_CONFIG.paymentPlans[0].id,
+            paymentPlanId: null,
             promotion: promotion || APP_CONFIG.defaultPromotion,
             referralCode: ref,
         }));
