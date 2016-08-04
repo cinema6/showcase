@@ -16,6 +16,7 @@ import DashboardBilling from './containers/Dashboard/Billing';
 import DashboardCampaignDetail from './containers/Dashboard/CampaignDetail';
 import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import DashboardEditProduct from './containers/Dashboard/EditProduct';
+import DashboardCampaignList from './containers/Dashboard/CampaignList';
 import NotFound from './components/NotFound';
 import {
     createProtectedRouteEnterHandler,
@@ -23,10 +24,16 @@ import {
 } from './utils/auth';
 
 import { TYPE as NOTIFICATION_TYPE } from './enums/notification';
-import { getCampaigns } from './actions/session';
+import {
+    getCampaigns,
+    getPaymentPlan,
+} from './actions/session';
 import { notify } from './actions/notification';
 
 export default function createRoutes(store) {
+    const dispatch = action => store.dispatch(action);
+    const getState = () => store.getState();
+
     const checkAuth = createProtectedRouteEnterHandler({
         store,
         loginPath: '/login',
@@ -35,14 +42,21 @@ export default function createRoutes(store) {
     const checkLoggedIn = createLoginEnterHandler({ store, dashboardPath: '/dashboard' });
 
     function onEnterDashboard(routerState, replace, done) {
-        return store.dispatch(getCampaigns()).then(([campaign]) => {
-            if (!campaign) {
-                return replace('/dashboard/add-product');
-            }
+        return Promise.all([
+            dispatch(getCampaigns()),
+            dispatch(getPaymentPlan()),
+        ])
+        .then(([campaignIds, paymentPlanIds]) => {
+            const paymentPlan = paymentPlanIds && getState().db.paymentPlan[paymentPlanIds[0]];
 
-            return replace(`/dashboard/campaigns/${campaign}`);
-        }).catch(reason => {
-            store.dispatch(notify({
+            if (!paymentPlan || (campaignIds.length < 1 && paymentPlan.maxCampaigns > 0)) {
+                replace('/dashboard/add-product');
+            } else {
+                replace('/dashboard/campaigns');
+            }
+        })
+        .catch(reason => {
+            dispatch(notify({
                 type: NOTIFICATION_TYPE.DANGER,
                 message: `Unexpected error: ${reason.response || reason.message}`,
                 time: 10000,
@@ -52,19 +66,22 @@ export default function createRoutes(store) {
     }
 
     function onEnterAddProduct(routerState, replace, done) {
-        return store.dispatch(getCampaigns()).then(([campaign]) => {
-            if (campaign) {
-                return replace('/dashboard');
-            }
+        return Promise.all([
+            dispatch(getCampaigns()),
+            dispatch(getPaymentPlan()),
+        ])
+        .then(([campaignIds, paymentPlanIds]) => {
+            const paymentPlan = paymentPlanIds && getState().db.paymentPlan[paymentPlanIds[0]];
 
-            return undefined;
-        }).catch(reason => {
-            store.dispatch(notify({
+            if (paymentPlan && paymentPlan.maxCampaigns <= campaignIds.length) {
+                replace('/dashboard/campaigns');
+            }
+        })
+        .catch(reason => {
+            dispatch(notify({
                 type: NOTIFICATION_TYPE.WARNING,
                 message: `Unexpected error: ${reason.response || reason.message}`,
             }));
-
-            return replace('/dashboard');
         })
         .then(() => done());
     }
@@ -85,6 +102,14 @@ export default function createRoutes(store) {
                     onEnter={onEnterAddProduct}
                 />
 
+                <Route
+                    path="campaigns"
+                    component={DashboardCampaignList}
+                />
+                <Route
+                    path="campaigns/:campaignId"
+                    component={DashboardCampaignDetail}
+                />
                 <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct} />
 
                 <Route path="account" component={Account}>
@@ -96,10 +121,6 @@ export default function createRoutes(store) {
                 </Route>
 
                 <Route path="billing" component={DashboardBilling} />
-                <Route
-                    path="campaigns/:campaignId"
-                    component={DashboardCampaignDetail}
-                />
             </Route>
 
             <Route path="login" component={Login} onEnter={checkLoggedIn} />
