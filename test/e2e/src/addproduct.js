@@ -1,5 +1,5 @@
 module.exports = {
-    '@disabled': true,
+    //'@disabled': true,
 
     before: function (browser) {
         var page = browser.page.loginPage();
@@ -49,7 +49,7 @@ module.exports = {
     'Reelcontent Add Product Test - Create': function (browser) {
         var page = browser.page.addproductPage();
         page
-      .waitForElementPresent('body', 10000)
+      .waitForElementPresent('@titleInput', 10000)
 
       .assert.elementPresent('@step1')
       .assert.elementPresent('@step2')
@@ -68,7 +68,7 @@ module.exports = {
     'Reelcontent Add Product Test - Target': function (browser) {
         var page = browser.page.addproductPage();
         page
-      .waitForElementPresent('body', 10000)
+      .waitForElementPresent('@appCategories', 10000)
 
       .assert.elementPresent('@step1')
       .assert.elementPresent('@step2')

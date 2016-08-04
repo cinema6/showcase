@@ -6,7 +6,7 @@ module.exports = {
     company:   'Company',
     app:       'Pokémon GO',
 
-    beforeEach: function (browser) {
+    beforeEach: function (browser, done) {
         browser.url(browser.launchUrl);
         browser.waitForElementVisible('body', 10000);
 
@@ -14,6 +14,7 @@ module.exports = {
             if (result.value && result.value.ELEMENT) {
                 browser.page.dashboardPage().click('@logoutButton');
             }
+            done();
         });
     }
 };
