@@ -16,6 +16,7 @@ import DashboardBilling from './containers/Dashboard/Billing';
 import DashboardCampaignDetail from './containers/Dashboard/CampaignDetail';
 import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import DashboardEditProduct from './containers/Dashboard/EditProduct';
+import DashboardCampaignList from './containers/Dashboard/CampaignList';
 import NotFound from './components/NotFound';
 import {
     createProtectedRouteEnterHandler,
@@ -101,6 +102,14 @@ export default function createRoutes(store) {
                     onEnter={onEnterAddProduct}
                 />
 
+                <Route
+                    path="campaigns"
+                    component={DashboardCampaignList}
+                />
+                <Route
+                    path="campaigns/:campaignId"
+                    component={DashboardCampaignDetail}
+                />
                 <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct} />
 
                 <Route path="account" component={Account}>
@@ -112,10 +121,6 @@ export default function createRoutes(store) {
                 </Route>
 
                 <Route path="billing" component={DashboardBilling} />
-                <Route
-                    path="campaigns/:campaignId"
-                    component={DashboardCampaignDetail}
-                />
             </Route>
 
             <Route path="login" component={Login} onEnter={checkLoggedIn} />
