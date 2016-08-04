@@ -8,7 +8,8 @@ import {
     loginUser as authLoginUser
 } from '../../src/actions/auth';
 import {
-    getCampaigns
+    getCampaigns,
+    getPaymentPlan
 } from '../../src/actions/session';
 import {
     trackLogin as intercomTrackLogin
@@ -30,7 +31,8 @@ describe('actions: login', function() {
             loginUser: jasmine.createSpy('authLoginUser()').and.callFake(authLoginUser)
         };
         sessionActions = {
-            getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns)
+            getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns),
+            getPaymentPlan
         };
         intercomActions = {
             trackLogin: jasmine.createSpy('intercomTrackLogin()').and.callFake(intercomTrackLogin)
@@ -98,6 +100,10 @@ describe('actions: login', function() {
                     it('should get the campaigns', function() {
                         expect(sessionActions.getCampaigns).toHaveBeenCalledWith();
                         expect(dispatch).toHaveBeenCalledWith(sessionActions.getCampaigns.calls.mostRecent().returnValue);
+                    });
+
+                    it('should get the paymentPlan', function() {
+                        expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
                     });
 
                     describe('when the campaigns are fetched', function() {
