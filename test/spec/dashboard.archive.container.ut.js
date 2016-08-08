@@ -190,6 +190,19 @@ describe('Archive', () => {
         });
     });
 
+    describe('if there is nothing in the archive', () => {
+        beforeEach(() => {
+            state.session.archive = [];
+            state.db.campaign = {};
+
+            store.dispatch({ type: '@@UPDATE' });
+        });
+
+        it('should render a message', () => {
+            expect(component.find('.campaign-app-list li').text()).toEqual(jasmine.any(String));
+        });
+    });
+
     describe('when a campaign is restored', () => {
         let campaign;
         let item;

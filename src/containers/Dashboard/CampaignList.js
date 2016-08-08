@@ -80,7 +80,7 @@ class CampaignList extends Component {
                 <div className="col-md-12 col-sm-12">
                     <h3>Your applications</h3>
                     {campaigns && <ul className="campaign-app-list card-item">
-                        {campaigns.map(campaign => {
+                        {campaigns.length > 0 ? campaigns.map(campaign => {
                             const analytics = find(campaignAnalytics, { campaignId: campaign.id });
 
                             return (<CampaignListItem
@@ -95,7 +95,7 @@ class CampaignList extends Component {
 
                                 onArchive={() => this.archive(campaign)}
                             />);
-                        })}
+                        }) : <li>You have no apps.</li>}
                     </ul>}
                 </div>
                 <div className="promote-app-cta text-center col-md-12 col-sm-12">

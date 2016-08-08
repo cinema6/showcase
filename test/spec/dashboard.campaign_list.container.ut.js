@@ -192,6 +192,19 @@ describe('CampaignList', () => {
         });
     });
 
+    describe('if there are no campaigns', () => {
+        beforeEach(() => {
+            state.session.campaigns = [];
+            state.db.campaign = {};
+
+            store.dispatch({ type: '@@UPDATE' });
+        });
+
+        it('should render a message', () => {
+            expect(component.find('.campaign-app-list li').text()).toEqual(jasmine.any(String));
+        });
+    });
+
     describe('when the user archives a campaign', () => {
         let item;
         let campaign;
