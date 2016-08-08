@@ -16,7 +16,8 @@ describe('CampaignDetailInfo', function() {
             ratingCount: 1674,
             campaignId: `cam-${createUuid()}`,
 
-            onReplace: jasmine.createSpy('onReplace()')
+            onArchive: jasmine.createSpy('onArchive()'),
+            onRestore: jasmine.createSpy('onRestore()')
         };
 
         this.component = mount(
@@ -58,7 +59,14 @@ describe('CampaignDetailInfo', function() {
         const button = this.component.find('.trash-campaign-link').find(Button);
 
         expect(button.length).toBe(1, '<Button> not rendered.');
-        expect(button.prop('onClick')).toBe(this.component.prop('onReplace'));
+        expect(button.prop('onClick')).toBe(this.component.prop('onArchive'));
+    });
+
+    it('should render a Button to restore the campaign', function() {
+        const button = this.component.find('.restore-campaign-link').find(Button);
+
+        expect(button.length).toBe(1, '<Button> not rendered.');
+        expect(button.prop('onClick')).toBe(this.component.prop('onRestore'));
     });
 
     describe('if there is no rating', function() {
@@ -68,6 +76,30 @@ describe('CampaignDetailInfo', function() {
 
         it('should not render a StarRating', function() {
             expect(this.component.find('.campaign-app-info').length).toBe(0, '.campaign-app-info is rendered.');
+        });
+    });
+
+    describe('if there is no onArchive', function() {
+        beforeEach(function() {
+            this.component.setProps({ onArchive: null });
+        });
+
+        it('should not render an archive button', function() {
+            const button = this.component.find('.trash-campaign-link').find(Button);
+
+            expect(button.length).toBe(0, 'archive button is rendered.');
+        });
+    });
+
+    describe('if there is no onRestore', function() {
+        beforeEach(function() {
+            this.component.setProps({ onRestore: null });
+        });
+
+        it('should not render an archive button', function() {
+            const button = this.component.find('.restore-campaign-link').find(Button);
+
+            expect(button.length).toBe(0, 'restore button is rendered.');
         });
     });
 });

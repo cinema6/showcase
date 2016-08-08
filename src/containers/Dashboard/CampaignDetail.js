@@ -2,9 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import _, { assign, get, find } from 'lodash';
-import * as campaignDetailActions from '../../actions/campaign_detail';
-import * as notificationActions from '../../actions/notification';
+import _, { get, find } from 'lodash';
+import { notify } from '../../actions/notification';
+import {
+    loadPageData,
+    showInstallTrackingInstructions,
+    updateChartSelection,
+} from '../../actions/campaign_detail';
 import InstallTrackingSetupModal from '../../components/InstallTrackingSetupModal';
 import { TYPE as NOTIFICATION } from '../../enums/notification';
 import DocumentTitle from 'react-document-title';
@@ -19,6 +23,12 @@ import CampaignDetailStatsDetails, {
     CHART_30DAY,
 } from '../../components/CampaignDetailStatsDetails';
 import { Link } from 'react-router';
+import {
+    archiveCampaign,
+} from '../../actions/campaign_list';
+import {
+    restoreCampaign,
+} from '../../actions/archive';
 
 const CARD_OPTIONS = {
     cardType: 'showcase-app',
@@ -46,14 +56,10 @@ class CampaignDetail extends Component {
             campaign,
             analytics,
             billingPeriod,
-
-            showInstallTrackingInstructions,
-            notify,
-            removeCampaign,
-            updateChartSelection,
         } = this.props;
         const billingPeriodStart = billingPeriod && moment(billingPeriod.cycleStart);
         const billingPeriodEnd = billingPeriod && moment(billingPeriod.cycleEnd);
+        const isActive = campaign && (campaign.status !== 'canceled');
 
         return (<div>
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
@@ -71,7 +77,12 @@ class CampaignDetail extends Component {
                         company={get(campaign, 'product.developer')}
                         rating={get(campaign, 'product.rating')}
                         ratingCount={get(campaign, 'product.ratingCount')}
-                        onReplace={() => removeCampaign(campaign.id)}
+                        onArchive={((isActive === true) || null) && (() => (
+                            this.props.archiveCampaign(campaign)
+                        ))}
+                        onRestore={((isActive === false) || null) && (() => (
+                            this.props.restoreCampaign(campaign.id)
+                        ))}
                     />}
                     <div className="stats-overview-wrapper right-col col-md-8 col-sm-12 col-xs-12">
                         <p className="text-center track-installs">
@@ -79,7 +90,7 @@ class CampaignDetail extends Component {
                                 href="#"
                                 onClick={event => {
                                     event.preventDefault();
-                                    showInstallTrackingInstructions(true);
+                                    this.props.showInstallTrackingInstructions(true);
                                 }}
                             >Setup</a>
                         </p>
@@ -132,19 +143,19 @@ class CampaignDetail extends Component {
                                 return undefined;
                             }
                         })(page.activeSeries)}
-                        onChangeView={view => updateChartSelection(view)}
+                        onChangeView={view => this.props.updateChartSelection(view)}
                     />
                 </div>
             </div>
             {campaign && (<InstallTrackingSetupModal
                 show={page.showInstallTrackingInstructions}
                 campaignId={campaign.id}
-                onClose={() => showInstallTrackingInstructions(false)}
-                onCopyCampaignIdSuccess={() => notify({
+                onClose={() => this.props.showInstallTrackingInstructions(false)}
+                onCopyCampaignIdSuccess={() => this.props.notify({
                     type: NOTIFICATION.SUCCESS,
                     message: 'Copied to clipboard!',
                 })}
-                onCopyCampaignIdError={() => notify({
+                onCopyCampaignIdError={() => this.props.notify({
                     type: NOTIFICATION.WARNING,
                     message: 'Unable to copy.',
                 })}
@@ -197,7 +208,8 @@ CampaignDetail.propTypes = {
     }),
 
     loadPageData: PropTypes.func.isRequired,
-    removeCampaign: PropTypes.func.isRequired,
+    archiveCampaign: PropTypes.func.isRequired,
+    restoreCampaign: PropTypes.func.isRequired,
     showInstallTrackingInstructions: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
     updateChartSelection: PropTypes.func.isRequired,
@@ -213,5 +225,12 @@ function mapStateToProps(state, props) {
 
 export default compose(
     pageify({ path: 'dashboard.campaign_detail' }),
-    connect(mapStateToProps, assign({}, campaignDetailActions, notificationActions))
+    connect(mapStateToProps, {
+        loadPageData,
+        archiveCampaign,
+        showInstallTrackingInstructions,
+        notify,
+        updateChartSelection,
+        restoreCampaign,
+    })
 )(CampaignDetail);
