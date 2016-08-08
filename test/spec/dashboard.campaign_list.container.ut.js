@@ -5,12 +5,7 @@ import { cloneDeep as clone, shuffle, random, assign, find } from 'lodash';
 import  CampaignList from '../../src/containers/Dashboard/CampaignList';
 import { createUuid } from 'rc-uuid';
 import CampaignListItem from '../../src/components/CampaignListItem';
-import { loadPageData } from '../../src/actions/campaign_list';
-import { showAlert } from '../../src/actions/alert';
-import * as stubs from '../helpers/stubs';
-import { cancel as cancelCampaign } from '../../src/actions/campaign';
-import { notify } from '../../src/actions/notification';
-import * as NOTIFICATION from '../../src/enums/notification';
+import { loadPageData, archiveCampaign } from '../../src/actions/campaign_list';
 
 describe('CampaignList', () => {
     let wrapper;
@@ -223,132 +218,8 @@ describe('CampaignList', () => {
             campaign = null;
         });
 
-        it('should show an alert', () => {
-            expect(store.dispatch).toHaveBeenCalledWith((() => {
-                const action = showAlert({
-                    title: jasmine.any(String),
-                    description: jasmine.any(String),
-                    buttons: [
-                        {
-                            text: jasmine.any(String),
-                            onSelect: jasmine.any(Function)
-                        },
-                        {
-                            text: jasmine.any(String),
-                            type: 'danger',
-                            onSelect: jasmine.any(Function)
-                        }
-                    ]
-                });
-
-                action.payload.id = jasmine.any(String);
-                action.payload.buttons.forEach(button => button.id = jasmine.any(String));
-
-                return action;
-            })());
-        });
-
-        describe('the alert that is shown', () => {
-            let alert;
-            let dismiss;
-
-            beforeEach(() => {
-                alert = store.dispatch.calls.mostRecent().args[0].payload;
-                dismiss = jasmine.createSpy('dismiss()');
-            });
-
-            afterEach(() => {
-                alert =  null;
-                dismiss = null;
-            });
-
-            describe('first button', () => {
-                beforeEach(() => {
-                    alert.buttons[0].onSelect(dismiss);
-                });
-
-                it('should dismiss the alert', () => {
-                    expect(dismiss).toHaveBeenCalledWith();
-                });
-            });
-
-            describe('second button', () => {
-                let dispatchStub;
-                let success;
-                let failure;
-
-                beforeEach(done => {
-                    store.dispatch.calls.reset();
-                    dispatchStub = stubs.dispatch();
-                    store.dispatch.and.callFake(dispatchStub);
-
-                    success = jasmine.createSpy('success()');
-                    failure = jasmine.createSpy('failure()');
-
-                    alert.buttons[1].onSelect(dismiss).then(success, failure);
-                    setTimeout(done);
-                });
-
-                afterEach(() => {
-                    dispatchStub = null;
-                    success = null;
-                    failure = null;
-                });
-
-                it('should cancel the campaign', () => {
-                    expect(store.dispatch).toHaveBeenCalledWith(cancelCampaign(campaign.id));
-                });
-
-                describe('if the cancelation fails', () => {
-                    let reason;
-
-                    beforeEach(done => {
-                        reason = new Error('500 SERVER ERROR');
-                        reason.response = 'There was an unexpected error!';
-
-                        dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).reject(reason);
-                        setTimeout(done);
-
-                        store.dispatch.calls.reset();
-                    });
-
-                    it('should notify the user of the failure', () => {
-                        expect(store.dispatch).toHaveBeenCalledWith(notify({
-                            type: NOTIFICATION.TYPE.DANGER,
-                            message: jasmine.any(String),
-                            time: 10000
-                        }));
-                    });
-
-                    it('should fulfill the Promise', () => {
-                        expect(success).toHaveBeenCalledWith(undefined);
-                    });
-                });
-
-                describe('if cancelation succeeds', () => {
-                    beforeEach(done => {
-                        dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve(null);
-                        setTimeout(done);
-
-                        store.dispatch.calls.reset();
-                    });
-
-                    it('should notify the user of the success', () => {
-                        expect(store.dispatch).toHaveBeenCalledWith(notify({
-                            type: NOTIFICATION.TYPE.SUCCESS,
-                            message: jasmine.any(String)
-                        }));
-                    });
-
-                    it('should dismiss the alert', () => {
-                        expect(dismiss).toHaveBeenCalledWith();
-                    });
-
-                    it('should fulfill with undefined', () => {
-                        expect(success).toHaveBeenCalledWith(undefined);
-                    });
-                });
-            });
+        it('should dispatch archiveCampaign()', () => {
+            expect(store.dispatch).toHaveBeenCalledWith(archiveCampaign(campaign));
         });
     });
 });

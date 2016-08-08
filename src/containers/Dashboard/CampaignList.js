@@ -7,17 +7,8 @@ import {
 } from 'lodash';
 import {
     loadPageData,
+    archiveCampaign,
 } from '../../actions/campaign_list';
-import {
-    showAlert,
-} from '../../actions/alert';
-import {
-    cancel as cancelCampaign,
-} from '../../actions/campaign';
-import {
-    notify,
-} from '../../actions/notification';
-import * as NOTIFICATION from '../../enums/notification';
 
 function mapStateToProps(state) {
     const campaignIds = state.session.campaigns;
@@ -33,40 +24,6 @@ function mapStateToProps(state) {
 class CampaignList extends Component {
     componentDidMount() {
         this.props.loadPageData();
-    }
-
-    archive(campaign) {
-        this.props.showAlert({
-            title: `Archive "${campaign.product.name}"?`,
-            description: 'Are you sure you want to archive this app?',
-            buttons: [
-                {
-                    text: 'Keep',
-                    onSelect: dismiss => dismiss(),
-                },
-                {
-                    text: 'Archive',
-                    type: 'danger',
-                    onSelect: dismiss => (
-                        this.props.cancelCampaign(campaign.id).then(() => {
-                            dismiss();
-
-                            this.props.notify({
-                                type: NOTIFICATION.TYPE.SUCCESS,
-                                message: `Moved "${campaign.product.name}" to the archive.`,
-                            });
-                        })
-                        .catch(reason => {
-                            this.props.notify({
-                                type: NOTIFICATION.TYPE.DANGER,
-                                message: `Failed to archive: ${reason.response || reason.message}`,
-                                time: 10000,
-                            });
-                        })
-                    ),
-                },
-            ],
-        });
     }
 
     render() {
@@ -93,7 +50,7 @@ class CampaignList extends Component {
                                 views={analytics && analytics.summary.users}
                                 clicks={analytics && analytics.summary.clicks}
 
-                                onArchive={() => this.archive(campaign)}
+                                onArchive={() => this.props.archiveCampaign(campaign)}
                             />);
                         }) : <li>You have no apps.</li>}
                     </ul>}
@@ -128,14 +85,10 @@ CampaignList.propTypes = {
     }).isRequired),
 
     loadPageData: PropTypes.func.isRequired,
-    showAlert: PropTypes.func.isRequired,
-    cancelCampaign: PropTypes.func.isRequired,
-    notify: PropTypes.func.isRequired,
+    archiveCampaign: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, {
     loadPageData,
-    showAlert,
-    cancelCampaign,
-    notify,
+    archiveCampaign,
 })(CampaignList);
