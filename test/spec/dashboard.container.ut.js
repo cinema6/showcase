@@ -1,11 +1,11 @@
 'use strict';
 
 import { mount } from 'enzyme';
-// import StatsSummaryBar from '../../src/components/StatsSummaryBar';
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
 import { logoutUser,
+    addApp,
     toggleNav,
     checkIfPaymentMethodRequired,
     loadPageData
@@ -25,6 +25,7 @@ describe('Dashboard', function() {
         dashboardActions = {
             logoutUser: jasmine.createSpy('logoutUser()').and.callFake(logoutUser),
             toggleNav: jasmine.createSpy('toggleNav()').and.callFake(toggleNav),
+            addApp: jasmine.createSpy('addApp()').and.callFake(addApp),
             checkIfPaymentMethodRequired,
             loadPageData,
 
@@ -221,6 +222,16 @@ describe('Dashboard', function() {
                     expect(dashboardActions.logoutUser).toHaveBeenCalledWith();
                     expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.logoutUser.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+            describe('AddApp()', function() {
+                beforeEach(function() {
+                    this.result = component.props().addApp();
+                });
+                it('should dispatch the addApp action', function() {
+                    expect(dashboardActions.addApp).toHaveBeenCalledWith();
+                    expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.addApp.calls.mostRecent().returnValue);
+                    expect(this.result).toBe(dispatchDeferred.promise);
                 });
             });
 
