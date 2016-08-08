@@ -12,10 +12,6 @@ const campaign = createDbActions({
     queries: {
         list: {
             application: 'showcase',
-            statuses: [
-                'draft', 'new', 'pending', 'approved', 'rejected', 'active', 'paused', 'inactive',
-                'expired', 'outOfBudget', 'error',
-            ].join(','),
         },
     },
 });

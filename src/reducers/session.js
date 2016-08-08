@@ -26,6 +26,7 @@ const DEFAULT_STATE = {
     payments: [],
     paymentMethods: [],
     campaigns: null,
+    archive: null,
     paymentPlan: null,
 
     billingPeriod: null,
@@ -78,8 +79,9 @@ export default handleActions({
         paymentMethods: reject(state.paymentMethods, id => includes(ids, id)),
     }),
 
-    [campaign.list.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
-        campaigns: ids,
+    [campaign.list.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
+        campaigns: campaigns.filter(camp => camp.status !== 'canceled').map(camp => camp.id),
+        archive: campaigns.filter(camp => camp.status === 'canceled').map(camp => camp.id),
     }),
     [campaign.create.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
         campaigns: (state.campaigns || []).concat(ids),
@@ -89,6 +91,7 @@ export default handleActions({
     }),
     [`${CANCEL_CAMPAIGN}_FULFILLED`]: (state, { payload: [camp] }) => assign({}, state, {
         campaigns: state.campaigns && reject(state.campaigns, id => id === camp.id),
+        archive: state.archive && state.archive.concat([camp.id]),
     }),
 
     [LOGOUT_SUCCESS]: () => DEFAULT_STATE,

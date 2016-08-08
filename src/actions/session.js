@@ -19,7 +19,9 @@ export const getCampaigns = createThunk(() => (
                 const campaignIds = state.session.campaigns;
 
                 return (campaignIds && campaignIds.map(id => state.db.campaign[id])) ||
-                    dispatch(campaign.list());
+                    dispatch(campaign.list()).then(campaigns => (
+                        campaigns.filter(camp => camp.status !== 'canceled')
+                    ));
             })
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     }

@@ -39,20 +39,7 @@ describe('campaign actions', function() {
             endpoint: '/api/campaigns',
             queries: {
                 list: {
-                    application: 'showcase',
-                    statuses: [
-                        'draft',
-                        'new',
-                        'pending',
-                        'approved',
-                        'rejected',
-                        'active',
-                        'paused',
-                        'inactive',
-                        'expired',
-                        'outOfBudget',
-                        'error'
-                    ].join(',')
+                    application: 'showcase'
                 }
             }
         });

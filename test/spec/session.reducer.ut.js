@@ -30,6 +30,7 @@ describe('sessionReducer()', function() {
             paymentPlan: null,
             org: null,
             campaigns: null,
+            archive: null,
             payments: [],
             paymentMethods: [],
             billingPeriod: null
@@ -49,6 +50,7 @@ describe('sessionReducer()', function() {
                 payments: Array.apply([], new Array(5)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
                 campaigns: Array.apply([], new Array(10)).map(() => createUuid()),
+                archive: Array.apply([], new Array(10)).map(() => createUuid()),
 
                 billingPeriod: null,
                 paymentPlan: null
@@ -184,14 +186,18 @@ describe('sessionReducer()', function() {
             let campaigns;
 
             beforeEach(function() {
-                campaigns = [{ id: `cam-${createUuid()}` }];
+                campaigns = ['active', 'canceled', 'outOfBudget', 'paused', 'draft', 'outOfBudget', 'active'].map(status => ({
+                    id: `cam-${createUuid()}`,
+                    status
+                }));
 
                 newState = sessionReducer(state, createAction(campaign.list.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
             });
 
-            it('should update the campaigns', function() {
+            it('should update the campaigns and archive campaigns', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: campaigns.map(campaign => campaign.id)
+                    campaigns: campaigns.filter(campaign => campaign.status !== 'canceled').map(campaign => campaign.id),
+                    archive: campaigns.filter(campaign => campaign.status === 'canceled').map(campaign => campaign.id)
                 }));
             });
         });
@@ -265,13 +271,15 @@ describe('sessionReducer()', function() {
 
             it('should remove the campaign from the session', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: state.campaigns.filter(id => id !== campaign.id)
+                    campaigns: state.campaigns.filter(id => id !== campaign.id),
+                    archive: state.archive.concat([campaign.id])
                 }));
             });
 
             describe('if there are no campaigns in the session', function() {
                 beforeEach(function() {
                     state.campaigns = null;
+                    state.archive = null;
 
                     newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
                 });

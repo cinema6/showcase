@@ -337,19 +337,21 @@ describe('session actions', function() {
                 let campaigns;
 
                 beforeEach(function(done) {
-                    campaigns = Array.apply([], new Array(3)).map(() => ({
+                    campaigns = ['active', 'canceled', 'draft', 'outOfBudget', 'canceled', 'active'].map(status => ({
                         id: `cam-${createUuid()}`,
+                        status,
                         product: {
                             name: 'Awesome Campaign',
                             id: createUuid()
                         }
                     }));
+
                     dispatchDeferred.resolve(campaigns);
                     setTimeout(done);
                 });
 
-                it('should fulfill with campaigns', function() {
-                    expect(success).toHaveBeenCalledWith(campaigns);
+                it('should fulfill with the non-canceled campaigns', function() {
+                    expect(success).toHaveBeenCalledWith(campaigns.filter(campaign => campaign.status !== 'canceled'));
                 });
             });
 
