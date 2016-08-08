@@ -8,6 +8,7 @@ import { dispatch as createDispatch } from '../helpers/stubs';
 import { createAction } from 'redux-actions';
 import paymentPlan from '../../src/actions/payment_plan';
 import { createUuid } from 'rc-uuid';
+import { assign, cloneDeep as clone } from 'lodash';
 
 describe('system actions', () => {
     describe('getPaymentPlans()', () => {
@@ -37,10 +38,13 @@ describe('system actions', () => {
                 state = {
                     system: {
                         paymentPlans: null
+                    },
+                    db: {
+                        paymentPlan: {}
                     }
                 };
 
-                getState = jasmine.createSpy('getState()').and.callFake(() => state);
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
                 dispatch = createDispatch();
 
                 success = jasmine.createSpy('success()');
@@ -105,11 +109,16 @@ describe('system actions', () => {
             });
 
             describe('if the payment plans have been fetched', () => {
-                let paymentPlanIds;
+                let paymentPlans;
 
                 beforeEach(done => {
-                    paymentPlanIds = Array.apply([], new Array(4)).map(() => createUuid());
-                    state.system.paymentPlans = paymentPlanIds;
+                    paymentPlans = Array.apply([], new Array(4)).map(() => ({
+                        id: `pp-${createUuid()}`
+                    }));
+                    state.system.paymentPlans = paymentPlans.map(plan => plan.id);
+                    state.db.paymentPlan = paymentPlans.reduce((cache, plan) => assign(cache, {
+                        [plan.id]: plan
+                    }), {});
 
                     dispatch.calls.reset();
                     failure.calls.reset();
@@ -121,7 +130,7 @@ describe('system actions', () => {
                 });
 
                 afterEach(() => {
-                    paymentPlanIds = null;
+                    paymentPlans = null;
                 });
 
                 it('should not get the paymentPlans', () => {
@@ -129,7 +138,7 @@ describe('system actions', () => {
                 });
 
                 it('should fulfill with the paymentPlans', () => {
-                    expect(success).toHaveBeenCalledWith(paymentPlanIds);
+                    expect(success).toHaveBeenCalledWith(paymentPlans);
                 });
             });
         });

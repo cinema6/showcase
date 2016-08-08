@@ -91,14 +91,14 @@ describe('sessionReducer()', function() {
 
         describe(`${GET_PROMOTIONS}_FULFILLED`, function() {
             beforeEach(function() {
-                this.promotions = Array.apply([], new Array(3)).map(() => `pro-${createUuid()}`);
+                this.promotions = Array.apply([], new Array(3)).map(() => ({ id: `pro-${createUuid()}` }));
 
                 newState = sessionReducer(state, createAction(`${GET_PROMOTIONS}_FULFILLED`)(this.promotions));
             });
 
             it('should update the promotions', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    promotions: this.promotions
+                    promotions: this.promotions.map(promotion => promotion.id)
                 }));
             });
         });
@@ -122,14 +122,14 @@ describe('sessionReducer()', function() {
 
         describe(`${GET_PAYMENT_PLAN}_FULFILLED`, function() {
             beforeEach(function() {
-                this.paymentPlanId = `pp-${createUuid()}`;
+                this.paymentPlan = { id: `pp-${createUuid()}` };
 
-                newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)([this.paymentPlanId]));
+                newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)([this.paymentPlan]));
             });
 
             it('should update the paymentPlan', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentPlan: this.paymentPlanId
+                    paymentPlan: this.paymentPlan.id
                 }));
             });
 
@@ -168,14 +168,14 @@ describe('sessionReducer()', function() {
 
         describe(`${GET_ORG}_FULFILLED`, function() {
             beforeEach(function() {
-                this.orgId = `o-${createUuid()}`;
+                this.org = { id: `o-${createUuid()}` };
 
-                newState = sessionReducer(state, createAction(`${GET_ORG}_FULFILLED`)([this.orgId]));
+                newState = sessionReducer(state, createAction(`${GET_ORG}_FULFILLED`)([this.org]));
             });
 
             it('should add the org to the state', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    org: this.orgId
+                    org: this.org.id
                 }));
             });
         });
@@ -184,14 +184,14 @@ describe('sessionReducer()', function() {
             let campaigns;
 
             beforeEach(function() {
-                campaigns = [`cam-${createUuid()}`];
+                campaigns = [{ id: `cam-${createUuid()}` }];
 
-                newState = sessionReducer(state, createAction(campaign.list.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.list.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
             });
 
             it('should update the campaigns', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns
+                    campaigns: campaigns.map(campaign => campaign.id)
                 }));
             });
         });
@@ -200,14 +200,14 @@ describe('sessionReducer()', function() {
             let campaigns;
 
             beforeEach(function() {
-                campaigns = [`cam-${createUuid()}`];
+                campaigns = [{ id: `cam-${createUuid()}` }];
 
-                newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.create.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
             });
 
             it('should add the campaign', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: state.campaigns.concat(campaigns)
+                    campaigns: state.campaigns.concat(campaigns.map(campaign => campaign.id))
                 }));
             });
 
@@ -215,12 +215,12 @@ describe('sessionReducer()', function() {
                 beforeEach(function() {
                     state.campaigns = null;
 
-                    newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+                    newState = sessionReducer(state, createAction(campaign.create.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
                 });
 
                 it('should update the campaigns', function() {
                     expect(newState).toEqual(assign({}, state, {
-                        campaigns
+                        campaigns: campaigns.map(campaign => campaign.id)
                     }));
                 });
             });
@@ -232,7 +232,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 campaigns = [state.campaigns[4]];
 
-                newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.remove.SUCCESS, null, () => ({ ids: campaigns }))(null));
             });
 
             it('should remove the campaign', function() {
@@ -245,7 +245,7 @@ describe('sessionReducer()', function() {
                 beforeEach(function() {
                     state.campaigns = null;
 
-                    newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                    newState = sessionReducer(state, createAction(campaign.remove.SUCCESS, null, () => ({ ids: campaigns }))(null));
                 });
 
                 it('should do nothing', function() {
@@ -258,14 +258,14 @@ describe('sessionReducer()', function() {
             let campaign;
 
             beforeEach(function() {
-                campaign = state.campaigns[3];
+                campaign = { id: state.campaigns[3] };
 
                 newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
             });
 
             it('should remove the campaign from the session', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: state.campaigns.filter(id => id !== campaign)
+                    campaigns: state.campaigns.filter(id => id !== campaign.id)
                 }));
             });
 
@@ -286,14 +286,14 @@ describe('sessionReducer()', function() {
             let payments;
 
             beforeEach(function() {
-                payments = Array.apply([], new Array(7)).map(() => createUuid());
+                payments = Array.apply([], new Array(7)).map(() => ({ id: createUuid() }));
 
-                newState = sessionReducer(state, createAction(payment.list.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.list.SUCCESS, null, () => ({ ids: payments.map(payment => payment.id) }))(payments));
             });
 
             it('should update the payments', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    payments
+                    payments: payments.map(payment => payment.id)
                 }));
             });
         });
@@ -302,14 +302,14 @@ describe('sessionReducer()', function() {
             let payments;
 
             beforeEach(function() {
-                payments = [createUuid()];
+                payments = [{ id: createUuid() }];
 
-                newState = sessionReducer(state, createAction(payment.create.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.create.SUCCESS, null, () => ({ ids: payments.map(payment => payment.id) }))(payments));
             });
 
             it('should add the item to the payments', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    payments: state.payments.concat(payments)
+                    payments: state.payments.concat(payments[0].id)
                 }));
             });
         });
@@ -320,7 +320,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 payments = [state.payments[1]];
 
-                newState = sessionReducer(state, createAction(payment.remove.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.remove.SUCCESS, null, () => ({ ids: payments }))(null));
             });
 
             it('should remove the items from its list', function() {
@@ -334,14 +334,14 @@ describe('sessionReducer()', function() {
             let paymentMethods;
 
             beforeEach(function() {
-                paymentMethods = Array.apply([], new Array(3)).map(() => createUuid());
+                paymentMethods = Array.apply([], new Array(3)).map(() => ({ token: createUuid() }));
 
-                newState = sessionReducer(state, createAction(paymentMethod.list.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.list.SUCCESS, null, () => ({ ids: paymentMethods.map(method => method.token) }))(paymentMethods));
             });
 
             it('should update the paymentMethods', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentMethods
+                    paymentMethods: paymentMethods.map(method => method.token)
                 }));
             });
         });
@@ -350,14 +350,14 @@ describe('sessionReducer()', function() {
             let paymentMethods;
 
             beforeEach(function() {
-                paymentMethods = [createUuid()];
+                paymentMethods = [{ token: createUuid() }];
 
-                newState = sessionReducer(state, createAction(paymentMethod.create.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.create.SUCCESS, null, () => ({ ids: paymentMethods.map(method => method.token) }))(paymentMethods));
             });
 
             it('should add the item to the paymentMethods', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentMethods: state.paymentMethods.concat(paymentMethods)
+                    paymentMethods: state.paymentMethods.concat(paymentMethods.map(method => method.token))
                 }));
             });
         });
@@ -368,7 +368,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 paymentMethods = [state.paymentMethods[1]];
 
-                newState = sessionReducer(state, createAction(paymentMethod.remove.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.remove.SUCCESS, null, () => ({ ids: paymentMethods }))(null));
             });
 
             it('should remove the paymentMethod from its list', function() {

@@ -10,8 +10,8 @@ function prefix(type) {
 export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(() => dispatch => dispatch(createAction(LOAD_PAGE_DATA)(
     Promise.resolve().then(() => (
-        dispatch(campaigns.list()).then(ids => (
-            Promise.all(ids.map(id => dispatch(getCampaignAnalytics(id))))
+        dispatch(campaigns.list()).then(camps => (
+            Promise.all(camps.map(campaign => dispatch(getCampaignAnalytics(campaign.id))))
         ))
     )).then(() => undefined)
 )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));

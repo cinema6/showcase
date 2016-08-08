@@ -174,12 +174,12 @@ describe('product wizard actions', function() {
 
             describe('when the campaign is updated', function() {
                 beforeEach(function(done) {
-                    dispatchDeferred.resolve([id]);
+                    dispatchDeferred.resolve([campaign.update.calls.mostRecent().args[0].data]);
                     setTimeout(done);
                 });
 
                 it('should go to the product page', function() {
-                    expect(dispatch).toHaveBeenCalledWith(push(`/dashboard/campaigns/${id}`));
+                    expect(dispatch).toHaveBeenCalledWith(push(`/dashboard/campaigns/${camp.id}`));
                 });
 
                 it('should show a notification', function() {
@@ -472,33 +472,33 @@ describe('product wizard actions', function() {
                 });
 
                 describe('when the advertiser is fetched', function() {
-                    let advertiserID;
+                    let advertiser;
 
                     beforeEach(function(done) {
-                        advertiserID = `a-${createUuid()}`;
-                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([advertiserID]);
+                        advertiser = { id: `a-${createUuid()}` };
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([advertiser]);
                         dispatch.calls.reset();
 
                         setTimeout(done);
                     });
 
                     it('should create a campaign', function() {
-                        expect(dispatch).toHaveBeenCalledWith(campaign.create({ data: campaignFromData({ productData, targeting }, { advertiserId: advertiserID }) }));
+                        expect(dispatch).toHaveBeenCalledWith(campaign.create({ data: campaignFromData({ productData, targeting }, { advertiserId: advertiser.id }) }));
                     });
 
                     describe('when the campaign has been created', function() {
-                        let id;
+                        let campaign;
 
                         beforeEach(function(done) {
-                            id = `cam-${createUuid()}`;
-                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([id]);
+                            campaign = { id: `cam-${createUuid()}` };
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([campaign]);
 
                             dispatch.calls.reset();
                             setTimeout(done);
                         });
 
                         it('should redirect to the product page', function() {
-                            expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}`));
+                            expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${campaign.id}`));
                         });
 
                         it('should show a success notification', function() {
@@ -506,7 +506,7 @@ describe('product wizard actions', function() {
                         });
 
                         it('should fulfill the promise', function() {
-                            expect(success).toHaveBeenCalledWith([id]);
+                            expect(success).toHaveBeenCalledWith([campaign]);
                         });
                     });
 
@@ -985,7 +985,7 @@ describe('product wizard actions', function() {
                     });
 
                     this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
-                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                     setTimeout(done);
                 });
 
@@ -1049,14 +1049,14 @@ describe('product wizard actions', function() {
                         })
                     });
 
-                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
                     setTimeout(done);
                 });
 
                 describe('and the org has no payment plan', function() {
                     beforeEach(function(done) {
                         delete this.org.paymentPlanId;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1102,7 +1102,7 @@ describe('product wizard actions', function() {
                                 })
                             });
                             this.getState.and.returnValue(this.state);
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign.id]);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign]);
                             setTimeout(done);
                         });
 
@@ -1116,7 +1116,7 @@ describe('product wizard actions', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanStart = moment().add(2, 'days').format();
 
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1162,7 +1162,7 @@ describe('product wizard actions', function() {
                                 })
                             });
                             this.getState.and.returnValue(this.state);
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign.id]);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign]);
                             setTimeout(done);
                         });
 
@@ -1176,7 +1176,7 @@ describe('product wizard actions', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanStart = moment().subtract(2, 'days').format();
 
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1245,8 +1245,8 @@ describe('product wizard actions', function() {
                         })
                     });
 
-                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
-                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                     setTimeout(done);
                 });
 

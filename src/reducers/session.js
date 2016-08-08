@@ -42,53 +42,53 @@ export default handleActions({
     [STATUS_CHECK_SUCCESS]: addUserToSession,
 
     [`${GET_PROMOTIONS}_FULFILLED`]: (state, { payload: promotions }) => assign({}, state, {
-        promotions,
+        promotions: promotions.map(promotion => promotion.id),
     }),
 
     [`${GET_BILLING_PERIOD}_FULFILLED`]: (state, { payload: billingPeriod }) => assign({}, state, {
         billingPeriod,
     }),
     [`${GET_PAYMENT_PLAN}_FULFILLED`]: (state, { payload }) => assign({}, state, {
-        paymentPlan: (payload || null) && payload[0],
+        paymentPlan: (payload || null) && payload[0].id,
     }),
     [CHANGE_PAYMENT_PLAN_SUCCESS]: (state, { payload: { paymentPlanId } }) => assign({}, state, {
         paymentPlan: paymentPlanId,
     }),
-    [`${GET_ORG}_FULFILLED`]: (state, { payload: [orgId] }) => assign({}, state, {
-        org: orgId,
+    [`${GET_ORG}_FULFILLED`]: (state, { payload: [org] }) => assign({}, state, {
+        org: org.id,
     }),
 
-    [payment.list.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
-        payments,
+    [payment.list.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        payments: ids,
     }),
-    [payment.create.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
-        payments: state.payments.concat(payments),
+    [payment.create.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        payments: state.payments.concat(ids),
     }),
-    [payment.remove.SUCCESS]: (state, { payload: payments }) => assign({}, state, {
-        payments: reject(state.payments, id => includes(payments, id)),
-    }),
-
-    [paymentMethod.list.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
-        paymentMethods,
-    }),
-    [paymentMethod.create.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
-        paymentMethods: state.paymentMethods.concat(paymentMethods),
-    }),
-    [paymentMethod.remove.SUCCESS]: (state, { payload: paymentMethods }) => assign({}, state, {
-        paymentMethods: reject(state.paymentMethods, id => includes(paymentMethods, id)),
+    [payment.remove.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        payments: reject(state.payments, id => includes(ids, id)),
     }),
 
-    [campaign.list.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
-        campaigns,
+    [paymentMethod.list.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        paymentMethods: ids,
     }),
-    [campaign.create.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
-        campaigns: (state.campaigns || []).concat(campaigns),
+    [paymentMethod.create.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        paymentMethods: state.paymentMethods.concat(ids),
     }),
-    [campaign.remove.SUCCESS]: (state, { payload: campaigns }) => assign({}, state, {
-        campaigns: state.campaigns && reject(state.campaigns, id => includes(campaigns, id)),
+    [paymentMethod.remove.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        paymentMethods: reject(state.paymentMethods, id => includes(ids, id)),
     }),
-    [`${CANCEL_CAMPAIGN}_FULFILLED`]: (state, { payload: [campaignId] }) => assign({}, state, {
-        campaigns: state.campaigns && reject(state.campaigns, id => id === campaignId),
+
+    [campaign.list.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        campaigns: ids,
+    }),
+    [campaign.create.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        campaigns: (state.campaigns || []).concat(ids),
+    }),
+    [campaign.remove.SUCCESS]: (state, { meta: { ids } }) => assign({}, state, {
+        campaigns: state.campaigns && reject(state.campaigns, id => includes(ids, id)),
+    }),
+    [`${CANCEL_CAMPAIGN}_FULFILLED`]: (state, { payload: [camp] }) => assign({}, state, {
+        campaigns: state.campaigns && reject(state.campaigns, id => id === camp.id),
     }),
 
     [LOGOUT_SUCCESS]: () => DEFAULT_STATE,

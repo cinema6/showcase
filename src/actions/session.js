@@ -14,9 +14,13 @@ export const GET_CAMPAIGNS = prefix('GET_CAMPAIGNS');
 export const getCampaigns = createThunk(() => (
     function thunk(dispatch, getState) {
         return dispatch(createAction(GET_CAMPAIGNS)(
-            Promise.resolve().then(() => (
-                getState().session.campaigns || dispatch(campaign.list())
-            ))
+            Promise.resolve().then(() => {
+                const state = getState();
+                const campaignIds = state.session.campaigns;
+
+                return (campaignIds && campaignIds.map(id => state.db.campaign[id])) ||
+                    dispatch(campaign.list());
+            })
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     }
 ));
@@ -28,7 +32,7 @@ export const getOrg = createThunk(() => (dispatch, getState) => dispatch(createA
         const user = state.db.user[state.session.user];
         const org = state.db.org[user.org];
 
-        return (org && [org.id]) || dispatch(orgs.get({ id: user.org }));
+        return (org && [org]) || dispatch(orgs.get({ id: user.org }));
     })
 )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));
 
@@ -37,10 +41,15 @@ export const getPromotions = createThunk(() => (dispatch, getState) => (
     dispatch(createAction(GET_PROMOTIONS)(Promise.resolve().then(() => {
         const state = getState();
         const user = state.db.user[state.session.user];
+        const promotionIds = state.session.promotions;
 
-        return state.session.promotions || (!user.promotion && []) || (dispatch(promotions.get({
-            id: user.promotion,
-        })));
+        return (
+            (promotionIds && promotionIds.map(id => state.db.promotion[id])) ||
+            (!user.promotion && []) ||
+            dispatch(promotions.get({
+                id: user.promotion,
+            }))
+        );
     }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));
 
@@ -63,9 +72,7 @@ export const getPaymentPlan = createThunk(() => (dispatch, getState) => (
         const state = getState();
         const paymentPlan = state.db.paymentPlan[state.session.paymentPlan];
 
-        return (paymentPlan && [paymentPlan.id]) || dispatch(getOrg()).then(([orgId]) => {
-            const org = getState().db.org[orgId];
-
+        return (paymentPlan && [paymentPlan]) || dispatch(getOrg()).then(([org]) => {
             if (!org.paymentPlanId) { return null; }
 
             return dispatch(paymentPlans.get({ id: org.paymentPlanId }));

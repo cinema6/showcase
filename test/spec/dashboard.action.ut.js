@@ -263,7 +263,7 @@ describe('dashboard actions', function() {
                         beforeEach(function(done) {
                             delete this.org.paymentPlanStart;
 
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                            this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                             setTimeout(done);
                         });
 
@@ -280,7 +280,7 @@ describe('dashboard actions', function() {
                         beforeEach(function(done) {
                             this.org.paymentPlanStart = moment().add(5, 'days').format();
 
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                            this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                             setTimeout(done);
                         });
 
@@ -297,7 +297,7 @@ describe('dashboard actions', function() {
                         beforeEach(function(done) {
                             this.org.paymentPlanStart = moment().subtract(5, 'days').format();
 
-                            this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                            this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                             setTimeout(done);
                         });
 
@@ -349,29 +349,25 @@ describe('dashboard actions', function() {
                 expect(this.dispatch).toHaveBeenCalledWith(createAction(LOAD_PAGE_DATA)(jasmine.any(Promise)));
             });
 
-            describe('should getCampaigns()', function() {
-                let campaign;
+            it('should getCampaigns()', function(){
+                expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+            });
+
+            describe('when the campaigns are fetched', function() {
                 beforeEach(function(done) {
-                    campaign = createUuid();
-                    this.campaigns = [campaign];
+                    this.campaigns = Array.apply([], new Array(5)).map(() => ({
+                        id: `cam-${createUuid()}`
+                    }));
+
                     this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
                     setTimeout(done);
+
+                    this.dispatch.calls.reset();
                 });
 
-                it('should getCampaigns()', function(){
-                    expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+                it('should getCampaignAnalytics()', function() {
+                    this.campaigns.forEach(campaign => expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign.id)));
                 });
-
-                describe('should then getCampaignAnalytics()', function(){
-                    beforeEach(function(done) {
-                        this.dispatch.getDeferred(getCampaignAnalytics(campaign)).resolve(undefined);
-                        setTimeout(done);
-                    });
-                    it('should succeed()', function(){
-                        expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign));
-                    });
-                });
-
             });
         });
     });

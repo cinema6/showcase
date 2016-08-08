@@ -33,14 +33,14 @@ describe('system reducer', () => {
             beforeEach(() => {
                 action = {
                     type: `${GET_PAYMENT_PLANS}_FULFILLED`,
-                    payload: Array.apply([], new Array(4)).map(() => createUuid())
+                    payload: Array.apply([], new Array(4)).map(() => ({ id: createUuid() }))
                 };
 
                 newState = reduce(state, action);
             });
 
             it('should set the paymentPlans', () => {
-                expect(newState).toEqual(assign({}, state, { paymentPlans: action.payload }));
+                expect(newState).toEqual(assign({}, state, { paymentPlans: action.payload.map(plan => plan.id) }));
             });
         });
     });

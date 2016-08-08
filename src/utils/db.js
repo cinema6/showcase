@@ -5,7 +5,6 @@ import {
     mapValues,
     keyBy,
     omit,
-    map,
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { format as formatURL } from 'url';
@@ -41,11 +40,16 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
         return getActionNames(method, type);
     }
 
-    function wrap(action, dispatch, factory) {
+    function wrap(
+        action,
+        dispatch,
+        factory,
+        meta = result => ({ ids: result.map(item => item[key]) })
+    ) {
         dispatch(createAction(action.START)());
 
         return factory().then(result => {
-            dispatch(createAction(action.SUCCESS)(result));
+            dispatch(createAction(action.SUCCESS, null, meta)(result));
 
             return result;
         }).catch(reason => {
@@ -64,7 +68,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                     query: queries.list,
                 }),
                 method: 'GET',
-            })).then(items => map(items, key)));
+            })));
         }
     ));
     assign(list, getTypedActionNames('LIST'));
@@ -78,7 +82,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                     query: queries.get,
                 }),
                 method: 'GET',
-            }, id)).then(item => [item[key]]));
+            }, id)).then(item => [item]));
         }
     ));
     assign(get, getTypedActionNames('GET'));
@@ -92,7 +96,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                     query: assign({}, queries.query, params),
                 }),
                 method: 'GET',
-            })).then(items => map(items, key)));
+            })));
         }
     ));
     assign(query, getTypedActionNames('QUERY'));
@@ -107,7 +111,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 }),
                 method: 'POST',
                 body: data,
-            })).then(item => [item[key]]));
+            })).then(item => [item]));
         }
     ));
     assign(create, getTypedActionNames('CREATE'));
@@ -138,7 +142,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                 }),
                 method: 'PUT',
                 body: assign({}, current, data),
-            }, id)).then(item => [item[key]]));
+            }, id)).then(item => [item]));
         };
     });
     assign(update, getTypedActionNames('UPDATE'));
@@ -152,7 +156,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                     query: queries.remove,
                 }),
                 method: 'DELETE',
-            }, id)).then(() => [id]));
+            }, id)).then(() => null), () => ({ ids: [id] }));
         }
     ));
     assign(remove, getTypedActionNames('REMOVE'));

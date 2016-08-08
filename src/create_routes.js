@@ -32,7 +32,6 @@ import { notify } from './actions/notification';
 
 export default function createRoutes(store) {
     const dispatch = action => store.dispatch(action);
-    const getState = () => store.getState();
 
     const checkAuth = createProtectedRouteEnterHandler({
         store,
@@ -46,10 +45,10 @@ export default function createRoutes(store) {
             dispatch(getCampaigns()),
             dispatch(getPaymentPlan()),
         ])
-        .then(([campaignIds, paymentPlanIds]) => {
-            const paymentPlan = paymentPlanIds && getState().db.paymentPlan[paymentPlanIds[0]];
+        .then(([campaigns, paymentPlans]) => {
+            const paymentPlan = paymentPlans && paymentPlans[0];
 
-            if (!paymentPlan || (campaignIds.length < 1 && paymentPlan.maxCampaigns > 0)) {
+            if (!paymentPlan || (campaigns.length < 1 && paymentPlan.maxCampaigns > 0)) {
                 replace('/dashboard/add-product');
             } else {
                 replace('/dashboard/campaigns');
@@ -70,10 +69,10 @@ export default function createRoutes(store) {
             dispatch(getCampaigns()),
             dispatch(getPaymentPlan()),
         ])
-        .then(([campaignIds, paymentPlanIds]) => {
-            const paymentPlan = paymentPlanIds && getState().db.paymentPlan[paymentPlanIds[0]];
+        .then(([campaigns, paymentPlans]) => {
+            const paymentPlan = paymentPlans && paymentPlans[0];
 
-            if (paymentPlan && paymentPlan.maxCampaigns <= campaignIds.length) {
+            if (paymentPlan && paymentPlan.maxCampaigns <= campaigns.length) {
                 replace('/dashboard/campaigns');
             }
         })

@@ -59,24 +59,26 @@ describe('campaign_list actions', () => {
             });
 
             describe('when the campaigns are fetched', () => {
-                let ids;
+                let campaigns;
 
                 beforeEach(done => {
-                    ids = Array.apply([], new Array(5)).map(() => `cam-${createUuid()}`);
+                    campaigns = Array.apply([], new Array(5)).map(() => ({
+                        id: `cam-${createUuid()}`
+                    }));
 
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(ids);
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(campaigns);
                     setTimeout(done);
 
                     dispatch.calls.reset();
                 });
 
                 afterEach(() => {
-                    ids = null;
+                    campaigns = null;
                 });
 
                 it('should get analytics for the campaigns', () => {
-                    expect(dispatch.calls.count()).toBe(ids.length);
-                    ids.forEach(id => expect(dispatch).toHaveBeenCalledWith(getCampaignAnalytics(id)));
+                    expect(dispatch.calls.count()).toBe(campaigns.length);
+                    campaigns.forEach(campaign => expect(dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign.id)));
                 });
 
                 describe('when the analytics are fetched', () => {

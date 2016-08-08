@@ -52,13 +52,12 @@ export const TOGGLE_NAV = prefix('TOGGLE_NAV');
 export const toggleNav = createAction(TOGGLE_NAV);
 
 export const CHECK_IF_PAYMENT_METHOD_REQUIRED = prefix('CHECK_IF_PAYMENT_METHOD_REQUIRED');
-export const checkIfPaymentMethodRequired = createThunk(() => (dispatch, getState) => (
+export const checkIfPaymentMethodRequired = createThunk(() => dispatch => (
     dispatch(createAction(CHECK_IF_PAYMENT_METHOD_REQUIRED)(
-        dispatch(paymentMethod.list()).then(([paymentMethodId]) => {
-            if (paymentMethodId) { return undefined; }
+        dispatch(paymentMethod.list()).then(([aPaymentMethod]) => {
+            if (aPaymentMethod) { return undefined; }
 
-            return dispatch(getOrg()).then(([orgId]) => {
-                const org = getState().db.org[orgId];
+            return dispatch(getOrg()).then(([org]) => {
                 const paymentPlanStart = org.paymentPlanStart && moment(org.paymentPlanStart);
                 const now = moment();
 
@@ -78,9 +77,9 @@ export const loadPageData = createThunk(() => (dispatch) =>
     dispatch(createAction(LOAD_PAGE_DATA)(
         Promise.all([
             dispatch(getCampaigns())
-            .then((campaigns) => Promise.all(campaigns.map((id) =>
-                (dispatch(getCampaignAnalytics(id)))
-            ))),
+            .then((campaigns) => Promise.all(campaigns.map(campaign => (
+                dispatch(getCampaignAnalytics(campaign.id))
+            )))),
             dispatch(getPaymentPlan()),
             dispatch(getBillingPeriod()),
         ])

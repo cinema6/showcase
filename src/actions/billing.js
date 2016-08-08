@@ -1,6 +1,6 @@
 import payment, { paymentMethod } from './payment';
 import { createAction } from 'redux-actions';
-import _, { find } from 'lodash';
+import { find } from 'lodash';
 import { createThunk } from '../middleware/fsa_thunk';
 import { getBillingPeriod, getPaymentPlan } from './session';
 import orgs, {
@@ -129,9 +129,8 @@ export const cancelSubscription = createThunk(() => (dispatch, getState) => disp
     createAction(CANCEL_SUBSCRIPTION)(Promise.resolve().then(() => {
         const user = getState().db.user[getState().session.user];
 
-        return dispatch(getPaymentPlans()).then(ids => {
-            const canceled = _(ids).map(id => getState().db.paymentPlan[id])
-                .find(plan => plan.price === 0);
+        return dispatch(getPaymentPlans()).then(paymentPlans => {
+            const canceled = find(paymentPlans, plan => plan.price === 0);
 
             return dispatch(changeOrgPaymentPlan({
                 orgId: user.org,

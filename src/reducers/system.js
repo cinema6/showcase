@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 };
 
 export default handleActions({
-    [`${GET_PAYMENT_PLANS}_FULFILLED`]: (state, { payload: paymentPlanIds }) => assign({}, state, {
-        paymentPlans: paymentPlanIds,
+    [`${GET_PAYMENT_PLANS}_FULFILLED`]: (state, { payload: paymentPlans }) => assign({}, state, {
+        paymentPlans: paymentPlans.map(plan => plan.id),
     }),
 }, INITIAL_STATE);

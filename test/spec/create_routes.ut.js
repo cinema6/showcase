@@ -164,7 +164,7 @@ describe('createRoutes(store)', function() {
                                 };
                                 state.db.paymentPlan[paymentPlan.id] = paymentPlan;
 
-                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan.id]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
                                 setTimeout(done);
                             });
 
@@ -216,7 +216,7 @@ describe('createRoutes(store)', function() {
                                 state.db.paymentPlan[paymentPlan.id] = paymentPlan;
 
                                 dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([]);
-                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan.id]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
                                 setTimeout(done);
                             });
 
@@ -329,7 +329,7 @@ describe('createRoutes(store)', function() {
                                 };
                                 state.db.paymentPlan[paymentPlan.id] = paymentPlan;
 
-                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan.id]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
                                 setTimeout(done);
                             });
 
