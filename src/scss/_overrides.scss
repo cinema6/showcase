@@ -893,62 +893,83 @@
             }
     }
     /***rotate preview***/
-    .demo-wrap.demo-landscape {
-        width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        float: none;
-        display: block;
+    @media (max-width: 767px) {
+        .demo-landscape .phone-frame {
+            float: none;            
+        }
     }
-        .demo-wrap.demo-landscape .phone-wrap {
-            width: 750px;
-            height: 400px;
-        }
-        .demo-wrap.demo-landscape .phone-frame {
-            background: linear-gradient(to bottom, #bbb 0%, #FFF 5%, #eee 95%, #bbb 100%);
-        }
-        .demo-landscape .phone-frame iframe {
-            margin-top: 3.5%;
-            border: 1px solid #ccc !important;
-            height: 84% !important;
-            width: 85% !important;
-            left: 5% !important;
-        }
-        .demo-landscape .phone-frame:before {
-            width: 10%;
-            height: 10px;
-            border-radius: 5px;
-            background: #ddd;
-            content: '';
-            position: absolute;
-            top: 48%;
-            left: -2%;
-            border: 1px solid #ccc;
-            box-shadow: inset 0 0 3px #bbb;
-            transform: rotate(90deg);
-        }
-        .demo-landscape .phone-frame:after {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #ddd;
-            border: 1px solid #ccc;
-            content: '';
-            position: absolute;
-            top: 45%;
-            right: 2%;
-            left: auto;
-            box-shadow: inset 0 0 3px #bbb;
-        }
-        .demo-wrap.demo-landscape .phone-wrap p {
-            bottom: -10px;
-        }
-        .demo-wrap.demo-landscape + div.app-details {
-            width: 600px;
+    @media (min-width: 768px) and (orientation: landscape)  {
+        .demo-wrap.demo-landscape {
+            width: 800px;
             margin-left: auto;
             margin-right: auto;
+            float: none;
             display: block;
         }
+            .demo-wrap.demo-landscape .phone-wrap {
+                width: 750px;
+                height: 400px;
+            }
+            .demo-wrap.demo-landscape .phone-frame {
+                background: linear-gradient(to bottom, #bbb 0%, #FFF 5%, #eee 95%, #bbb 100%);
+            }
+            .demo-landscape .phone-frame iframe {
+                margin-top: 3.5%;
+                border: 1px solid #ccc !important;
+                height: 84% !important;
+                width: 85% !important;
+                left: 5% !important;
+            }
+            .demo-landscape .phone-frame:before {
+                width: 10%;
+                height: 10px;
+                border-radius: 5px;
+                background: #ddd;
+                content: '';
+                position: absolute;
+                top: 48%;
+                left: -2%;
+                border: 1px solid #ccc;
+                box-shadow: inset 0 0 3px #bbb;
+                transform: rotate(90deg);
+            }
+            .demo-landscape .phone-frame:after {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #ddd;
+                border: 1px solid #ccc;
+                content: '';
+                position: absolute;
+                top: 45%;
+                right: 2%;
+                left: auto;
+                box-shadow: inset 0 0 3px #bbb;
+            }
+            .demo-wrap.demo-landscape .phone-wrap p {
+                bottom: -10px;
+            }
+            .demo-wrap.demo-landscape + div.app-details {
+                width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            /***justified sized targeting buttons**/
+            .demo-wrap.demo-landscape + div.app-details .select-target-options {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: separate;
+            }
+            .demo-wrap.demo-landscape + div.app-details .select-target-options .btn {
+                float: none;
+                display: table-cell;
+                width: 1%;
+            }
+            .demo-wrap.demo-landscape + div.app-details .btn-danger {
+                width: 100%;
+            }
+    }
     .app-preview-modal .create-app-campaign {
         width: 100%;
         padding: 0;
