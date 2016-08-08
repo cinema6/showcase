@@ -107,7 +107,7 @@ class Dashboard extends Component {
                         <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-archive" /> Archive</Link>
+                        <Link to="/dashboard/archive"><i className="fa fa-archive" /> Archive</Link>
                         {/* link to archive*/}
                     </li>
                     <li className="menu-item">
@@ -142,7 +142,7 @@ class Dashboard extends Component {
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-archive" />
+                        <Link to="/dashboard/archive"><i className="fa fa-archive" />
                             <span className="menu-item-label">Archive</span>
                             {/* link to archive*/}
                         </Link>

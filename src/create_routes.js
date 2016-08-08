@@ -17,6 +17,7 @@ import DashboardCampaignDetail from './containers/Dashboard/CampaignDetail';
 import DashboardAddProduct from './containers/Dashboard/AddProduct';
 import DashboardEditProduct from './containers/Dashboard/EditProduct';
 import DashboardCampaignList from './containers/Dashboard/CampaignList';
+import DashboardArchive from './containers/Dashboard/Archive';
 import NotFound from './components/NotFound';
 import {
     createProtectedRouteEnterHandler,
@@ -110,6 +111,11 @@ export default function createRoutes(store) {
                     component={DashboardCampaignDetail}
                 />
                 <Route path="campaigns/:campaignId/edit" component={DashboardEditProduct} />
+
+                <Route
+                    path="archive"
+                    component={DashboardArchive}
+                />
 
                 <Route path="account" component={Account}>
                     <IndexRedirect to="profile" />
