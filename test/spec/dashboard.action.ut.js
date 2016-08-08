@@ -5,7 +5,9 @@ import {
     toggleNav,
     checkIfPaymentMethodRequired,
     loadPageData,
-    addApp
+    addApp,
+    checkForSlots,
+    promptUpgrade
 } from '../../src/actions/dashboard';
 import {
     getBillingPeriod,
@@ -25,7 +27,9 @@ import {
     TOGGLE_NAV,
     CHECK_IF_PAYMENT_METHOD_REQUIRED,
     LOAD_PAGE_DATA,
-    ADD_APP
+    ADD_APP,
+    CHECK_FOR_SLOTS,
+    PROMPT_UPGRADE
 } from '../../src/actions/dashboard';
 import { replace, push } from 'react-router-redux';
 import { getThunk } from '../../src/middleware/fsa_thunk';
@@ -391,6 +395,61 @@ describe('dashboard actions', function() {
 
         describe('when executed', function() {
             beforeEach(function(done) {
+                this.dispatch = dispatch();
+                this.getState = jasmine.createSpy('getState()').and.callFake(() => this.state);
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+                setTimeout(done);
+            });
+
+            it('should dispatch ADD_APP', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(ADD_APP)(jasmine.any(Promise)));
+            });
+
+            it('should dispatch checkForSlots()', function(){
+                expect(this.dispatch).toHaveBeenCalledWith(checkForSlots());
+            });
+
+            describe('if no more free apps are available', function(){
+                beforeEach(function(done) {
+                    this.dispatch.getDeferred(checkForSlots()).resolve({value: false});
+                    setTimeout(done);
+                });
+                it('should dispatch promptUpgrade()', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(promptUpgrade());
+                });
+
+                it('shouldn\'t dispatch a push to /dashboard/add-product', function() {
+                    expect(this.dispatch).not.toHaveBeenCalledWith(push('/dashboard/add-product'));
+                });
+            });
+            describe('if free apps are available', function(){
+                beforeEach(function(done) {
+                    this.dispatch.calls.reset();
+                    this.dispatch.getDeferred(checkForSlots()).resolve({value: true});
+                    setTimeout(done);
+                });
+
+                it('should dispatch a push to /dashboard/add-product', function() {
+                    expect(this.dispatch).toHaveBeenCalledWith(push('/dashboard/add-product'));
+                });
+            });
+        });
+    });
+    describe('checkForSlots()', function() {
+
+        beforeEach(function() {
+            this.thunk = getThunk(checkForSlots());
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
                 this.planId = createUuid();
                 this.state = {
                     db: {
@@ -411,122 +470,150 @@ describe('dashboard actions', function() {
                 this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
                 setTimeout(done);
             });
-
-            it('should dispatch ADD_APP', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(createAction(ADD_APP)(jasmine.any(Promise)));
+            it('should dispatch CHECK_FOR_SLOTS', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(CHECK_FOR_SLOTS)(jasmine.any(Promise)));
             });
-
-            it('should dispatched getPaymentPlan()', function(){
+            it('should getPaymentPlan()', function(){
                 expect(this.dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
-
-            describe('getPaymentPlan()', function() {
+            describe('once getPaymentPlan() resolves', () => {
                 beforeEach(function(done) {
                     this.dispatch.getDeferred(getPaymentPlan()).resolve(this.planId);
                     setTimeout(done);
                 });
-
                 it('should getCampaigns()', function(){
                     expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
                 });
-
-                describe('after resolving', function(){
+                describe('once getCampaigns() resolves', function(){
                     beforeEach(function() {
                         let campaignId = createUuid();
                         this.campaigns = [campaignId];
+                        this.paymentPlan = this.state.db.paymentPlan[this.planId];
+
+                        this.appsAvailable = jasmine.createSpy().and.callFake( () => {
+                            if (this.campaigns.length >= this.paymentPlan.maxCampaigns) {
+                                return false;
+                            }
+                            return true;
+                        });
                     });
 
-                    describe('when no more free apps are available', function(){
+                    describe('if no more free apps are available', function(){
                         beforeEach(function(done) {
                             this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
                             setTimeout(done);
                         });
-                        it('should dispatch() an alert', function() {
-                            expect(this.dispatch).toHaveBeenCalledWith((function() {
-                                const action = showAlert({
-                                    title: jasmine.any(String),
-                                    description: jasmine.any(String),
-                                    buttons: [
-                                        {
-                                            text: jasmine.any(String),
-                                            onSelect: jasmine.any(Function)
-                                        },
-                                        {
-                                            text: jasmine.any(String),
-                                            type: jasmine.any(String),
-                                            onSelect: jasmine.any(Function)
-
-                                        }
-                                    ]
-                                });
-                                action.payload.id = jasmine.any(String);
-                                action.payload.buttons.forEach(button => button.id = jasmine.any(String));
-
-                                return action;
-                            })());
-                        });
-                        it('shouldn\'t dispatch a push to /dashboard/add-product', function() {
-                            expect(this.dispatch).not.toHaveBeenCalledWith(push('/dashboard/add-product'));
-                        });
-                        describe('when the user chooses', function() {
-                            let dismiss;
-                            let upgrade, noUpgrade;
-                            let success, failure;
-
-                            beforeEach(function() {
-                                alert = this.dispatch.calls.mostRecent().args[0].payload;
-                                dismiss = jasmine.createSpy('dismiss()').and.returnValue(Promise.resolve());
-                                noUpgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[0];
-                                upgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[1];
-
-                                success = jasmine.createSpy('success()');
-                                failure = jasmine.createSpy('failure()');
-                            });
-
-                            describe('not to upgrade', function() {
-                                beforeEach(function(done) {
-                                    noUpgrade.onSelect(dismiss).then(success, failure);
-                                    setTimeout(done);
-                                });
-
-                                it('should dismiss the alert', function() {
-                                    expect(dismiss).toHaveBeenCalled();
-                                });
-                            });
-                            describe('to upgrade', function() {
-                                beforeEach(function(done) {
-                                    upgrade.onSelect(dismiss).then(success, failure);
-                                    setTimeout(done);
-                                });
-
-                                it('should push to dashboard/billing', function() {
-                                    expect(this.dispatch).toHaveBeenCalledWith(push('/dashboard/billing'));
-                                });
-                                it('should dismiss the alert', function() {
-                                    expect(dismiss).toHaveBeenCalled();
-                                });
-                                it('should dispatch planModal', function() {
-                                    expect(this.dispatch).toHaveBeenCalledWith(showPlanModal(true));
-                                });
-                            });
+                        it('should return false', () => {
+                            expect(this.appsAvailable).toBeFalsy();
                         });
                     });
-                    describe('when there are apps are available', function(){
+                    describe('if free apps are available', function(){
                         beforeEach(function(done) {
                             this.dispatch.calls.reset();
                             this.campaigns.pop();
                             this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
+
                             setTimeout(done);
                         });
-                        it('should dispatch a push to /dashboard/add-product', function() {
-                            expect(this.dispatch).toHaveBeenCalledWith(push('/dashboard/add-product'));
+                        it('should return true', function() {
+                            expect(this.appsAvailable).toBeTruthy();
                         });
-
                     });
-
                 });
-
             });
         });
     });
+
+    describe('promptUpgrade()', function() {
+        beforeEach(function() {
+            this.thunk = getThunk(promptUpgrade());
+        });
+
+        it('should return a thunk', function() {
+            expect(this.thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', function() {
+            beforeEach(function(done) {
+                this.dispatch = dispatch();
+
+                this.success = jasmine.createSpy('success()');
+                this.failure = jasmine.createSpy('failure()');
+
+                this.getState = jasmine.createSpy('getState()').and.callFake(() => this.state);
+                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                setTimeout(done);
+            });
+            it('should dispatch PROMPT_UPGRADE', function() {
+                expect(this.dispatch).toHaveBeenCalledWith(createAction(PROMPT_UPGRADE)(jasmine.any(Promise)));
+            });
+
+            it('should showAlert()', function() {
+                expect(this.dispatch).toHaveBeenCalledWith((function() {
+                    const action = showAlert({
+                        title: jasmine.any(String),
+                        description: jasmine.any(String),
+                        buttons: [
+                            {
+                                text: jasmine.any(String),
+                                onSelect: jasmine.any(Function)
+                            },
+                            {
+                                text: jasmine.any(String),
+                                type: jasmine.any(String),
+                                onSelect: jasmine.any(Function)
+
+                            }
+                        ]
+                    });
+                    action.payload.id = jasmine.any(String);
+                    action.payload.buttons.forEach(button => button.id = jasmine.any(String));
+
+                    return action;
+                })());
+            });
+            describe('when the user chooses', function() {
+                let dismiss;
+                let upgrade, noUpgrade;
+                let success, failure;
+
+                beforeEach(function() {
+                    dismiss = jasmine.createSpy('dismiss()').and.returnValue(Promise.resolve());
+                    noUpgrade = this.dispatch.calls.mostRecent().args[0].payload._result.buttons[0];
+                    upgrade = this.dispatch.calls.mostRecent().args[0].payload._result.buttons[1];
+
+                    success = jasmine.createSpy('success()');
+                    failure = jasmine.createSpy('failure()');
+                });
+
+                describe('not to upgrade', function() {
+                    beforeEach(function(done) {
+                        noUpgrade.onSelect(dismiss).then(success, failure);
+                        setTimeout(done);
+                    });
+
+                    it('should dismiss the alert', function() {
+                        expect(dismiss).toHaveBeenCalled();
+                    });
+                });
+                describe('to upgrade', function() {
+                    beforeEach(function(done) {
+                        upgrade.onSelect(dismiss).then(success, failure);
+                        setTimeout(done);
+                    });
+
+                    it('should push to dashboard/billing', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(push('/dashboard/billing'));
+                    });
+                    it('should dismiss the alert', function() {
+                        expect(dismiss).toHaveBeenCalled();
+                    });
+                    it('should dispatch planModal', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(showPlanModal(true));
+                    });
+                });
+            });
+        });
+    });
+
 });

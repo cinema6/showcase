@@ -96,7 +96,7 @@ export const checkForSlots = createThunk(() => (dispatch, getState) =>
             dispatch(getCampaigns()).then(campaigns => {
                 const state = getState();
                 const paymentPlan = state.db.paymentPlan[id];
-                if (campaigns.length === paymentPlan.maxCampaigns) {
+                if (campaigns.length >= paymentPlan.maxCampaigns) {
                     return false;
                 }
                 return true;
@@ -142,8 +142,8 @@ export const ADD_APP = prefix('ADD_APP');
 export const addApp = createThunk(() => (dispatch) =>
     dispatch(createAction(ADD_APP)(
         dispatch(checkForSlots()).then(slotsAvailable => {
-            if (!slotsAvailable) {
-                return dispatch(promptUpgrade);
+            if (!slotsAvailable.value) {
+                return dispatch(promptUpgrade());
             }
             return dispatch(push('/dashboard/add-product'));
         })
