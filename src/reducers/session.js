@@ -7,6 +7,7 @@ import {
 import payment, { paymentMethod } from '../actions/payment';
 import campaign, {
     CANCEL as CANCEL_CAMPAIGN,
+    RESTORE as RESTORE_CAMPAIGN,
 } from '../actions/campaign';
 import {
     GET_PROMOTIONS,
@@ -92,6 +93,10 @@ export default handleActions({
     [`${CANCEL_CAMPAIGN}_FULFILLED`]: (state, { payload: [camp] }) => assign({}, state, {
         campaigns: state.campaigns && reject(state.campaigns, id => id === camp.id),
         archive: state.archive && state.archive.concat([camp.id]),
+    }),
+    [`${RESTORE_CAMPAIGN}_FULFILLED`]: (state, { payload: [camp] }) => assign({}, state, {
+        campaigns: state.campaigns && state.campaigns.concat([camp.id]),
+        archive: state.archive && state.archive.filter(id => id !== camp.id),
     }),
 
     [LOGOUT_SUCCESS]: () => DEFAULT_STATE,

@@ -6,7 +6,8 @@ import {
 } from '../../src/actions/auth';
 import payment, { paymentMethod } from '../../src/actions/payment';
 import campaign, {
-    CANCEL
+    CANCEL,
+    RESTORE
 } from '../../src/actions/campaign';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
@@ -285,6 +286,40 @@ describe('sessionReducer()', function() {
                 });
 
                 it('should do nothing', function() {
+                    expect(newState).toEqual(state);
+                });
+            });
+        });
+
+        describe(`${RESTORE}_FULFILLED`, () => {
+            let campaign;
+
+            beforeEach(() => {
+                campaign = { id: state.archive[2].id };
+
+                newState = sessionReducer(state, createAction(`${RESTORE}_FULFILLED`)([campaign]));
+            });
+
+            afterEach(() => {
+                campaign = null;
+            });
+
+            it('should move the campaign from the archive', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    campaigns: state.campaigns.concat([campaign.id]),
+                    archive: state.archive.filter(id => id !== campaign.id)
+                }));
+            });
+
+            describe('if there are no campaigns cached', function() {
+                beforeEach(() => {
+                    state.campaigns = null;
+                    state.archive = null;
+
+                    newState = sessionReducer(state, createAction(`${RESTORE}_FULFILLED`)([campaign]));
+                });
+
+                it('should do nothing', () => {
                     expect(newState).toEqual(state);
                 });
             });

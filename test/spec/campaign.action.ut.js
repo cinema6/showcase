@@ -1,16 +1,19 @@
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import {
-    CANCEL
+    CANCEL,
+    RESTORE
 } from '../../src/actions/campaign';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import * as stubs from '../helpers/stubs';
+import { createAction } from 'redux-actions';
 
 const proxyquire = require('proxyquire');
 
 describe('campaign actions', function() {
     let realCreateDbActions, createDbActions;
     let actions;
-    let campaign, cancel;
+    let campaign, cancel, restore;
 
     beforeEach(function() {
         realCreateDbActions = require('../../src/utils/db').createDbActions;
@@ -31,6 +34,7 @@ describe('campaign actions', function() {
         });
         campaign = actions.default;
         cancel = actions.cancel;
+        restore = actions.restore;
     });
 
     it('should create db actions for campaigns', function() {
@@ -124,6 +128,101 @@ describe('campaign actions', function() {
                 });
 
                 it('should reject with the reason', function() {
+                    expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+        });
+    });
+
+    describe('restore(id)', () => {
+        let id;
+        let thunk;
+
+        beforeEach(() => {
+            id = `cam-${createUuid()}`;
+            thunk = getThunk(restore(id));
+        });
+
+        afterEach(() => {
+            id = null;
+            thunk = null;
+        });
+
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let dispatch;
+            let getState;
+
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                dispatch = stubs.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => ({}));
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            afterEach(() => {
+                dispatch = null;
+                getState = null;
+
+                success = null;
+                failure = null;
+            });
+
+            it('should dispatch RESTORE', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(RESTORE)(jasmine.any(Promise)));
+            });
+
+            it('should set the campaign to active', () => {
+                expect(dispatch).toHaveBeenCalledWith(campaign.update({ data: { id, status: 'active' } }));
+            });
+
+            describe('when the campaign has been made active', () => {
+                let campaign;
+
+                beforeEach(done => {
+                    campaign = {
+                        id,
+                        status: 'active'
+                    };
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([campaign]);
+                    setTimeout(done);
+                });
+
+                afterEach(() => {
+                    campaign = null;
+                });
+
+                it('should fulfill with the campaign', () => {
+                    expect(success).toHaveBeenCalledWith([campaign]);
+                });
+            });
+
+            describe('if the campaign cannot be made active', () => {
+                let reason;
+
+                beforeEach(done => {
+                    reason = new Error('Something went wrong!');
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    setTimeout(done);
+                });
+
+                afterEach(() => {
+                    reason = null;
+                });
+
+                it('should reject with the reason', () => {
                     expect(failure).toHaveBeenCalledWith(reason);
                 });
             });
