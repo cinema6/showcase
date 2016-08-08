@@ -203,6 +203,19 @@ describe('Dashboard', function() {
                 });
             });
         });
+        describe('Add New App', function() {
+            beforeEach(function() {
+                this.info = component.find('button.bg-danger');
+            });
+
+            it('should call AddApp() when clicked', function() {
+                const info = this.info;
+                
+                info.simulate('click');
+                expect(dashboardActions.addApp).toHaveBeenCalled();
+
+            });
+        });
 
         describe('dispatch props', function() {
             let dispatchDeferred;
@@ -222,16 +235,6 @@ describe('Dashboard', function() {
                     expect(dashboardActions.logoutUser).toHaveBeenCalledWith();
                     expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.logoutUser.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
-                });
-            });
-            describe('AddApp()', function() {
-                beforeEach(function() {
-                    this.result = component.props().addApp();
-                });
-                it('should dispatch the addApp action', function() {
-                    expect(dashboardActions.addApp).toHaveBeenCalledWith();
-                    expect(store.dispatch).toHaveBeenCalledWith(dashboardActions.addApp.calls.mostRecent().returnValue);
-                    expect(this.result).toBe(dispatchDeferred.promise);
                 });
             });
 
