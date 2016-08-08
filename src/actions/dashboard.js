@@ -88,44 +88,63 @@ export const loadPageData = createThunk(() => (dispatch) =>
     ))
 );
 
-export const ADD_APP = prefix('ADD_APP');
-export const addApp = createThunk(() => (dispatch, getState) =>
-    dispatch(createAction(ADD_APP)(
+export const CHECK_FOR_SLOTS = prefix('CHECK_FOR_SLOTS');
+export const checkForSlots = createThunk(() => (dispatch, getState) =>
+    dispatch(createAction(CHECK_FOR_SLOTS)(
         dispatch(getPaymentPlan()).then(id =>
             dispatch(getCampaigns()).then(campaigns => {
                 const state = getState();
                 const paymentPlan = state.db.paymentPlan[id];
                 if (campaigns.length === paymentPlan.maxCampaigns) {
-                    return dispatch(showAlert({
-                        title: 'Uh oh!',
-                        description: 'You have no unused apps remaining in your current plan. '
-                        + 'Would you like to upgrade your plan?',
-                        buttons: [
-                            {
-                                text: 'No thanks',
-                                onSelect: dismiss => dismiss(),
-                            },
-                            {
-                                text: 'Yes, upgrade my plan!',
-                                type: 'success',
-                                onSelect: dismiss => dispatch(push('/dashboard/billing'))
-                                .then(() => {
-                                    dismiss();
-                                    return dispatch(showPlanModal(true));
-                                }).catch(reason => {
-                                    dispatch(notify({
-                                        type: NOTIFICATION.DANGER,
-                                        message: `Unexpected Error:
-                                            ${reason.response || reason.message}`,
-                                        time: 10000,
-                                    }));
-                                }),
-                            },
-                        ],
-                    }));
+                    return false;
                 }
-                return dispatch(push('/dashboard/add-product'));
+                return true;
             })
         )
+    ))
+);
+
+export const PROMPT_UPGRADE = prefix('PROMPT_UPGRADE');
+export const promptUpgrade = createThunk(() => (dispatch) =>
+    dispatch(createAction(PROMPT_UPGRADE)(
+        dispatch(showAlert({
+            title: 'Uh oh!',
+            description: 'You have no unused apps remaining in your current plan. '
+            + 'Would you like to upgrade your plan?',
+            buttons: [
+                {
+                    text: 'No thanks',
+                    onSelect: dismiss => dismiss(),
+                },
+                {
+                    text: 'Yes, upgrade my plan!',
+                    type: 'success',
+                    onSelect: dismiss => dispatch(push('/dashboard/billing'))
+                    .then(() => {
+                        dismiss();
+                        return dispatch(showPlanModal(true));
+                    }).catch(reason => {
+                        dispatch(notify({
+                            type: NOTIFICATION.DANGER,
+                            message: `Unexpected Error:
+                                ${reason.response || reason.message}`,
+                            time: 10000,
+                        }));
+                    }),
+                },
+            ],
+        }))
+    ))
+);
+
+export const ADD_APP = prefix('ADD_APP');
+export const addApp = createThunk(() => (dispatch) =>
+    dispatch(createAction(ADD_APP)(
+        dispatch(checkForSlots()).then(slotsAvailable => {
+            if (!slotsAvailable) {
+                return dispatch(promptUpgrade);
+            }
+            return dispatch(push('/dashboard/add-product'));
+        })
     ))
 );
