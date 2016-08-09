@@ -26,10 +26,7 @@ import {
     SHOW_NAV,
     TOGGLE_NAV,
     CHECK_IF_PAYMENT_METHOD_REQUIRED,
-    LOAD_PAGE_DATA,
-    ADD_APP,
-    CHECK_FOR_SLOTS,
-    PROMPT_UPGRADE
+    LOAD_PAGE_DATA
 } from '../../src/actions/dashboard';
 import { replace, push } from 'react-router-redux';
 import { getThunk } from '../../src/middleware/fsa_thunk';
@@ -404,10 +401,6 @@ describe('dashboard actions', function() {
                 setTimeout(done);
             });
 
-            it('should dispatch ADD_APP', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(createAction(ADD_APP)(jasmine.any(Promise)));
-            });
-
             it('should dispatch checkForSlots()', function(){
                 expect(this.dispatch).toHaveBeenCalledWith(checkForSlots());
             });
@@ -470,9 +463,7 @@ describe('dashboard actions', function() {
                 this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
                 setTimeout(done);
             });
-            it('should dispatch CHECK_FOR_SLOTS', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(createAction(CHECK_FOR_SLOTS)(jasmine.any(Promise)));
-            });
+
             it('should getPaymentPlan()', function(){
                 expect(this.dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
@@ -544,9 +535,6 @@ describe('dashboard actions', function() {
                 this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
                 setTimeout(done);
             });
-            it('should dispatch PROMPT_UPGRADE', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(createAction(PROMPT_UPGRADE)(jasmine.any(Promise)));
-            });
 
             it('should showAlert()', function() {
                 expect(this.dispatch).toHaveBeenCalledWith((function() {
@@ -579,8 +567,8 @@ describe('dashboard actions', function() {
 
                 beforeEach(function() {
                     dismiss = jasmine.createSpy('dismiss()').and.returnValue(Promise.resolve());
-                    noUpgrade = this.dispatch.calls.mostRecent().args[0].payload._result.buttons[0];
-                    upgrade = this.dispatch.calls.mostRecent().args[0].payload._result.buttons[1];
+                    noUpgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[0];
+                    upgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[1];
 
                     success = jasmine.createSpy('success()');
                     failure = jasmine.createSpy('failure()');
