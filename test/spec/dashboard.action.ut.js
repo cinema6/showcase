@@ -403,7 +403,7 @@ describe('dashboard actions', function() {
 
             describe('if no more free apps are available', function(){
                 beforeEach(function(done) {
-                    this.dispatch.getDeferred(checkForSlots()).resolve({value: false});
+                    this.dispatch.getDeferred(checkForSlots()).resolve(false);
                     setTimeout(done);
                 });
                 it('should dispatch promptUpgrade()', function() {
@@ -417,7 +417,7 @@ describe('dashboard actions', function() {
             describe('if free apps are available', function(){
                 beforeEach(function(done) {
                     this.dispatch.calls.reset();
-                    this.dispatch.getDeferred(checkForSlots()).resolve({value: true});
+                    this.dispatch.getDeferred(checkForSlots()).resolve(true);
                     setTimeout(done);
                 });
 
