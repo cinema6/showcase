@@ -88,23 +88,19 @@ export const loadPageData = createThunk(() => (dispatch) =>
     ))
 );
 
-export const checkForSlots = createThunk(() => (dispatch, getState) => {
-    let id;
-    let campaigns;
-    return Promise.all([
+export const checkForSlots = createThunk(() => (dispatch, getState) =>
+    Promise.all([
         dispatch(getPaymentPlan()),
         dispatch(getCampaigns()),
-    ]).then((results) => {
-        [[id], campaigns] = results;
-
+    ]).then(([[id], campaigns]) => {
         const state = getState();
         const paymentPlan = state.db.paymentPlan[id];
         if (campaigns.length >= paymentPlan.maxCampaigns) {
             return false;
         }
         return true;
-    });
-});
+    })
+);
 
 export const promptUpgrade = createThunk(() => (dispatch) =>
     dispatch(showAlert({
