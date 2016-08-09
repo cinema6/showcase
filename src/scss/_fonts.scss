@@ -1,0 +1,11 @@
+@import "compass/css3/font-face";
+
+@include font-face(
+    "BLOKKNeue",
+    font-files(
+        "BLOKKNeue/BLOKKNeue-Regular.woff",
+        "BLOKKNeue/BLOKKNeue-Regular.ttf",
+        "BLOKKNeue/BLOKKNeue-Regular.svg"
+    ),
+    "BLOKKNeue/BLOKKNeue-Regular.eot"
+);
