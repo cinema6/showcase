@@ -5,16 +5,18 @@ import {
     trackLogout as intercomTrackLogout,
 } from './intercom';
 import { createAction } from 'redux-actions';
-import { replace } from 'react-router-redux';
+import { replace, push } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
 import { paymentMethod } from './payment';
 import { getOrg, getBillingPeriod, getPaymentPlan, getCampaigns } from './session';
 import moment from 'moment';
 import { getCampaignAnalytics } from './analytics';
-import { addNotification } from './notification';
+import { notify, addNotification } from './notification';
 import { TYPE as NOTIFICATION } from '../enums/notification';
 import React from 'react';
 import { Link } from 'react-router';
+import { showAlert } from './alert';
+import { showPlanModal } from './billing';
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -84,4 +86,55 @@ export const loadPageData = createThunk(() => (dispatch) =>
             dispatch(getBillingPeriod()),
         ])
     ))
+);
+
+export const checkForSlots = createThunk(() => (dispatch) =>
+    Promise.all([
+        dispatch(getPaymentPlan()),
+        dispatch(getCampaigns()),
+    ]).then(([[paymentPlan], campaigns]) => {
+        if (campaigns.length >= paymentPlan.maxCampaigns) {
+            return false;
+        }
+        return true;
+    })
+);
+
+export const promptUpgrade = createThunk(() => (dispatch) =>
+    dispatch(showAlert({
+        title: 'Uh oh!',
+        description: 'You have no unused apps remaining in your current plan. '
+        + 'Would you like to upgrade your plan?',
+        buttons: [
+            {
+                text: 'No thanks',
+                onSelect: dismiss => dismiss(),
+            },
+            {
+                text: 'Yes, upgrade my plan!',
+                type: 'success',
+                onSelect: dismiss => dispatch(push('/dashboard/billing'))
+                .then(() => {
+                    dismiss();
+                    return dispatch(showPlanModal(true));
+                }).catch(reason => {
+                    dispatch(notify({
+                        type: NOTIFICATION.DANGER,
+                        message: `Unexpected Error:
+                            ${reason.response || reason.message}`,
+                        time: 10000,
+                    }));
+                }),
+            },
+        ],
+    }))
+);
+
+export const addApp = createThunk(() => (dispatch) =>
+    dispatch(checkForSlots()).then(slotsAvailable => {
+        if (!slotsAvailable) {
+            return dispatch(promptUpgrade());
+        }
+        return dispatch(push('/dashboard/add-product'));
+    })
 );

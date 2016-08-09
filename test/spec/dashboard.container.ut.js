@@ -1,11 +1,11 @@
 'use strict';
 
 import { mount } from 'enzyme';
-// import StatsSummaryBar from '../../src/components/StatsSummaryBar';
 import React from 'react';
 import Dashboard from '../../src/containers/Dashboard';
 import { createStore } from 'redux';
 import { logoutUser,
+    addApp,
     toggleNav,
     checkIfPaymentMethodRequired,
     loadPageData
@@ -25,6 +25,7 @@ describe('Dashboard', function() {
         dashboardActions = {
             logoutUser: jasmine.createSpy('logoutUser()').and.callFake(logoutUser),
             toggleNav: jasmine.createSpy('toggleNav()').and.callFake(toggleNav),
+            addApp: jasmine.createSpy('addApp()').and.callFake(addApp),
             checkIfPaymentMethodRequired,
             loadPageData,
 
@@ -200,6 +201,19 @@ describe('Dashboard', function() {
                         analytics: []
                     }));
                 });
+            });
+        });
+        describe('Add New App', function() {
+            beforeEach(function() {
+                this.info = component.find('button.bg-danger');
+            });
+
+            it('should call AddApp() when clicked', function() {
+                const info = this.info;
+                
+                info.simulate('click');
+                expect(dashboardActions.addApp).toHaveBeenCalled();
+
             });
         });
 

@@ -29,6 +29,8 @@ class Dashboard extends Component {
             paymentPlan,
             campaigns,
             analytics,
+
+            addApp,
         } = this.props;
 
         if (!user) { return null; }
@@ -75,9 +77,11 @@ class Dashboard extends Component {
                             </li>
                         </ul>
                     </div>
-                    <a href="#" className="btn btn-danger hidden-xs btn-header">
+                    <button
+                        className="btn btn-danger hidden-xs btn-header" onClick={addApp}
+                    >
                         <i className="fa fa-plus" /> Add New App
-                    </a> {/* show alert asking to upgrade if
+                    </button> {/* show alert asking to upgrade if
                     users have maximum allowed apps on current plan */}
                 </div>
             </nav>
@@ -98,9 +102,9 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard" className="bg-danger"> {/* link to add new app*/}
+                        <button className="bg-danger" onClick={addApp} > {/* link to add new app*/}
                             <i className="fa fa-plus" /> Add New App
-                        </Link> {/* show alert asking to upgrade if
+                        </button> {/* show alert asking to upgrade if
                         users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
@@ -196,6 +200,8 @@ Dashboard.propTypes = {
     paymentPlan: PropTypes.object,
     campaigns: PropTypes.array,
     analytics: PropTypes.array.isRequired,
+
+    addApp: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
