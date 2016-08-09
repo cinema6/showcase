@@ -463,48 +463,44 @@ describe('dashboard actions', function() {
             it('should getPaymentPlan()', function(){
                 expect(this.dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
-            describe('once getPaymentPlan() resolves', () => {
+            it('should getCampaigns()', function(){
+                expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+            });
+
+            describe('after the promises resolve', () => {
                 beforeEach(function(done) {
+                    let campaignId = createUuid();
+                    this.campaigns = [campaignId];
+                    this.paymentPlan = this.state.db.paymentPlan[this.planId];
+                    this.appsAvailable = jasmine.createSpy().and.callFake( () => {
+                        if (this.campaigns.length >= this.paymentPlan.maxCampaigns) {
+                            return false;
+                        }
+                        return true;
+                    });
                     this.dispatch.getDeferred(getPaymentPlan()).resolve(this.planId);
                     setTimeout(done);
                 });
-                it('should getCampaigns()', function(){
-                    expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
+
+                describe('if no more free apps are available', function(){
+                    beforeEach(function(done) {
+                        this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
+                        setTimeout(done);
+                    });
+                    it('should return false', () => {
+                        expect(this.appsAvailable).toBeFalsy();
+                    });
                 });
-                describe('once getCampaigns() resolves', function(){
-                    beforeEach(function() {
-                        let campaignId = createUuid();
-                        this.campaigns = [campaignId];
-                        this.paymentPlan = this.state.db.paymentPlan[this.planId];
+                describe('if free apps are available', function(){
+                    beforeEach(function(done) {
+                        this.dispatch.calls.reset();
+                        this.campaigns.pop();
+                        this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
 
-                        this.appsAvailable = jasmine.createSpy().and.callFake( () => {
-                            if (this.campaigns.length >= this.paymentPlan.maxCampaigns) {
-                                return false;
-                            }
-                            return true;
-                        });
+                        setTimeout(done);
                     });
-
-                    describe('if no more free apps are available', function(){
-                        beforeEach(function(done) {
-                            this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
-                            setTimeout(done);
-                        });
-                        it('should return false', () => {
-                            expect(this.appsAvailable).toBeFalsy();
-                        });
-                    });
-                    describe('if free apps are available', function(){
-                        beforeEach(function(done) {
-                            this.dispatch.calls.reset();
-                            this.campaigns.pop();
-                            this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
-
-                            setTimeout(done);
-                        });
-                        it('should return true', function() {
-                            expect(this.appsAvailable).toBeTruthy();
-                        });
+                    it('should return true', function() {
+                        expect(this.appsAvailable).toBeTruthy();
                     });
                 });
             });
