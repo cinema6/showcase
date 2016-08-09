@@ -6,29 +6,35 @@ import { createUuid } from 'rc-uuid';
 import {
     loadPageData,
     showInstallTrackingInstructions,
-    removeCampaign,
     updateChartSelection
 } from '../../src/actions/campaign_detail';
 import {
     notify
 } from '../../src/actions/notification';
+import {
+    restoreCampaign
+} from '../../src/actions/archive';
 import { CHART_7DAY, CHART_30DAY } from '../../src/components/CampaignDetailStatsDetails';
 import InstallTrackingSetupModal from '../../src/components/InstallTrackingSetupModal';
 import { TYPE as NOTIFICATION } from '../../src/enums/notification';
 import CampaignDetailInfo from '../../src/components/CampaignDetailInfo';
-import _, { find, assign } from 'lodash';
+import _, { find, assign, cloneDeep as clone } from 'lodash';
 import CampaignDetailStatsOverview from '../../src/components/CampaignDetailStatsOverview';
 import moment from 'moment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
 import { productDataFromCampaign } from '../../src/utils/campaign';
 import CampaignDetailStatsDetails from '../../src/components/CampaignDetailStatsDetails';
+import {
+    archiveCampaign
+} from '../../src/actions/campaign_list';
 
 describe('CampaignDetail', function() {
     beforeEach(function() {
         this.campaign = {
             id: `cam-${createUuid()}`,
             name: 'My Awesome App',
+            status: 'active',
             product: {
                 name: 'My Awesome App',
                 developer: 'Some Clever Person',
@@ -227,7 +233,7 @@ describe('CampaignDetail', function() {
                 campaignId: this.campaign.id
             }
         };
-        this.store = createStore(() => this.state);
+        this.store = createStore(() => clone(this.state));
 
         spyOn(this.store, 'dispatch');
 
@@ -309,11 +315,44 @@ describe('CampaignDetail', function() {
             beforeEach(function() {
                 this.store.dispatch.calls.reset();
 
-                this.info.prop('onReplace')();
+                this.info.prop('onArchive')();
             });
 
-            it('should dispatch removeCampaign()', function() {
-                expect(this.store.dispatch).toHaveBeenCalledWith(removeCampaign(this.campaign.id));
+            it('should dispatch archiveCampaign()', function() {
+                expect(this.store.dispatch).toHaveBeenCalledWith(archiveCampaign(this.campaign));
+            });
+        });
+
+        describe('onRestore()', () => {
+            it('should not exist', function() {
+                expect(this.info.prop('onRestore')).toBeFalsy();
+            });
+        });
+
+        describe('if the campaign is canceled', function() {
+            beforeEach(function() {
+                this.store.dispatch.and.callThrough();
+
+                this.campaign.status = 'canceled';
+                this.store.dispatch({ type: '@@UPDATE' });
+            });
+
+            describe('onArchive()', function() {
+                it('should not exist', function() {
+                    expect(this.info.prop('onArchive')).toBeFalsy();
+                });
+            });
+
+            describe('onRestore()', function() {
+                beforeEach(function() {
+                    this.store.dispatch.calls.reset();
+
+                    this.info.prop('onRestore')();
+                });
+
+                it('should dispatch() restoreCampaign()', function() {
+                    expect(this.store.dispatch).toHaveBeenCalledWith(restoreCampaign(this.campaign.id));
+                });
             });
         });
     });

@@ -2,12 +2,15 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { createStore } from 'redux';
 import { cloneDeep as clone, shuffle, random, assign, find } from 'lodash';
-import  CampaignList from '../../src/containers/Dashboard/CampaignList';
+import  Archive from '../../src/containers/Dashboard/Archive';
 import { createUuid } from 'rc-uuid';
 import CampaignListItem from '../../src/components/CampaignListItem';
-import { loadPageData, archiveCampaign } from '../../src/actions/campaign_list';
+import {
+    loadPageData,
+    restoreCampaign
+} from '../../src/actions/archive';
 
-describe('CampaignList', () => {
+describe('Archive', () => {
     let wrapper;
     let state;
     let store;
@@ -72,7 +75,7 @@ describe('CampaignList', () => {
 
         state = {
             session: {
-                campaigns: campaigns.map(campaign => campaign.id)
+                archive: campaigns.map(campaign => campaign.id)
             },
             db: {
                 campaign: shuffle([].concat(
@@ -117,10 +120,10 @@ describe('CampaignList', () => {
 
         spyOn(store, 'dispatch');
         wrapper = mount(
-            <CampaignList />,
+            <Archive />,
             { context: { store } }
         );
-        component = wrapper.find(CampaignList.WrappedComponent);
+        component = wrapper.find(Archive.WrappedComponent);
         store.dispatch.and.callThrough();
     });
 
@@ -134,10 +137,10 @@ describe('CampaignList', () => {
     });
 
     it('should exist', () => {
-        expect(component.length).toBe(1, 'CampaignList not rendered.');
+        expect(component.length).toBe(1, 'Archive not rendered.');
     });
 
-    it('should dispatch() loadPageData()', () => {
+    it('should loadPageData()', () => {
         expect(store.dispatch).toHaveBeenCalledWith(loadPageData());
     });
 
@@ -176,7 +179,7 @@ describe('CampaignList', () => {
 
     describe('if the campaigns have not been loaded', () => {
         beforeEach(() => {
-            state.session.campaigns = null;
+            state.session.archive = null;
             state.db.campaign = {};
 
             store.dispatch({ type: '@@UPDATE' });
@@ -187,9 +190,9 @@ describe('CampaignList', () => {
         });
     });
 
-    describe('if there are no campaigns', () => {
+    describe('if there is nothing in the archive', () => {
         beforeEach(() => {
-            state.session.campaigns = [];
+            state.session.archive = [];
             state.db.campaign = {};
 
             store.dispatch({ type: '@@UPDATE' });
@@ -200,26 +203,25 @@ describe('CampaignList', () => {
         });
     });
 
-    describe('when the user archives a campaign', () => {
-        let item;
+    describe('when a campaign is restored', () => {
         let campaign;
+        let item;
 
         beforeEach(() => {
+            campaign = campaigns[1];
+            item = component.find(CampaignListItem).at(1);
             store.dispatch.calls.reset();
 
-            item = component.find(CampaignListItem).at(2);
-            campaign = campaigns[2];
-
-            item.prop('onArchive')();
+            item.prop('onRestore')();
         });
 
         afterEach(() => {
-            item = null;
             campaign = null;
+            item = null;
         });
 
-        it('should dispatch archiveCampaign()', () => {
-            expect(store.dispatch).toHaveBeenCalledWith(archiveCampaign(campaign));
+        it('should dispatch() restoreCampaign()', () => {
+            expect(store.dispatch).toHaveBeenCalledWith(restoreCampaign(campaign.id));
         });
     });
 });

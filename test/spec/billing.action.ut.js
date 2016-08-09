@@ -770,7 +770,7 @@ describe('billing actions', function() {
                         [plan.id]: plan
                     }), {}));
 
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentPlans.map(plan => plan.id));
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentPlans);
                     setTimeout(done);
 
                     dispatch.calls.reset();

@@ -11,7 +11,8 @@ export default function CampaignDetailInfo({
     rating,
     ratingCount,
 
-    onReplace,
+    onArchive,
+    onRestore,
 }) {
     return (<div className="campaign-overview col-md-4">
         <div className="app-info-wrapper col-md-12 col-sm-12">
@@ -36,11 +37,16 @@ export default function CampaignDetailInfo({
                             <i className="fa fa-pencil-square-o" />Edit
                         </Link>
                     </span>
-                    <span className="trash-campaign-link">
-                        <Button bsStyle="danger" bsSize="sm" onClick={onReplace}>
-                            <i className="fa fa-exchange" />Replace
+                    {!!onArchive && <span className="trash-campaign-link">
+                        <Button bsStyle="danger" bsSize="sm" onClick={onArchive}>
+                            <i className="fa fa-archive" />Archive
                         </Button>
-                    </span>
+                    </span>}
+                    {!!onRestore && <span className="restore-campaign-link">
+                        <Button bsStyle="success" bsSize="sm" onClick={onRestore}>
+                            <i className="fa fa-history" />Restore
+                        </Button>
+                    </span>}
                 </div>
             </div>
         </div>
@@ -55,5 +61,6 @@ CampaignDetailInfo.propTypes = {
     rating: PropTypes.number,
     ratingCount: PropTypes.number,
 
-    onReplace: PropTypes.func.isRequired,
+    onArchive: PropTypes.func,
+    onRestore: PropTypes.func,
 };

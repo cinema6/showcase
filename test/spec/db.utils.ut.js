@@ -191,11 +191,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.list.SUCCESS)(items.map(item => item.id)));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.list.SUCCESS, null, () => ({ ids: items.map(item => item.id) }))(items));
                     });
 
-                    it('should fulfill with an Array of ids', function() {
-                        expect(success).toHaveBeenCalledWith(items.map(item => item.id));
+                    it('should fulfill with an Array', function() {
+                        expect(success).toHaveBeenCalledWith(items);
                     });
                 });
 
@@ -225,8 +225,10 @@ describe('utils/db', function() {
                     beforeEach(function(done) {
                         key = 'token';
                         dispatch.calls.reset();
+                        items.forEach(item => item.token = createUuid());
 
                         getThunk(createDbActions({ type, endpoint, key }).list())(dispatch, getState).then(success, failure);
+                        dispatchDeferred.resolve(items);
                         setTimeout(done);
                     });
 
@@ -234,6 +236,10 @@ describe('utils/db', function() {
                         expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
                             types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
                         })));
+                    });
+
+                    it('should dispatch() the SUCCESS actions with those ids', () => {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.list.SUCCESS, null, () => ({ ids: items.map(item => item.token) }))(items));
                     });
                 });
             });
@@ -313,11 +319,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.get.SUCCESS)([item.id]));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.get.SUCCESS, null, () => ({ ids: [item.id] }))([item]));
                     });
 
-                    it('should fulfill with an Array of ids', function() {
-                        expect(success).toHaveBeenCalledWith([item.id]);
+                    it('should fulfill with an Array', function() {
+                        expect(success).toHaveBeenCalledWith([item]);
                     });
                 });
 
@@ -347,8 +353,10 @@ describe('utils/db', function() {
                     beforeEach(function(done) {
                         key = 'token';
                         dispatch.calls.reset();
+                        item.token = createUuid();
 
                         getThunk(createDbActions({ type, endpoint, key }).get({ id }))(dispatch, getState).then(success, failure);
+                        dispatchDeferred.resolve(item);
                         setTimeout(done);
                     });
 
@@ -356,6 +364,10 @@ describe('utils/db', function() {
                         expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
                             types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id } }))
                         })));
+                    });
+
+                    it('should dispatch() the SUCCESS actions with those ids', () => {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.get.SUCCESS, null, () => ({ ids: [item.token] }))([item]));
                     });
                 });
             });
@@ -445,11 +457,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.SUCCESS)(items.map(item => item.id)));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.SUCCESS, null, () => ({ ids: items.map(item => item.id) }))(items));
                     });
 
-                    it('should fulfill with an Array of ids', function() {
-                        expect(success).toHaveBeenCalledWith(items.map(item => item.id));
+                    it('should fulfill with an Array of items', function() {
+                        expect(success).toHaveBeenCalledWith(items);
                     });
                 });
 
@@ -478,9 +490,11 @@ describe('utils/db', function() {
 
                     beforeEach(function(done) {
                         key = 'token';
+                        items.forEach(item => item.token = createUuid());
                         dispatch.calls.reset();
 
                         getThunk(createDbActions({ type, endpoint, key }).query(params))(dispatch, getState).then(success, failure);
+                        dispatchDeferred.resolve(items);
                         setTimeout(done);
                     });
 
@@ -488,6 +502,10 @@ describe('utils/db', function() {
                         expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
                             types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
                         })));
+                    });
+
+                    it('should dispatch() the SUCCESS actions with those ids', () => {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.query.SUCCESS, null, () => ({ ids: items.map(item => item.token) }))(items));
                     });
                 });
             });
@@ -571,11 +589,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.create.SUCCESS)([item.id]));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.create.SUCCESS, null, () => ({ ids: [item.id] }))([item]));
                     });
 
-                    it('should fulfill with an Array of ids', function() {
-                        expect(success).toHaveBeenCalledWith([item.id]);
+                    it('should fulfill with an Array', function() {
+                        expect(success).toHaveBeenCalledWith([item]);
                     });
                 });
 
@@ -602,17 +620,24 @@ describe('utils/db', function() {
                 describe('if another key is specified', function() {
                     let key;
 
-                    beforeEach(function() {
+                    beforeEach(function(done) {
                         key = 'token';
+                        item.token = createUuid();
                         dispatch.calls.reset();
 
                         getThunk(createDbActions({ type, endpoint, key }).create({ data }))(dispatch, getState).then(success, failure);
+                        dispatchDeferred.resolve(item);
+                        setTimeout(done);
                     });
 
                     it('should call the api with that key in the meta', function() {
                         expect(dispatch).toHaveBeenCalledWith(callAPI(jasmine.objectContaining({
                             types: [0, 1, 2].map(() => jasmine.objectContaining({ meta: { type, key, id: null } }))
                         })));
+                    });
+
+                    it('should dispatch() the SUCCESS actions with those ids', () => {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.create.SUCCESS, null, () => ({ ids: [item.token] }))([item]));
                     });
                 });
             });
@@ -705,11 +730,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.update.SUCCESS)([fullData.id]));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.update.SUCCESS, null, () => ({ ids: [fullData.id] }))([fullData]));
                     });
 
                     it('should fulfill the Promise', function() {
-                        expect(success).toHaveBeenCalledWith([fullData.id]);
+                        expect(success).toHaveBeenCalledWith([fullData]);
                     });
                 });
 
@@ -758,8 +783,8 @@ describe('utils/db', function() {
                         })));
                     });
 
-                    it('should fulfill with the key value', function() {
-                        expect(success).toHaveBeenCalledWith([data.token]);
+                    it('should dispatch() the SUCCESS actions with those ids', () => {
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.update.SUCCESS, null, () => ({ ids: [fullData.token] }))([fullData]));
                     });
                 });
 
@@ -888,11 +913,11 @@ describe('utils/db', function() {
                     });
 
                     it('should dispatch a SUCCESS action for the type', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.remove.SUCCESS)([id]));
+                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.remove.SUCCESS, null, () => ({ ids: [id] }))(null));
                     });
 
-                    it('should fulfill with an Array of ids', function() {
-                        expect(success).toHaveBeenCalledWith([id]);
+                    it('should fulfill with null', function() {
+                        expect(success).toHaveBeenCalledWith(null);
                     });
                 });
 

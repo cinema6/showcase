@@ -1,17 +1,17 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import CampaignListItem from '../../components/CampaignListItem';
 import {
-    find,
     compact,
+    find,
 } from 'lodash';
 import {
     loadPageData,
-    archiveCampaign,
-} from '../../actions/campaign_list';
+    restoreCampaign,
+} from '../../actions/archive';
 
 function mapStateToProps(state) {
-    const campaignIds = state.session.campaigns;
+    const campaignIds = state.session.archive;
 
     return {
         campaigns: campaignIds && campaignIds.map(id => state.db.campaign[id]),
@@ -21,7 +21,7 @@ function mapStateToProps(state) {
     };
 }
 
-class CampaignList extends Component {
+class Archive extends Component {
     componentDidMount() {
         this.props.loadPageData();
     }
@@ -35,7 +35,7 @@ class CampaignList extends Component {
         return (<div className="row">
             <div className="campaign-dashboard col-md-12">
                 <div className="col-md-12 col-sm-12">
-                    <h3>Your applications</h3>
+                    <h3>Archived Applications</h3>
                     {campaigns && <ul className="campaign-app-list card-item">
                         {campaigns.length > 0 ? campaigns.map(campaign => {
                             const analytics = find(campaignAnalytics, { campaignId: campaign.id });
@@ -50,21 +50,17 @@ class CampaignList extends Component {
                                 views={analytics && analytics.summary.users}
                                 clicks={analytics && analytics.summary.clicks}
 
-                                onArchive={() => this.props.archiveCampaign(campaign)}
+                                onRestore={() => this.props.restoreCampaign(campaign.id)}
                             />);
-                        }) : <li>You have no apps.</li>}
+                        }) : <li>Nothing in the archive.</li>}
                     </ul>}
-                </div>
-                <div className="promote-app-cta text-center col-md-12 col-sm-12">
-                    <h3>Ready to promote another app?</h3>
-                    <button className="btn btn-danger btn-lg">Promote my app</button>
                 </div>
             </div>
         </div>);
     }
 }
 
-CampaignList.propTypes = {
+Archive.propTypes = {
     campaigns: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         product: PropTypes.shape({
@@ -85,10 +81,10 @@ CampaignList.propTypes = {
     }).isRequired),
 
     loadPageData: PropTypes.func.isRequired,
-    archiveCampaign: PropTypes.func.isRequired,
+    restoreCampaign: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, {
     loadPageData,
-    archiveCampaign,
-})(CampaignList);
+    restoreCampaign,
+})(Archive);

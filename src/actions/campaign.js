@@ -12,10 +12,6 @@ const campaign = createDbActions({
     queries: {
         list: {
             application: 'showcase',
-            statuses: [
-                'draft', 'new', 'pending', 'approved', 'rejected', 'active', 'paused', 'inactive',
-                'expired', 'outOfBudget', 'error',
-            ].join(','),
         },
     },
 });
@@ -30,3 +26,10 @@ export const cancel = createThunk(id => (
         )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
     }
 ));
+
+export const RESTORE = prefix('RESTORE');
+export const restore = createThunk(id => dispatch => dispatch(createAction(RESTORE)(
+    Promise.resolve().then(() => (
+        dispatch(campaign.update({ data: { id, status: 'active' } }))
+    ))
+)).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));

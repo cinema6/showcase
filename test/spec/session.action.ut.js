@@ -17,7 +17,7 @@ import { dispatch } from '../helpers/stubs';
 import org from '../../src/actions/org';
 import promotion from '../../src/actions/promotion';
 import paymentPlan from '../../src/actions/payment_plan';
-import { assign } from 'lodash';
+import { assign, cloneDeep as clone } from 'lodash';
 import moment from 'moment';
 import { getCurrentPayment } from '../../src/actions/transaction';
 
@@ -85,12 +85,12 @@ describe('session actions', function() {
                     });
                     this.getState.and.returnValue(this.state);
 
-                    this.dispatch.getDeferred(promotion.get({ id: this.user.promotion })).resolve([this.promotion.id]);
+                    this.dispatch.getDeferred(promotion.get({ id: this.user.promotion })).resolve([this.promotion]);
                     setTimeout(done);
                 });
 
-                it('should fulfill with the promotion ids', function() {
-                    expect(this.success).toHaveBeenCalledWith([this.promotion.id]);
+                it('should fulfill with the promotion', function() {
+                    expect(this.success).toHaveBeenCalledWith([this.promotion]);
                 });
             });
 
@@ -160,7 +160,7 @@ describe('session actions', function() {
                 });
 
                 it('should fulfill with the promotions', function() {
-                    expect(this.success).toHaveBeenCalledWith(this.state.session.promotions);
+                    expect(this.success).toHaveBeenCalledWith(this.promotions);
                 });
             });
         });
@@ -270,8 +270,8 @@ describe('session actions', function() {
                     expect(this.dispatch).not.toHaveBeenCalledWith(org.get({ id: this.user.org }));
                 });
 
-                it('should fulfill with the org\'s id', function() {
-                    expect(this.success).toHaveBeenCalledWith([this.org.id]);
+                it('should fulfill with the org', function() {
+                    expect(this.success).toHaveBeenCalledWith([this.org]);
                 });
             });
         });
@@ -298,6 +298,9 @@ describe('session actions', function() {
                 state = {
                     session: {
                         campaigns: null
+                    },
+                    db: {
+                        campaign: {}
                     }
                 };
 
@@ -311,7 +314,7 @@ describe('session actions', function() {
                             .catch(reason => Promise.reject({ reason, action }));
                     }
                 });
-                getState = jasmine.createSpy('getState()').and.returnValue(state);
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
 
                 success = jasmine.createSpy('success()');
                 failure = jasmine.createSpy('failure()');
@@ -334,13 +337,21 @@ describe('session actions', function() {
                 let campaigns;
 
                 beforeEach(function(done) {
-                    campaigns = Array.apply([], new Array(3)).map(() => `cam-${createUuid()}`);
+                    campaigns = ['active', 'canceled', 'draft', 'outOfBudget', 'canceled', 'active'].map(status => ({
+                        id: `cam-${createUuid()}`,
+                        status,
+                        product: {
+                            name: 'Awesome Campaign',
+                            id: createUuid()
+                        }
+                    }));
+
                     dispatchDeferred.resolve(campaigns);
                     setTimeout(done);
                 });
 
-                it('should fulfill with the ids', function() {
-                    expect(success).toHaveBeenCalledWith(campaigns);
+                it('should fulfill with the non-canceled campaigns', function() {
+                    expect(success).toHaveBeenCalledWith(campaigns.filter(campaign => campaign.status !== 'canceled'));
                 });
             });
 
@@ -359,8 +370,22 @@ describe('session actions', function() {
             });
 
             describe('if the campaigns have already been fetched', function() {
+                let campaigns;
+
                 beforeEach(function(done) {
-                    state.session.campaigns = [`cam-${createUuid()}`];
+                    campaigns = Array.apply([], new Array(3)).map(() => ({
+                        id: `cam-${createUuid()}`,
+                        product: {
+                            name: 'Awesome Campaign',
+                            id: createUuid()
+                        }
+                    }));
+
+                    state.session.campaigns = campaigns.map(campaign => campaign.id);
+                    state.db.campaign = campaigns.reduce((cache, campaign) => assign(cache, {
+                        [campaign.id]: campaign
+                    }), {});
+
                     success.calls.reset();
                     failure.calls.reset();
                     dispatch.calls.reset();
@@ -379,7 +404,7 @@ describe('session actions', function() {
                 });
 
                 it('should fulfill with the campaigns', function() {
-                    expect(success).toHaveBeenCalledWith(state.session.campaigns);
+                    expect(success).toHaveBeenCalledWith(campaigns);
                 });
             });
         });
@@ -568,7 +593,7 @@ describe('session actions', function() {
                 describe('has no paymentPlanId', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanId = null;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -580,7 +605,7 @@ describe('session actions', function() {
                 describe('has a paymentPlanId', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanId = `pp-${createUuid()}`;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -613,12 +638,12 @@ describe('session actions', function() {
                                     })
                                 })
                             });
-                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).resolve([this.paymentPlan.id]);
+                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).resolve([this.paymentPlan]);
                             setTimeout(done);
                         });
 
                         it('should fulfill the Promise', function() {
-                            expect(this.success).toHaveBeenCalledWith([this.paymentPlan.id]);
+                            expect(this.success).toHaveBeenCalledWith([this.paymentPlan]);
                         });
                     });
                 });
@@ -656,7 +681,7 @@ describe('session actions', function() {
                 });
 
                 it('should fulfill the Promise', function() {
-                    expect(this.success).toHaveBeenCalledWith([this.state.session.paymentPlan]);
+                    expect(this.success).toHaveBeenCalledWith([this.paymentPlan]);
                 });
             });
         });

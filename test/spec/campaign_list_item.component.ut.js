@@ -23,7 +23,8 @@ describe('CampaignListItem', () => {
             views: 678234,
             clicks: 19788,
 
-            onArchive: jasmine.createSpy('onArchive()')
+            onArchive: jasmine.createSpy('onArchive()'),
+            onRestore: jasmine.createSpy('onRestore()')
         };
 
         component = mount(
@@ -101,6 +102,34 @@ describe('CampaignListItem', () => {
         expect(ctr.text()).toBe(`${Math.round((props.clicks / props.views) * 100)}%`);
     });
 
+    describe('if onArchive is not specified', () => {
+        beforeEach(() => {
+            component.setProps({ onArchive: null });
+        });
+
+        it('should not render the archive button', () => {
+            const buttons = component.find('.campaign-toggle button');
+
+            expect(buttons.length).toBe(2);
+            expect(buttons.at(0).find('i').hasClass('fa-history')).toBe(true);
+            expect(buttons.at(1).find('i').hasClass('fa-chevron-right')).toBe(true);
+        });
+    });
+
+    describe('if onRestore is not specified', () => {
+        beforeEach(() => {
+            component.setProps({ onRestore: null });
+        });
+
+        it('should not render the restore button', () => {
+            const buttons = component.find('.campaign-toggle button');
+
+            expect(buttons.length).toBe(2);
+            expect(buttons.at(0).find('i').hasClass('fa-archive')).toBe(true);
+            expect(buttons.at(1).find('i').hasClass('fa-chevron-right')).toBe(true);
+        });
+    });
+
     describe('the archive button', () => {
         let archive;
 
@@ -135,6 +164,44 @@ describe('CampaignListItem', () => {
 
             it('should call onArchive()', () => {
                 expect(props.onArchive).toHaveBeenCalledWith();
+            });
+        });
+    });
+
+    describe('the restore button', () => {
+        let restore;
+
+        beforeEach(() => {
+            restore = component.find('.campaign-toggle button').at(1);
+        });
+
+        afterEach(() => {
+            restore = null;
+        });
+
+        describe('when clicked', () => {
+            let event;
+
+            beforeEach(() => {
+                event = {
+                    stopPropagation: jasmine.createSpy('event.stopPropagation()'),
+                    preventDefault: jasmine.createSpy('event.preventDefault()')
+                };
+
+                restore.simulate('click', event);
+            });
+
+            afterEach(() => {
+                event = null;
+            });
+
+            it('should stopPropagation() and preventDefault()', () => {
+                expect(event.stopPropagation).toHaveBeenCalledWith();
+                expect(event.preventDefault).toHaveBeenCalledWith();
+            });
+
+            it('should call onRestore()', () => {
+                expect(props.onRestore).toHaveBeenCalledWith();
             });
         });
     });

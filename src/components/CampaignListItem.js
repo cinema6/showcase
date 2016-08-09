@@ -13,6 +13,13 @@ function formatPercent(number) {
     return (number && `${Math.round(number * 100)}%`) || DASH;
 }
 
+const catchEvent = handler => event => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    return handler(event);
+};
+
 export default function CampaignListItem({
     campaignId,
     thumbnail,
@@ -23,6 +30,7 @@ export default function CampaignListItem({
     clicks,
 
     onArchive,
+    onRestore,
 }) {
     return (<li className="campaign-list-item-wrapper">
         <Link to={`/dashboard/campaigns/${campaignId}`}>
@@ -36,18 +44,18 @@ export default function CampaignListItem({
                 </div>
                 <div className="campaign-toggle col-md-2 col-sm-2 col-xs-12 pull-right">
                     <div className="btn-group" role="group">
-                        <button
-                            type="button"
+                        {!!onArchive && <button
                             className="btn btn-link"
-                            onClick={event => {
-                                event.stopPropagation();
-                                event.preventDefault();
-
-                                onArchive();
-                            }}
+                            onClick={catchEvent(() => onArchive())}
                         >
                             <i className="fa fa-archive" aria-hidden="true" />
-                        </button>
+                        </button>}
+                        {!!onRestore && <button
+                            className="btn btn-link"
+                            onClick={catchEvent(() => onRestore())}
+                        >
+                            <i className="fa fa-history" aria-hidden="true" />
+                        </button>}
                         <button type="button" className="btn btn-link">
                             <i className="fa fa-chevron-right" aria-hidden="true" />
                         </button>
@@ -89,5 +97,6 @@ CampaignListItem.propTypes = {
     views: PropTypes.number,
     clicks: PropTypes.number,
 
-    onArchive: PropTypes.func.isRequired,
+    onArchive: PropTypes.func,
+    onRestore: PropTypes.func,
 };

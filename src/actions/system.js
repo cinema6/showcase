@@ -8,7 +8,11 @@ function prefix(type) {
 
 export const GET_PAYMENT_PLANS = prefix('GET_PAYMENT_PLANS');
 export const getPaymentPlans = createThunk(() => (dispatch, getState) => (
-    dispatch(createAction(GET_PAYMENT_PLANS)(Promise.resolve().then(() => (
-        getState().system.paymentPlans || dispatch(paymentPlan.list())
-    )))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
+    dispatch(createAction(GET_PAYMENT_PLANS)(Promise.resolve().then(() => {
+        const state = getState();
+        const paymentPlanIds = state.system.paymentPlans;
+
+        return (paymentPlanIds && paymentPlanIds.map(id => state.db.paymentPlan[id])) ||
+            dispatch(paymentPlan.list());
+    }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));

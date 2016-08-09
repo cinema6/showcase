@@ -59,11 +59,11 @@ export const createCampaign = createThunk(({
         org: user.org,
         limit: 1,
     })))
-    .then(([advertiserId]) => dispatch(campaign.create({
-        data: campaignFromData({ productData, targeting }, { advertiserId }),
+    .then(([advr]) => dispatch(campaign.create({
+        data: campaignFromData({ productData, targeting }, { advertiserId: advr.id }),
     })))
-    .then(([id]) => {
-        dispatch(replace(`/dashboard/campaigns/${id}`));
+    .then(([camp]) => {
+        dispatch(replace(`/dashboard/campaigns/${camp.id}`));
         dispatch(notify({
             type: NOTIFICATION_TYPE.SUCCESS,
             message: 'Your ad is ready to go and we’ll start promoting it soon.' +
@@ -71,7 +71,7 @@ export const createCampaign = createThunk(({
             time: 6000,
         }));
 
-        return [id];
+        return [camp];
     })
     .catch(reason => {
         dispatch(notify({
@@ -131,12 +131,12 @@ export const updateCampaign = createThunk(({ id, productData, targeting }) => (
 
                 return dispatch(campaign.update({
                     data: campaignFromData({ productData, targeting }, currentCampaign),
-                })).then(([campaignId]) => {
+                })).then(([camp]) => {
                     dispatch(notify({
                         type: NOTIFICATION_TYPE.SUCCESS,
                         message: 'Your app has been updated!',
                     }));
-                    dispatch(push(`/dashboard/campaigns/${campaignId}`));
+                    dispatch(push(`/dashboard/campaigns/${camp.id}`));
 
                     return [id];
                 });
@@ -161,16 +161,13 @@ export const collectPayment = createThunk(({
     productData,
     targeting,
     paymentPlan,
-}) => (dispatch, getState) => {
+}) => dispatch => {
     const collectPaymentMethod = () => goToStep(4);
 
     return dispatch(createAction(COLLECT_PAYMENT)(Promise.all([
         dispatch(getPromotions()),
         dispatch(getOrg()),
-    ]).then(([promotionIds, orgId]) => {
-        const state = getState();
-        const promotions = promotionIds.map(id => state.db.promotion[id]);
-        const org = state.db.org[orgId];
+    ]).then(([promotions, [org]]) => {
         const paymentMethodRequired = _(promotions).every(
             `data[${paymentPlan.id}].paymentMethodRequired`
         );
