@@ -173,15 +173,20 @@ describe('ChangePlanModal', () => {
     });
 
     describe('if there are no plans', () => {
+        let button;
         beforeEach(() => {
             component.setProps({
                 plans: undefined
             });
             modal = getModal();
+            button = modal.find(Button);
         });
 
         it('should show no messages', () => {
             expect(modal.find('.alert').length).toBe(0);
+        });
+        it('should disable the button', () => {
+            expect(button.prop('disabled')).toBe(true);
         });
     });
 
@@ -232,6 +237,22 @@ describe('ChangePlanModal', () => {
             it('should be in a submitting state', () => {
                 expect(button.prop('disabled')).toBe(true);
                 expect(button.prop('className').split(' ')).toContain('btn-waiting');
+            });
+        });
+        describe('if the plans are not loaded', () => {
+            beforeEach(() => {
+                component.setProps({
+                    plans: []
+                });
+                modal = getModal();
+                button = modal.find(Button);
+            });
+
+            it('should show no messages', () => {
+                expect(modal.find('.alert').length).toBe(0);
+            });
+            it('should disable the button', () => {
+                expect(button.prop('disabled')).toBe(true);
             });
         });
 

@@ -20,7 +20,6 @@ export default function ChangePlanModal({
 }) {
     const currentPlan = find(plans, { id: currentPlanId });
     const selectedPlan = find(plans, { id: selectedPlanId });
-
     const upgrade = (currentPlan && selectedPlan) && (selectedPlan.price > currentPlan.price);
     const tooManyCampaigns = selectedPlan && amountOfCampaigns > selectedPlan.maxCampaigns;
 
@@ -59,7 +58,7 @@ export default function ChangePlanModal({
                             className={classnames('col-xs-12', {
                                 'btn-waiting': actionPending,
                             })}
-                            disabled={actionPending}
+                            disabled={actionPending || !plans || plans.length < 1}
                             onClick={() => onConfirm(selectedPlanId)}
                         >
                             Confirm
@@ -81,7 +80,7 @@ ChangePlanModal.propTypes = {
     show: PropTypes.bool.isRequired,
     actionPending: PropTypes.bool.isRequired,
 
-    plans: PropTypes.arrayOf(PropTypes.object.isRequired),
+    plans: PropTypes.arrayOf(PropTypes.object),
     currentPlan: PropTypes.string,
     selectedPlan: PropTypes.string,
     amountOfCampaigns: PropTypes.number,
