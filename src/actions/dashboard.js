@@ -88,13 +88,11 @@ export const loadPageData = createThunk(() => (dispatch) =>
     ))
 );
 
-export const checkForSlots = createThunk(() => (dispatch, getState) =>
+export const checkForSlots = createThunk(() => (dispatch) =>
     Promise.all([
         dispatch(getPaymentPlan()),
         dispatch(getCampaigns()),
-    ]).then(([[id], campaigns]) => {
-        const state = getState();
-        const paymentPlan = state.db.paymentPlan[id];
+    ]).then(([[paymentPlan], campaigns]) => {
         if (campaigns.length >= paymentPlan.maxCampaigns) {
             return false;
         }

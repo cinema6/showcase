@@ -478,7 +478,7 @@ describe('dashboard actions', function() {
                         }
                         return true;
                     });
-                    this.dispatch.getDeferred(getPaymentPlan()).resolve(this.planId);
+                    this.dispatch.getDeferred(getPaymentPlan()).resolve(this.paymentPlan);
                     setTimeout(done);
                 });
 
