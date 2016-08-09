@@ -134,7 +134,7 @@ export const promptUpgrade = createThunk(() => (dispatch) =>
 
 export const addApp = createThunk(() => (dispatch) =>
     dispatch(checkForSlots()).then(slotsAvailable => {
-        if (!slotsAvailable.value) {
+        if (!slotsAvailable) {
             return dispatch(promptUpgrade());
         }
         return dispatch(push('/dashboard/add-product'));
