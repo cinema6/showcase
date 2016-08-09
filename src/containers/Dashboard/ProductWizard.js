@@ -50,7 +50,7 @@ class ProductWizard extends Component {
         } = this.props;
 
         return productData && assign({}, productData, pick(formValues, [
-            'name', 'description',
+            'name', 'description', 'video',
         ]));
     }
 

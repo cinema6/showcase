@@ -214,3 +214,6 @@ export const autofill = createThunk(() => (dispatch) => {
 
     return undefined;
 });
+
+export const SHOW_VIDEO_MODAL = prefix('SHOW_VIDEO_MODAL');
+export const showVideoModal = createAction(SHOW_VIDEO_MODAL);
