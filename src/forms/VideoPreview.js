@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 function VideoPreview({
-    fields: { url },
+    fields: { url, previewUrl },
     handleSubmit,
     submitting,
 }) {
@@ -71,6 +71,6 @@ VideoPreview.propTypes = {
 
 export default reduxForm({
     form: 'videoPreview',
-    fields: ['url'],
+    fields: ['url', 'previewUrl'],
     destroyOnUnmount: false,
 })(VideoPreview);

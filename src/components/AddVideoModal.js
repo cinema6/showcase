@@ -21,7 +21,7 @@ export default function AddVideoModal({
                     <h1 className="modal-title" id="addVideo-modal">Add Your Video</h1>
                 </div>
                 <div className="modal-body text-center">
-                    <VideoPreviewForm handleSubmit={onSubmit} />
+                    <VideoPreviewForm onSubmit={({ url }) => onSubmit(url)} />
                 </div>
             </div>
         </div>)}

@@ -34,8 +34,6 @@ export default class VideoInput extends Component {
             action,
         } = this.state;
 
-        console.log(action, onChange);
-
         return (<div className="form-group">
             <label htmlFor="addVideo-modal">Add Video (optional)
                 &nbsp;
@@ -48,7 +46,7 @@ export default class VideoInput extends Component {
                     <i className="fa fa-question-circle" aria-hidden="true" />
                 </OverlayTrigger>
             </label><br />
-            {value && (<a href="{value}" className="btn-link">
+            {value && (<a href={value} className="btn-link">
                 {value}
             </a>)}
             <div role="toolbar" className="btn-toolbar">
@@ -73,7 +71,8 @@ export default class VideoInput extends Component {
             </div>
             {showModal && (<AddVideoModal
                 action={action}
-                onSubmit={onChange}
+                {/* we also want to close the modal when onSubmit is called */}
+                onSubmit={(url) => onChange(url)}
                 onClose={(e) => this.showModal(e, false)}
             />)}
         </div>);

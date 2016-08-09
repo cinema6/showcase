@@ -272,6 +272,7 @@ ProductWizard.propTypes = {
     productData: PropTypes.shape({
         name: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
+        video: PropTypes.string,
     }),
     targeting: PropTypes.shape({
         gender: PropTypes.string,
