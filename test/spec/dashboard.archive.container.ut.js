@@ -9,6 +9,7 @@ import {
     loadPageData,
     restoreCampaign
 } from '../../src/actions/archive';
+import CampaignListItemLoader from '../../src/components/CampaignListItemLoader';
 
 describe('Archive', () => {
     let wrapper;
@@ -185,8 +186,14 @@ describe('Archive', () => {
             store.dispatch({ type: '@@UPDATE' });
         });
 
-        it('should not render any campaigns items', () => {
-            expect(component.find('.campaign-app-list').length).toBe(0, '.campaign-app-list is rendered.');
+        it('should render a couple of CampaignListItemLoaders', () => {
+            const loaders = component.find('.campaign-app-list').find(CampaignListItemLoader);
+
+            expect(loaders.length).toBe(1);
+            loaders.forEach(loader => {
+                expect(loader.prop('showArchive')).toBe(false);
+                expect(loader.prop('showRestore')).toBe(true);
+            });
         });
     });
 

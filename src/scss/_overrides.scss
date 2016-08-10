@@ -1149,10 +1149,73 @@
         .main-section {
             margin-top: 40px;
         }
+
         .campaign-list-item .stats-header {
             margin-bottom: 0;
             font-size: 24px;
         }
+            .item-preloader {
+                font-family: 'BLOKKNeue';
+                color: #eee;
+                line-height: initial;
+                animation: colorChange 2s infinite;
+            }
+                .item-preloader .app__ratings--stars {
+                    font-family: 'FontAwesome';
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .campaign-reach-mini .stats-header,
+                .item-preloader .campaign-clicks-mini .stats-header,
+                .item-preloader .campaign-ctr-mini .stats-header {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .btn-link {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                @-webkit-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-moz-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-ms-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+
         @media (max-width: 991px) {
             .campaign-list-item .view-count {
                 clear: both;
@@ -1185,6 +1248,7 @@
                 margin-top: 20px;
             }
         }
+
  /***
  Campaign Stats
  ----------------------------
