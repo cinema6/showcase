@@ -19,6 +19,10 @@ import {
 import {
     notify
 } from '../../src/actions/notification';
+import {
+    checkForSlots,
+    promptUpgrade
+} from '../../src/actions/dashboard';
 import * as NOTIFICATION from '../../src/enums/notification';
 
 describe('archive actions', () => {
@@ -165,63 +169,95 @@ describe('archive actions', () => {
                 expect(dispatch).toHaveBeenCalledWith(createAction(RESTORE_CAMPAIGN)(jasmine.any(Promise)));
             });
 
-            it('should restore() the campaign', () => {
-                expect(dispatch).toHaveBeenCalledWith(restore(id));
+            it('should check for slots', () => {
+                expect(dispatch).toHaveBeenCalledWith(checkForSlots());
             });
 
-            describe('when the campaign has been restored', () => {
-                let campaign;
-
+            describe('if the are slots', () => {
                 beforeEach(done => {
-                    campaign = {
-                        id,
-                        status: 'active',
-                        product: {
-                            name: 'Facebook'
-                        }
-                    };
-
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([campaign]);
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(true);
                     setTimeout(done);
                     dispatch.calls.reset();
                 });
 
-                afterEach(() => {
-                    campaign = null;
+                it('should restore() the campaign', () => {
+                    expect(dispatch).toHaveBeenCalledWith(restore(id));
                 });
 
-                it('should show a success notification', () => {
-                    expect(dispatch).toHaveBeenCalledWith(notify({
-                        type: NOTIFICATION.TYPE.SUCCESS,
-                        message: jasmine.any(String)
-                    }));
+                describe('when the campaign has been restored', () => {
+                    let campaign;
+
+                    beforeEach(done => {
+                        campaign = {
+                            id,
+                            status: 'active',
+                            product: {
+                                name: 'Facebook'
+                            }
+                        };
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([campaign]);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        campaign = null;
+                    });
+
+                    it('should show a success notification', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: jasmine.any(String)
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
                 });
 
-                it('should fulfill with undefined', () => {
-                    expect(success).toHaveBeenCalledWith(undefined);
+                describe('if the campaign cannot be restored', () => {
+                    let reason;
+
+                    beforeEach(done => {
+                        reason = new Error('There was a problem!');
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        reason = null;
+                    });
+
+                    it('should show an error', () => {
+                        expect(dispatch).toHaveBeenCalledWith(notify({
+                            type: NOTIFICATION.TYPE.DANGER,
+                            message: jasmine.any(String)
+                        }));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
                 });
             });
 
-            describe('if the campaign cannot be restored', () => {
-                let reason;
-
+            describe('if there are no slots', () => {
                 beforeEach(done => {
-                    reason = new Error('There was a problem!');
-
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(false);
                     setTimeout(done);
                     dispatch.calls.reset();
                 });
 
-                afterEach(() => {
-                    reason = null;
+                it('should not restore the campaign', () => {
+                    expect(dispatch).not.toHaveBeenCalledWith(restore(jasmine.anything()));
                 });
 
-                it('should show an error', () => {
-                    expect(dispatch).toHaveBeenCalledWith(notify({
-                        type: NOTIFICATION.TYPE.DANGER,
-                        message: jasmine.any(String)
-                    }));
+                it('should prompt the user to upgrade', () => {
+                    expect(dispatch).toHaveBeenCalledWith(promptUpgrade());
                 });
 
                 it('should fulfill with undefined', () => {

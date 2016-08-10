@@ -6,6 +6,10 @@ import campaign, {
 import {
     notify,
 } from './notification';
+import {
+    checkForSlots,
+    promptUpgrade,
+} from './dashboard';
 import * as NOTIFICATION from '../enums/notification';
 
 function prefix(type) {
@@ -22,19 +26,27 @@ export const loadPageData = createThunk(() => dispatch => dispatch(createAction(
 export const RESTORE_CAMPAIGN = prefix('RESTORE_CAMPAIGN');
 export const restoreCampaign = createThunk(id => dispatch => dispatch(
     createAction(RESTORE_CAMPAIGN)(Promise.resolve().then(() => (
-        dispatch(restore(id)).then(([camp]) => {
-            dispatch(notify({
-                type: NOTIFICATION.TYPE.SUCCESS,
-                message: `Unarchived "${camp.product.name}".`,
-            }));
-        })
-        .catch(reason => {
-            dispatch(notify({
-                type: NOTIFICATION.TYPE.DANGER,
-                message: `Failed to unarchive: ${
-                    reason.response || reason.message
-                }`,
-            }));
+        dispatch(checkForSlots()).then(thereAreSlots => {
+            if (!thereAreSlots) {
+                dispatch(promptUpgrade());
+
+                return undefined;
+            }
+
+            return dispatch(restore(id)).then(([camp]) => {
+                dispatch(notify({
+                    type: NOTIFICATION.TYPE.SUCCESS,
+                    message: `Unarchived "${camp.product.name}".`,
+                }));
+            })
+            .catch(reason => {
+                dispatch(notify({
+                    type: NOTIFICATION.TYPE.DANGER,
+                    message: `Failed to unarchive: ${
+                        reason.response || reason.message
+                    }`,
+                }));
+            });
         })
     )))
 ).then(({ value }) => value));
