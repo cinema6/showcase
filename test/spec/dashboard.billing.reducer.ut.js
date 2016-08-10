@@ -3,7 +3,8 @@ import {
     SHOW_CHANGE_MODAL,
     LOAD_PAGE_DATA,
     SHOW_PLAN_MODAL,
-    CHANGE_PAYMENT_PLAN
+    CHANGE_PAYMENT_PLAN,
+    SET_POST_PLAN_CHANGE_REDIRECT
 } from '../../src/actions/billing';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
@@ -14,7 +15,8 @@ describe('dashboardBillingReducer()', function() {
             showChangeModal: false,
             showPlanModal: false,
             loading: false,
-            changingPlan: false
+            changingPlan: false,
+            postPlanChangeRedirect: null
         });
     });
 
@@ -27,7 +29,8 @@ describe('dashboardBillingReducer()', function() {
                 showChangeModal: false,
                 showPlanModal: false,
                 loading: false,
-                changingPlan: false
+                changingPlan: false,
+                postPlanChangeRedirect: null
             };
         });
 
@@ -55,6 +58,23 @@ describe('dashboardBillingReducer()', function() {
             it('should update showPlanModal', () => {
                 expect(newState).toEqual(assign({}, state, {
                     showPlanModal: true
+                }));
+            });
+        });
+
+        describe(SET_POST_PLAN_CHANGE_REDIRECT, () => {
+            let path;
+
+            beforeEach(() => {
+                path = '/dashboard/archive';
+
+                action = createAction(SET_POST_PLAN_CHANGE_REDIRECT)(path);
+                newState = dashboardBillingReducer(state, action);
+            });
+
+            it('should update the postPlanChangeRedirect', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    postPlanChangeRedirect: path
                 }));
             });
         });

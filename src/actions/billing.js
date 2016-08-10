@@ -12,6 +12,9 @@ import {
 import { notify } from './notification';
 import * as NOTIFICATION from '../enums/notification';
 import moment from 'moment';
+import {
+    push,
+} from 'react-router-redux';
 
 function prefix(type) {
     return `BILLING/${type}`;
@@ -75,7 +78,10 @@ export const SHOW_PLAN_MODAL = prefix('SHOW_PLAN_MODAL');
 export const showPlanModal = createAction(SHOW_PLAN_MODAL);
 
 export const CHANGE_PAYMENT_PLAN = prefix('CHANGE_PAYMENT_PLAN');
-export const changePaymentPlan = createThunk(paymentPlanId => (dispatch, getState) => dispatch(
+export const changePaymentPlan = createThunk((
+    paymentPlanId,
+    redirect
+) => (dispatch, getState) => dispatch(
     createAction(CHANGE_PAYMENT_PLAN)(Promise.resolve().then(() => {
         const state = getState();
         const user = state.db.user[state.session.user];
@@ -108,6 +114,10 @@ export const changePaymentPlan = createThunk(paymentPlanId => (dispatch, getStat
                             `billing period: ${effectiveDate.format('MMM D')}.`,
                         time: 10000,
                     }));
+                }
+
+                if (redirect) {
+                    dispatch(push(redirect));
                 }
             });
         })
@@ -157,3 +167,6 @@ export const cancelSubscription = createThunk(() => (dispatch, getState) => disp
         .then(() => undefined);
     }))
 ).then(({ value }) => value));
+
+export const SET_POST_PLAN_CHANGE_REDIRECT = prefix('SET_POST_PLAN_CHANGE_REDIRECT');
+export const setPostPlanChangeRedirect = createAction(SET_POST_PLAN_CHANGE_REDIRECT);

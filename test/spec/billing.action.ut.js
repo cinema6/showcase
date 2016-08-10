@@ -7,9 +7,11 @@ import {
     SHOW_PLAN_MODAL,
     CHANGE_PAYMENT_PLAN,
     CANCEL_SUBSCRIPTION,
+    SET_POST_PLAN_CHANGE_REDIRECT,
 
     changePaymentPlan,
-    cancelSubscription
+    cancelSubscription,
+    setPostPlanChangeRedirect
 } from '../../src/actions/billing';
 import orgs, {
     changePaymentPlan as changeOrgPaymentPlan
@@ -25,6 +27,7 @@ import * as stub from '../helpers/stubs';
 import { notify } from '../../src/actions/notification';
 import * as NOTIFICATION from '../../src/enums/notification';
 import moment from 'moment';
+import { push } from 'react-router-redux';
 
 const proxyquire = require('proxyquire');
 
@@ -202,6 +205,14 @@ describe('billing actions', function() {
         it('should dispatch an action', () => {
             expect(showPlanModal(true)).toEqual(createAction(SHOW_PLAN_MODAL)(true));
             expect(showPlanModal(false)).toEqual(createAction(SHOW_PLAN_MODAL)(false));
+        });
+    });
+
+    describe('setPostPlanChangeRedirect()', () => {
+        it('should return an action', () => {
+            const path = '/dashboard/campaigns';
+
+            expect(setPostPlanChangeRedirect(path)).toEqual(createAction(SET_POST_PLAN_CHANGE_REDIRECT)(path));
         });
     });
 
@@ -402,7 +413,7 @@ describe('billing actions', function() {
         });
     });
 
-    describe('changePaymentPlan(paymentPlanId)', () => {
+    describe('changePaymentPlan(paymentPlanId, redirect)', () => {
         let paymentPlanId;
         let thunk;
 
@@ -576,6 +587,10 @@ describe('billing actions', function() {
                         }));
                     });
 
+                    it('should not change URLs', () => {
+                        dispatch.calls.all().forEach(call => expect(call.args[0].type).not.toBe(push('foo').type));
+                    });
+
                     it('should fulfill with undefined', () => {
                         expect(success).toHaveBeenCalledWith(undefined);
                     });
@@ -623,6 +638,67 @@ describe('billing actions', function() {
 
                     it('should fulfill with undefined', () => {
                         expect(success).toHaveBeenCalledWith(undefined);
+                    });
+                });
+            });
+
+            describe('if a redirect is specified', () => {
+                let redirect;
+
+                beforeEach(done => {
+                    success.calls.reset();
+                    failure.calls.reset();
+                    dispatch.calls.reset();
+                    dispatch.resetDeferreds();
+
+                    redirect = '/dashboard/add-product';
+
+                    getThunk(changePaymentPlan(paymentPlanId, redirect))(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                describe('when the plan has been changed', () => {
+                    let response;
+
+                    beforeEach(done => {
+                        response = {
+                            paymentPlanId,
+                            nextPaymentPlanId: null,
+                            effectiveDate: moment().format()
+                        };
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    describe('when the org has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
+
+                        it('should close the modal', () => {
+                            expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                        });
+
+                        it('should show a success message', () => {
+                            expect(dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION.TYPE.SUCCESS,
+                                message: jasmine.any(String),
+                                time: jasmine.any(Number)
+                            }));
+                        });
+
+                        it('should navigate to the redirect', () => {
+                            expect(dispatch).toHaveBeenCalledWith(push(redirect));
+                        });
+
+                        it('should fulfill with undefined', () => {
+                            expect(success).toHaveBeenCalledWith(undefined);
+                        });
                     });
                 });
             });

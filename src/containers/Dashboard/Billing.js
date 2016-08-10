@@ -123,47 +123,53 @@ class Billing extends Component {
                 cycleEnd={billingEnd}
 
                 onClose={() => showPlanModal(false)}
-                onConfirm={paymentPlanId => changePaymentPlan(paymentPlanId)}
-                onCancel={() => showAlert({
-                    title: 'Cancel Your Subscription',
-                    description: (<div>
-                        <span>
-                            <strong>Are you sure you want to cancel your subscription?</strong>
-                            <br />
-                            <p>
+                onConfirm={paymentPlanId => (
+                    changePaymentPlan(paymentPlanId, page.postPlanChangeRedirect)
+                )}
+                onCancel={() => {
+                    showPlanModal(false);
+
+                    showAlert({
+                        title: 'Cancel Your Subscription',
+                        description: (<div>
+                            <span>
+                                <strong>Are you sure you want to cancel your subscription?</strong>
                                 <br />
-                                {numberOfCampaigns > 1 ?
-                                    `All ${numberOfCampaigns} of your apps will lose the ` +
-                                        'exposure they have been getting!' :
-                                    'Your app will lose the exposure it has been getting!'
-                                }
-                            </p>
-                        </span>
-                        <div className="cancel-stats">
-                            <div className="campaign-mini-stats col-md-6 text-center">
-                                <span>Current period</span>
-                                <h3>{viewsPerMonth}</h3>
-                                <span>views</span>
+                                <p>
+                                    <br />
+                                    {numberOfCampaigns > 1 ?
+                                        `All ${numberOfCampaigns} of your apps will lose the ` +
+                                            'exposure they have been getting!' :
+                                        'Your app will lose the exposure it has been getting!'
+                                    }
+                                </p>
+                            </span>
+                            <div className="cancel-stats">
+                                <div className="campaign-mini-stats col-md-6 text-center">
+                                    <span>Current period</span>
+                                    <h3>{viewsPerMonth}</h3>
+                                    <span>views</span>
+                                </div>
+                                <div className="campaign-mini-stats col-md-6 text-center">
+                                    <span>Later</span>
+                                    <h3>0</h3>
+                                    <span>views</span>
+                                </div>
                             </div>
-                            <div className="campaign-mini-stats col-md-6 text-center">
-                                <span>Later</span>
-                                <h3>0</h3>
-                                <span>views</span>
-                            </div>
-                        </div>
-                    </div>),
-                    buttons: [
-                        {
-                            text: 'Cancel my subscription',
-                            type: 'danger btn-block',
-                            size: 'large',
-                            onSelect: dismiss => cancelSubscription().then(() => Promise.all([
-                                dismiss(),
-                                showPlanModal(false),
-                            ])),
-                        },
-                    ],
-                })}
+                        </div>),
+                        buttons: [
+                            {
+                                text: 'Cancel my subscription',
+                                type: 'danger btn-block',
+                                size: 'large',
+                                onSelect: dismiss => cancelSubscription().then(() => Promise.all([
+                                    dismiss(),
+                                    showPlanModal(false),
+                                ])),
+                            },
+                        ],
+                    });
+                }}
             />
         </div>);
     }
@@ -176,6 +182,7 @@ Billing.propTypes = {
         showChangeModal: PropTypes.bool.isRequired,
         showPlanModal: PropTypes.bool.isRequired,
         changingPlan: PropTypes.bool.isRequired,
+        postPlanChangeRedirect: PropTypes.string,
     }).isRequired,
     billingPeriod: PropTypes.shape({
         cycleStart: PropTypes.string.isRequired,

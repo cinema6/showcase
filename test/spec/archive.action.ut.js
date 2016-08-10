@@ -257,11 +257,51 @@ describe('archive actions', () => {
                 });
 
                 it('should prompt the user to upgrade', () => {
-                    expect(dispatch).toHaveBeenCalledWith(promptUpgrade());
+                    expect(dispatch).toHaveBeenCalledWith(promptUpgrade('/dashboard/archive'));
                 });
 
                 it('should fulfill with undefined', () => {
                     expect(success).toHaveBeenCalledWith(undefined);
+                });
+            });
+
+            describe('if a redirect is specified', () => {
+                let redirect;
+
+                beforeEach(done => {
+                    dispatch.calls.reset();
+                    dispatch.resetDeferreds();
+                    success.calls.reset();
+                    failure.calls.reset();
+
+                    redirect = '/foo/bar';
+
+                    getThunk(restoreCampaign(id, redirect))(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                afterEach(() => {
+                    redirect = null;
+                });
+
+                describe('if there are no slots', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(false);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should not restore the campaign', () => {
+                        expect(dispatch).not.toHaveBeenCalledWith(restore(jasmine.anything()));
+                    });
+
+                    it('should prompt the user to upgrade', () => {
+                        expect(dispatch).toHaveBeenCalledWith(promptUpgrade(redirect));
+                    });
+
+                    it('should fulfill with undefined', () => {
+                        expect(success).toHaveBeenCalledWith(undefined);
+                    });
                 });
             });
         });
