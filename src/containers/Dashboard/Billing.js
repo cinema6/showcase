@@ -30,6 +30,7 @@ class Billing extends Component {
             page,
             billingPeriod,
             paymentPlan,
+            nextPaymentPlan,
             paymentPlans,
             selectedPlan,
             numberOfCampaigns,
@@ -54,7 +55,7 @@ class Billing extends Component {
             nextDueDate &&
             nextDueDate.format('MMM D, YYYY')
         ) || DASH;
-        const price = get(paymentPlan, 'price', DASH);
+        const price = get(nextPaymentPlan, 'price', DASH);
 
         return (<div className="container main-section campaign-stats">
             <DocumentTitle title="Reelcontent Apps: Billing" />
@@ -192,6 +193,9 @@ Billing.propTypes = {
     paymentPlan: PropTypes.shape({
         viewsPerMonth: PropTypes.number.isRequired,
     }),
+    nextPaymentPlan: PropTypes.shape({
+        price: PropTypes.number.isRequired,
+    }),
     paymentPlans: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
     }).isRequired),
@@ -220,10 +224,14 @@ function mapStateToProps({
     const paymentPlan = (session.paymentPlanStatus || undefined) && find(paymentPlans, {
         id: session.paymentPlanStatus.paymentPlanId,
     });
+    const nextPaymentPlan = (session.paymentPlanStatus || undefined) && find(paymentPlans, {
+        id: session.paymentPlanStatus.nextPaymentPlanId,
+    });
 
     return {
         payments,
         paymentPlan,
+        nextPaymentPlan: nextPaymentPlan || paymentPlan,
         paymentPlans: paymentPlans.filter(plan => plan.price > 0),
         defaultPaymentMethod: find(paymentMethods, { default: true }),
         billingPeriod: session.billingPeriod,

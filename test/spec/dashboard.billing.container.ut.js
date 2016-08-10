@@ -1,7 +1,7 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { createUuid } from 'rc-uuid';
-import { keyBy, assign } from 'lodash';
+import { keyBy, assign, cloneDeep as clone } from 'lodash';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
 import ChangePlanModal from '../../src/components/ChangePlanModal';
@@ -92,7 +92,7 @@ describe('Billing', function() {
                     maxCampaigns: 10
                 }
             ];
-            paymentPlan = paymentPlans[1];
+            paymentPlan = paymentPlans[2];
             session = {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
@@ -152,7 +152,7 @@ describe('Billing', function() {
                 }
             };
             state.db.paymentMethod[session.paymentMethods[1]].default = true;
-            store = createStore(() => state);
+            store = createStore(() => clone(state));
 
             props = {
 
@@ -452,6 +452,20 @@ describe('Billing', function() {
                         });
                     });
                 });
+            });
+        });
+
+        describe('if there is a nextPaymentPlanId', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[1].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should use that payment plan when showing the next amount due', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${paymentPlans[1].price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
             });
         });
 
