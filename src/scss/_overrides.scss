@@ -53,6 +53,12 @@
         min-height: 750px;
         overflow-y: auto;
     }
+    button,
+    button:focus,
+    button:active {
+        outline: none !important;
+        outline: 0 !important;
+    }
  /***
  Mixins
  ----------------------------
@@ -624,6 +630,8 @@
             }
                 .campaign-progress-bar .nav-pills>li.active.current {
                     background-position: -100% 0 !important;
+                    -webkit-transition: background-size 1s;
+                    -moz-transition: background-size 1s;
                     transition: background-size 1s;
                 }
             .campaign-progress-bar .nav-pills>li a {
@@ -673,6 +681,8 @@
                 margin-top: -15px;
                 margin-left: -15px;
                 border-radius: 50%;
+                -webkit-transition: all 0.6s ease;
+                -moz-transition: all 0.6s ease;
                 transition: all 0.6s ease;
             }
             .campaign-progressbar > .progressbar-step > .progressbar-step-dot:after {
@@ -1139,7 +1149,9 @@
         .account-summary .stats-header.stas-bar.app-count .bar-fill {
             background: #444;
         }
-        
+        .campaign-dashboard {
+            margin-top: 40px;
+        }
         .campaign-app-list {
             overflow: hidden;
             list-style-type: none;
@@ -1686,6 +1698,10 @@
     }
     .payment-plan input[type=radio]:checked~.plan-info-box {
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        background: #e4fffd;
+        -webkit-transition: background 0.5s ease-in;
+        -moz-transition: background 0.5s ease-in;
+        transition: background 0.5s ease-in;
     }
     /*.payment-plan input[type=radio]:checked ~ .plan-info-box:before {
         /*content: 'selected';
@@ -1821,9 +1837,11 @@
                 margin-right: auto;
             }
             .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:after {
-                background: #a80b16;
+                background: #d80f1c;
                 content: 'Selected';
                 text-align: left;
+                -webkit-transition: all 0.5s ease-in;
+                -moz-transition: all 0.5s ease-in;
                 transition: all 0.5s ease-in;
             }
             .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:before {
@@ -1845,6 +1863,13 @@
             .plan-box-footer h4 {
                 margin: 0;
             }
+    .change-plan .alert.alert-success.text-center {
+        background: transparent;
+    }
+    .change-plan .alert.alert-warning.text-center {
+        background: transparent;
+    }
+
     .checked-feature-list {
         list-style-type: none;
         padding: 0;
@@ -2431,7 +2456,9 @@
 }
 /***button spinner***/
 .btn-waiting {
-    padding-right: 2.5rem;
+    padding-right: 3.5rem;
+    -webkit-transition: padding 0.2s ease-in;
+    -moz-transition: padding 0.2s ease-in;
     transition: padding 0.2s ease-in;
 }
     .btn-waiting:after {
