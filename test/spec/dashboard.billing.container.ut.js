@@ -469,6 +469,20 @@ describe('Billing', function() {
             });
         });
 
+        describe('if the user cancels their account', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[0].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should show N/A instead of a $ amount and due date', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe('N/A');
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
+            });
+        });
+
         describe('if the billing period is unknown', function() {
             beforeEach(function() {
                 store.dispatch.and.callThrough();

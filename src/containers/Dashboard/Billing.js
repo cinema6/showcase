@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { assign, find, get } from 'lodash';
+import { assign, find, get, isNumber } from 'lodash';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentHistory from '../../components/PaymentHistory';
 import ChangePaymentMethodModal from '../../components/ChangePaymentMethodModal';
@@ -73,7 +73,10 @@ class Billing extends Component {
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
-                                    <h3>${price} on {dueDate}</h3>
+                                    <h3>{
+                                        (!isNumber(price) || price > 0) ?
+                                            `$${price} on ${dueDate}` : 'N/A'
+                                    }</h3>
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
