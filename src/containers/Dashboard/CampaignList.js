@@ -35,7 +35,7 @@ class CampaignList extends Component {
             campaigns,
             campaignAnalytics,
         } = this.props;
-        
+
         return (<div className="container">
             <div className="row">
                 <div className="campaign-dashboard col-md-12">
@@ -50,21 +50,22 @@ class CampaignList extends Component {
                             }
 
                             if (campaigns.length < 1) {
-                                return <li>
+                                return (<li>
                                     <div className="campaign-list-item text-center">
                                         You don't have any active apps.
                                     </div>
-                                </li>;
+                                </li>);
                             }
 
-                        return campaigns.map(campaign => {
-                            const analytics = find(campaignAnalytics, { campaignId: campaign.id });
+                            return campaigns.map(campaign => {
+                                const analytics = find(campaignAnalytics,
+                                { campaignId: campaign.id });
 
                                 return (<CampaignListItem
                                     key={campaign.id}
                                     campaignId={campaign.id}
-                                    thumbnail={find(campaign.product.images, { 
-                                        type: 'thumbnail' 
+                                    thumbnail={find(campaign.product.images, {
+                                        type: 'thumbnail',
                                     }).uri}
                                     name={campaign.product.name}
                                     rating={campaign.product.rating}
@@ -76,11 +77,13 @@ class CampaignList extends Component {
                                 />);
                             });
                         })()}</ul>
-                    </div>                    
+                    </div>
                     <div className="promote-app-cta text-center col-md-12 col-sm-12">
                         <h3>Ready to promote another app?</h3>
-                        <button className="btn btn-danger btn-lg" 
-                            onClick={() => this.props.addApp()}>
+                        <button
+                            className="btn btn-danger btn-lg"
+                            onClick={() => this.props.addApp()}
+                        >
                             Promote my app
                         </button>
                     </div>
