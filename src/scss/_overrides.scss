@@ -417,6 +417,9 @@
                 text-decoration: none;
                 text-align: left;
             }
+            .slideout-menu .menu-item a.active {
+                background: #5C5F69;
+            }
             .slideout-menu .menu-item button {
                 display: inline-block;
                 width: 100%;
@@ -468,6 +471,7 @@
             /*border-bottom: 1px solid #d82632;*/
             border-bottom: 1px solid #24272F;
         }
+            .vertical-menu-bar .menu-item a.active,
             .vertical-menu-bar .menu-item a:hover,
             .vertical-menu-bar .menu-item a:focus,
             .vertical-menu-bar .menu-item button.btn-link:focus,
@@ -1165,6 +1169,7 @@
         .app-icon-wrapper img {
             max-width: 100%;
             height: auto;
+            border-radius: 20px;
         }
         .app-info-wrapper .app-title {
             margin-top: 0;
@@ -1187,10 +1192,73 @@
         .main-section {
             margin-top: 40px;
         }
+
         .campaign-list-item .stats-header {
             margin-bottom: 0;
             font-size: 24px;
         }
+            .item-preloader {
+                font-family: 'BLOKKNeue';
+                color: #eee;
+                line-height: initial;
+                animation: colorChange 2s infinite;
+            }
+                .item-preloader .app__ratings--stars {
+                    font-family: 'FontAwesome';
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .campaign-reach-mini .stats-header,
+                .item-preloader .campaign-clicks-mini .stats-header,
+                .item-preloader .campaign-ctr-mini .stats-header {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .btn-link {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                @-webkit-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-moz-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-ms-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+
         @media (max-width: 991px) {
             .campaign-list-item .view-count {
                 clear: both;
@@ -1252,6 +1320,7 @@
                 float: none;
             }
         }
+
  /***
  Campaign Stats
  ----------------------------
@@ -1618,7 +1687,7 @@
     .payment-plan input[type=radio]:checked~.plan-info-box {
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
-    .payment-plan input[type=radio]:checked ~ .plan-info-box:before {
+    /*.payment-plan input[type=radio]:checked ~ .plan-info-box:before {
         /*content: 'selected';
         background: #009a90;
         width: 100%;
@@ -1632,7 +1701,7 @@
         border: 1px solid #009a90;
         border-bottom: 0;
         height: 40px;*/
-        content: 'selected';
+     /*   content: 'selected';
         background: #25ab27;
         width: 80%;
         left: 10%;
@@ -1649,7 +1718,7 @@
         bottom: -5px;
         z-index: 0;
     }
-    .payment-plan input[type=radio]:checked~.plan-info-box:after {
+    .payment-plan input[type=radio]:checked~.plan-info-box:after {*/
         /*content: '\f058';
         color: #ecfffe;
         font-family: 'FontAwesome';
@@ -1661,7 +1730,7 @@
         margin-top: -10px;
         top: 14px;
         right: 30px;*/
-        content: '\f058';
+        /*content: '\f058';
         color: #ecfffe;
         font-family: 'FontAwesome';
         position: absolute;
@@ -1671,7 +1740,7 @@
         border-radius: 50%;
         bottom: -5px;
         right: 30px;
-    }
+    }*/
     .plan-info-box {
         background: #fff;
         border: 1px solid #0dbeb2/*$brand-primary*/;
@@ -1752,7 +1821,7 @@
                 margin-right: auto;
             }
             .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:after {
-                background: #25ab27;
+                background: #a80b16;
                 content: 'Selected';
                 text-align: left;
                 transition: all 0.5s ease-in;
@@ -2199,6 +2268,9 @@
             .payment-modal .modal-header h4 {
                 font-size: 18px;
             }
+        .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:before {
+            right: 30px;
+        }
         .campaign-stats .nav-justified {
             margin-bottom: 10px;
         }

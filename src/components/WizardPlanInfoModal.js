@@ -54,7 +54,7 @@ export default class WizardPlanInfoModal extends Component {
             'Continue';
         const midTierPlanId = get(plans, '[1].id');
 
-        return (<Modal show={show} className="trial-modal" onHide={onClose}>
+        return (<Modal show={show} className="trial-modal select-plan" onHide={onClose}>
             <Modal.Header className="text-center" closeButton>
                 <h1 className="modal-title">{title}</h1>
                 {!!trialLength && (

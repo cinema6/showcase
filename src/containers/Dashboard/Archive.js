@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import CampaignListItem from '../../components/CampaignListItem';
+import CampaignListItemLoader from '../../components/CampaignListItemLoader';
 import {
     compact,
     find,
@@ -36,9 +37,24 @@ class Archive extends Component {
         <div className="row">
             <div className="campaign-dashboard col-md-12">
                 <div className="col-md-12 col-sm-12">
-                    <h3 className="campaign-list-title">Archived Applications</h3>
-                    {campaigns && <ul className="campaign-app-list card-item">
-                        {campaigns.length > 0 ? campaigns.map(campaign => {
+                    <h3 className="campaign-list-title">Archived Applications</h3>                    
+                    <ul className="campaign-app-list card-item">{(() => {
+                        if (!campaigns) {
+                            return [0].map(index => <CampaignListItemLoader
+                                key={index}
+                                showRestore
+                            />);
+                        }
+
+                        if (campaigns.length < 1) {
+                            return <li>
+                                <div className="campaign-list-item text-center">
+                                    You don't have any archived campaigns.
+                                </div>
+                            </li>;
+                        }
+
+                        return campaigns.map(campaign => {
                             const analytics = find(campaignAnalytics, { campaignId: campaign.id });
 
                             return (<CampaignListItem
@@ -53,16 +69,12 @@ class Archive extends Component {
 
                                 onRestore={() => this.props.restoreCampaign(campaign.id)}
                             />);
-                        }) : <li>
-                                <div className="campaign-list-item text-center">
-                                    You don't have any archived campaigns.
-                                </div>
-                            </li>}
-                    </ul>}
+                        });
+                    })()}</ul>
                 </div>
             </div>
         </div>
-        </div>);
+    </div>);
     }
 }
 
