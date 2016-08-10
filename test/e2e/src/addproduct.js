@@ -11,8 +11,11 @@ module.exports = {
               .waitForElementVisible('@replaceButton', 10000)
               .assert.elementPresent('@phoneFrame')
               .assert.elementPresent('@replaceButton')
-              .click('@replaceButton')
+              .click('@replaceButton');
 
+                browser.pause(15000);
+
+                page
               .waitForElementVisible('@deleteButton', 10000)
               .assert.elementPresent('@deleteButton')
               .click('@deleteButton');
@@ -39,7 +42,12 @@ module.exports = {
 
       .assert.elementPresent('@searchInput')
       .setValue('@searchInput', app)
-      .waitForElementPresent('@firstResult', 10000)
+      .waitForElementNotPresent('@searching', 10000)
+      .waitForElementPresent('@firstResult', 10000);
+
+        browser.pause(1500);
+
+        page
       .click('@firstResult')
 
       .assert.elementPresent('@submitButton')
@@ -90,8 +98,11 @@ module.exports = {
       .waitForElementVisible('@replaceButton', 10000)
       .assert.elementPresent('@phoneFrame')
       .assert.elementPresent('@replaceButton')
-      .click('@replaceButton')
+      .click('@replaceButton');
 
+        browser.pause(15000);
+
+        page
       .waitForElementVisible('@deleteButton', 10000)
       .assert.elementPresent('@deleteButton')
       .click('@deleteButton');
