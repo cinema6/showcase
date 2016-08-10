@@ -10,6 +10,9 @@ import {
     loadPageData,
     archiveCampaign,
 } from '../../actions/campaign_list';
+import {
+    addApp,
+} from '../../actions/dashboard';
 
 function mapStateToProps(state) {
     const campaignIds = state.session.campaigns;
@@ -69,7 +72,9 @@ class CampaignList extends Component {
                 </div>
                 <div className="promote-app-cta text-center col-md-12 col-sm-12">
                     <h3>Ready to promote another app?</h3>
-                    <button className="btn btn-danger btn-lg">Promote my app</button>
+                    <button className="btn btn-danger btn-lg" onClick={() => this.props.addApp()}>
+                        Promote my app
+                    </button>
                 </div>
             </div>
         </div>);
@@ -98,9 +103,11 @@ CampaignList.propTypes = {
 
     loadPageData: PropTypes.func.isRequired,
     archiveCampaign: PropTypes.func.isRequired,
+    addApp: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, {
     loadPageData,
     archiveCampaign,
+    addApp,
 })(CampaignList);

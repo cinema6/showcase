@@ -6,6 +6,7 @@ import  CampaignList from '../../src/containers/Dashboard/CampaignList';
 import { createUuid } from 'rc-uuid';
 import CampaignListItem from '../../src/components/CampaignListItem';
 import { loadPageData, archiveCampaign } from '../../src/actions/campaign_list';
+import { addApp } from '../../src/actions/dashboard';
 import CampaignListItemLoader from '../../src/components/CampaignListItemLoader';
 
 describe('CampaignList', () => {
@@ -227,6 +228,30 @@ describe('CampaignList', () => {
 
         it('should dispatch archiveCampaign()', () => {
             expect(store.dispatch).toHaveBeenCalledWith(archiveCampaign(campaign));
+        });
+    });
+
+    describe('the button to add another app', () => {
+        let button;
+
+        beforeEach(() => {
+            button = component.find('.promote-app-cta button');
+        });
+
+        afterEach(() => {
+            button = null;
+        });
+
+        describe('when clicked', () => {
+            beforeEach(() => {
+                store.dispatch.calls.reset();
+
+                button.simulate('click');
+            });
+
+            it('should dispatch() addApp()', () => {
+                expect(store.dispatch).toHaveBeenCalledWith(addApp());
+            });
         });
     });
 });
