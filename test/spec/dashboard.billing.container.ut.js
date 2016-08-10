@@ -133,7 +133,8 @@ describe('Billing', function() {
                     'dashboard.billing': {
                         showChangeModal: false,
                         showPlanModal: false,
-                        changingPlan: false
+                        changingPlan: false,
+                        postPlanChangeRedirect: '/dashboard/add-product'
                     }
                 },
                 form: {
@@ -266,7 +267,7 @@ describe('Billing', function() {
                 });
 
                 it('should dispatch changePaymentPlan()', () => {
-                    expect(store.dispatch).toHaveBeenCalledWith(changePaymentPlan(paymentPlanId));
+                    expect(store.dispatch).toHaveBeenCalledWith(changePaymentPlan(paymentPlanId, component.prop('page').postPlanChangeRedirect));
                 });
             });
 

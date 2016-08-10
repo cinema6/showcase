@@ -16,7 +16,10 @@ import { TYPE as NOTIFICATION } from '../enums/notification';
 import React from 'react';
 import { Link } from 'react-router';
 import { showAlert } from './alert';
-import { showPlanModal } from './billing';
+import {
+    showPlanModal,
+    setPostPlanChangeRedirect,
+} from './billing';
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -100,7 +103,7 @@ export const checkForSlots = createThunk(() => (dispatch) =>
     })
 );
 
-export const promptUpgrade = createThunk(() => (dispatch) =>
+export const promptUpgrade = createThunk(redirect => (dispatch) =>
     dispatch(showAlert({
         title: 'Uh oh!',
         description: 'You have no unused apps remaining in your current plan. '
@@ -116,7 +119,9 @@ export const promptUpgrade = createThunk(() => (dispatch) =>
                 onSelect: dismiss => dispatch(push('/dashboard/billing'))
                 .then(() => {
                     dismiss();
-                    return dispatch(showPlanModal(true));
+
+                    dispatch(showPlanModal(true));
+                    dispatch(setPostPlanChangeRedirect(redirect));
                 }).catch(reason => {
                     dispatch(notify({
                         type: NOTIFICATION.DANGER,
@@ -132,9 +137,12 @@ export const promptUpgrade = createThunk(() => (dispatch) =>
 
 export const addApp = createThunk(() => (dispatch) =>
     dispatch(checkForSlots()).then(slotsAvailable => {
+        const path = '/dashboard/add-product';
+
         if (!slotsAvailable) {
-            return dispatch(promptUpgrade());
+            return dispatch(promptUpgrade(path));
         }
-        return dispatch(push('/dashboard/add-product'));
+
+        return dispatch(push(path));
     })
 );

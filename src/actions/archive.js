@@ -24,11 +24,14 @@ export const loadPageData = createThunk(() => dispatch => dispatch(createAction(
 )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));
 
 export const RESTORE_CAMPAIGN = prefix('RESTORE_CAMPAIGN');
-export const restoreCampaign = createThunk(id => dispatch => dispatch(
+export const restoreCampaign = createThunk((
+    id,
+    redirect = '/dashboard/archive'
+) => dispatch => dispatch(
     createAction(RESTORE_CAMPAIGN)(Promise.resolve().then(() => (
         dispatch(checkForSlots()).then(thereAreSlots => {
             if (!thereAreSlots) {
-                dispatch(promptUpgrade());
+                dispatch(promptUpgrade(redirect));
 
                 return undefined;
             }

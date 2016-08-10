@@ -18,7 +18,7 @@ import { getCampaignAnalytics } from '../../src/actions/analytics';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
 import { trackLogout as intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
-import { showPlanModal } from '../../src/actions/billing';
+import { showPlanModal, setPostPlanChangeRedirect } from '../../src/actions/billing';
 import {
     LOGOUT_START,
     LOGOUT_SUCCESS,
@@ -407,7 +407,7 @@ describe('dashboard actions', function() {
                     setTimeout(done);
                 });
                 it('should dispatch promptUpgrade()', function() {
-                    expect(this.dispatch).toHaveBeenCalledWith(promptUpgrade());
+                    expect(this.dispatch).toHaveBeenCalledWith(promptUpgrade('/dashboard/add-product'));
                 });
 
                 it('shouldn\'t dispatch a push to /dashboard/add-product', function() {
@@ -507,9 +507,11 @@ describe('dashboard actions', function() {
         });
     });
 
-    describe('promptUpgrade()', function() {
+    describe('promptUpgrade(redirect)', function() {
         beforeEach(function() {
-            this.thunk = getThunk(promptUpgrade());
+            this.redirect = '/dashboard/campaigns';
+
+            this.thunk = getThunk(promptUpgrade(this.redirect));
         });
 
         it('should return a thunk', function() {
@@ -590,6 +592,9 @@ describe('dashboard actions', function() {
                     });
                     it('should dispatch planModal', function() {
                         expect(this.dispatch).toHaveBeenCalledWith(showPlanModal(true));
+                    });
+                    it('should setPostPlanChangeRedirect()', function() {
+                        expect(this.dispatch).toHaveBeenCalledWith(setPostPlanChangeRedirect(this.redirect));
                     });
                 });
             });

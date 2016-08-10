@@ -351,7 +351,7 @@ describe('CampaignDetail', function() {
                 });
 
                 it('should dispatch() restoreCampaign()', function() {
-                    expect(this.store.dispatch).toHaveBeenCalledWith(restoreCampaign(this.campaign.id));
+                    expect(this.store.dispatch).toHaveBeenCalledWith(restoreCampaign(this.campaign.id, `/dashboard/campaigns/${this.campaign.id}`));
                 });
             });
         });

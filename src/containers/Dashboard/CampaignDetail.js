@@ -81,7 +81,10 @@ class CampaignDetail extends Component {
                             this.props.archiveCampaign(campaign)
                         ))}
                         onRestore={((isActive === false) || null) && (() => (
-                            this.props.restoreCampaign(campaign.id)
+                            this.props.restoreCampaign(
+                                campaign.id,
+                                `/dashboard/campaigns/${campaign.id}`
+                            )
                         ))}
                     />}
                     <div className="stats-overview-wrapper right-col col-md-8 col-sm-12 col-xs-12">

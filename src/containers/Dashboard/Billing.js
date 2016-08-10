@@ -123,7 +123,9 @@ class Billing extends Component {
                 cycleEnd={billingEnd}
 
                 onClose={() => showPlanModal(false)}
-                onConfirm={paymentPlanId => changePaymentPlan(paymentPlanId)}
+                onConfirm={paymentPlanId => (
+                    changePaymentPlan(paymentPlanId, page.postPlanChangeRedirect)
+                )}
                 onCancel={() => showAlert({
                     title: 'Cancel Your Subscription',
                     description: (<div>
@@ -176,6 +178,7 @@ Billing.propTypes = {
         showChangeModal: PropTypes.bool.isRequired,
         showPlanModal: PropTypes.bool.isRequired,
         changingPlan: PropTypes.bool.isRequired,
+        postPlanChangeRedirect: PropTypes.string,
     }).isRequired,
     billingPeriod: PropTypes.shape({
         cycleStart: PropTypes.string.isRequired,
