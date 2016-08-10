@@ -6,6 +6,8 @@ import  CampaignList from '../../src/containers/Dashboard/CampaignList';
 import { createUuid } from 'rc-uuid';
 import CampaignListItem from '../../src/components/CampaignListItem';
 import { loadPageData, archiveCampaign } from '../../src/actions/campaign_list';
+import { addApp } from '../../src/actions/dashboard';
+import CampaignListItemLoader from '../../src/components/CampaignListItemLoader';
 
 describe('CampaignList', () => {
     let wrapper;
@@ -182,8 +184,14 @@ describe('CampaignList', () => {
             store.dispatch({ type: '@@UPDATE' });
         });
 
-        it('should not render any campaigns items', () => {
-            expect(component.find('.campaign-app-list').length).toBe(0, '.campaign-app-list is rendered.');
+        it('should render a couple of CampaignListItemLoaders', () => {
+            const loaders = component.find('.campaign-app-list').find(CampaignListItemLoader);
+
+            expect(loaders.length).toBe(1);
+            loaders.forEach(loader => {
+                expect(loader.prop('showArchive')).toBe(true);
+                expect(loader.prop('showRestore')).toBe(false);
+            });
         });
     });
 
@@ -220,6 +228,30 @@ describe('CampaignList', () => {
 
         it('should dispatch archiveCampaign()', () => {
             expect(store.dispatch).toHaveBeenCalledWith(archiveCampaign(campaign));
+        });
+    });
+
+    describe('the button to add another app', () => {
+        let button;
+
+        beforeEach(() => {
+            button = component.find('.promote-app-cta button');
+        });
+
+        afterEach(() => {
+            button = null;
+        });
+
+        describe('when clicked', () => {
+            beforeEach(() => {
+                store.dispatch.calls.reset();
+
+                button.simulate('click');
+            });
+
+            it('should dispatch() addApp()', () => {
+                expect(store.dispatch).toHaveBeenCalledWith(addApp());
+            });
         });
     });
 });
