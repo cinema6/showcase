@@ -36,13 +36,13 @@ describe('StatsSummaryBar', function() {
         expect(this.component.find('.stats-header').at(1).text()).toBe(`${this.props.endDate.diff(moment(), 'days')}`);
     });
     it('should render the views ratio', function() {
-        expect(this.component.find('.lighter-text').at(3).text()).toBe(`${this.props.views} / ${this.props.viewGoals}`);
+        expect(this.component.find('.lighter-text').at(3).text()).toBe(`${this.props.views} /${this.props.viewGoals}`);
     });
     it('should render the views bar width', function() {
         expect(this.component.find('.bar-fill').first().prop('style')).toEqual({ width: `${this.props.views / this.props.viewGoals * 100}%` });
     });
     it('should render the app ratio', function() {
-        expect(this.component.find('.lighter-text').last().text()).toBe(`${this.props.appsUsed} / ${this.props.maxApps}`);
+        expect(this.component.find('.lighter-text').last().text()).toBe(`${this.props.appsUsed} /${this.props.maxApps}`);
     });
     it('should render the apps available bar width', function() {
         expect(this.component.find('.bar-fill').last().prop('style')).toEqual({ width: `${this.props.appsUsed / this.props.maxApps * 100}%` });
@@ -67,16 +67,31 @@ describe('StatsSummaryBar', function() {
             expect(this.component.find('.stats-header').at(1).text()).toBe('\u2014');
         });
         it('should render the views ratio as dashes', function() {
-            expect(this.component.find('.lighter-text').at(3).text()).toBe('\u2014 / \u2014');
+            expect(this.component.find('.lighter-text').at(3).text()).toBe('\u2014 /\u2014');
         });
         it('should render the views bar width as 0%', function() {
             expect(this.component.find('.bar-fill').first().prop('style')).toEqual({ width: '0%' });
         });
         it('should render the app ratio as dashes', function() {
-            expect(this.component.find('.lighter-text').last().text()).toBe('\u2014 / \u2014');
+            expect(this.component.find('.lighter-text').last().text()).toBe('\u2014 /\u2014');
         });
         it('should render the apps available bar width as 0%', function() {
             expect(this.component.find('.bar-fill').last().prop('style')).toEqual({ width: '0%' });
+        });
+        describe('if views or appsUsed are 0', function() {
+            beforeEach(function() {
+                this.component.setProps( {
+                    views: 0,
+                    appsUsed: 0
+                });
+            });
+
+            it('should render the views', function() {
+                expect(this.component.find('.lighter-text').at(3).text()).toBe('0 /\u2014');
+            });
+            it('should render appsUsed', function() {
+                expect(this.component.find('.lighter-text').last().text()).toBe('0 /\u2014');
+            });
         });
     });
 

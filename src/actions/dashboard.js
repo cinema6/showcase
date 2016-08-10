@@ -17,6 +17,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import { showAlert } from './alert';
 import { showPlanModal } from './billing';
+import campaign from './campaign';
+
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -78,9 +80,12 @@ export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(() => (dispatch) =>
     dispatch(createAction(LOAD_PAGE_DATA)(
         Promise.all([
-            dispatch(getCampaigns())
-            .then((campaigns) => Promise.all(campaigns.map(campaign => (
-                dispatch(getCampaignAnalytics(campaign.id))
+            Promise.all([
+                dispatch(campaign.query({ statuses: 'canceled' })),
+                dispatch(getCampaigns()),
+            ]).then(([archives, campaigns]) =>
+                Promise.all(campaigns.concat(archives).map(camp => (
+                    dispatch(getCampaignAnalytics(camp.id))
             )))),
             dispatch(getPaymentPlan()),
             dispatch(getBillingPeriod()),
