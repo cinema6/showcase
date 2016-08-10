@@ -299,6 +299,10 @@ describe('Billing', function() {
                     })());
                 });
 
+                it('should close the modal', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
+                });
+
                 describe('the alert', () => {
                     let alert;
 

@@ -126,46 +126,50 @@ class Billing extends Component {
                 onConfirm={paymentPlanId => (
                     changePaymentPlan(paymentPlanId, page.postPlanChangeRedirect)
                 )}
-                onCancel={() => showAlert({
-                    title: 'Cancel Your Subscription',
-                    description: (<div>
-                        <span>
-                            <strong>Are you sure you want to cancel your subscription?</strong>
-                            <br />
-                            <p>
+                onCancel={() => {
+                    showPlanModal(false);
+
+                    showAlert({
+                        title: 'Cancel Your Subscription',
+                        description: (<div>
+                            <span>
+                                <strong>Are you sure you want to cancel your subscription?</strong>
                                 <br />
-                                {numberOfCampaigns > 1 ?
-                                    `All ${numberOfCampaigns} of your apps will lose the ` +
-                                        'exposure they have been getting!' :
-                                    'Your app will lose the exposure it has been getting!'
-                                }
-                            </p>
-                        </span>
-                        <div className="cancel-stats">
-                            <div className="campaign-mini-stats col-md-6 text-center">
-                                <span>Current period</span>
-                                <h3>{viewsPerMonth}</h3>
-                                <span>views</span>
+                                <p>
+                                    <br />
+                                    {numberOfCampaigns > 1 ?
+                                        `All ${numberOfCampaigns} of your apps will lose the ` +
+                                            'exposure they have been getting!' :
+                                        'Your app will lose the exposure it has been getting!'
+                                    }
+                                </p>
+                            </span>
+                            <div className="cancel-stats">
+                                <div className="campaign-mini-stats col-md-6 text-center">
+                                    <span>Current period</span>
+                                    <h3>{viewsPerMonth}</h3>
+                                    <span>views</span>
+                                </div>
+                                <div className="campaign-mini-stats col-md-6 text-center">
+                                    <span>Later</span>
+                                    <h3>0</h3>
+                                    <span>views</span>
+                                </div>
                             </div>
-                            <div className="campaign-mini-stats col-md-6 text-center">
-                                <span>Later</span>
-                                <h3>0</h3>
-                                <span>views</span>
-                            </div>
-                        </div>
-                    </div>),
-                    buttons: [
-                        {
-                            text: 'Cancel my subscription',
-                            type: 'danger btn-block',
-                            size: 'large',
-                            onSelect: dismiss => cancelSubscription().then(() => Promise.all([
-                                dismiss(),
-                                showPlanModal(false),
-                            ])),
-                        },
-                    ],
-                })}
+                        </div>),
+                        buttons: [
+                            {
+                                text: 'Cancel my subscription',
+                                type: 'danger btn-block',
+                                size: 'large',
+                                onSelect: dismiss => cancelSubscription().then(() => Promise.all([
+                                    dismiss(),
+                                    showPlanModal(false),
+                                ])),
+                            },
+                        ],
+                    });
+                }}
             />
         </div>);
     }
