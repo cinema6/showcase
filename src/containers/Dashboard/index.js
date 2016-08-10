@@ -9,6 +9,12 @@ import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
 import { get, compact } from 'lodash';
 import moment from 'moment';
+// import {
+//     getBillingPeriod,
+//     getPaymentPlan,
+//     getCampaigns,
+//     getArchive,
+// } from '../../actions/session';
 
 class Dashboard extends Component {
     componentDidMount() {
@@ -42,8 +48,8 @@ class Dashboard extends Component {
         const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
         const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
         const viewGoals = get(billingPeriod, 'totalViews');
-        const appsUsed = get(campaigns, '.length');
-        const maxApps = get(paymentPlan, '.maxCampaigns');
+        const appsUsed = get(campaigns, 'length');
+        const maxApps = get(paymentPlan, 'maxCampaigns');
 
         return (<div>
             {/* top navigation bar */}

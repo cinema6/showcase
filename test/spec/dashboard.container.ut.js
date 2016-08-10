@@ -67,7 +67,9 @@ describe('Dashboard', function() {
                         }
                     },
                     campaign: {
-                        [campaign.id] : {}
+                        [campaign.id] : {
+                            id: campaign.id
+                        }
                     }
                 },
                 session: {
