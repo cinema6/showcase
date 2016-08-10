@@ -32,10 +32,11 @@ class Archive extends Component {
             campaignAnalytics,
         } = this.props;
 
-        return (<div className="row">
+        return (<div className="container">
+        <div className="row">
             <div className="campaign-dashboard col-md-12">
                 <div className="col-md-12 col-sm-12">
-                    <h3>Archived Applications</h3>
+                    <h3 className="campaign-list-title">Archived Applications</h3>
                     {campaigns && <ul className="campaign-app-list card-item">
                         {campaigns.length > 0 ? campaigns.map(campaign => {
                             const analytics = find(campaignAnalytics, { campaignId: campaign.id });
@@ -52,10 +53,15 @@ class Archive extends Component {
 
                                 onRestore={() => this.props.restoreCampaign(campaign.id)}
                             />);
-                        }) : <li>Nothing in the archive.</li>}
+                        }) : <li>
+                                <div className="campaign-list-item text-center">
+                                    You don't have any archived campaigns.
+                                </div>
+                            </li>}
                     </ul>}
                 </div>
             </div>
+        </div>
         </div>);
     }
 }

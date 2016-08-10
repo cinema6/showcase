@@ -77,6 +77,9 @@
         right: 0;
         margin: 0;
     }*/
+    div#root {
+        overflow: auto;
+    }
     .navbar-nav {
         margin: 0;
     }
@@ -414,7 +417,18 @@
                 text-decoration: none;
                 text-align: left;
             }
+            .slideout-menu .menu-item button {
+                display: inline-block;
+                width: 100%;
+                padding: 20px 30px;
+                border: 0;
+                border-bottom: 1px solid #24272F;
+                color: #E3E3E3;
+                text-decoration: none;
+                text-align: left;
+            }
             .slideout-menu .menu-item a i.fa,
+            .slideout-menu .menu-item button i.fa,
             .slideout-menu .menu-item button.btn-link i.fa {
                 margin-right: 0.25em;
                 display: inline-block;
@@ -686,6 +700,10 @@
                     }
                     .campaign-progressbar > .progressbar-step.active > .progress-wrapper > .progress-bar {
                         width: 50%;
+                        /*-webkit-transition-delay: 0.1s;
+                        -moz-transition-delay: 0.1s;
+                        -o-transition-delay: 0.1s;*/
+                        transition-delay: 0.6s;
                     }
                     .campaign-progressbar > .progressbar-step:first-child.active > .progress-wrapper > .progress-bar {
                         width: 0%;
@@ -721,6 +739,13 @@
                     .campaign-progressbar > .progressbar-step.disabled a.progressbar-step-dot {
                         pointer-events: none;
                     }
+                .campaign-progressbar.nav-justified > li > button, 
+                .campaign-progressbar.nav-tabs.nav-justified > li > button, 
+                .campaign-progressbar.nav-justified > li > button:disabled:hover, 
+                .campaign-progressbar.nav-justified > li > button:disabled:focus {
+                    position: absolute;                    
+                    width: 60px;
+                }
         .search-icon:after {
             content: '\f002' !important;
             font-family: 'FontAwesome';
@@ -1116,6 +1141,9 @@
             list-style-type: none;
             padding-left: 0;
         }
+        .campaign-app-list a {
+            color: initial;
+        }
         .campaign-list-item-wrapper {                    
             display: block;                    
             border-bottom: 1px solid #ddd;
@@ -1128,12 +1156,19 @@
             padding: 10px 0;
             overflow: hidden;
         }
+        .campaign-toggle .btn-group {
+            float: right;
+        }
+        .campaign-toggle .btn-link {
+            font-size: 18px;
+        }
         .app-icon-wrapper img {
             max-width: 100%;
             height: auto;
         }
         .app-info-wrapper .app-title {
             margin-top: 0;
+            line-height: 1.25;
         }
         .campaign-list-item .app__ratings,
         .campaign-list-item .app__ratings--stars {
@@ -1142,6 +1177,9 @@
         }
         .campaign-app-list .app__ratings p {
             display: inline-block;
+        }
+        .promote-app-cta {
+            margin-bottom: 40px;
         }
        /* .campaign-list-item .view-count {
             clear: none;
@@ -1160,10 +1198,30 @@
             .main-section {
                 margin-top: 40px;
             }
+            .campaign-toggle {
+                float: right;
+            }
+            .campaign-toggle .btn-group {
+                float: none;
+            }
+        }
+        @media (min-width: 768px) and (max-width: 991px) {
+            .campaign-list-item .view-count,
+            .campaign-list-item .click-count,
+            .campaign-list-item .ctr-count {
+                border-top: 1px dotted #ddd;
+            }
         }
         @media (max-width: 767px) {
+            .campaign-list-title {
+                text-align: center;
+            }
             .campaign-list-item {
                 text-align: center;
+            }            
+            .campaign-list-item .stats-header {
+                font-size: 18px;
+                font-weight: 400;
             }
             .account-summary .campaign-mini-stats .stats-header {
                 font-size: 18px;
@@ -1180,9 +1238,18 @@
             }
             .app-icon-wrapper img {
                 max-width: 100%;
+                width: 128px;
                 height: auto;
                 margin-bottom: 20px;
                 margin-top: 20px;
+            }
+            .campaign-toggle {
+                float: none;
+                border-top: 1px dotted #ddd;
+                border-bottom: 1px dotted #ddd;
+            }
+            .campaign-toggle .btn-group {
+                float: none;
             }
         }
  /***
@@ -1651,6 +1718,7 @@
             margin: 5px -1px -1px -1px;
             border-bottom-left-radius: 4px;
             border-bottom-right-radius: 4px;
+            position: relative;
         }
         .plan-box-footer.current-plan {
             /*background: #777;*/
@@ -1682,6 +1750,24 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:after {
+                background: #25ab27;
+                content: 'Selected';
+                text-align: left;
+                transition: all 0.5s ease-in;
+            }
+            .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:before {
+                content: '\f058';
+                color: #ecfffe;
+                font-family: 'FontAwesome';
+                position: absolute;
+                font-size: 24px;
+                width: 34px;
+                margin-left: -12px;
+                border-radius: 50%;
+                bottom: 18px;
+                right: 20px;
             }
         .plan-box-footer.plan-coming-soon {
             background: #f2414d;
@@ -2208,6 +2294,10 @@
         .billing-summary .btn {
             display: block;
             width: 100%;
+        }
+        .stats-list h4 {
+            font-size: 14px;
+            text-align: left;
         }
         .campaign-stats-totals span {
             margin-bottom: 5px;
