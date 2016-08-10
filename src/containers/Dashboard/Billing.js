@@ -208,20 +208,27 @@ Billing.propTypes = {
     cancelSubscription: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
-    const payments = state.session.payments.map(id => state.db.payment[id]);
-    const paymentMethods = state.session.paymentMethods.map(token => state.db.paymentMethod[token]);
-    const paymentPlans = (state.system.paymentPlans || []).map(id => state.db.paymentPlan[id]);
-    const paymentPlan = find(paymentPlans, { id: state.session.paymentPlan });
+function mapStateToProps({
+    session,
+    db,
+    system,
+    form,
+}) {
+    const payments = session.payments.map(id => db.payment[id]);
+    const paymentMethods = session.paymentMethods.map(token => db.paymentMethod[token]);
+    const paymentPlans = (system.paymentPlans || []).map(id => db.paymentPlan[id]);
+    const paymentPlan = (session.paymentPlanStatus || undefined) && find(paymentPlans, {
+        id: session.paymentPlanStatus.paymentPlanId,
+    });
 
     return {
         payments,
         paymentPlan,
         paymentPlans: paymentPlans.filter(plan => plan.price > 0),
         defaultPaymentMethod: find(paymentMethods, { default: true }),
-        billingPeriod: state.session.billingPeriod,
-        selectedPlan: (getValues(get(state, 'form.selectPlan.change')) || {}).plan,
-        numberOfCampaigns: get(state, 'session.campaigns.length'),
+        billingPeriod: session.billingPeriod,
+        selectedPlan: (getValues(get(form, 'selectPlan.change')) || {}).plan,
+        numberOfCampaigns: get(session, 'campaigns.length'),
     };
 }
 

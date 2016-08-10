@@ -28,3 +28,16 @@ export const changePaymentPlan = ({
         id: paymentPlanId,
     },
 });
+
+export const GET_PAYMENT_PLAN_STATUS_START = prefix('GET_PAYMENT_PLAN_STATUS_START');
+export const GET_PAYMENT_PLAN_STATUS_SUCCESS = prefix('GET_PAYMENT_PLAN_STATUS_SUCCESS');
+export const GET_PAYMENT_PLAN_STATUS_FAILURE = prefix('GET_PAYMENT_PLAN_STATUS_FAILURE');
+export const getPaymentPlanStatus = ({ orgId }) => callAPI({
+    method: 'GET',
+    endpoint: `/api/account/orgs/${orgId}/payment-plan`,
+    types: [
+        GET_PAYMENT_PLAN_STATUS_START,
+        GET_PAYMENT_PLAN_STATUS_SUCCESS,
+        GET_PAYMENT_PLAN_STATUS_FAILURE,
+    ],
+});

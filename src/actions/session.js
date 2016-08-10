@@ -1,7 +1,9 @@
 import { createAction } from 'redux-actions';
 import campaign from './campaign';
 import { createThunk } from '../middleware/fsa_thunk';
-import orgs from './org';
+import orgs, {
+    getPaymentPlanStatus as getOrgPaymentPlanStatus,
+} from './org';
 import promotions from './promotion';
 import paymentPlans from './payment_plan';
 import { getCurrentPayment } from './transaction';
@@ -85,16 +87,43 @@ export const getBillingPeriod = createThunk(() => (dispatch, getState) => (
     )))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));
 
+export const GET_PAYMENT_PLAN_STATUS = prefix('GET_PAYMENT_PLAN_STATUS');
+export const getPaymentPlanStatus = createThunk(() => (dispatch, getState) => dispatch(
+    createAction(GET_PAYMENT_PLAN_STATUS)(Promise.resolve().then(() => {
+        const state = getState();
+        const user = state.db.user[state.session.user];
+        const paymentPlanStatus = state.session.paymentPlanStatus;
+
+        return paymentPlanStatus || dispatch(getOrgPaymentPlanStatus({ orgId: user.org }));
+    }))
+).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));
+
 export const GET_PAYMENT_PLAN = prefix('GET_PAYMENT_PLAN');
 export const getPaymentPlan = createThunk(() => (dispatch, getState) => (
-    dispatch(createAction(GET_PAYMENT_PLAN)(Promise.resolve().then(() => {
-        const state = getState();
-        const paymentPlan = state.db.paymentPlan[state.session.paymentPlan];
+    dispatch(createAction(GET_PAYMENT_PLAN)(Promise.resolve().then(() => (
+        dispatch(getPaymentPlanStatus()).then(status => {
+            const plan = getState().db.paymentPlan[status.paymentPlanId];
 
-        return (paymentPlan && [paymentPlan]) || dispatch(getOrg()).then(([org]) => {
-            if (!org.paymentPlanId) { return null; }
+            if (!status.paymentPlanId) {
+                return null;
+            }
 
-            return dispatch(paymentPlans.get({ id: org.paymentPlanId }));
-        });
-    }))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
+            return (plan && [plan]) || dispatch(paymentPlans.get({ id: status.paymentPlanId }));
+        })
+    )))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason))
 ));
+
+export const GET_NEXT_PAYMENT_PLAN = prefix('GET_NEXT_PAYMENT_PLAN');
+export const getNextPaymentPlan = createThunk(() => (dispatch, getState) => dispatch(
+    createAction(GET_NEXT_PAYMENT_PLAN)(Promise.resolve().then(() => (
+        dispatch(getPaymentPlanStatus()).then(status => {
+            const plan = getState().db.paymentPlan[status.nextPaymentPlanId];
+
+            if (!status.nextPaymentPlanId) {
+                return null;
+            }
+
+            return (plan && [plan]) || dispatch(paymentPlans.get({ id: status.nextPaymentPlanId }));
+        })
+    )))
+).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));

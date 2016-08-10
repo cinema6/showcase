@@ -101,7 +101,10 @@ describe('Billing', function() {
                     cycleEnd: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format(),
                     totalViews: 12345
                 },
-                paymentPlan: paymentPlan.id,
+                paymentPlanStatus: {
+                    paymentPlanId: paymentPlan.id,
+                    nextPaymentPlanId: null
+                },
                 campaigns: Array.apply([], new Array(5)).map(() => `cam-${createUuid()}`)
             };
             state = {
@@ -485,7 +488,7 @@ describe('Billing', function() {
 
                 state = assign({}, state, {
                     session: assign({}, state.session, {
-                        paymentPlan: null
+                        paymentPlanStatus: null
                     }),
                     system: assign({}, state.system, {
                         paymentPlans: null

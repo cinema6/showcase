@@ -4,10 +4,15 @@ import { createUuid } from 'rc-uuid';
 import { callAPI } from '../../src/actions/api';
 import {
     changePaymentPlan,
+    getPaymentPlanStatus,
 
     CHANGE_PAYMENT_PLAN_START,
     CHANGE_PAYMENT_PLAN_SUCCESS,
-    CHANGE_PAYMENT_PLAN_FAILURE
+    CHANGE_PAYMENT_PLAN_FAILURE,
+
+    GET_PAYMENT_PLAN_STATUS_START,
+    GET_PAYMENT_PLAN_STATUS_SUCCESS,
+    GET_PAYMENT_PLAN_STATUS_FAILURE
 } from '../../src/actions/org';
 
 describe('org actions', function() {
@@ -65,6 +70,26 @@ describe('org actions', function() {
                 body: {
                     id: paymentPlanId
                 }
+            }));
+        });
+    });
+
+    describe('getPaymentPlanStatus({ orgId })', () => {
+        let orgId;
+
+        beforeEach(() => {
+            orgId = `o-${createUuid()}`;
+        });
+
+        afterEach(() => {
+            orgId = null;
+        });
+
+        it('should call the API', () => {
+            expect(getPaymentPlanStatus({ orgId })).toEqual(callAPI({
+                method: 'GET',
+                endpoint: `/api/account/orgs/${orgId}/payment-plan`,
+                types: [GET_PAYMENT_PLAN_STATUS_START, GET_PAYMENT_PLAN_STATUS_SUCCESS, GET_PAYMENT_PLAN_STATUS_FAILURE]
             }));
         });
     });
