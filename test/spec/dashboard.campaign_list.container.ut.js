@@ -6,6 +6,7 @@ import  CampaignList from '../../src/containers/Dashboard/CampaignList';
 import { createUuid } from 'rc-uuid';
 import CampaignListItem from '../../src/components/CampaignListItem';
 import { loadPageData, archiveCampaign } from '../../src/actions/campaign_list';
+import CampaignListItemLoader from '../../src/components/CampaignListItemLoader';
 
 describe('CampaignList', () => {
     let wrapper;
@@ -182,8 +183,14 @@ describe('CampaignList', () => {
             store.dispatch({ type: '@@UPDATE' });
         });
 
-        it('should not render any campaigns items', () => {
-            expect(component.find('.campaign-app-list').length).toBe(0, '.campaign-app-list is rendered.');
+        it('should render a couple of CampaignListItemLoaders', () => {
+            const loaders = component.find('.campaign-app-list').find(CampaignListItemLoader);
+
+            expect(loaders.length).toBe(1);
+            loaders.forEach(loader => {
+                expect(loader.prop('showArchive')).toBe(true);
+                expect(loader.prop('showRestore')).toBe(false);
+            });
         });
     });
 

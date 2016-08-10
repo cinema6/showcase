@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import CampaignListItem from '../../components/CampaignListItem';
+import CampaignListItemLoader from '../../components/CampaignListItemLoader';
 import {
     find,
     compact,
@@ -36,8 +37,19 @@ class CampaignList extends Component {
             <div className="campaign-dashboard col-md-12">
                 <div className="col-md-12 col-sm-12">
                     <h3>Your applications</h3>
-                    {campaigns && <ul className="campaign-app-list card-item">
-                        {campaigns.length > 0 ? campaigns.map(campaign => {
+                    <ul className="campaign-app-list card-item">{(() => {
+                        if (!campaigns) {
+                            return [0].map(index => <CampaignListItemLoader
+                                key={index}
+                                showArchive
+                            />);
+                        }
+
+                        if (campaigns.length < 1) {
+                            return <li>You have no apps.</li>;
+                        }
+
+                        return campaigns.map(campaign => {
                             const analytics = find(campaignAnalytics, { campaignId: campaign.id });
 
                             return (<CampaignListItem
@@ -52,8 +64,8 @@ class CampaignList extends Component {
 
                                 onArchive={() => this.props.archiveCampaign(campaign)}
                             />);
-                        }) : <li>You have no apps.</li>}
-                    </ul>}
+                        });
+                    })()}</ul>
                 </div>
                 <div className="promote-app-cta text-center col-md-12 col-sm-12">
                     <h3>Ready to promote another app?</h3>
