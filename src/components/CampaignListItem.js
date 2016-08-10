@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import StarRating from './StarRating';
 import numeral from 'numeral';
 import { Link } from 'react-router';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const DASH = '\u2014';
 
@@ -44,21 +45,42 @@ export default function CampaignListItem({
                 </div>
                 <div className="campaign-toggle col-md-2 col-sm-2 col-xs-12 pull-right">
                     <div className="btn-group" role="group">
-                        {!!onArchive && <button
-                            className="btn btn-link"
-                            onClick={catchEvent(() => onArchive())}
+                        {!!onArchive && <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip id="archive">
+                                Archive
+                            </Tooltip>}
                         >
-                            <i className="fa fa-archive" aria-hidden="true" />
-                        </button>}
-                        {!!onRestore && <button
-                            className="btn btn-link"
-                            onClick={catchEvent(() => onRestore())}
+                            <button
+                                className="btn btn-link"
+                                onClick={catchEvent(() => onArchive())}
+                            >
+                                <i className="fa fa-archive" aria-hidden="true" />
+                            </button>
+                        </OverlayTrigger>}
+                        {!!onRestore && <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip id="archive">
+                                Restore
+                            </Tooltip>}
                         >
-                            <i className="fa fa-history" aria-hidden="true" />
-                        </button>}
-                        <button type="button" className="btn btn-link">
-                            <i className="fa fa-chevron-right" aria-hidden="true" />
-                        </button>
+                            <button
+                                className="btn btn-link"
+                                onClick={catchEvent(() => onRestore())}
+                            >
+                                <i className="fa fa-history" aria-hidden="true" />
+                            </button>
+                        </OverlayTrigger>}
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip id="stats">
+                                View Stats
+                            </Tooltip>}
+                        >
+                            <button type="button" className="btn btn-link">
+                                <i className="fa fa-chevron-right" aria-hidden="true" />
+                            </button>
+                        </OverlayTrigger>
                     </div>
                 </div>
                 <div
