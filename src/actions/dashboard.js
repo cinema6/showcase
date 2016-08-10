@@ -8,7 +8,13 @@ import { createAction } from 'redux-actions';
 import { replace, push } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
 import { paymentMethod } from './payment';
-import { getOrg, getBillingPeriod, getPaymentPlan, getCampaigns } from './session';
+import {
+    getOrg,
+    getBillingPeriod,
+    getPaymentPlan,
+    getCampaigns,
+    getArchive,
+} from './session';
 import moment from 'moment';
 import { getCampaignAnalytics } from './analytics';
 import { notify, addNotification } from './notification';
@@ -17,8 +23,6 @@ import React from 'react';
 import { Link } from 'react-router';
 import { showAlert } from './alert';
 import { showPlanModal } from './billing';
-import campaign from './campaign';
-
 
 const ADD_PAYMENT_METHOD_MESSAGE = (<span>
     Your trial period has expired. Please <Link to="/dashboard/billing">add a
@@ -81,7 +85,7 @@ export const loadPageData = createThunk(() => (dispatch) =>
     dispatch(createAction(LOAD_PAGE_DATA)(
         Promise.all([
             Promise.all([
-                dispatch(campaign.query({ statuses: 'canceled' })),
+                dispatch(getArchive()),
                 dispatch(getCampaigns()),
             ]).then(([archives, campaigns]) =>
                 Promise.all(campaigns.concat(archives).map(camp => (

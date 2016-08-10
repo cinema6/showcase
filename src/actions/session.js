@@ -27,6 +27,23 @@ export const getCampaigns = createThunk(() => (
     }
 ));
 
+export const GET_ARCHIVE = prefix('GET_CAMPAIGNS');
+export const getArchive = createThunk(() => (
+    function thunk(dispatch, getState) {
+        return dispatch(createAction(GET_ARCHIVE)(
+            Promise.resolve().then(() => {
+                const state = getState();
+                const campaignIds = state.session.archive;
+
+                return (campaignIds && campaignIds.map(id => state.db.campaign[id])) ||
+                    dispatch(campaign.list()).then(campaigns => (
+                        campaigns.filter(camp => camp.status === 'canceled')
+                    ));
+            })
+        )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
+    }
+));
+
 export const GET_ORG = prefix('GET_ORG');
 export const getOrg = createThunk(() => (dispatch, getState) => dispatch(createAction(GET_ORG)(
     Promise.resolve().then(() => {

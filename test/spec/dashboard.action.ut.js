@@ -12,14 +12,14 @@ import {
 import {
     getBillingPeriod,
     getPaymentPlan,
-    getCampaigns
+    getCampaigns,
+    getArchive
 } from '../../src/actions/session';
 import { getCampaignAnalytics } from '../../src/actions/analytics';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
 import { trackLogout as intercomTrackLogout } from '../../src/actions/intercom';
 import { createAction } from 'redux-actions';
 import { showPlanModal } from '../../src/actions/billing';
-import campaign from '../../src/actions/campaign';
 import {
     LOGOUT_START,
     LOGOUT_SUCCESS,
@@ -360,7 +360,7 @@ describe('dashboard actions', function() {
             });
 
             it('should get archived campaigns', function(){
-                expect(this.dispatch).toHaveBeenCalledWith(campaign.query({ statuses: 'canceled' }));
+                expect(this.dispatch).toHaveBeenCalledWith(getArchive());
             });
 
             describe('when the campaigns are fetched', function() {
@@ -373,7 +373,7 @@ describe('dashboard actions', function() {
                     }));
 
                     this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
-                    this.dispatch.getDeferred(campaign.query({ statuses: 'canceled' })).resolve(this.archived);
+                    this.dispatch.getDeferred(getArchive()).resolve(this.archived);
 
                     setTimeout(done);
                     this.dispatch.calls.reset();
