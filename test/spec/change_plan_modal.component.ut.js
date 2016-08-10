@@ -5,6 +5,7 @@ import { mount, ReactWrapper } from 'enzyme';
 import SelectPlan from '../../src/forms/SelectPlan';
 import { createStore } from 'redux';
 import moment from 'moment';
+import { createUuid } from 'rc-uuid';
 
 describe('ChangePlanModal', () => {
     let state;
@@ -200,6 +201,25 @@ describe('ChangePlanModal', () => {
 
         it('should show no messages', () => {
             expect(modal.find('.alert').length).toBe(0);
+        });
+    });
+
+    describe('if the currentPlan is not in the plans Array', () => {
+        let currentPlan;
+
+        beforeEach(() => {
+            currentPlan = `pp-${createUuid()}`;
+
+            component.setProps({ currentPlan });
+            modal = getModal();
+        });
+
+        afterEach(() => {
+            currentPlan = null;
+        });
+
+        it('should set the middle plan as the initialValue', () => {
+            expect(modal.find(SelectPlan).prop('initialValues')).toEqual({ plan: props.plans[1].id });
         });
     });
 
