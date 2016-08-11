@@ -177,15 +177,11 @@ class ProductWizard extends Component {
             <div className="row">
                 {step > 0 && (
                     <div
-                        className={classnames({
-                            'demo-wrap': true,
-                            'col-md-6': true,
-                            'col-sm-6': true,
-                            'col-xs-12': true,
-                            'col-middle': true,
-                            'text-center': true,
-                            'demo-landscape': landscape,
-                        })}
+                        className={classnames('demo-wrap', 'col-md-6', 'col-sm-6',
+                            'col-xs-12', 'col-middle', 'text-center', {
+                                'demo-landscape': landscape,
+                            }
+                        )}
                     >
                         <AdPreview
                             placementOptions={PREVIEW.PLACEMENT_OPTIONS}
