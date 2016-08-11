@@ -15,7 +15,7 @@ module.exports = {
 
                 browser.pause(15000);
 
-                page
+                browser.page.dashboardPage()
               .waitForElementVisible('@deleteButton', 10000)
               .assert.elementPresent('@deleteButton')
               .click('@deleteButton');
