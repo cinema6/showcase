@@ -10,7 +10,8 @@ import {
     LOAD_CAMPAIGN,
     UPDATE_CAMPAIGN,
     PREVIEW_LOADED,
-    COLLECT_PAYMENT
+    COLLECT_PAYMENT,
+    TOGGLE_LANDSCAPE
 } from '../../src/actions/product_wizard';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
@@ -35,7 +36,7 @@ const proxyquire = require('proxyquire');
 describe('product wizard actions', function() {
     let collateralActions, notificationActions;
     let actions;
-    let productSelected, wizardComplete, goToStep, wizardDestroyed, createCampaign, loadCampaign, updateCampaign, previewLoaded;
+    let productSelected, wizardComplete, goToStep, toggleLandscape, wizardDestroyed, createCampaign, loadCampaign, updateCampaign, previewLoaded;
 
     beforeEach(function() {
         notificationActions = {
@@ -76,6 +77,7 @@ describe('product wizard actions', function() {
         productSelected = actions.productSelected;
         wizardComplete = actions.wizardComplete;
         goToStep = actions.goToStep;
+        toggleLandscape = actions.toggleLandscape;
         wizardDestroyed = actions.wizardDestroyed;
         createCampaign = actions.createCampaign;
         loadCampaign = actions.loadCampaign;
@@ -686,7 +688,7 @@ describe('product wizard actions', function() {
                         id: this.uri,
                         name: 't',
                         images: [{type: 'thumbnail', uri: 'uri'}],
-                        uri: this.uri 
+                        uri: this.uri
                     });
                     setTimeout(done);
                 });
@@ -862,6 +864,18 @@ describe('product wizard actions', function() {
 
         it('should return an FSA', function() {
             expect(result).toEqual(createAction(GO_TO_STEP)(step));
+        });
+    });
+
+    describe('toggleLandscape()', function() {
+        let result;
+
+        beforeEach(function() {
+            result = toggleLandscape();
+        });
+
+        it('should return an FSA', function() {
+            expect(result).toEqual(createAction(TOGGLE_LANDSCAPE)());
         });
     });
 
