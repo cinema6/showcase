@@ -15,7 +15,16 @@ module.exports = {
     'Reelcontent Dashboard Test': function (browser) {
         var page = browser.page.dashboardPage();
         page
-      .assert.urlContains('dashboard');
+      .assert.urlContains('dashboard')
+      .assert.elementPresent('@trackSetup')
+      .click('@trackSetup')
+      .waitForElementPresent('@popup', 10000)
+      .assert.elementPresent('@productID');
+        browser.pause(200);
+        page
+      .assert.elementPresent('@closeButton')
+      .click('@closeButton')
+      .waitForElementNotPresent('@popup', 10000);
 
         utils.allDashboardTest(page);
     }
