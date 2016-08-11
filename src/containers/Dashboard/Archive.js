@@ -49,7 +49,7 @@ class Archive extends Component {
                             if (campaigns.length < 1) {
                                 return (<li>
                                     <div className="campaign-list-item text-center">
-                                        You don't have any archived campaigns.
+                                        You don't have any archived apps.
                                     </div>
                                 </li>);
                             }
