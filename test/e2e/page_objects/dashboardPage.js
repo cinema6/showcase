@@ -19,6 +19,10 @@ module.exports = {
         sidePanel: '#sidePanelDesktop',
         phoneFrame: 'div[class=phone-frame]',
         replaceButton: 'button.btn-sm',
-        deleteButton: 'button.btn:nth-child(2)'
+        deleteButton: 'button.btn:nth-child(2)',
+        trackSetup: 'p.text-center > a:nth-child(1)',
+        popup: '.modal-content',
+        productID: 'input[id=tracking-id]',
+        closeButton: '.close'
     }
 };
