@@ -9,12 +9,6 @@ import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
 import { get, compact } from 'lodash';
 import moment from 'moment';
-// import {
-//     getBillingPeriod,
-//     getPaymentPlan,
-//     getCampaigns,
-//     getArchive,
-// } from '../../actions/session';
 
 class Dashboard extends Component {
     componentDidMount() {
