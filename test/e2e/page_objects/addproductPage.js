@@ -19,6 +19,7 @@ module.exports = {
           'li.app-results:nth-child(1) > span:nth-child(1) > div:nth-child(1) > img:nth-child(1)',
         titleInput: 'input[id=adTitle-input]',
         descriptionInput: 'textarea[id=adDesc-textarea]',
-        appCategories: 'h4[class=app-categories]'
+        appCategories: 'h4[class=app-categories]',
+        searching: 'app-results app-searching'
     }
 };

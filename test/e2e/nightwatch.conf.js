@@ -62,7 +62,7 @@ module.exports = {
             desiredCapabilities: {
                 platform: 'Windows 10',
                 name: 'e2e-tests',
-                browserName: 'MicrosoftEdge'
+                browserName: 'chrome'
             },
             globals: {
                 waitForConditionTimeout: 40000,
