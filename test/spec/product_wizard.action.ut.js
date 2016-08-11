@@ -21,7 +21,7 @@ import advertiser from '../../src/actions/advertiser';
 import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
-import { campaignFromData } from '../../src/utils/campaign';
+import { campaignFromData, campaignUpdateFromData } from '../../src/utils/campaign';
 import { push, goBack } from 'react-router-redux';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 import { collectPayment, autofill, completeAutofill } from '../../src/actions/product_wizard';
@@ -164,7 +164,7 @@ describe('product wizard actions', function() {
             });
 
             it('should update the campaign', function() {
-                expect(campaign.update).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }, camp) });
+                expect(campaign.update).toHaveBeenCalledWith({ data: campaignUpdateFromData({ productData, targeting }, camp) });
                 expect(dispatch).toHaveBeenCalledWith(campaign.update.calls.mostRecent().returnValue);
             });
 

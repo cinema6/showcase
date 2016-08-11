@@ -717,7 +717,7 @@ describe('utils/db', function() {
                         ],
                         endpoint: `${endpoint}/${data.id}`,
                         method: 'PUT',
-                        body: assign({}, state.db.campaign[data.id], data)
+                        body: data
                     }));
                 });
 
@@ -812,33 +812,6 @@ describe('utils/db', function() {
 
                     it('should reject the promise', function() {
                         expect(failure).toHaveBeenCalledWith(new Error('data must have a(n) id'));
-                    });
-                });
-
-                describe('if there is no existing object', function() {
-                    beforeEach(function(done) {
-                        data.id = 'cam-' + createUuid();
-                        thunk = getThunk(actions.update({ data }));
-
-                        success.calls.reset();
-                        failure.calls.reset();
-                        dispatch.calls.reset();
-                        dispatch.and.callFake(action => Promise.reject(action.payload));
-
-                        thunk(dispatch, getState).then(success, failure);
-                        setTimeout(done);
-                    });
-
-                    it('should not call the api', function() {
-                        expect(dispatch.calls.count()).toBe(1);
-                    });
-
-                    it('should dispatch an error', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createAction(actions.update.FAILURE)(new Error(`have no campaign with id(${data.id})`)));
-                    });
-
-                    it('should reject the promise', function() {
-                        expect(failure).toHaveBeenCalledWith(new Error(`have no campaign with id(${data.id})`));
                     });
                 });
             });

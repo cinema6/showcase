@@ -6,7 +6,10 @@ import { createAction } from 'redux-actions';
 import { TYPE as NOTIFICATION_TYPE } from '../enums/notification';
 import { notify } from './notification';
 import { replace, push, goBack } from 'react-router-redux';
-import { campaignFromData } from '../utils/campaign';
+import {
+    campaignFromData,
+    campaignUpdateFromData,
+} from '../utils/campaign';
 import { createThunk } from '../../src/middleware/fsa_thunk';
 import { getPromotions, getOrg, getPaymentPlan } from './session';
 import moment from 'moment';
@@ -130,13 +133,13 @@ export const updateCampaign = createThunk(({ id, productData, targeting }) => (
                 }
 
                 return dispatch(campaign.update({
-                    data: campaignFromData({ productData, targeting }, currentCampaign),
-                })).then(([camp]) => {
+                    data: campaignUpdateFromData({ productData, targeting }, currentCampaign),
+                })).then(() => {
                     dispatch(notify({
                         type: NOTIFICATION_TYPE.SUCCESS,
                         message: 'Your app has been updated!',
                     }));
-                    dispatch(push(`/dashboard/campaigns/${camp.id}`));
+                    dispatch(push(`/dashboard/campaigns/${currentCampaign.id}`));
 
                     return [id];
                 });
