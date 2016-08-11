@@ -16,7 +16,9 @@ const INITIAL_STATE = {
 export default handleActions({
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
 
-    [TOGGLE_LANDSCAPE]: (state, { payload: landscape }) => assign({}, state, { landscape }),
+    [TOGGLE_LANDSCAPE]: state => assign({}, state, {
+        landscape: !state.landscape,
+    }),
 
     [`${LOAD_CAMPAIGN}_PENDING`]: state => assign({}, state, {
         loading: true,

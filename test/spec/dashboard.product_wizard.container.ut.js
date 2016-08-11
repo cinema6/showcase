@@ -10,6 +10,7 @@ import {
     productEdited,
     targetingEdited,
     goToStep,
+    toggleLandscape,
     wizardDestroyed,
     createCampaign,
     previewLoaded,
@@ -46,6 +47,7 @@ describe('ProductWizard', function() {
             productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
             targetingEdited: jasmine.createSpy('targetingEdited()').and.callFake(targetingEdited),
             goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
+            toggleLandscape: jasmine.createSpy('toggleLandscape()').and.callFake(toggleLandscape),
             wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
             createCampaign: jasmine.createSpy('createCampaign()').and.callFake(createCampaign),
             collectPayment,
@@ -150,6 +152,7 @@ describe('ProductWizard', function() {
 
                 page: {
                     step: 0,
+                    landscape: false,
                     productData: null,
                     previewLoaded: false,
                     checkingIfPaymentRequired: false,
@@ -533,6 +536,20 @@ describe('ProductWizard', function() {
                         });
                     });
                 });
+                describe('Rotate button', function(){
+                    let button;
+                    beforeEach(function() {
+                        button = component.find('.btn-default');
+                    });
+                    describe('onClick()', function(){
+                        beforeEach(function() {
+                            button.simulate('click');
+                        });
+                        it('should toggleLandscape()', function(){
+                            expect(productWizardActions.toggleLandscape).toHaveBeenCalled();
+                        });
+                    });
+                });
             });
 
             describe('WizardEditProduct', function() {
@@ -832,6 +849,22 @@ describe('ProductWizard', function() {
                 it('should dispatch the goToStep action', function() {
                     expect(productWizardActions.goToStep).toHaveBeenCalledWith(step);
                     expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.goToStep.calls.mostRecent().returnValue);
+                    expect(result).toBe(dispatchDeferred.promise);
+                });
+            });
+
+            describe('toggleLandscape()', function() {
+                let landscape;
+                let result;
+
+                beforeEach(function() {
+                    landscape = false;
+                    result = component.props().toggleLandscape(false);
+                });
+
+                it('should dispatch the goToStep action', function() {
+                    expect(productWizardActions.toggleLandscape).toHaveBeenCalledWith(landscape);
+                    expect(store.dispatch).toHaveBeenCalledWith(productWizardActions.toggleLandscape.calls.mostRecent().returnValue);
                     expect(result).toBe(dispatchDeferred.promise);
                 });
             });
