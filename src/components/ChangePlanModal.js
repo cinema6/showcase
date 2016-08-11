@@ -23,7 +23,7 @@ export default function ChangePlanModal({
     const upgrade = (currentPlan && selectedPlan) && (selectedPlan.price > currentPlan.price);
     const tooManyCampaigns = selectedPlan && amountOfCampaigns > selectedPlan.maxCampaigns;
 
-    return (<Modal show={show} className="trial-modal" onHide={onClose}>
+    return (<Modal show={show} className="trial-modal change-plan" onHide={onClose}>
         <Modal.Header className="text-center" closeButton>
             <h1 className="modal-title">Change your plan</h1>
             {cycleEnd && <p>Your billing cycle ends on {cycleEnd.format('MMM DD')}</p>}

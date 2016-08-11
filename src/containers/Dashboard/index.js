@@ -108,17 +108,25 @@ class Dashboard extends Component {
                         users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
+                        <Link to="/dashboard" activeClassName="active">
+                            <i className="fa fa-th-large" /> Dashboard
+                        </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/archive"><i className="fa fa-archive" /> Archive</Link>
+                        <Link to="/dashboard/archive" activeClassName="active">
+                            <i className="fa fa-archive" /> Archive
+                        </Link>
                         {/* link to archive*/}
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
+                        <Link to="/dashboard/billing" activeClassName="active">
+                            <i className="fa fa-usd" /> Billing
+                        </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
+                        <Link to="/dashboard/account" activeClassName="active">
+                            <i className="fa fa-user" /> Profile
+                        </Link>
                     </li>
                     <li className="menu-item">
                         <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
@@ -141,23 +149,27 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-th-large" />
+                        <Link to="/dashboard" activeClassName="active">
+                            <i className="fa fa-th-large" />
                             <span className="menu-item-label">Dashboard</span>
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/archive"><i className="fa fa-archive" />
+                        <Link to="/dashboard/archive" activeClassName="active">
+                            <i className="fa fa-archive" />
                             <span className="menu-item-label">Archive</span>
                             {/* link to archive*/}
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/billing"><i className="fa fa-usd" />
+                        <Link to="/dashboard/billing" activeClassName="active">
+                            <i className="fa fa-usd" />
                             <span className="menu-item-label">Billing</span>
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" />
+                        <Link to="/dashboard/account" activeClassName="active">
+                            <i className="fa fa-user" />
                             <span className="menu-item-label">Profile</span>
                         </Link>
                     </li>

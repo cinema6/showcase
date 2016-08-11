@@ -38,12 +38,12 @@ export default function CampaignDetailInfo({
                         </Link>
                     </span>
                     {!!onArchive && <span className="trash-campaign-link">
-                        <Button bsStyle="danger" bsSize="sm" onClick={onArchive}>
+                        <Button bsStyle="default" bsSize="sm" onClick={onArchive}>
                             <i className="fa fa-archive" />Archive
                         </Button>
                     </span>}
                     {!!onRestore && <span className="restore-campaign-link">
-                        <Button bsStyle="success" bsSize="sm" onClick={onRestore}>
+                        <Button bsStyle="default" bsSize="sm" onClick={onRestore}>
                             <i className="fa fa-history" />Restore
                         </Button>
                     </span>}

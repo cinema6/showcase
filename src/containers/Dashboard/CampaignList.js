@@ -36,45 +36,57 @@ class CampaignList extends Component {
             campaignAnalytics,
         } = this.props;
 
-        return (<div className="row">
-            <div className="campaign-dashboard col-md-12">
-                <div className="col-md-12 col-sm-12">
-                    <h3>Your applications</h3>
-                    <ul className="campaign-app-list card-item">{(() => {
-                        if (!campaigns) {
-                            return [0].map(index => <CampaignListItemLoader
-                                key={index}
-                                showArchive
-                            />);
-                        }
+        return (<div className="container">
+            <div className="row">
+                <div className="campaign-dashboard col-md-12">
+                    <div className="col-md-12 col-sm-12">
+                        <h3 className="campaign-list-title">Your applications</h3>
+                        <ul className="campaign-app-list card-item">{(() => {
+                            if (!campaigns) {
+                                return [0].map(index => <CampaignListItemLoader
+                                    key={index}
+                                    showArchive
+                                />);
+                            }
 
-                        if (campaigns.length < 1) {
-                            return <li>You have no apps.</li>;
-                        }
+                            if (campaigns.length < 1) {
+                                return (<li>
+                                    <div className="campaign-list-item text-center">
+                                        You don't have any active apps.
+                                    </div>
+                                </li>);
+                            }
 
-                        return campaigns.map(campaign => {
-                            const analytics = find(campaignAnalytics, { campaignId: campaign.id });
+                            return campaigns.map(campaign => {
+                                const analytics = find(campaignAnalytics,
+                                { campaignId: campaign.id });
 
-                            return (<CampaignListItem
-                                key={campaign.id}
-                                campaignId={campaign.id}
-                                thumbnail={find(campaign.product.images, { type: 'thumbnail' }).uri}
-                                name={campaign.product.name}
-                                rating={campaign.product.rating}
-                                ratingCount={campaign.product.ratingCount}
-                                views={analytics && analytics.summary.users}
-                                clicks={analytics && analytics.summary.clicks}
+                                return (<CampaignListItem
+                                    key={campaign.id}
+                                    campaignId={campaign.id}
+                                    thumbnail={find(campaign.product.images, {
+                                        type: 'thumbnail',
+                                    }).uri}
+                                    name={campaign.product.name}
+                                    rating={campaign.product.rating}
+                                    ratingCount={campaign.product.ratingCount}
+                                    views={analytics && analytics.summary.users}
+                                    clicks={analytics && analytics.summary.clicks}
 
-                                onArchive={() => this.props.archiveCampaign(campaign)}
-                            />);
-                        });
-                    })()}</ul>
-                </div>
-                <div className="promote-app-cta text-center col-md-12 col-sm-12">
-                    <h3>Ready to promote another app?</h3>
-                    <button className="btn btn-danger btn-lg" onClick={() => this.props.addApp()}>
-                        Promote my app
-                    </button>
+                                    onArchive={() => this.props.archiveCampaign(campaign)}
+                                />);
+                            });
+                        })()}</ul>
+                    </div>
+                    <div className="promote-app-cta text-center col-md-12 col-sm-12">
+                        <h3>Ready to promote another app?</h3>
+                        <button
+                            className="btn btn-danger btn-lg"
+                            onClick={() => this.props.addApp()}
+                        >
+                            Promote my app
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>);

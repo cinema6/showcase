@@ -6,7 +6,7 @@ import DocumentTitle from 'react-document-title';
 export function Account({
     children,
 }) {
-    return (<div className="container main-section campaign-stats" style={{ marginTop: 100 }}>
+    return (<div className="container main-section campaign-stats">
         <DocumentTitle title="Reelcontent Apps: Profile" />
         <div className="row">
             <div className="page-header">

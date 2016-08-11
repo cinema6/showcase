@@ -33,39 +33,47 @@ class Archive extends Component {
             campaignAnalytics,
         } = this.props;
 
-        return (<div className="row">
-            <div className="campaign-dashboard col-md-12">
-                <div className="col-md-12 col-sm-12">
-                    <h3>Archived Applications</h3>
-                    <ul className="campaign-app-list card-item">{(() => {
-                        if (!campaigns) {
-                            return [0].map(index => <CampaignListItemLoader
-                                key={index}
-                                showRestore
-                            />);
-                        }
+        return (<div className="container">
+            <div className="row">
+                <div className="campaign-dashboard col-md-12">
+                    <div className="col-md-12 col-sm-12">
+                        <h3 className="campaign-list-title">Archived Applications</h3>
+                        <ul className="campaign-app-list card-item">{(() => {
+                            if (!campaigns) {
+                                return [0].map(index => <CampaignListItemLoader
+                                    key={index}
+                                    showRestore
+                                />);
+                            }
 
-                        if (campaigns.length < 1) {
-                            return <li>Nothing in the archive.</li>;
-                        }
+                            if (campaigns.length < 1) {
+                                return (<li>
+                                    <div className="campaign-list-item text-center">
+                                        You don't have any archived apps.
+                                    </div>
+                                </li>);
+                            }
 
-                        return campaigns.map(campaign => {
-                            const analytics = find(campaignAnalytics, { campaignId: campaign.id });
+                            return campaigns.map(campaign => {
+                                const analytics = find(campaignAnalytics,
+                                { campaignId: campaign.id });
 
-                            return (<CampaignListItem
-                                key={campaign.id}
-                                campaignId={campaign.id}
-                                thumbnail={find(campaign.product.images, { type: 'thumbnail' }).uri}
-                                name={campaign.product.name}
-                                rating={campaign.product.rating}
-                                ratingCount={campaign.product.ratingCount}
-                                views={analytics && analytics.summary.users}
-                                clicks={analytics && analytics.summary.clicks}
+                                return (<CampaignListItem
+                                    key={campaign.id}
+                                    campaignId={campaign.id}
+                                    thumbnail={find(campaign.product.images,
+                                    { type: 'thumbnail' }).uri}
+                                    name={campaign.product.name}
+                                    rating={campaign.product.rating}
+                                    ratingCount={campaign.product.ratingCount}
+                                    views={analytics && analytics.summary.users}
+                                    clicks={analytics && analytics.summary.clicks}
 
-                                onRestore={() => this.props.restoreCampaign(campaign.id)}
-                            />);
-                        });
-                    })()}</ul>
+                                    onRestore={() => this.props.restoreCampaign(campaign.id)}
+                                />);
+                            });
+                        })()}</ul>
+                    </div>
                 </div>
             </div>
         </div>);
