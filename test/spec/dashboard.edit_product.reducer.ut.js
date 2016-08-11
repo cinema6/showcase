@@ -46,7 +46,7 @@ describe('dashboardEditProductReducer()', function() {
                 }));
             });
         });
-        
+
         describe(TOGGLE_LANDSCAPE, function() {
             let landscape;
 
@@ -57,7 +57,7 @@ describe('dashboardEditProductReducer()', function() {
                 newState = dashboardEditProductReducer(state, action);
             });
 
-            it('should move to the specified step', function() {
+            it('should toggle landscape', function() {
                 expect(newState).toEqual(assign({}, state, {
                     landscape: !landscape
                 }));

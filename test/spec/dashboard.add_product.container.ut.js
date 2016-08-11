@@ -38,7 +38,8 @@ describe('AddProduct', function() {
                                 { type: 'thumbnail', uri: 'foo.jpg' }
                             ]
                         },
-                        targeting: { age: 'foo', gender: 'foo' }
+                        targeting: { age: 'foo', gender: 'foo' },
+                        landscape: false
                     }
                 }
             };

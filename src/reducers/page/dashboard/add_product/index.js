@@ -5,6 +5,7 @@ import {
     GO_TO_STEP,
     PREVIEW_LOADED,
     COLLECT_PAYMENT,
+    TOGGLE_LANDSCAPE,
 } from '../../../../actions/product_wizard';
 import * as TARGETING from '../../../../enums/targeting';
 
@@ -19,6 +20,7 @@ const INITIAL_STATE = {
     checkingIfPaymentRequired: false,
     productData: null,
     targeting: DEFAULT_TARGETING,
+    landscape: false,
 };
 
 export default handleActions({
@@ -33,6 +35,10 @@ export default handleActions({
     }),
 
     [GO_TO_STEP]: (state, { payload: step }) => assign({}, state, { step }),
+
+    [TOGGLE_LANDSCAPE]: state => assign({}, state, {
+        landscape: !state.landscape,
+    }),
 
     [PREVIEW_LOADED]: state => assign({}, state, {
         previewLoaded: true,
