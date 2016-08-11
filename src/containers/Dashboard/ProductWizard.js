@@ -192,6 +192,13 @@ class ProductWizard extends Component {
                             loadDelay={previewLoaded ? 0 : PREVIEW.LOAD_DELAY}
                             onLoadComplete={() => previewWasLoaded()}
                         />
+                        <div className="clearfix"></div>
+                        
+                        <button className="btn btn-default">
+                            <i className="fa fa-repeat" aria-hidden="true"></i> Rotate
+                        </button>
+                        {/* toggle demo-landscape class on the parent div with demo-wrap when users 
+                        click "Rotate" button */}
                     </div>
                 )}
                 {(() => {
