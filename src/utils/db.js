@@ -1,7 +1,6 @@
 import { callAPI } from '../actions/api';
 import {
     assign,
-    get as _get,
     mapValues,
     keyBy,
     omit,
@@ -119,18 +118,10 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
     const update = createThunk(({ data }) => {
         const id = data[key];
 
-        return function thunk(dispatch, getState) {
-            const current = _get(getState(), ['db', type, id]);
-
+        return function thunk(dispatch) {
             if (!id) {
                 return dispatch(createAction(update.FAILURE)(new Error(
                     `data must have a(n) ${key}`
-                )));
-            }
-
-            if (!current) {
-                return dispatch(createAction(update.FAILURE)(new Error(
-                    `have no ${type} with ${key}(${id})`
                 )));
             }
 
@@ -141,7 +132,7 @@ export function createDbActions({ type, endpoint, key = 'id', queries = {} }) {
                     query: queries.update,
                 }),
                 method: 'PUT',
-                body: assign({}, current, data),
+                body: data,
             }, id)).then(item => [item]));
         };
     });
