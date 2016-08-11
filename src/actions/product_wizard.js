@@ -28,6 +28,9 @@ export const productSelected = createThunk(({ product }) => (
 export const GO_TO_STEP = prefix('GO_TO_STEP');
 export const goToStep = createAction(GO_TO_STEP);
 
+export const TOGGLE_LANDSCAPE = prefix('TOGGLE_LANDSCAPE');
+export const toggleLandscape = createAction(TOGGLE_LANDSCAPE);
+
 export const WIZARD_DESTROYED = prefix('WIZARD_DESTROYED');
 export const wizardDestroyed = createAction(WIZARD_DESTROYED);
 
