@@ -12,7 +12,8 @@ import {
 import {
     getBillingPeriod,
     getPaymentPlan,
-    getCampaigns
+    getCampaigns,
+    getArchive
 } from '../../src/actions/session';
 import { getCampaignAnalytics } from '../../src/actions/analytics';
 import { logoutUser as authLogoutUser } from '../../src/actions/auth';
@@ -358,20 +359,29 @@ describe('dashboard actions', function() {
                 expect(this.dispatch).toHaveBeenCalledWith(getCampaigns());
             });
 
+            it('should get archived campaigns', function(){
+                expect(this.dispatch).toHaveBeenCalledWith(getArchive());
+            });
+
             describe('when the campaigns are fetched', function() {
                 beforeEach(function(done) {
                     this.campaigns = Array.apply([], new Array(5)).map(() => ({
                         id: `cam-${createUuid()}`
                     }));
+                    this.archived = Array.apply([], new Array(5)).map(() => ({
+                        id: `cam-${createUuid()}`
+                    }));
 
                     this.dispatch.getDeferred(getCampaigns()).resolve(this.campaigns);
-                    setTimeout(done);
+                    this.dispatch.getDeferred(getArchive()).resolve(this.archived);
 
+                    setTimeout(done);
                     this.dispatch.calls.reset();
                 });
 
                 it('should getCampaignAnalytics()', function() {
-                    this.campaigns.forEach(campaign => expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(campaign.id)));
+                    const allCampaigns = this.campaigns.concat(this.archived);
+                    allCampaigns.forEach(camp => expect(this.dispatch).toHaveBeenCalledWith(getCampaignAnalytics(camp.id)));
                 });
             });
         });

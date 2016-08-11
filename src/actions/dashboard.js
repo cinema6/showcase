@@ -8,7 +8,13 @@ import { createAction } from 'redux-actions';
 import { replace, push } from 'react-router-redux';
 import { createThunk } from '../middleware/fsa_thunk';
 import { paymentMethod } from './payment';
-import { getOrg, getBillingPeriod, getPaymentPlan, getCampaigns } from './session';
+import {
+    getOrg,
+    getBillingPeriod,
+    getPaymentPlan,
+    getCampaigns,
+    getArchive,
+} from './session';
 import moment from 'moment';
 import { getCampaignAnalytics } from './analytics';
 import { notify, addNotification } from './notification';
@@ -81,9 +87,12 @@ export const LOAD_PAGE_DATA = prefix('LOAD_PAGE_DATA');
 export const loadPageData = createThunk(() => (dispatch) =>
     dispatch(createAction(LOAD_PAGE_DATA)(
         Promise.all([
-            dispatch(getCampaigns())
-            .then((campaigns) => Promise.all(campaigns.map(campaign => (
-                dispatch(getCampaignAnalytics(campaign.id))
+            Promise.all([
+                dispatch(getArchive()),
+                dispatch(getCampaigns()),
+            ]).then(([archives, campaigns]) =>
+                Promise.all(campaigns.concat(archives).map(camp => (
+                    dispatch(getCampaignAnalytics(camp.id))
             )))),
             dispatch(getPaymentPlan()),
             dispatch(getBillingPeriod()),

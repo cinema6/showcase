@@ -12,7 +12,7 @@ import { logoutUser,
 } from '../../src/actions/dashboard';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
-import { get, cloneDeep as clone } from 'lodash';
+import { get, cloneDeep as clone, compact } from 'lodash';
 import moment from 'moment';
 
 const proxyquire = require('proxyquire');
@@ -67,7 +67,9 @@ describe('Dashboard', function() {
                         }
                     },
                     campaign: {
-                        [campaign.id] : {}
+                        [campaign.id] : {
+                            id: campaign.id
+                        }
                     }
                 },
                 session: {
@@ -77,6 +79,7 @@ describe('Dashboard', function() {
                         cycleEnd: '2016-12-14T23:59:59.000Z',
                         totalViews: 800
                     },
+                    archive: [],
                     campaigns: [campaign.id],
                     paymentPlan: plan.id
                 },
@@ -88,8 +91,8 @@ describe('Dashboard', function() {
                 analytics: {
                     results: {
                         [campaign.id]: {
-                            summary: {
-                                views: 400
+                            cycle: {
+                                users: 400
                             }
                         }
                     }
@@ -100,9 +103,10 @@ describe('Dashboard', function() {
             this.paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
             this.campaigns = state.session.campaigns &&
                 state.session.campaigns.map(id => state.db.campaign[id]);
-            this.analytics = state.session.campaigns &&
-                state.session.campaigns.map(id => state.analytics.results[id]);
-
+            this.totalAnalytics = state.session.campaigns &&
+                state.session.campaigns.concat(state.session.archive);
+            this.analytics = this.totalAnalytics &&
+                compact(this.totalAnalytics.map(id => state.analytics.results[id]));
 
             store = createStore(() => clone(state));
             spyOn(store, 'dispatch').and.callThrough();
@@ -165,20 +169,17 @@ describe('Dashboard', function() {
         describe('StatsSummaryBar', function() {
             beforeEach(function() {
                 this.info = component.find('StatsSummaryBar');
-                this.views = this.analytics.reduce((previousValue, campaign) =>
-                    previousValue + campaign.summary.views, 0
-                );
             });
 
             it('should be passed props', function() {
                 const info = this.info;
 
-                expect((info.prop('startDate')).format()).toBe((moment(get(this.billingPeriod, 'cycleStart'))).format());
-                expect((info.prop('endDate')).format()).toBe((moment(get(this.billingPeriod, 'cycleEnd'))).format());
-                expect(info.prop('views')).toBe(this.views);
-                expect(info.prop('viewGoals')).toBe(get(this.billingPeriod, 'totalViews'));
-                expect(info.prop('appsUsed')).toBe(get(this.campaigns, '.length'));
-                expect(info.prop('maxApps')).toBe(get(this.paymentPlan, '.maxCampaigns'));
+                expect((info.prop('startDate')).format()).toBe((moment('2016-06-17T00:00:00.000Z')).format());
+                expect((info.prop('endDate')).format()).toBe((moment('2016-12-14T23:59:59.000Z')).format());
+                expect(info.prop('views')).toBe(400);
+                expect(info.prop('viewGoals')).toBe(800);
+                expect(info.prop('appsUsed')).toBe(1);
+                expect(info.prop('maxApps')).toBe(1);
 
             });
 
@@ -202,7 +203,68 @@ describe('Dashboard', function() {
                     }));
                 });
             });
+
+            describe('if a campaign is archived', function() {
+
+                beforeEach(function() {
+                    let archivedCamp = {
+                        id: createUuid()
+                    };
+                    state = {
+                        db: {
+                            user: {
+                                [user.id]: user
+                            },
+                            paymentPlan: {
+                                [plan.id]: {
+                                    maxCampaigns: 3
+                                }
+                            },
+                            campaign: {
+                                [campaign.id] : {}
+                            }
+                        },
+                        session: {
+                            user: user.id,
+                            billingPeriod: {
+                                cycleStart: '2016-06-17T00:00:00.000Z',
+                                cycleEnd: '2016-12-14T23:59:59.000Z',
+                                totalViews: 800
+                            },
+                            archive: [archivedCamp.id],
+                            campaigns: [campaign.id],
+                            paymentPlan: plan.id
+                        },
+                        page: {
+                            dashboard: {
+                                showNav: false
+                            }
+                        },
+                        analytics: {
+                            results: {
+                                [campaign.id]: {
+                                    cycle: {
+                                        users: 400
+                                    }
+                                },
+                                [archivedCamp.id]: {
+                                    cycle: {
+                                        users: 200
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    store.dispatch({ type: 'foo' });
+                });
+
+                it('should include archived views in the view count', function() {
+                    const info = this.info;
+                    expect(info.prop('views')).toBe(600);
+                });
+            });
         });
+
         describe('Add New App', function() {
             beforeEach(function() {
                 this.info = component.find('button.bg-danger');
@@ -210,7 +272,7 @@ describe('Dashboard', function() {
 
             it('should call AddApp() when clicked', function() {
                 const info = this.info;
-                
+
                 info.simulate('click');
                 expect(dashboardActions.addApp).toHaveBeenCalled();
 

@@ -37,7 +37,8 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text text-left">Views</span>
                 <span className="lighter-text pull-right">
-                    {views || '\u2014'} / {viewGoals || '\u2014'}
+                    {typeof views === 'number' ? views : '\u2014'} /
+                    {typeof viewGoals === 'number' ? viewGoals : '\u2014'}
                 </span>
                 <div className="stats-header stas-bar view-count">
                     <div className="bar-wrap">
@@ -51,7 +52,8 @@ export default function StatsSummaryBar({
             <div className="campaign-mini-stats col-md-3 col-sm-3 col-xs-6">
                 <span className="lighter-text text-left">Apps</span>
                 <span className="lighter-text pull-right">
-                    {appsUsed || '\u2014'} / {maxApps || '\u2014'}
+                    {typeof appsUsed === 'number' ? appsUsed : '\u2014'} /
+                    {typeof maxApps === 'number' ? maxApps : '\u2014'}
                 </span>
                 <div className="stats-header stas-bar app-count">
                     <div className="bar-wrap">
