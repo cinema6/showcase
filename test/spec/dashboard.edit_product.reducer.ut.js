@@ -3,7 +3,8 @@ import { assign } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
     GO_TO_STEP,
-    LOAD_CAMPAIGN
+    LOAD_CAMPAIGN,
+    TOGGLE_LANDSCAPE
 } from '../../src/actions/product_wizard';
 import { createUuid } from 'rc-uuid';
 
@@ -12,7 +13,8 @@ describe('dashboardEditProductReducer()', function() {
         expect(dashboardEditProductReducer(undefined, 'INIT')).toEqual({
             step: 1,
             previewLoaded: true,
-            loading: false
+            loading: false,
+            landscape: false
         });
     });
 
@@ -41,6 +43,23 @@ describe('dashboardEditProductReducer()', function() {
             it('should move to the specified step', function() {
                 expect(newState).toEqual(assign({}, state, {
                     step
+                }));
+            });
+        });
+
+        describe(TOGGLE_LANDSCAPE, function() {
+            let landscape;
+
+            beforeEach(function() {
+                landscape = false;
+
+                action = createAction(TOGGLE_LANDSCAPE)();
+                newState = dashboardEditProductReducer(state, action);
+            });
+
+            it('should toggle landscape', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    landscape: !landscape
                 }));
             });
         });

@@ -82,6 +82,7 @@ class ProductWizard extends Component {
             findApps,
             getClientToken,
             goToStep,
+            toggleLandscape,
             createCampaign,
             previewLoaded: previewWasLoaded,
             collectPayment,
@@ -94,7 +95,7 @@ class ProductWizard extends Component {
             promotions,
             paymentPlanId,
 
-            page: { step, previewLoaded, checkingIfPaymentRequired },
+            page: { step, previewLoaded, landscape, checkingIfPaymentRequired },
         } = this.props;
 
         const promotionConfigs = _(promotions).map(`data[${paymentPlanId}]`);
@@ -175,7 +176,13 @@ class ProductWizard extends Component {
             <br />
             <div className="row">
                 {step > 0 && (
-                    <div className="demo-wrap col-md-6 col-sm-6 col-xs-12 col-middle text-center">
+                    <div
+                        className={classnames('demo-wrap', 'col-md-6', 'col-sm-6',
+                            'col-xs-12', 'col-middle', 'text-center', {
+                                'demo-landscape': landscape,
+                            }
+                        )}
+                    >
                         <AdPreview
                             placementOptions={PREVIEW.PLACEMENT_OPTIONS}
                             cardOptions={assign({}, PREVIEW.CARD_OPTIONS, {
@@ -193,12 +200,12 @@ class ProductWizard extends Component {
                             onLoadComplete={() => previewWasLoaded()}
                         />
                         <div className="clearfix"></div>
-                        
-                        <button className="btn btn-default">
+                        <button
+                            className="btn btn-default"
+                            onClick={() => toggleLandscape()}
+                        >
                             <i className="fa fa-repeat" aria-hidden="true"></i> Rotate
                         </button>
-                        {/* toggle demo-landscape class on the parent div with demo-wrap when users 
-                        click "Rotate" button */}
                     </div>
                 )}
                 {(() => {
@@ -259,6 +266,7 @@ ProductWizard.propTypes = {
     findApps: PropTypes.func.isRequired,
     productSelected: PropTypes.func.isRequired,
     goToStep: PropTypes.func.isRequired,
+    toggleLandscape: PropTypes.func.isRequired,
     wizardDestroyed: PropTypes.func.isRequired,
     getClientToken: PropTypes.func.isRequired,
     createCampaign: PropTypes.func.isRequired,
@@ -270,6 +278,7 @@ ProductWizard.propTypes = {
     page: PropTypes.shape({
         step: PropTypes.number.isRequired,
         previewLoaded: PropTypes.bool.isRequired,
+        landscape: PropTypes.bool.isRequired,
     }).isRequired,
 
     loadData: PropTypes.func.isRequired,

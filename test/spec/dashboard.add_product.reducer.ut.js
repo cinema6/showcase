@@ -5,7 +5,8 @@ import {
     PRODUCT_SELECTED,
     GO_TO_STEP,
     PREVIEW_LOADED,
-    COLLECT_PAYMENT
+    COLLECT_PAYMENT,
+    TOGGLE_LANDSCAPE
 } from '../../src/actions/product_wizard';
 import { createUuid } from 'rc-uuid';
 import * as TARGETING from '../../src/enums/targeting';
@@ -20,7 +21,8 @@ describe('dashboardAddProductReducer()', function() {
             targeting: {
                 age: [TARGETING.AGE.ALL],
                 gender: TARGETING.GENDER.ALL
-            }
+            },
+            landscape: false
         });
     });
 
@@ -37,7 +39,8 @@ describe('dashboardAddProductReducer()', function() {
                 targeting: {
                     age: [TARGETING.AGE.ALL],
                     gender: TARGETING.GENDER.ALL
-                }
+                },
+                landscape: false
             };
         });
 
@@ -105,6 +108,23 @@ describe('dashboardAddProductReducer()', function() {
             it('should move to the specified step', function() {
                 expect(newState).toEqual(assign({}, state, {
                     step
+                }));
+            });
+        });
+
+        describe(TOGGLE_LANDSCAPE, function() {
+            let landscape;
+
+            beforeEach(function() {
+                landscape = false;
+
+                action = createAction(TOGGLE_LANDSCAPE)();
+                newState = dashboardAddProductReducer(state, action);
+            });
+
+            it('should toggle landscape', function() {
+                expect(newState).toEqual(assign({}, state, {
+                    landscape: !landscape
                 }));
             });
         });
