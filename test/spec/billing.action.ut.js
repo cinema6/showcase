@@ -21,7 +21,7 @@ import { assign, find, cloneDeep as clone } from 'lodash';
 import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-import { getBillingPeriod, getPaymentPlan } from '../../src/actions/session';
+import { getBillingPeriod, getPaymentPlanStatus } from '../../src/actions/session';
 import { getPaymentPlans } from '../../src/actions/system';
 import * as stub from '../helpers/stubs';
 import { notify } from '../../src/actions/notification';
@@ -43,7 +43,7 @@ describe('billing actions', function() {
             './payment': paymentActions,
             './session': {
                 getBillingPeriod,
-                getPaymentPlan,
+                getPaymentPlanStatus,
 
                 __esModule: true
             },
@@ -180,8 +180,8 @@ describe('billing actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(getBillingPeriod());
             });
 
-            it('should getPaymentPlan()', function() {
-                expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
+            it('should getPaymentPlanStatus()', function() {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlanStatus());
             });
 
             it('should getPaymentPlans()', () => {

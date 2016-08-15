@@ -81,7 +81,9 @@ describe('Dashboard', function() {
                     },
                     archive: [],
                     campaigns: [campaign.id],
-                    paymentPlan: plan.id
+                    paymentPlanStatus: {
+                        paymentPlanId: plan.id
+                    }
                 },
                 page: {
                     dashboard: {
@@ -100,7 +102,7 @@ describe('Dashboard', function() {
             };
             this.user = state.db.user[state.session.user];
             this.billingPeriod = get(state, 'session.billingPeriod');
-            this.paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
+            this.paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlanStatus.paymentPlanId')}]`);
             this.campaigns = state.session.campaigns &&
                 state.session.campaigns.map(id => state.db.campaign[id]);
             this.totalAnalytics = state.session.campaigns &&
@@ -186,8 +188,8 @@ describe('Dashboard', function() {
             describe('before data loads', function() {
                 beforeEach(function() {
                     state.session.user = null;
-                    state.db.paymentPlan = null;
-                    state.session.paymentPlan = null;
+                    state.db.paymentPlan = {};
+                    state.session.paymentPlanStatus = null;
                     state.session.billingPeriod = null;
                     state.session.campaigns = null;
                     store.dispatch({ type: 'foo' });

@@ -7,14 +7,27 @@ import {
     GET_ORG,
     GET_PROMOTIONS,
     GET_BILLING_PERIOD,
-    GET_PAYMENT_PLAN
+    GET_PAYMENT_PLAN,
+    GET_NEXT_PAYMENT_PLAN,
+    GET_PAYMENT_PLAN_STATUS
 } from '../../src/actions/session';
 import { createAction } from 'redux-actions';
 import { createUuid } from 'rc-uuid';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
-import { getCampaigns, getOrg, getPromotions, getBillingPeriod, getPaymentPlan } from '../../src/actions/session';
+import {
+    getCampaigns,
+    getOrg,
+    getPromotions,
+    getBillingPeriod,
+    getPaymentPlan,
+    getNextPaymentPlan,
+    getPaymentPlanStatus
+} from '../../src/actions/session';
 import { dispatch } from '../helpers/stubs';
-import org from '../../src/actions/org';
+import * as stubs from '../helpers/stubs';
+import org, {
+    getPaymentPlanStatus as getOrgPaymentPlanStatus
+} from '../../src/actions/org';
 import promotion from '../../src/actions/promotion';
 import paymentPlan from '../../src/actions/payment_plan';
 import { assign, cloneDeep as clone } from 'lodash';
@@ -522,166 +535,479 @@ describe('session actions', function() {
         });
     });
 
-    describe('getPaymentPlan()', function() {
-        beforeEach(function() {
-            this.thunk = getThunk(getPaymentPlan());
+    describe('getPaymentPlanStatus()', () => {
+        let thunk;
+
+        beforeEach(() => {
+            thunk = getThunk(getPaymentPlanStatus());
         });
 
-        it('should return a thunk', function() {
-            expect(this.thunk).toEqual(jasmine.any(Function));
+        afterEach(() => {
+            thunk = null;
         });
 
-        describe('when executed', function() {
-            beforeEach(function(done) {
-                this.state = {
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let user;
+            let state;
+            let dispatch;
+            let getState;
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                user = {
+                    id: `u-${createUuid()}`,
+                    org: `o-${createUuid()}`
+                };
+                state = {
                     session: {
-                        paymentPlan: null
+                        user: user.id
                     },
                     db: {
-                        org: {},
+                        user: {
+                            [user.id]: user
+                        }
+                    }
+                };
+
+                dispatch = stubs.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            afterEach(() => {
+                user = null;
+                state = null;
+                dispatch = null;
+                getState = null;
+                success = null;
+                failure = null;
+            });
+
+            it('should dispatch GET_PAYMENT_PLAN_STATUS', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(GET_PAYMENT_PLAN_STATUS)(jasmine.any(Promise)));
+            });
+
+            it('should get the org\'s payment plan status', () => {
+                expect(dispatch).toHaveBeenCalledWith(getOrgPaymentPlanStatus({ orgId: user.org }));
+            });
+
+            describe('when the status is fetched', () => {
+                let status;
+
+                beforeEach(done => {
+                    status = {
+                        paymentPlanId: `pp-${createUuid()}`,
+                        nextPaymentPlanId: `pp-${createUuid()}`
+                    };
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                    setTimeout(done);
+                    dispatch.calls.reset();
+                });
+
+                it('should fulfill with the status', () => {
+                    expect(success).toHaveBeenCalledWith(status);
+                });
+            });
+
+            describe('if the status cannot be fetched', () => {
+                let reason;
+
+                beforeEach(done => {
+                    reason = new Error('I failed you!');
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    setTimeout(done);
+                    dispatch.calls.reset();
+                });
+
+                it('should reject with the reason', () => {
+                    expect(failure).toHaveBeenCalledWith(reason);
+                });
+            });
+
+            describe('if the paymentPlanStatus already exists', () => {
+                beforeEach(done => {
+                    success.calls.reset();
+                    failure.calls.reset();
+                    dispatch.calls.reset();
+                    dispatch.resetDeferreds();
+
+                    state.session.paymentPlanStatus = {
+                        paymentPlanId: `pp-${createUuid()}`,
+                        nextPaymentPlanId: `pp-${createUuid()}`
+                    };
+
+                    thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should fulfill with the session paymentPlanStatus', () => {
+                    expect(success).toHaveBeenCalledWith(state.session.paymentPlanStatus);
+                });
+            });
+        });
+    });
+
+    describe('getPaymentPlan()', function() {
+        let thunk;
+
+        beforeEach(() => {
+            thunk = getThunk(getPaymentPlan());
+        });
+
+        afterEach(() => {
+            thunk = null;
+        });
+
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let state;
+            let dispatch;
+            let getState;
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                state = {
+                    session: {},
+                    db: {
                         paymentPlan: {}
                     }
                 };
 
-                this.dispatch = dispatch();
-                this.getState = jasmine.createSpy('getState()').and.callFake(() => this.state);
+                dispatch = stubs.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
 
-                this.success = jasmine.createSpy('success()');
-                this.failure = jasmine.createSpy('failure()');
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
 
-                this.thunk(this.dispatch, this.getState).then(this.success, this.failure);
+                thunk(dispatch, getState).then(success, failure);
                 setTimeout(done);
             });
 
-            it('should dispatch GET_PAYMENT_PLAN', function() {
-                expect(this.dispatch).toHaveBeenCalledWith({
-                    type: GET_PAYMENT_PLAN,
-                    payload: jasmine.any(Promise)
-                });
+            afterEach(() => {
+                state = null;
+                dispatch = null;
+                getState = null;
+                success = null;
+                failure = null;
             });
 
-            it('should get the org', function() {
-                expect(this.dispatch).toHaveBeenCalledWith(getOrg());
+            it('should dispatch GET_PAYMENT_PLAN', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(GET_PAYMENT_PLAN)(jasmine.any(Promise)));
             });
 
-            describe('if there is a problem GETting the org', function() {
-                beforeEach(function(done) {
-                    this.reason = new Error('Bad news...');
-                    this.dispatch.getDeferred(getOrg()).reject(this.reason);
-                    setTimeout(done);
-                });
-
-                it('should reject the Promise', function() {
-                    expect(this.failure).toHaveBeenCalledWith(this.reason);
-                });
+            it('should get the payment plan status', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlanStatus());
             });
 
-            describe('if the org', function() {
-                beforeEach(function() {
-                    this.org = {
-                        id: `o-${createUuid()}`
+            describe('if there is no paymentPlanId', () => {
+                let status;
+
+                beforeEach(done => {
+                    status = {
+                        paymentPlanId: null
                     };
-                    this.state = assign({}, this.state, {
-                        db: assign({}, this.state.db, {
-                            org: assign({}, this.state.db.org, {
-                                [this.org.id]: this.org
-                            })
-                        })
+
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                    setTimeout(done);
+                    dispatch.calls.reset();
+                });
+
+                afterEach(() => {
+                    status = null;
+                });
+
+                it('should fulfill with null', () => {
+                    expect(success).toHaveBeenCalledWith(null);
+                });
+            });
+
+            describe('if there is a paymentPlanId', () => {
+                let status;
+
+                beforeEach(() => {
+                    status = {
+                        paymentPlanId: `pp-${createUuid()}`
+                    };
+                });
+
+                afterEach(() => {
+                    status = null;
+                });
+
+                describe('if the paymentPlan is already in the cache', () => {
+                    let paymentPlan;
+
+                    beforeEach(done => {
+                        paymentPlan = {
+                            id: status.paymentPlanId,
+                            price: 50,
+                            maxCampaigns: 2
+                        };
+                        state.db.paymentPlan[paymentPlan.id] = paymentPlan;
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        paymentPlan = null;
+                    });
+
+                    it('should fulfill with the payment plan in an Array', () => {
+                        expect(success).toHaveBeenCalledWith([paymentPlan]);
                     });
                 });
 
-                describe('has no paymentPlanId', function() {
-                    beforeEach(function(done) {
-                        this.org.paymentPlanId = null;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
+                describe('if the paymentPlan is not in the cache', () => {
+                    beforeEach(done => {
+                        state.db.paymentPlan = {};
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
                         setTimeout(done);
+                        dispatch.calls.reset();
                     });
 
-                    it('should fulfill with null', function() {
-                        expect(this.success).toHaveBeenCalledWith(null);
-                    });
-                });
-
-                describe('has a paymentPlanId', function() {
-                    beforeEach(function(done) {
-                        this.org.paymentPlanId = `pp-${createUuid()}`;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
-                        setTimeout(done);
+                    it('should get the paymentPlan', () => {
+                        expect(dispatch).toHaveBeenCalledWith(paymentPlan.get({ id: status.paymentPlanId }));
                     });
 
-                    it('should make a request for the paymentPlan', function() {
-                        expect(this.dispatch).toHaveBeenCalledWith(paymentPlan.get({ id: this.org.paymentPlanId }));
-                    });
+                    describe('when the plan is fetched', () => {
+                        let paymentPlan;
 
-                    describe('if the paymentPlan cannot be fetched', function() {
-                        beforeEach(function(done) {
-                            this.reason = new Error('Something bad happened.');
-                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).reject(this.reason);
-                            setTimeout(done);
-                        });
-
-                        it('should reject the Promise', function() {
-                            expect(this.failure).toHaveBeenCalledWith(this.reason);
-                        });
-                    });
-
-                    describe('when the paymentPlan is fetched', function() {
-                        beforeEach(function(done) {
-                            this.paymentPlan = {
-                                id: this.org.paymentPlanId,
-                                viewsPerMonth: 200
+                        beforeEach(done => {
+                            paymentPlan = {
+                                id: status.paymentPlanId,
+                                price: 50,
+                                maxCampaigns: 2
                             };
-                            this.state = assign({}, this.state, {
-                                db: assign({}, this.state.db, {
-                                    paymentPlan: assign({}, this.state.paymentPlan, {
-                                        [this.paymentPlan.id]: this.paymentPlan
-                                    })
-                                })
-                            });
-                            this.dispatch.getDeferred(paymentPlan.get({ id: this.org.paymentPlanId })).resolve([this.paymentPlan]);
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
                             setTimeout(done);
+                            dispatch.calls.reset();
                         });
 
-                        it('should fulfill the Promise', function() {
-                            expect(this.success).toHaveBeenCalledWith([this.paymentPlan]);
+                        afterEach(() => {
+                            paymentPlan = null;
+                        });
+
+                        it('should fulfill with the payment plan in an Array', () => {
+                            expect(success).toHaveBeenCalledWith([paymentPlan]);
+                        });
+                    });
+
+                    describe('if the paymentPlan cannot be fetched', () => {
+                        let reason;
+
+                        beforeEach(done => {
+                            reason = new Error('There was an issue!');
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
+
+                        afterEach(() => {
+                            reason = null;
+                        });
+
+                        it('should reject with the reason', () => {
+                            expect(failure).toHaveBeenCalledWith(reason);
                         });
                     });
                 });
             });
+        });
+    });
 
-            describe('if the paymentPlan has already been fetched', function() {
-                beforeEach(function(done) {
-                    this.paymentPlan = {
-                        id: `pp-${createUuid()}`,
-                        viewsPerMonth: 2000
+    describe('getNextPaymentPlan()', function() {
+        let thunk;
+
+        beforeEach(() => {
+            thunk = getThunk(getNextPaymentPlan());
+        });
+
+        afterEach(() => {
+            thunk = null;
+        });
+
+        it('should return a thunk', () => {
+            expect(thunk).toEqual(jasmine.any(Function));
+        });
+
+        describe('when executed', () => {
+            let state;
+            let dispatch;
+            let getState;
+            let success;
+            let failure;
+
+            beforeEach(done => {
+                state = {
+                    session: {},
+                    db: {
+                        paymentPlan: {}
+                    }
+                };
+
+                dispatch = stubs.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
+
+                success = jasmine.createSpy('success()');
+                failure = jasmine.createSpy('failure()');
+
+                thunk(dispatch, getState).then(success, failure);
+                setTimeout(done);
+            });
+
+            afterEach(() => {
+                state = null;
+                dispatch = null;
+                getState = null;
+                success = null;
+                failure = null;
+            });
+
+            it('should dispatch GET_NEXT_PAYMENT_PLAN', () => {
+                expect(dispatch).toHaveBeenCalledWith(createAction(GET_NEXT_PAYMENT_PLAN)(jasmine.any(Promise)));
+            });
+
+            it('should get the payment plan status', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlanStatus());
+            });
+
+            describe('if there is no nextPaymentPlanId', () => {
+                let status;
+
+                beforeEach(done => {
+                    status = {
+                        nextPaymentPlanId: null
                     };
 
-                    this.state = assign({}, this.state, {
-                        session: assign({}, this.state.session, {
-                            paymentPlan: this.paymentPlan.id
-                        }),
-                        db: assign({}, this.state.db, {
-                            paymentPlan: assign({}, this.state.paymentPlan, {
-                                [this.paymentPlan.id]: this.paymentPlan
-                            })
-                        })
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                    setTimeout(done);
+                    dispatch.calls.reset();
+                });
+
+                afterEach(() => {
+                    status = null;
+                });
+
+                it('should fulfill with null', () => {
+                    expect(success).toHaveBeenCalledWith(null);
+                });
+            });
+
+            describe('if there is a nextPaymentPlanId', () => {
+                let status;
+
+                beforeEach(() => {
+                    status = {
+                        nextPaymentPlanId: `pp-${createUuid()}`
+                    };
+                });
+
+                afterEach(() => {
+                    status = null;
+                });
+
+                describe('if the paymentPlan is already in the cache', () => {
+                    let paymentPlan;
+
+                    beforeEach(done => {
+                        paymentPlan = {
+                            id: status.nextPaymentPlanId,
+                            price: 50,
+                            maxCampaigns: 2
+                        };
+                        state.db.paymentPlan[paymentPlan.id] = paymentPlan;
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                        setTimeout(done);
+                        dispatch.calls.reset();
                     });
 
-                    this.dispatch.calls.reset();
+                    afterEach(() => {
+                        paymentPlan = null;
+                    });
 
-                    this.success.calls.reset();
-                    this.failure.calls.reset();
-
-                    getThunk(getPaymentPlan())(this.dispatch, this.getState).then(this.success, this.failure);
-                    setTimeout(done);
+                    it('should fulfill with the payment plan in an Array', () => {
+                        expect(success).toHaveBeenCalledWith([paymentPlan]);
+                    });
                 });
 
-                it('should not get the org', function() {
-                    expect(this.dispatch).not.toHaveBeenCalledWith(getOrg());
-                });
+                describe('if the paymentPlan is not in the cache', () => {
+                    beforeEach(done => {
+                        state.db.paymentPlan = {};
 
-                it('should fulfill the Promise', function() {
-                    expect(this.success).toHaveBeenCalledWith([this.paymentPlan]);
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(status);
+                        setTimeout(done);
+                        dispatch.calls.reset();
+                    });
+
+                    it('should get the paymentPlan', () => {
+                        expect(dispatch).toHaveBeenCalledWith(paymentPlan.get({ id: status.nextPaymentPlanId }));
+                    });
+
+                    describe('when the plan is fetched', () => {
+                        let paymentPlan;
+
+                        beforeEach(done => {
+                            paymentPlan = {
+                                id: status.paymentPlanId,
+                                price: 50,
+                                maxCampaigns: 2
+                            };
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
+
+                        afterEach(() => {
+                            paymentPlan = null;
+                        });
+
+                        it('should fulfill with the payment plan in an Array', () => {
+                            expect(success).toHaveBeenCalledWith([paymentPlan]);
+                        });
+                    });
+
+                    describe('if the paymentPlan cannot be fetched', () => {
+                        let reason;
+
+                        beforeEach(done => {
+                            reason = new Error('There was an issue!');
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
+
+                        afterEach(() => {
+                            reason = null;
+                        });
+
+                        it('should reject with the reason', () => {
+                            expect(failure).toHaveBeenCalledWith(reason);
+                        });
+                    });
                 });
             });
         });

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SelectPlan from '../forms/SelectPlan';
-import { find } from 'lodash';
+import { find, includes } from 'lodash';
 import classnames from 'classnames';
 
 export default function ChangePlanModal({
@@ -22,6 +22,19 @@ export default function ChangePlanModal({
     const selectedPlan = find(plans, { id: selectedPlanId });
     const upgrade = (currentPlan && selectedPlan) && (selectedPlan.price > currentPlan.price);
     const tooManyCampaigns = selectedPlan && amountOfCampaigns > selectedPlan.maxCampaigns;
+    const initialPlanId = (() => {
+        if (!plans || plans.length < 1) {
+            return undefined;
+        }
+
+        // If the user's current plan is one of the options, preselect it.
+        if (includes(plans.map(plan => plan.id), currentPlanId)) {
+            return currentPlanId;
+        }
+
+        // Otherwise preselect the middle option.
+        return plans[Math.floor(plans.length / 2)].id;
+    })();
 
     return (<Modal show={show} className="trial-modal change-plan" onHide={onClose}>
         <Modal.Header className="text-center" closeButton>
@@ -34,7 +47,7 @@ export default function ChangePlanModal({
                     <SelectPlan
                         plans={plans}
                         currentPlan={currentPlanId}
-                        initialValues={{ plan: currentPlanId }}
+                        initialValues={{ plan: initialPlanId }}
                         formKey="change"
                     />
                     <div className="col-sm-12 col-middle text-left">

@@ -216,23 +216,25 @@ Dashboard.propTypes = {
     addApp: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
-    const user = state.db.user[state.session.user];
-    const billingPeriod = get(state, 'session.billingPeriod');
-    const paymentPlan = get(state, `db.paymentPlan[${get(state, 'session.paymentPlan')}]`);
-    const campaigns = state.session.campaigns &&
-        state.session.campaigns.map(id => state.db.campaign[id]);
-    const totalAnalytics = state.session.campaigns &&
-        state.session.campaigns.concat(state.session.archive);
-    const analytics = totalAnalytics &&
-        compact(totalAnalytics.map(id => state.analytics.results[id]));
+function mapStateToProps({
+    session,
+    db,
+    analytics,
+}) {
+    const user = db.user[session.user];
+    const billingPeriod = session.billingPeriod;
+    const paymentPlan = db.paymentPlan[get(session, 'paymentPlanStatus.paymentPlanId')];
+    const campaigns = session.campaigns && session.campaigns.map(id => db.campaign[id]);
+    const totalAnalytics = session.campaigns && session.campaigns.concat(session.archive);
+    const campaignAnalytics = totalAnalytics &&
+        compact(totalAnalytics.map(id => analytics.results[id]));
 
     return {
         user: user || null,
         billingPeriod: billingPeriod || null,
         paymentPlan: paymentPlan || null,
         campaigns: campaigns || null,
-        analytics: analytics || [],
+        analytics: campaignAnalytics || [],
     };
 }
 

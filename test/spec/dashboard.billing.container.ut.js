@@ -1,7 +1,7 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { createUuid } from 'rc-uuid';
-import { keyBy, assign } from 'lodash';
+import { keyBy, assign, cloneDeep as clone } from 'lodash';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
 import ChangePlanModal from '../../src/components/ChangePlanModal';
@@ -92,7 +92,7 @@ describe('Billing', function() {
                     maxCampaigns: 10
                 }
             ];
-            paymentPlan = paymentPlans[1];
+            paymentPlan = paymentPlans[2];
             session = {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
@@ -101,7 +101,10 @@ describe('Billing', function() {
                     cycleEnd: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format(),
                     totalViews: 12345
                 },
-                paymentPlan: paymentPlan.id,
+                paymentPlanStatus: {
+                    paymentPlanId: paymentPlan.id,
+                    nextPaymentPlanId: null
+                },
                 campaigns: Array.apply([], new Array(5)).map(() => `cam-${createUuid()}`)
             };
             state = {
@@ -149,7 +152,7 @@ describe('Billing', function() {
                 }
             };
             state.db.paymentMethod[session.paymentMethods[1]].default = true;
-            store = createStore(() => state);
+            store = createStore(() => clone(state));
 
             props = {
 
@@ -452,6 +455,34 @@ describe('Billing', function() {
             });
         });
 
+        describe('if there is a nextPaymentPlanId', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[1].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should use that payment plan when showing the next amount due', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${paymentPlans[1].price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
+            });
+        });
+
+        describe('if the user cancels their account', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[0].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should show N/A instead of a $ amount and due date', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe('N/A');
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
+            });
+        });
+
         describe('if the billing period is unknown', function() {
             beforeEach(function() {
                 store.dispatch.and.callThrough();
@@ -485,7 +516,7 @@ describe('Billing', function() {
 
                 state = assign({}, state, {
                     session: assign({}, state.session, {
-                        paymentPlan: null
+                        paymentPlanStatus: null
                     }),
                     system: assign({}, state.system, {
                         paymentPlans: null

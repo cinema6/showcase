@@ -191,6 +191,17 @@ module.exports = function(http) {
     /***********************************************************************************************
      * Org Endpoints
      **********************************************************************************************/
+    http.whenGET('/api/account/orgs/*/payment-plan', function(request) {
+        var id = request.pathname.match(/o-[^\/]+/)[0];
+        var filePath = objectPath('orgs', id);
+        var org = grunt.file.readJSON(filePath);
+
+        this.respond(200, {
+            paymentPlanId: org.paymentPlanId,
+            nextPaymentPlanId: org.nextPaymentPlanId,
+            effectiveDate: moment().add(8, 'days').utcOffset(0).endOf('day').format()
+        });
+    });
 
     http.whenGET('/api/account/orgs/**', function(request) {
         var id = request.pathname.match(/[^\/]+$/)[0],

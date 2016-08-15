@@ -15,12 +15,12 @@ import { createUuid } from 'rc-uuid';
 import {
     GET_PROMOTIONS,
     GET_BILLING_PERIOD,
-    GET_PAYMENT_PLAN,
     GET_ORG
 } from '../../src/actions/session';
 import moment from 'moment';
 import {
-    CHANGE_PAYMENT_PLAN_SUCCESS
+    CHANGE_PAYMENT_PLAN_SUCCESS,
+    GET_PAYMENT_PLAN_STATUS_SUCCESS
 } from '../../src/actions/org';
 
 describe('sessionReducer()', function() {
@@ -28,7 +28,7 @@ describe('sessionReducer()', function() {
         expect(sessionReducer(undefined, 'INIT')).toEqual({
             user: null,
             promotions: null,
-            paymentPlan: null,
+            paymentPlanStatus: null,
             org: null,
             campaigns: null,
             archive: null,
@@ -123,48 +123,48 @@ describe('sessionReducer()', function() {
             });
         });
 
-        describe(`${GET_PAYMENT_PLAN}_FULFILLED`, function() {
-            beforeEach(function() {
-                this.paymentPlan = { id: `pp-${createUuid()}` };
-
-                newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)([this.paymentPlan]));
-            });
-
-            it('should update the paymentPlan', function() {
-                expect(newState).toEqual(assign({}, state, {
-                    paymentPlan: this.paymentPlan.id
-                }));
-            });
-
-            describe('if the user has no payment plan', () => {
-                beforeEach(() => {
-                    newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)(null));
-                });
-
-                it('should make the payment plan null', function() {
-                    expect(newState).toEqual(assign({}, state, {
-                        paymentPlan: null
-                    }));
-                });
-            });
-        });
-
         describe(CHANGE_PAYMENT_PLAN_SUCCESS, () => {
-            let paymentPlanId;
+            let status;
 
             beforeEach(() => {
-                paymentPlanId = `pp-${createUuid()}`;
+                status = {
+                    paymentPlanId: `pp-${createUuid()}`,
+                    nextPaymentPlanId: `pp-${createUuid()}`
+                };
 
-                newState = sessionReducer(state, createAction(CHANGE_PAYMENT_PLAN_SUCCESS)({ paymentPlanId }));
+                newState = sessionReducer(state, createAction(CHANGE_PAYMENT_PLAN_SUCCESS)(status));
             });
 
             afterEach(() => {
-                paymentPlanId = null;
+                status = null;
             });
 
-            it('should update the paymentPlan with the new paymentPlanId', () => {
+            it('should update the paymentPlanStatus', () => {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentPlan: paymentPlanId
+                    paymentPlanStatus: status
+                }));
+            });
+        });
+
+        describe(GET_PAYMENT_PLAN_STATUS_SUCCESS, () => {
+            let status;
+
+            beforeEach(() => {
+                status = {
+                    paymentPlanId: `pp-${createUuid()}`,
+                    nextPaymentPlanId: `pp-${createUuid()}`
+                };
+
+                newState = sessionReducer(state, createAction(GET_PAYMENT_PLAN_STATUS_SUCCESS)(status));
+            });
+
+            afterEach(() => {
+                status = null;
+            });
+
+            it('should update the payment plan status', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    paymentPlanStatus: status
                 }));
             });
         });

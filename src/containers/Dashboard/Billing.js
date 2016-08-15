@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { pageify } from '../../utils/page';
-import { assign, find, get } from 'lodash';
+import { assign, find, get, isNumber } from 'lodash';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentHistory from '../../components/PaymentHistory';
 import ChangePaymentMethodModal from '../../components/ChangePaymentMethodModal';
@@ -30,6 +30,7 @@ class Billing extends Component {
             page,
             billingPeriod,
             paymentPlan,
+            nextPaymentPlan,
             paymentPlans,
             selectedPlan,
             numberOfCampaigns,
@@ -54,7 +55,7 @@ class Billing extends Component {
             nextDueDate &&
             nextDueDate.format('MMM D, YYYY')
         ) || DASH;
-        const price = get(paymentPlan, 'price', DASH);
+        const price = get(nextPaymentPlan, 'price', DASH);
 
         return (<div className="container main-section campaign-stats">
             <DocumentTitle title="Reelcontent Apps: Billing" />
@@ -72,7 +73,10 @@ class Billing extends Component {
                                 </div>
                                 <div className="data-stacked">
                                     <h4>Next Payment due</h4>
-                                    <h3>${price} on {dueDate}</h3>
+                                    <h3>{
+                                        (!isNumber(price) || price > 0) ?
+                                            `$${price} on ${dueDate}` : 'N/A'
+                                    }</h3>
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
@@ -192,6 +196,9 @@ Billing.propTypes = {
     paymentPlan: PropTypes.shape({
         viewsPerMonth: PropTypes.number.isRequired,
     }),
+    nextPaymentPlan: PropTypes.shape({
+        price: PropTypes.number.isRequired,
+    }),
     paymentPlans: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
     }).isRequired),
@@ -208,20 +215,31 @@ Billing.propTypes = {
     cancelSubscription: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
-    const payments = state.session.payments.map(id => state.db.payment[id]);
-    const paymentMethods = state.session.paymentMethods.map(token => state.db.paymentMethod[token]);
-    const paymentPlans = (state.system.paymentPlans || []).map(id => state.db.paymentPlan[id]);
-    const paymentPlan = find(paymentPlans, { id: state.session.paymentPlan });
+function mapStateToProps({
+    session,
+    db,
+    system,
+    form,
+}) {
+    const payments = session.payments.map(id => db.payment[id]);
+    const paymentMethods = session.paymentMethods.map(token => db.paymentMethod[token]);
+    const paymentPlans = (system.paymentPlans || []).map(id => db.paymentPlan[id]);
+    const paymentPlan = (session.paymentPlanStatus || undefined) && find(paymentPlans, {
+        id: session.paymentPlanStatus.paymentPlanId,
+    });
+    const nextPaymentPlan = (session.paymentPlanStatus || undefined) && find(paymentPlans, {
+        id: session.paymentPlanStatus.nextPaymentPlanId,
+    });
 
     return {
         payments,
         paymentPlan,
+        nextPaymentPlan: nextPaymentPlan || paymentPlan,
         paymentPlans: paymentPlans.filter(plan => plan.price > 0),
         defaultPaymentMethod: find(paymentMethods, { default: true }),
-        billingPeriod: state.session.billingPeriod,
-        selectedPlan: (getValues(get(state, 'form.selectPlan.change')) || {}).plan,
-        numberOfCampaigns: get(state, 'session.campaigns.length'),
+        billingPeriod: session.billingPeriod,
+        selectedPlan: (getValues(get(form, 'selectPlan.change')) || {}).plan,
+        numberOfCampaigns: get(session, 'campaigns.length'),
     };
 }
 
