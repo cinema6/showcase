@@ -920,6 +920,14 @@
                 width: 85% !important;
                 left: 5% !important;
             }
+            .demo-landscape .phone-frame .text-animation-wrap {
+                margin-top: 3.5%;
+                border: 1px solid #ccc !important;
+                height: 84% !important;
+                width: 85% !important;
+                left: 5% !important;
+                padding-top: 8%;
+            }
             .demo-landscape .phone-frame:before {
                 width: 10%;
                 height: 10px;
@@ -968,6 +976,9 @@
             }
             .demo-wrap.demo-landscape + div.app-details .btn-danger {
                 width: 100%;
+            }
+            .demo-wrap.demo-landscape .btn.btn-default {
+                margin-top: 10px;
             }
     }
     .app-preview-modal .create-app-campaign {

@@ -201,7 +201,7 @@ class ProductWizard extends Component {
                         />
                         <div className="clearfix"></div>
                         <button
-                            className="btn btn-default"
+                            className="btn btn-default hidden-xs"
                             onClick={() => toggleLandscape()}
                         >
                             <i className="fa fa-repeat" aria-hidden="true"></i> Rotate
