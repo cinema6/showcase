@@ -37,7 +37,7 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
 
                             dispatch(notify({
                                 type: NOTIFICATION.TYPE.SUCCESS,
-                                message: `Moved "${campaign.product.name}" to archive.`
+                                message: `Moved "${campaign.product.name}" to archive. `
                                 + 'Your unused views will be used by active apps.',
                             }));
                         })
