@@ -584,6 +584,10 @@ describe('Billing', function() {
                 expect(changePlan.prop('plans')).toEqual([]);
                 expect(changePlan.prop('currentPlan')).toBeUndefined();
             });
+
+            it('should not render a "Change Plan" button', () => {
+                expect(component.find('.billing-summary Button').length).toBe(0, 'change plan button is rendered.');
+            });
         });
 
         describe('if the campaigns have not been fetched', () => {

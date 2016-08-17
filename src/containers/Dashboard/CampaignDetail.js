@@ -63,12 +63,18 @@ class CampaignDetail extends Component {
 
         return (<div className="campaign-stats">
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
-            <ol className="breadcrumb hidden-xs">
-                <li><Link to="/dashboard">Back to Dashboard</Link></li>
-                {campaign && <li className="active">{campaign.product.name}</li>}
-            </ol>
-            <div className="container main-section">
+            {campaign && <ol className="breadcrumb hidden-xs">
+                <li>{(() => {
+                    if (!isActive) {
+                        return <Link to="/dashboard/archive">Back to Archive</Link>;
+                    }
 
+                    return <Link to="/dashboard/campaigns">Back to Dashboard</Link>;
+                })()}</li>
+                <li className="active">{campaign.product.name}</li>
+            </ol>}
+
+            <div className="container main-section">
                 <div className="row">
                     {campaign && <CampaignDetailInfo
                         campaignId={campaign.id}

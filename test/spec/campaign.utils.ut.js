@@ -123,6 +123,7 @@ describe('campaign utils', function() {
 
             it('should deeply extend the old campaign with the udpated data', function() {
                 expect(result).toEqual({
+                    id: campaign.id,
                     name: productData.name,
                     product: assign({}, campaign.product, productData),
                     targeting: {

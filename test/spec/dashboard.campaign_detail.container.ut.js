@@ -252,7 +252,12 @@ describe('CampaignDetail', function() {
         expect(this.store.dispatch).toHaveBeenCalledWith(loadPageData(this.campaign.id));
     });
 
-    it('should render the name of the campaign', function() {
+    it('should render the name of the campaign and a link to the dashboard', function() {
+        const back = this.component.find('.breadcrumb Link').first();
+
+        expect(back.prop('to')).toBe('/dashboard/campaigns');
+        expect(back.text()).toBe('Back to Dashboard');
+
         expect(this.component.find('.breadcrumb li').last().text()).toBe(this.campaign.product.name);
     });
 
@@ -267,9 +272,24 @@ describe('CampaignDetail', function() {
             this.store.dispatch({ type: '@@UPDATE' });
         });
 
-        it('should only render one breadcrumb', function() {
-            expect(this.component.find('.breadcrumb li').length).toBe(1);
-            expect(this.component.find('.breadcrumb li').text()).toBe('Back to Dashboard');
+        it('should not render any breadcrubms', function() {
+            expect(this.component.find('.breadcrumb').length).toBe(0, 'breadcrumbs are rendered.');
+        });
+    });
+
+    describe('if the campaign is canceled', function() {
+        beforeEach(function() {
+            this.store.dispatch.and.callThrough();
+
+            this.campaign.status = 'canceled';
+            this.store.dispatch({ type: '@@UPDATE' });
+        });
+
+        it('should render a link back to the archive', function() {
+            const back = this.component.find('.breadcrumb Link').first();
+
+            expect(back.prop('to')).toBe('/dashboard/archive');
+            expect(back.text()).toBe('Back to Archive');
         });
     });
 

@@ -37,13 +37,6 @@ class Dashboard extends Component {
 
         const initials = user.firstName.charAt(0).toUpperCase() +
             user.lastName.charAt(0).toUpperCase();
-        const views = analytics.length > 0 ? analytics.reduce((previousValue, campaign) =>
-                previousValue + campaign.cycle.users, 0) : null;
-        const startDate = billingPeriod && moment(get(billingPeriod, 'cycleStart'));
-        const endDate = billingPeriod && moment(get(billingPeriod, 'cycleEnd'));
-        const viewGoals = get(billingPeriod, 'totalViews');
-        const appsUsed = get(campaigns, 'length');
-        const maxApps = get(paymentPlan, 'maxCampaigns');
 
         return (<div>
             {/* top navigation bar */}
@@ -85,14 +78,29 @@ class Dashboard extends Component {
                     users have maximum allowed apps on current plan */}
                 </div>
             </nav>
-            <StatsSummaryBar
-                startDate={startDate}
-                endDate={endDate}
-                views={views}
-                viewGoals={viewGoals}
-                appsUsed={appsUsed}
-                maxApps={maxApps}
-            />
+            {(() => {
+                if (!billingPeriod || !paymentPlan) {
+                    return undefined;
+                }
+
+                const views = analytics.length > 0 ? analytics.reduce((total, campaign) => (
+                    total + campaign.cycle.users
+                ), 0) : null;
+                const startDate = moment(billingPeriod.cycleStart);
+                const endDate = moment(billingPeriod.cycleEnd);
+                const viewGoals = billingPeriod.totalViews;
+                const maxApps = paymentPlan.maxCampaigns;
+                const appsUsed = get(campaigns, 'length');
+
+                return (<StatsSummaryBar
+                    startDate={startDate}
+                    endDate={endDate}
+                    views={views}
+                    viewGoals={viewGoals}
+                    appsUsed={appsUsed}
+                    maxApps={maxApps}
+                />);
+            })()}
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
                 id="sidePanel"
@@ -108,7 +116,7 @@ class Dashboard extends Component {
                         users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard" activeClassName="active">
+                        <Link to="/dashboard/campaigns" activeClassName="active">
                             <i className="fa fa-th-large" /> Dashboard
                         </Link>
                     </li>
@@ -149,7 +157,7 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard" activeClassName="active">
+                        <Link to="/dashboard/campaigns" activeClassName="active">
                             <i className="fa fa-th-large" />
                             <span className="menu-item-label">Dashboard</span>
                         </Link>

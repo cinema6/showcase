@@ -66,15 +66,15 @@ describe('createRoutes(store)', function() {
                     children = dashboard.props.children;
                 });
 
-                describe('index', function() {
-                    let index;
+                describe('campaigns', function() {
+                    let campaigns;
 
                     beforeEach(function() {
-                        index = find(children, route => route.type === IndexRoute);
+                        campaigns = find(children, route => route.props.path === 'campaigns');
                     });
 
                     it('should exist', function() {
-                        expect(index).toEqual(jasmine.any(Object));
+                        expect(campaigns).toEqual(jasmine.any(Object));
                     });
 
                     describe('onEnter()', function() {
@@ -84,7 +84,7 @@ describe('createRoutes(store)', function() {
                         let routerState, replace, callback;
 
                         beforeEach(function(done) {
-                            onEnter = index.props.onEnter;
+                            onEnter = campaigns.props.onEnter;
 
                             routerState = {};
                             replace = jasmine.createSpy('replace()');
@@ -194,12 +194,11 @@ describe('createRoutes(store)', function() {
                                 });
 
                                 afterEach(() => {
-                                    expect(replace.calls.count()).toBe(1);
                                     expect(callback.calls.count()).toBe(1);
                                 });
 
-                                it('should redirect to /dashboard/campaigns', () => {
-                                    expect(replace).toHaveBeenCalledWith('/dashboard/campaigns');
+                                it('should do nothing', () => {
+                                    expect(replace).not.toHaveBeenCalled();
                                     expect(callback).toHaveBeenCalledWith();
                                 });
                             });
@@ -221,12 +220,11 @@ describe('createRoutes(store)', function() {
                             });
 
                             afterEach(() => {
-                                expect(replace.calls.count()).toBe(1);
                                 expect(callback.calls.count()).toBe(1);
                             });
 
-                            it('should redirect to /dashboard/campaigns', () => {
-                                expect(replace).toHaveBeenCalledWith('/dashboard/campaigns');
+                            it('should do nothing', () => {
+                                expect(replace).not.toHaveBeenCalled();
                                 expect(callback).toHaveBeenCalledWith();
                             });
                         });

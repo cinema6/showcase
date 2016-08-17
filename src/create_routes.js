@@ -1,4 +1,4 @@
-import { Route, IndexRedirect, IndexRoute } from 'react-router';
+import { Route, IndexRedirect } from 'react-router';
 import React from 'react';
 import Application from './containers/Application';
 import Dashboard from './containers/Dashboard';
@@ -41,7 +41,7 @@ export default function createRoutes(store) {
     });
     const checkLoggedIn = createLoginEnterHandler({ store, dashboardPath: '/dashboard' });
 
-    function onEnterDashboard(routerState, replace, done) {
+    function onEnterCampaigns(routerState, replace, done) {
         return Promise.all([
             dispatch(getCampaigns()),
             dispatch(getPaymentPlan()),
@@ -51,8 +51,6 @@ export default function createRoutes(store) {
 
             if (!paymentPlan || (campaigns.length < 1 && paymentPlan.maxCampaigns > 0)) {
                 replace('/dashboard/add-product');
-            } else {
-                replace('/dashboard/campaigns');
             }
         })
         .catch(reason => {
@@ -94,7 +92,7 @@ export default function createRoutes(store) {
             <Route path="resend-confirmation" component={ResendConfirmation} onEnter={checkAuth} />
 
             <Route path="dashboard" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute onEnter={onEnterDashboard} />
+                <IndexRedirect to="campaigns" />
 
                 <Route
                     path="add-product"
@@ -105,6 +103,7 @@ export default function createRoutes(store) {
                 <Route
                     path="campaigns"
                     component={DashboardCampaignList}
+                    onEnter={onEnterCampaigns}
                 />
                 <Route
                     path="campaigns/:campaignId"

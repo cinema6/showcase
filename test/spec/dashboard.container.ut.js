@@ -185,76 +185,40 @@ describe('Dashboard', function() {
 
             });
 
-            describe('before data loads', function() {
+            describe('before the paymentPlan loads', function() {
                 beforeEach(function() {
-                    state.session.user = null;
                     state.db.paymentPlan = {};
                     state.session.paymentPlanStatus = null;
-                    state.session.billingPeriod = null;
-                    state.session.campaigns = null;
                     store.dispatch({ type: 'foo' });
                 });
 
-                it('should pass in null', function() {
-                    expect(component.props()).toEqual(jasmine.objectContaining({
-                        user: null,
-                        billingPeriod: null,
-                        paymentPlan: null,
-                        campaigns: null,
-                        analytics: []
-                    }));
+                it('should not render a StatsSummaryBar', function() {
+                    expect(component.find('StatsSummaryBar').length).toBe(0, 'StatsSummaryBar is rendered.');
+                });
+            });
+
+            describe('before the billingPeriod loads', function() {
+                beforeEach(function() {
+                    state.session.billingPeriod = null;
+                    store.dispatch({ type: 'foo' });
+                });
+
+                it('should not render a StatsSummaryBar', function() {
+                    expect(component.find('StatsSummaryBar').length).toBe(0, 'StatsSummaryBar is rendered.');
                 });
             });
 
             describe('if a campaign is archived', function() {
 
                 beforeEach(function() {
-                    let archivedCamp = {
+                    const archivedCamp = {
                         id: createUuid()
                     };
-                    state = {
-                        db: {
-                            user: {
-                                [user.id]: user
-                            },
-                            paymentPlan: {
-                                [plan.id]: {
-                                    maxCampaigns: 3
-                                }
-                            },
-                            campaign: {
-                                [campaign.id] : {}
-                            }
-                        },
-                        session: {
-                            user: user.id,
-                            billingPeriod: {
-                                cycleStart: '2016-06-17T00:00:00.000Z',
-                                cycleEnd: '2016-12-14T23:59:59.000Z',
-                                totalViews: 800
-                            },
-                            archive: [archivedCamp.id],
-                            campaigns: [campaign.id],
-                            paymentPlan: plan.id
-                        },
-                        page: {
-                            dashboard: {
-                                showNav: false
-                            }
-                        },
-                        analytics: {
-                            results: {
-                                [campaign.id]: {
-                                    cycle: {
-                                        users: 400
-                                    }
-                                },
-                                [archivedCamp.id]: {
-                                    cycle: {
-                                        users: 200
-                                    }
-                                }
-                            }
+                    state.db.campaign[archivedCamp.id] = archivedCamp;
+                    state.session.archive.push(archivedCamp.id);
+                    state.analytics.results[archivedCamp.id] = {
+                        cycle: {
+                            users: 200
                         }
                     };
                     store.dispatch({ type: 'foo' });
