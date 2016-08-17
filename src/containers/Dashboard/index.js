@@ -108,7 +108,7 @@ class Dashboard extends Component {
                         users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard" activeClassName="active">
+                        <Link to="/dashboard/campaigns" activeClassName="active">
                             <i className="fa fa-th-large" /> Dashboard
                         </Link>
                     </li>
@@ -149,7 +149,7 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard" activeClassName="active">
+                        <Link to="/dashboard/campaigns" activeClassName="active">
                             <i className="fa fa-th-large" />
                             <span className="menu-item-label">Dashboard</span>
                         </Link>
