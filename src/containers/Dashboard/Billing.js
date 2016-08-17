@@ -57,14 +57,14 @@ class Billing extends Component {
         ) || DASH;
         const price = get(nextPaymentPlan, 'price', DASH);
 
-        return (<div className="container main-section campaign-stats">
+        return (<div className="container main-section">
             <DocumentTitle title="Reelcontent Apps: Billing" />
             <div className="row">
-                <div className="col-md-12">
-                    <h1>Billing Details</h1>
+                <div className="page-header">
+                    <h3 className="campaign-list-title">Billing Details</h3>
                 </div>
                 <div className="col-md-6">
-                    <div className="billing-summary card-item col-md-12">
+                    <div className="billing-summary col-md-12">
                         <div className="row">
                             <div className="col-md-8">
                                 <div className="data-stacked">

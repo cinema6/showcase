@@ -6,11 +6,11 @@ import DocumentTitle from 'react-document-title';
 export function Account({
     children,
 }) {
-    return (<div className="container main-section campaign-stats">
+    return (<div className="container main-section">
         <DocumentTitle title="Reelcontent Apps: Profile" />
         <div className="row">
             <div className="page-header">
-                <h1>Account Settings</h1>
+                <h3 className="campaign-list-title">Account Settings</h3>
             </div>
             <div className="col-md-3">
                 <br />

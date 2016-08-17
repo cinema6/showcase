@@ -33,7 +33,7 @@ class Archive extends Component {
             campaignAnalytics,
         } = this.props;
 
-        return (<div className="container">
+        return (<div className="container main-section">
             <div className="row">
                 <div className="campaign-dashboard col-md-12">
                     <div className="col-md-12 col-sm-12">
@@ -47,7 +47,7 @@ class Archive extends Component {
                             }
 
                             if (campaigns.length < 1) {
-                                return (<li>
+                                return (<li className="campaign-list-item-wrapper">
                                     <div className="campaign-list-item text-center">
                                         You don't have any archived apps.
                                     </div>

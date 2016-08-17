@@ -5,7 +5,7 @@ export default function PaymentMethod({
     method,
     onChangeMethod,
 }) {
-    return (<div className="billing-summary card-item col-md-12">
+    return (<div className="billing-summary col-md-12">
         <div className="row">
         {loading && !method && (<div className="spinner-contained">
             <div className="spinner-position">

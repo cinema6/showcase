@@ -61,13 +61,13 @@ class CampaignDetail extends Component {
         const billingPeriodEnd = billingPeriod && moment(billingPeriod.cycleEnd);
         const isActive = campaign && (campaign.status !== 'canceled');
 
-        return (<div>
+        return (<div className="campaign-stats">
             {campaign && <DocumentTitle title={`Reelcontent Apps: ${campaign.name}`} />}
             <ol className="breadcrumb hidden-xs">
                 <li><Link to="/dashboard">Back to Dashboard</Link></li>
                 {campaign && <li className="active">{campaign.product.name}</li>}
             </ol>
-            <div className="container main-section campaign-stats">
+            <div className="container main-section">
 
                 <div className="row">
                     {campaign && <CampaignDetailInfo
