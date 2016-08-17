@@ -204,11 +204,12 @@ describe('campaign_list actions', () => {
                         buttons: [
                             {
                                 text: jasmine.any(String),
+                                type: 'danger btn-block',
                                 onSelect: jasmine.any(Function)
                             },
                             {
                                 text: jasmine.any(String),
-                                type: 'danger',
+                                type: 'default btn-block',
                                 onSelect: jasmine.any(Function)
                             }
                         ]
@@ -240,16 +241,6 @@ describe('campaign_list actions', () => {
                 });
 
                 describe('first button', () => {
-                    beforeEach(() => {
-                        alert.buttons[0].onSelect(dismiss);
-                    });
-
-                    it('should dismiss the alert', () => {
-                        expect(dismiss).toHaveBeenCalledWith();
-                    });
-                });
-
-                describe('second button', () => {
                     let success;
                     let failure;
 
@@ -259,7 +250,7 @@ describe('campaign_list actions', () => {
                         success = jasmine.createSpy('success()');
                         failure = jasmine.createSpy('failure()');
 
-                        alert.buttons[1].onSelect(dismiss).then(success, failure);
+                        alert.buttons[0].onSelect(dismiss).then(success, failure);
                         setTimeout(done);
                     });
 
@@ -322,6 +313,17 @@ describe('campaign_list actions', () => {
                         });
                     });
                 });
+
+                describe('second button', () => {
+                    beforeEach(() => {
+                        alert.buttons[1].onSelect(dismiss);
+                    });
+
+                    it('should dismiss the alert', () => {
+                        expect(dismiss).toHaveBeenCalledWith();
+                    });
+                });
+
             });
         });
     });

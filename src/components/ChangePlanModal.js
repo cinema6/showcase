@@ -64,7 +64,7 @@ export default function ChangePlanModal({
                     </div>
                     <div className="clearfix">
                     </div>
-                    <div className="col-md-12 text-center">
+                    <div className="col-md-12 overflow-wrap text-center">
                         <Button
                             bsSize="lg"
                             bsStyle="danger"
@@ -77,6 +77,7 @@ export default function ChangePlanModal({
                             Confirm
                         </Button>
                     </div>
+                    <br />
                     <div className="col-md-12 text-center cancel-plan">
                         <p>Don't want to run ads anymore?</p>
                         <button className="btn btn-link" onClick={() => onCancel()}>
