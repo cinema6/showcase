@@ -161,7 +161,7 @@ class Billing extends Component {
                                 </div>
                             </div>
                         </div>),
-                        buttons: [                            
+                        buttons: [
                             {
                                 text: 'Cancel my subscription',
                                 type: 'danger btn-block',

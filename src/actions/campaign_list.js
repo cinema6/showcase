@@ -29,7 +29,7 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
             description: `Are you sure you want to archive "${campaign.product.name}"?`,
             buttons: [
                 {
-                    text: 'Archive',                    
+                    text: 'Archive',
                     type: 'danger btn-block',
                     size: 'large',
                     onSelect: dismiss => (
@@ -38,8 +38,8 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
 
                             dispatch(notify({
                                 type: NOTIFICATION.TYPE.SUCCESS,
-                                message: `Moved "${campaign.product.name}" to archive.` 
-                                + `Your unused views will be used by active apps.`,
+                                message: `Moved "${campaign.product.name}" to archive.`
+                                + 'Your unused views will be used by active apps.',
                             }));
                         })
                         .catch(reason => {

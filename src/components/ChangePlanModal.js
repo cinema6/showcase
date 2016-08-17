@@ -77,7 +77,7 @@ export default function ChangePlanModal({
                             Confirm
                         </Button>
                     </div>
-                    <br/>
+                    <br />
                     <div className="col-md-12 text-center cancel-plan">
                         <p>Don't want to run ads anymore?</p>
                         <button className="btn btn-link" onClick={() => onCancel()}>
