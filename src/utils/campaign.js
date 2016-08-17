@@ -57,6 +57,6 @@ export function campaignFromData({ productData, targeting }, campaign) {
 export function campaignUpdateFromData({ productData, targeting }, campaign) {
     return pick(
         campaignFromData({ productData, targeting }, campaign),
-        ['name', 'product', 'targeting']
+        ['id', 'name', 'product', 'targeting']
     );
 }
