@@ -25,23 +25,21 @@ export const ARCHIVE_CAMPAIGN = prefix('ARCHIVE_CAMPAIGN');
 export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
     createAction(ARCHIVE_CAMPAIGN)(Promise.resolve().then(() => {
         dispatch(showAlert({
-            title: `Archive "${campaign.product.name}"?`,
-            description: 'Are you sure you want to archive this app?',
+            title: 'Archive your app',
+            description: `Are you sure you want to archive "${campaign.product.name}"?`,
             buttons: [
                 {
-                    text: 'Keep',
-                    onSelect: dismiss => dismiss(),
-                },
-                {
-                    text: 'Archive',
-                    type: 'danger',
+                    text: 'Archive',                    
+                    type: 'danger btn-block',
+                    size: 'large',
                     onSelect: dismiss => (
                         dispatch(cancelCampaign(campaign.id)).then(() => {
                             dismiss();
 
                             dispatch(notify({
                                 type: NOTIFICATION.TYPE.SUCCESS,
-                                message: `Moved "${campaign.product.name}" to the archive.`,
+                                message: `Moved "${campaign.product.name}" to archive.` 
+                                + `Your unused views will be used by active apps.`,
                             }));
                         })
                         .catch(reason => {
@@ -52,6 +50,12 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
                             }));
                         })
                     ),
+                },
+                {
+                    text: 'Keep',
+                    type: 'default btn-block',
+                    size: 'large',
+                    onSelect: dismiss => dismiss(),
                 },
             ],
         }));

@@ -161,7 +161,7 @@ class Billing extends Component {
                                 </div>
                             </div>
                         </div>),
-                        buttons: [
+                        buttons: [                            
                             {
                                 text: 'Cancel my subscription',
                                 type: 'danger btn-block',
@@ -170,6 +170,12 @@ class Billing extends Component {
                                     dismiss(),
                                     showPlanModal(false),
                                 ])),
+                            },
+                            {
+                                text: 'Keep my subscription',
+                                type: 'default btn-block',
+                                size: 'large',
+                                onSelect: dismiss => dismiss(),
                             },
                         ],
                     });

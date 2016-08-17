@@ -114,17 +114,14 @@ export const checkForSlots = createThunk(() => (dispatch) =>
 
 export const promptUpgrade = createThunk(redirect => (dispatch) =>
     dispatch(showAlert({
-        title: 'Uh oh!',
-        description: 'You have no unused apps remaining in your current plan. '
-        + 'Would you like to upgrade your plan?',
+        title: 'Upgrade your plan',
+        description: 'You have used the maximum allowed apps on your plan. '
+        + 'Please upgrade your plan to promote more apps.',
         buttons: [
             {
-                text: 'No thanks',
-                onSelect: dismiss => dismiss(),
-            },
-            {
                 text: 'Yes, upgrade my plan!',
-                type: 'success',
+                type: 'danger btn-block',
+                size: 'large',                
                 onSelect: dismiss => dispatch(push('/dashboard/billing'))
                 .then(() => {
                     dismiss();
@@ -139,6 +136,12 @@ export const promptUpgrade = createThunk(redirect => (dispatch) =>
                         time: 10000,
                     }));
                 }),
+            },
+            {
+                text: 'No, keep my plan.',
+                type: 'default btn-block',
+                size: 'large',
+                onSelect: dismiss => dismiss(),
             },
         ],
     }))
