@@ -80,13 +80,13 @@ class Billing extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4 btn-wrap">
-                                <Button
+                                {paymentPlan && <Button
                                     bsSize="lg"
                                     bsStyle="primary"
                                     onClick={() => showPlanModal(true)}
                                 >
                                     Update Plan
-                                </Button>
+                                </Button>}
                             </div>
                         </div>
                     </div>
