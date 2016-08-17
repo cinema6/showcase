@@ -4,6 +4,15 @@ import SelectPlan from '../forms/SelectPlan';
 import { find, includes } from 'lodash';
 import classnames from 'classnames';
 
+const LOADING_ANIMATION = (
+    <div className="spinner-wrap">
+        <div className="spinner-position">
+            <div className="animation-target">
+            </div>
+        </div>
+    </div>
+);
+
 export default function ChangePlanModal({
     show,
     actionPending,
@@ -18,12 +27,13 @@ export default function ChangePlanModal({
     onCancel,
     onClose,
 }) {
+    const loading = (!plans || plans.length < 1);
     const currentPlan = find(plans, { id: currentPlanId });
     const selectedPlan = find(plans, { id: selectedPlanId });
     const upgrade = (currentPlan && selectedPlan) && (selectedPlan.price > currentPlan.price);
     const tooManyCampaigns = selectedPlan && amountOfCampaigns > selectedPlan.maxCampaigns;
     const initialPlanId = (() => {
-        if (!plans || plans.length < 1) {
+        if (loading) {
             return undefined;
         }
 
@@ -42,6 +52,7 @@ export default function ChangePlanModal({
             {cycleEnd && <p>Your billing cycle ends on {cycleEnd.format('MMM DD')}</p>}
         </Modal.Header>
         <Modal.Body className="text-center">
+            {loading && LOADING_ANIMATION}
             <div className="row">
                 <div className="trail-wrap">
                     <SelectPlan
@@ -71,7 +82,7 @@ export default function ChangePlanModal({
                             className={classnames('col-xs-12', {
                                 'btn-waiting': actionPending,
                             })}
-                            disabled={actionPending || !plans || plans.length < 1}
+                            disabled={actionPending || loading}
                             onClick={() => onConfirm(selectedPlanId)}
                         >
                             Confirm

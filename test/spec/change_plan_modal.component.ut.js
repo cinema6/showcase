@@ -102,6 +102,10 @@ describe('ChangePlanModal', () => {
         expect(modal.find('.modal-header p').text()).toBe(`Your billing cycle ends on ${props.cycleEnd.format('MMM DD')}`);
     });
 
+    it('should not render a loader', () => {
+        expect(modal.find('.spinner-wrap').length).toBe(0, 'loading animation is shown');
+    });
+
     describe('the SelectPlan form', () => {
         let form;
 
@@ -175,6 +179,7 @@ describe('ChangePlanModal', () => {
 
     describe('if there are no plans', () => {
         let button;
+
         beforeEach(() => {
             component.setProps({
                 plans: undefined
@@ -186,8 +191,37 @@ describe('ChangePlanModal', () => {
         it('should show no messages', () => {
             expect(modal.find('.alert').length).toBe(0);
         });
+
         it('should disable the button', () => {
             expect(button.prop('disabled')).toBe(true);
+        });
+
+        it('should show a loading animation', () => {
+            expect(modal.find('.spinner-wrap').length).toBe(1, 'loading animation is not shown');
+        });
+    });
+
+    describe('if the plans are not loaded', () => {
+        let button;
+
+        beforeEach(() => {
+            component.setProps({
+                plans: []
+            });
+            modal = getModal();
+            button = modal.find(Button);
+        });
+
+        it('should show no messages', () => {
+            expect(modal.find('.alert').length).toBe(0);
+        });
+
+        it('should disable the button', () => {
+            expect(button.prop('disabled')).toBe(true);
+        });
+
+        it('should show a loading animation', () => {
+            expect(modal.find('.spinner-wrap').length).toBe(1, 'loading animation is not shown');
         });
     });
 
@@ -257,22 +291,6 @@ describe('ChangePlanModal', () => {
             it('should be in a submitting state', () => {
                 expect(button.prop('disabled')).toBe(true);
                 expect(button.prop('className').split(' ')).toContain('btn-waiting');
-            });
-        });
-        describe('if the plans are not loaded', () => {
-            beforeEach(() => {
-                component.setProps({
-                    plans: []
-                });
-                modal = getModal();
-                button = modal.find(Button);
-            });
-
-            it('should show no messages', () => {
-                expect(modal.find('.alert').length).toBe(0);
-            });
-            it('should disable the button', () => {
-                expect(button.prop('disabled')).toBe(true);
             });
         });
 
