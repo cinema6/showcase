@@ -548,6 +548,7 @@ describe('dashboard actions', function() {
                         buttons: [
                             {
                                 text: jasmine.any(String),
+                                type: jasmine.any(String),
                                 onSelect: jasmine.any(Function)
                             },
                             {
@@ -571,8 +572,8 @@ describe('dashboard actions', function() {
 
                 beforeEach(function() {
                     dismiss = jasmine.createSpy('dismiss()').and.returnValue(Promise.resolve());
-                    noUpgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[0];
-                    upgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[1];
+                    upgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[0];
+                    noUpgrade = this.dispatch.calls.mostRecent().args[0].payload.buttons[1];
 
                     success = jasmine.createSpy('success()');
                     failure = jasmine.createSpy('failure()');

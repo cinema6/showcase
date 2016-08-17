@@ -121,7 +121,6 @@ export const promptUpgrade = createThunk(redirect => (dispatch) =>
             {
                 text: 'Yes, upgrade my plan!',
                 type: 'danger btn-block',
-                size: 'large',
                 onSelect: dismiss => dispatch(push('/dashboard/billing'))
                 .then(() => {
                     dismiss();
@@ -140,7 +139,6 @@ export const promptUpgrade = createThunk(redirect => (dispatch) =>
             {
                 text: 'No, keep my plan.',
                 type: 'default btn-block',
-                size: 'large',
                 onSelect: dismiss => dismiss(),
             },
         ],

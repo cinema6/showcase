@@ -289,7 +289,11 @@ describe('Billing', function() {
                                 {
                                     text: jasmine.any(String),
                                     type: jasmine.any(String),
-                                    size: jasmine.any(String),
+                                    onSelect: jasmine.any(Function)
+                                },
+                                {
+                                    text: jasmine.any(String),
+                                    type: jasmine.any(String),
                                     onSelect: jasmine.any(Function)
                                 }
                             ]
@@ -447,6 +451,43 @@ describe('Billing', function() {
                                     it('should close the modal', () => {
                                         expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
                                     });
+                                });
+                            });
+                        });
+
+                        describe('[1]', () => {
+                            let button;
+
+                            beforeEach(() => {
+                                button = buttons[1];
+                            });
+
+                            afterEach(() => {
+                                button = null;
+                            });
+
+                            describe('onSelect()', () => {
+                                let dismiss;
+                                let dispatchStub;
+
+                                beforeEach(done => {
+                                    store.dispatch.calls.reset();
+                                    dispatchStub = stub.dispatch();
+
+                                    dismiss = jasmine.createSpy('dismiss()');
+                                    store.dispatch.and.callFake(dispatchStub);
+
+                                    button.onSelect(dismiss);
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    dismiss = null;
+                                    dispatchStub = null;
+                                });
+
+                                it('should dismiss the alert', () => {
+                                    expect(dismiss).toHaveBeenCalledWith();
                                 });
                             });
                         });

@@ -31,7 +31,6 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
                 {
                     text: 'Archive',
                     type: 'danger btn-block',
-                    size: 'large',
                     onSelect: dismiss => (
                         dispatch(cancelCampaign(campaign.id)).then(() => {
                             dismiss();
@@ -54,7 +53,6 @@ export const archiveCampaign = createThunk(campaign => dispatch => dispatch(
                 {
                     text: 'Keep',
                     type: 'default btn-block',
-                    size: 'large',
                     onSelect: dismiss => dismiss(),
                 },
             ],

@@ -165,7 +165,6 @@ class Billing extends Component {
                             {
                                 text: 'Cancel my subscription',
                                 type: 'danger btn-block',
-                                size: 'large',
                                 onSelect: dismiss => cancelSubscription().then(() => Promise.all([
                                     dismiss(),
                                     showPlanModal(false),
@@ -174,7 +173,6 @@ class Billing extends Component {
                             {
                                 text: 'Keep my subscription',
                                 type: 'default btn-block',
-                                size: 'large',
                                 onSelect: dismiss => dismiss(),
                             },
                         ],
