@@ -182,8 +182,8 @@ describe('campaign actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(createAction(RESTORE)(jasmine.any(Promise)));
             });
 
-            it('should set the campaign to active', () => {
-                expect(dispatch).toHaveBeenCalledWith(campaign.update({ data: { id, status: 'active' } }));
+            it('should set the campaign to draft', () => {
+                expect(dispatch).toHaveBeenCalledWith(campaign.update({ data: { id, status: 'draft' } }));
             });
 
             describe('when the campaign has been made active', () => {

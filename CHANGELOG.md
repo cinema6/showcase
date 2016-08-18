@@ -1,6 +1,11 @@
 # Showcase
 
 ## v0.13.0 (August 18, 2016)
+* *[v0.13.0-rc2]*
+  * [FIX]: Fix for an issue that prevented campaigns from being restored
+    from the archive.
+* *[/v0.13.0-rc2]*
+
 * *[v0.13.0-rc1]*
   * [REFACTOR]: Move a bunch of billing cycle logic to the backend
   * [FIX]: Prevent duplicate network requests from being made when

@@ -30,6 +30,6 @@ export const cancel = createThunk(id => (
 export const RESTORE = prefix('RESTORE');
 export const restore = createThunk(id => dispatch => dispatch(createAction(RESTORE)(
     Promise.resolve().then(() => (
-        dispatch(campaign.update({ data: { id, status: 'active' } }))
+        dispatch(campaign.update({ data: { id, status: 'draft' } }))
     ))
 )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));
