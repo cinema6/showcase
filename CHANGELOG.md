@@ -1,5 +1,6 @@
 # Showcase
 
+## v0.13.0 (August 18, 2016)
 * *[v0.13.0-rc1]*
   * [REFACTOR]: Move a bunch of billing cycle logic to the backend
   * [FIX]: Prevent duplicate network requests from being made when
@@ -7,6 +8,7 @@
   * [FEATURE]: Add support for multiple pricing tiers
   * [FEATURE]: Add support for multiple apps
   * [FEATURE]: Allow users to cancel their subscription
+* *[/v0.13.0-rc1]*
 
 ## v0.12.1 (July 22, 2016)
 * *[v0.12.1-rc1]*
