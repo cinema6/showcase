@@ -6,11 +6,15 @@ import { createAction } from 'redux-actions';
 import { TYPE as NOTIFICATION_TYPE } from '../enums/notification';
 import { notify } from './notification';
 import { replace, push, goBack } from 'react-router-redux';
-import { campaignFromData } from '../utils/campaign';
+import {
+    campaignFromData,
+    campaignUpdateFromData,
+} from '../utils/campaign';
 import { createThunk } from '../../src/middleware/fsa_thunk';
-import { getPromotions, getOrg } from './session';
+import { getPromotions, getOrg, getPaymentPlan } from './session';
 import moment from 'moment';
 import _, { find } from 'lodash';
+import { changePaymentPlan } from './org';
 
 function prefix(type) {
     return `PRODUCT_WIZARD/${type}`;
@@ -32,58 +36,64 @@ export const WIZARD_DESTROYED = prefix('WIZARD_DESTROYED');
 export const wizardDestroyed = createAction(WIZARD_DESTROYED);
 
 export const CREATE_CAMPAIGN = prefix('CREATE_CAMPAIGN');
-export const createCampaign = createThunk(({ payment, productData, targeting }) => (
-    function thunk(dispatch, getState) {
-        const state = getState();
-        const user = state.db.user[state.session.user];
+export const createCampaign = createThunk(({
+    payment,
+    productData,
+    targeting,
+    paymentPlan,
+}) => (dispatch, getState) => dispatch(createAction(CREATE_CAMPAIGN)(Promise.resolve().then(() => {
+    const state = getState();
+    const user = state.db.user[state.session.user];
 
-        return dispatch(createAction(CREATE_CAMPAIGN)(
-            (payment ? dispatch(paymentMethod.create({ data: {
+    return Promise.all([
+        payment ? dispatch(paymentMethod.create({
+            data: {
                 cardholderName: payment.cardholderName,
                 paymentMethodNonce: payment.nonce,
                 makeDefault: true,
-            } })) : Promise.resolve()).then(() => dispatch(advertiser.query({
-                org: user.org,
-                limit: 1,
-            }))).then(([advertiserId]) => dispatch(campaign.create({
-                data: campaignFromData({ productData, targeting }, { advertiserId }),
-            }))).then(([id]) => {
-                dispatch(replace(`/dashboard/campaigns/${id}`));
-                dispatch(notify({
-                    type: NOTIFICATION_TYPE.SUCCESS,
-                    message: 'Your ad is ready to go and we’ll start promoting it soon.' +
-                    'You’ll get first stat update in a few days so keep a look out.',
-                    time: 6000,
-                }));
+            },
+        })) : Promise.resolve(),
+        paymentPlan ? dispatch(changePaymentPlan({
+            orgId: user.org,
+            paymentPlanId: paymentPlan.id,
+        })) : Promise.resolve(),
+    ])
+    .then(() => dispatch(advertiser.query({
+        org: user.org,
+        limit: 1,
+    })))
+    .then(([advr]) => dispatch(campaign.create({
+        data: campaignFromData({ productData, targeting }, { advertiserId: advr.id }),
+    })))
+    .then(([camp]) => {
+        dispatch(replace(`/dashboard/campaigns/${camp.id}`));
+        dispatch(notify({
+            type: NOTIFICATION_TYPE.SUCCESS,
+            message: 'Your ad is ready to go and we’ll start promoting it soon.' +
+            'You’ll get first stat update in a few days so keep a look out.',
+            time: 6000,
+        }));
 
-                return [id];
-            })
-            .catch(reason => {
-                dispatch(notify({
-                    type: NOTIFICATION_TYPE.DANGER,
-                    message: `There was a problem: ${reason.response || reason.message}`,
-                }));
+        return [camp];
+    })
+    .catch(reason => {
+        dispatch(notify({
+            type: NOTIFICATION_TYPE.DANGER,
+            message: `There was a problem: ${reason.response || reason.message}`,
+        }));
 
-                return Promise.reject(reason);
-            })
-        )).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason));
-    }
-));
+        return Promise.reject(reason);
+    });
+}))).then(({ value }) => value).catch(({ reason }) => Promise.reject(reason)));
 
-export const wizardComplete = createThunk(({ productData, targeting }) => (
-    function thunk(dispatch, getState) {
-        const [method] = getState().session.paymentMethods;
+export const wizardComplete = createThunk(({ productData, targeting }) => dispatch => (
+    dispatch(getPaymentPlan()).then(result => {
+        if (result) {
+            return dispatch(createCampaign({ productData, targeting }));
+        }
 
-        return Promise.resolve(
-            method || dispatch(paymentMethod.list()).then(([result]) => result)
-        ).then(aPaymentMethod => {
-            if (aPaymentMethod) {
-                return dispatch(createCampaign({ productData, targeting }));
-            }
-
-            return dispatch(goToStep(3));
-        });
-    }
+        return dispatch(goToStep(3));
+    })
 ));
 
 export const LOAD_CAMPAIGN = prefix('LOAD_CAMPAIGN');
@@ -123,13 +133,13 @@ export const updateCampaign = createThunk(({ id, productData, targeting }) => (
                 }
 
                 return dispatch(campaign.update({
-                    data: campaignFromData({ productData, targeting }, currentCampaign),
-                })).then(([campaignId]) => {
+                    data: campaignUpdateFromData({ productData, targeting }, currentCampaign),
+                })).then(() => {
                     dispatch(notify({
                         type: NOTIFICATION_TYPE.SUCCESS,
                         message: 'Your app has been updated!',
                     }));
-                    dispatch(push(`/dashboard/campaigns/${campaignId}`));
+                    dispatch(push(`/dashboard/campaigns/${currentCampaign.id}`));
 
                     return [id];
                 });
@@ -150,18 +160,19 @@ export const PREVIEW_LOADED = prefix('PREVIEW_LOADED');
 export const previewLoaded = createAction(PREVIEW_LOADED);
 
 export const COLLECT_PAYMENT = prefix('COLLECT_PAYMENT');
-export const collectPayment = createThunk(({ productData, targeting }) => (dispatch, getState) => {
+export const collectPayment = createThunk(({
+    productData,
+    targeting,
+    paymentPlan,
+}) => dispatch => {
     const collectPaymentMethod = () => goToStep(4);
 
     return dispatch(createAction(COLLECT_PAYMENT)(Promise.all([
         dispatch(getPromotions()),
         dispatch(getOrg()),
-    ]).then(([promotionIds, orgId]) => {
-        const state = getState();
-        const promotions = promotionIds.map(id => state.db.promotion[id]);
-        const org = state.db.org[orgId];
+    ]).then(([promotions, [org]]) => {
         const paymentMethodRequired = _(promotions).every(
-            `data[${org.paymentPlanId}].paymentMethodRequired`
+            `data[${paymentPlan.id}].paymentMethodRequired`
         );
         const paymentPlanStart = (org.paymentPlanStart || null) &&
             moment(org.paymentPlanStart);
@@ -171,7 +182,7 @@ export const collectPayment = createThunk(({ productData, targeting }) => (dispa
             return dispatch(collectPaymentMethod());
         }
 
-        return dispatch(createCampaign({ productData, targeting }));
+        return dispatch(createCampaign({ productData, targeting, paymentPlan }));
     })
     .then(() => undefined)
     .catch(reason => {

@@ -3,6 +3,7 @@ import {
 } from './auth';
 import {
     getCampaigns,
+    getPaymentPlan,
 } from './session';
 import {
     trackLogin as intercomTrackLogin,
@@ -24,12 +25,18 @@ export const loginUser = createThunk(({ email, password, redirect }) => (
         dispatch(createAction(LOGIN_START)());
 
         return dispatch(authLoginUser({ email, password }))
-            .then(data => dispatch(getCampaigns()).catch(noop) // Log-in even if GETting campaigns
-            .then(() => Promise.all([                          // fails
-                dispatch(createAction(LOGIN_SUCCESS)(data)),
-                dispatch(replace(redirect)),
-                dispatch(intercomTrackLogin(data)),
-            ])))
+            .then(data => (
+                Promise.all([
+                    dispatch(getCampaigns()),
+                    dispatch(getPaymentPlan()),
+                ])
+                .catch(noop) // proceed with login even if fetching deps fails
+                .then(() => Promise.all([
+                    dispatch(createAction(LOGIN_SUCCESS)(data)),
+                    dispatch(replace(redirect)),
+                    dispatch(intercomTrackLogin(data)),
+                ]))
+            ))
             .catch(reason => dispatch(createAction(LOGIN_FAILURE)(reason)));
     }
 ));

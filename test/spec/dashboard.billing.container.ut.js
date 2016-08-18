@@ -1,12 +1,16 @@
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { createUuid } from 'rc-uuid';
-import { keyBy, assign } from 'lodash';
+import { keyBy, assign, cloneDeep as clone } from 'lodash';
 import { createStore } from 'redux';
 import ChangePaymentMethodModal from '../../src/components/ChangePaymentMethodModal';
+import ChangePlanModal from '../../src/components/ChangePlanModal';
 import { showAlert } from '../../src/actions/alert';
 import moment from 'moment';
 import numeral from 'numeral';
+import { getValues } from 'redux-form';
+import { changePaymentPlan, cancelSubscription } from '../../src/actions/billing';
+import * as stub from '../helpers/stubs';
 
 const proxyquire = require('proxyquire');
 const DASH = '\u2014';
@@ -18,8 +22,11 @@ describe('Billing', function() {
     beforeEach(function() {
         billingActions = {
             showChangeModal: jasmine.createSpy('showChangeModal()').and.callFake(require('../../src/actions/billing').showChangeModal),
+            showPlanModal: jasmine.createSpy('showChangeModal()').and.callFake(require('../../src/actions/billing').showPlanModal),
             loadPageData: jasmine.createSpy('loadPageData()').and.callFake(require('../../src/actions/billing').loadPageData),
             changePaymentMethod: jasmine.createSpy('changePaymentMethod()').and.callFake(require('../../src/actions/billing').changePaymentMethod),
+            changePaymentPlan,
+            cancelSubscription,
 
             __esModule: true
         };
@@ -39,22 +46,53 @@ describe('Billing', function() {
                 default: ChangePaymentMethodModal,
 
                 __esModule: true
+            },
+            '../../components/ChangePlanModal': {
+                default: ChangePlanModal,
+
+                __esModule: true
             }
         }).default;
     });
 
     describe('when rendered', function() {
-        let session, paymentPlan;
+        let session, paymentPlan, paymentPlans;
         let store, state;
         let props;
         let wrapper, component;
 
         beforeEach(function() {
-            paymentPlan = {
-                id: `pp-${createUuid()}`,
-                viewsPerMonth: 2000,
-                price: 149.99
-            };
+            paymentPlans = [
+                {
+                    id: 'pp-0Ek9Sn0c02viEQGx',
+                    price: 0,
+                    viewsPerMonth: 0,
+                    name: '--canceled--',
+                    maxCampaigns: 0
+                },
+                {
+                    id: 'pp-0Ek6Vw0bWnqdlr61',
+                    price: 10,
+                    viewsPerMonth: 2000,
+                    name: 'Baby',
+                    maxCampaigns: 1
+                },
+                {
+                    id: 'pp-0Ek6V-0bWnuhLfQl',
+                    price: 24.99,
+                    viewsPerMonth: 4000,
+                    name: 'Kid',
+                    maxCampaigns: 5
+                },
+                {
+                    id: 'pp-0Ek6Ws0bWnxCV-B7',
+                    price: 49.99,
+                    viewsPerMonth: 10000,
+                    name: 'Adult',
+                    maxCampaigns: 10
+                }
+            ];
+            paymentPlan = paymentPlans[2];
             session = {
                 payments: Array.apply([], new Array(10)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
@@ -63,10 +101,17 @@ describe('Billing', function() {
                     cycleEnd: moment().subtract(5, 'days').add(1, 'month').subtract(1, 'day').format(),
                     totalViews: 12345
                 },
-                paymentPlan: paymentPlan.id
+                paymentPlanStatus: {
+                    paymentPlanId: paymentPlan.id,
+                    nextPaymentPlanId: null
+                },
+                campaigns: Array.apply([], new Array(5)).map(() => `cam-${createUuid()}`)
             };
             state = {
                 session,
+                system: {
+                    paymentPlans: paymentPlans.map(paymentPlan => paymentPlan.id)
+                },
                 db: {
                     payment: keyBy(session.payments.map(id => ({
                         type: 'paypal',
@@ -83,18 +128,31 @@ describe('Billing', function() {
                         last4: '1234',
                         default: false
                     })), 'token'),
-                    paymentPlan: {
+                    paymentPlan: paymentPlans.reduce((result, paymentPlan) => assign(result, {
                         [paymentPlan.id]: paymentPlan
-                    }
+                    }), {})
                 },
                 page: {
                     'dashboard.billing': {
-                        showChangeModal: false
+                        showChangeModal: false,
+                        showPlanModal: false,
+                        changingPlan: false,
+                        postPlanChangeRedirect: '/dashboard/add-product'
+                    }
+                },
+                form: {
+                    selectPlan: {
+                        change: {
+                            plan: {
+                                _isFieldValue: true,
+                                value: paymentPlans[3].id
+                            }
+                        }
                     }
                 }
             };
             state.db.paymentMethod[session.paymentMethods[1]].default = true;
-            store = createStore(() => state);
+            store = createStore(() => clone(state));
 
             props = {
 
@@ -126,6 +184,346 @@ describe('Billing', function() {
             expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
         });
 
+        describe('the ChangePlanModal', () => {
+            let modal;
+
+            beforeEach(() => {
+                modal = component.find(ChangePlanModal);
+            });
+
+            afterEach(() => {
+                modal = null;
+            });
+
+            it('should exist', () => {
+                expect(modal.length).toBe(1, 'ChangePlanModal not rendered.');
+                expect(modal.prop('show')).toBe(false);
+                expect(modal.prop('plans')).toEqual(paymentPlans.filter(paymentPlan => paymentPlan.price > 0));
+                expect(modal.prop('currentPlan')).toBe(paymentPlan.id);
+                expect(modal.prop('selectedPlan')).toBe(getValues(state.form.selectPlan.change).plan);
+                expect(modal.prop('amountOfCampaigns')).toBe(state.session.campaigns.length);
+                expect(modal.prop('cycleEnd').format()).toEqual(state.session.billingPeriod.cycleEnd);
+                expect(modal.prop('actionPending')).toBe(false);
+            });
+
+            describe('when page.showPlanModal is true', () => {
+                beforeEach(() => {
+                    store.dispatch.and.callThrough();
+
+                    state = assign({}, state, {
+                        page: assign({}, state.page, {
+                            'dashboard.billing': assign({}, state.page['dashboard.billing'], {
+                                showPlanModal: true
+                            })
+                        })
+                    });
+                    store.dispatch({ type: '@@UPDATE' });
+                });
+
+                it('should be shown', () => {
+                    expect(modal.prop('show')).toBe(true);
+                });
+            });
+
+            describe('when page.changingPlan is true', () => {
+                beforeEach(() => {
+                    store.dispatch.and.callThrough();
+
+                    state = assign({}, state, {
+                        page: assign({}, state.page, {
+                            'dashboard.billing': assign({}, state.page['dashboard.billing'], {
+                                changingPlan: true
+                            })
+                        })
+                    });
+                    store.dispatch({ type: '@@UPDATE' });
+                });
+
+                it('should set actionPending to true', () => {
+                    expect(modal.prop('actionPending')).toBe(true);
+                });
+            });
+
+            describe('when onClose() is called', () => {
+                beforeEach(() => {
+                    store.dispatch.calls.reset();
+                    modal.prop('onClose')();
+                });
+
+                it('should dispatch() showPlanModal(false)', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
+                });
+            });
+
+            describe('when onConfirm() is called', () => {
+                let paymentPlanId;
+
+                beforeEach(() => {
+                    store.dispatch.calls.reset();
+
+                    paymentPlanId = `pp-${createUuid()}`;
+                    modal.prop('onConfirm')(paymentPlanId);
+                });
+
+                afterEach(() => {
+                    paymentPlanId = null;
+                });
+
+                it('should dispatch changePaymentPlan()', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(changePaymentPlan(paymentPlanId, component.prop('page').postPlanChangeRedirect));
+                });
+            });
+
+            describe('when onCancel() is called', () => {
+                beforeEach(() => {
+                    store.dispatch.calls.reset();
+                    modal.prop('onCancel')();
+                });
+
+                it('should dispatch() an alert', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith((() => {
+                        const action = showAlert({
+                            title: jasmine.any(String),
+                            description: jasmine.any(Object),
+                            buttons: [
+                                {
+                                    text: jasmine.any(String),
+                                    type: jasmine.any(String),
+                                    onSelect: jasmine.any(Function)
+                                },
+                                {
+                                    text: jasmine.any(String),
+                                    type: jasmine.any(String),
+                                    onSelect: jasmine.any(Function)
+                                }
+                            ]
+                        });
+
+                        action.payload.id = jasmine.any(String);
+                        action.payload.buttons.forEach(button => button.id = jasmine.any(String));
+
+                        return action;
+                    })());
+                });
+
+                it('should close the modal', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
+                });
+
+                describe('the alert', () => {
+                    let alert;
+
+                    beforeEach(() => {
+                        alert = store.dispatch.calls.mostRecent().args[0].payload;
+                    });
+
+                    afterEach(() => {
+                        alert = null;
+                    });
+
+                    describe('description', () => {
+                        let description;
+
+                        beforeEach(() => {
+                            description = new ReactWrapper(alert.description);
+                        });
+
+                        afterEach(() => {
+                            description = null;
+                        });
+
+                        it('should render the amount of apps the user has', () => {
+                            expect(description.find('span p').first().text()).toBe(`All ${state.session.campaigns.length} of your apps will lose the exposure they have been getting!`);
+                        });
+
+                        it('should render the amount of views in the current billing cycle', () => {
+                            expect(description.find('.campaign-mini-stats h3').first().text()).toBe(numeral(paymentPlan.viewsPerMonth).format('0,0'));
+                        });
+
+                        describe('if the user only has one app', () => {
+                            beforeEach(() => {
+                                store.dispatch.and.callThrough();
+
+                                state = assign({}, state, {
+                                    session: assign({}, state.session, {
+                                        campaigns: state.session.campaigns.slice(0, 1)
+                                    })
+                                });
+                                store.dispatch({ type: '@@UPDATE' });
+
+                                modal.prop('onCancel')();
+                                alert = store.dispatch.calls.mostRecent().args[0].payload;
+                                description = new ReactWrapper(alert.description);
+                            });
+
+                            it('should use singular text', () => {
+                                expect(description.find('span p').first().text()).toBe('Your app will lose the exposure it has been getting!');
+                            });
+                        });
+
+                        describe('if the paymentPlan has not been fetched', () => {
+                            beforeEach(() => {
+                                store.dispatch.and.callThrough();
+
+                                state = assign({}, state, {
+                                    session: assign({}, state.session, {
+                                        paymentPlan: null
+                                    }),
+                                    system: assign({}, state.system, {
+                                        paymentPlans: null
+                                    })
+                                });
+                                store.dispatch({ type: '@@UPDATE' });
+
+                                modal.prop('onCancel')();
+                                alert = store.dispatch.calls.mostRecent().args[0].payload;
+                                description = new ReactWrapper(alert.description);
+                            });
+
+                            it('should not render the amount of views', () => {
+                                expect(description.find('.campaign-mini-stats h3').first().text()).toBe(DASH);
+                            });
+                        });
+                    });
+
+                    describe('buttons', () => {
+                        let buttons;
+
+                        beforeEach(() => {
+                            buttons = alert.buttons;
+                        });
+
+                        afterEach(() => {
+                            buttons = null;
+                        });
+
+                        describe('[0]', () => {
+                            let button;
+
+                            beforeEach(() => {
+                                button = buttons[0];
+                            });
+
+                            afterEach(() => {
+                                button = null;
+                            });
+
+                            describe('onSelect()', () => {
+                                let dismiss;
+                                let dispatchStub;
+
+                                beforeEach(done => {
+                                    store.dispatch.calls.reset();
+                                    dispatchStub = stub.dispatch();
+
+                                    dismiss = jasmine.createSpy('dismiss()');
+                                    store.dispatch.and.callFake(dispatchStub);
+
+                                    button.onSelect(dismiss);
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    dismiss = null;
+                                    dispatchStub = null;
+                                });
+
+                                it('should not dismiss the alert', () => {
+                                    expect(dismiss).not.toHaveBeenCalled();
+                                });
+
+                                it('should dispatch cancelSubscription()', () => {
+                                    expect(store.dispatch).toHaveBeenCalledWith(cancelSubscription());
+                                });
+
+                                describe('when the subscription is canceled', () => {
+                                    beforeEach(done => {
+                                        dispatchStub.getDeferred(dispatchStub.calls.mostRecent().args[0]).resolve(undefined);
+                                        setTimeout(done);
+
+                                        store.dispatch.calls.reset();
+                                    });
+
+                                    it('should dismiss the alert', () => {
+                                        expect(dismiss).toHaveBeenCalledWith();
+                                    });
+
+                                    it('should close the modal', () => {
+                                        expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
+                                    });
+                                });
+                            });
+                        });
+
+                        describe('[1]', () => {
+                            let button;
+
+                            beforeEach(() => {
+                                button = buttons[1];
+                            });
+
+                            afterEach(() => {
+                                button = null;
+                            });
+
+                            describe('onSelect()', () => {
+                                let dismiss;
+                                let dispatchStub;
+
+                                beforeEach(done => {
+                                    store.dispatch.calls.reset();
+                                    dispatchStub = stub.dispatch();
+
+                                    dismiss = jasmine.createSpy('dismiss()');
+                                    store.dispatch.and.callFake(dispatchStub);
+
+                                    button.onSelect(dismiss);
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    dismiss = null;
+                                    dispatchStub = null;
+                                });
+
+                                it('should dismiss the alert', () => {
+                                    expect(dismiss).toHaveBeenCalledWith();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('if there is a nextPaymentPlanId', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[1].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should use that payment plan when showing the next amount due', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe(`$${paymentPlans[1].price} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
+            });
+        });
+
+        describe('if the user cancels their account', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                session.paymentPlanStatus.nextPaymentPlanId = paymentPlans[0].id;
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should show N/A instead of a $ amount and due date', () => {
+                expect(component.find('.billing-summary .data-stacked h3').at(1).text()).toBe('N/A');
+                expect(component.find('.billing-summary .data-stacked h3').at(0).text()).toBe(`${numeral(paymentPlan.viewsPerMonth).format('0,0')} views`);
+            });
+        });
+
         describe('if the billing period is unknown', function() {
             beforeEach(function() {
                 store.dispatch.and.callThrough();
@@ -143,18 +541,35 @@ describe('Billing', function() {
 
                 expect(nextDueDate.text()).toBe(`$${paymentPlan.price} on ${DASH}`);
             });
+
+            it('should pass different data to the ChangePlanModal', () => {
+                const modal = component.find(ChangePlanModal);
+
+                expect(modal.prop('cycleEnd')).toBeNull();
+            });
         });
 
         describe('if the payment plan is unknown', function() {
+            let changePlan;
+
             beforeEach(function() {
                 store.dispatch.and.callThrough();
 
                 state = assign({}, state, {
                     session: assign({}, state.session, {
-                        paymentPlan: null
+                        paymentPlanStatus: null
+                    }),
+                    system: assign({}, state.system, {
+                        paymentPlans: null
                     })
                 });
                 store.dispatch({ type: '@@UPDATE' });
+
+                changePlan = component.find(ChangePlanModal);
+            });
+
+            afterEach(() => {
+                changePlan = null;
             });
 
             it('should render dashes in place of data', function() {
@@ -163,6 +578,74 @@ describe('Billing', function() {
 
                 expect(nextDueDate.text()).toBe(`$${DASH} on ${moment(session.billingPeriod.cycleEnd).add(1, 'day').format('MMM D, YYYY')}`);
                 expect(numOfImpressions.text()).toBe(`${DASH} views`);
+            });
+
+            it('should change what is passed into the ChangePlanModal', () => {
+                expect(changePlan.prop('plans')).toEqual([]);
+                expect(changePlan.prop('currentPlan')).toBeUndefined();
+            });
+
+            it('should not render a "Change Plan" button', () => {
+                expect(component.find('.billing-summary Button').length).toBe(0, 'change plan button is rendered.');
+            });
+        });
+
+        describe('if the campaigns have not been fetched', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                state = assign({}, state, {
+                    session: assign({}, state.session, {
+                        campaigns: null
+                    })
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should change what is passed into the ChangePlanModal', () => {
+                const modal = component.find(ChangePlanModal);
+
+                expect(modal.prop('amountOfCampaigns')).toBeUndefined();
+            });
+        });
+
+        describe('if the form has not been initialized', () => {
+            beforeEach(() => {
+                store.dispatch.and.callThrough();
+
+                state = assign({}, state, {
+                    form: {}
+                });
+                store.dispatch({ type: '@@UPDATE' });
+            });
+
+            it('should change what is passed into the ChangePlanModal', () => {
+                const modal = component.find(ChangePlanModal);
+
+                expect(modal.prop('selectedPlan')).toBeUndefined();
+            });
+        });
+
+        describe('the button to change plans', () => {
+            let button;
+
+            beforeEach(() => {
+                button = component.find('.billing-summary').first().find('Button');
+            });
+
+            afterEach(() => {
+                button = null;
+            });
+
+            describe('when clicked', () => {
+                beforeEach(() => {
+                    store.dispatch.calls.reset();
+                    button.prop('onClick')();
+                });
+
+                it('should dispatch showPlanModal(true)', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(true));
+                });
             });
         });
 
@@ -251,7 +734,7 @@ describe('Billing', function() {
                 store.dispatch.and.returnValue(new Promise(() => {}));
 
                 wrapper.setState({
-                    page: assign({}, wrapper.props().page, {
+                    page: assign({}, component.props().page, {
                         showChangeModal: true
                     })
                 });

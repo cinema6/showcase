@@ -1,13 +1,13 @@
 'use strict';
 
 import { Route, IndexRoute } from 'react-router';
-import { find } from 'lodash';
+import { find, cloneDeep as clone } from 'lodash';
 import { createStore } from 'redux';
-import { getCampaigns } from '../../src/actions/session';
+import { getCampaigns, getPaymentPlan } from '../../src/actions/session';
 import { notify } from '../../src/actions/notification';
-import defer from 'promise-defer';
 import { createUuid } from 'rc-uuid';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
+import * as stubs from '../helpers/stubs';
 
 const proxyquire = require('proxyquire');
 
@@ -17,7 +17,8 @@ describe('createRoutes(store)', function() {
 
     beforeEach(function() {
         sessionActions = {
-            getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns)
+            getCampaigns: jasmine.createSpy('getCampaigns()').and.callFake(getCampaigns),
+            getPaymentPlan
         };
         notificationActions = {
             notify: jasmine.createSpy('notify()').and.callFake(notify)
@@ -65,85 +66,165 @@ describe('createRoutes(store)', function() {
                     children = dashboard.props.children;
                 });
 
-                describe('index', function() {
-                    let index;
+                describe('campaigns', function() {
+                    let campaigns;
 
                     beforeEach(function() {
-                        index = find(children, route => route.type === IndexRoute);
+                        campaigns = find(children, route => route.props.path === 'campaigns');
                     });
 
                     it('should exist', function() {
-                        expect(index).toEqual(jasmine.any(Object));
+                        expect(campaigns).toEqual(jasmine.any(Object));
                     });
 
                     describe('onEnter()', function() {
+                        let state;
                         let onEnter;
-                        let dispatchDeferred;
+                        let dispatchStub;
                         let routerState, replace, callback;
 
                         beforeEach(function(done) {
-                            onEnter = index.props.onEnter;
+                            onEnter = campaigns.props.onEnter;
 
                             routerState = {};
                             replace = jasmine.createSpy('replace()');
                             callback = jasmine.createSpy('callback()');
 
-                            spyOn(store, 'dispatch').and.returnValue((dispatchDeferred = defer()).promise);
+                            state = {
+                                db: {
+                                    paymentPlan: {}
+                                }
+                            };
+
+                            dispatchStub = stubs.dispatch();
+                            spyOn(store, 'dispatch').and.callFake(dispatchStub);
+                            spyOn(store, 'getState').and.callFake(() => clone(state));
 
                             onEnter(routerState, replace, callback);
                             setTimeout(done);
                         });
 
-                        it('should getCampaigns()', function() {
-                            expect(sessionActions.getCampaigns).toHaveBeenCalledWith();
-                            expect(store.dispatch).toHaveBeenCalledWith(sessionActions.getCampaigns.calls.mostRecent().returnValue);
+                        it('should get the user\'s campaigns', () => {
+                            expect(store.dispatch).toHaveBeenCalledWith(getCampaigns());
                         });
 
-                        describe('when the campaigns are fetched', function() {
-                            describe('and there are none', function() {
-                                beforeEach(function(done) {
-                                    dispatchDeferred.resolve([]);
+                        it('should get the user\'s paymentPlan', () => {
+                            expect(store.dispatch).toHaveBeenCalledWith(getPaymentPlan());
+                        });
+
+                        describe('if something goes wrong', () => {
+                            let reason;
+
+                            beforeEach(done => {
+                                reason = new Error('It went badly!');
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).reject(reason);
+
+                                setTimeout(done);
+
+                                store.dispatch.calls.reset();
+                            });
+
+                            it('should show an error notification', function() {
+                                expect(store.dispatch).toHaveBeenCalledWith(notify({
+                                    type: NOTIFICATION_TYPE.DANGER,
+                                    message: `Unexpected error: ${reason.message}`,
+                                    time: 10000
+                                }));
+                                expect(replace).not.toHaveBeenCalled();
+                                expect(callback).toHaveBeenCalledWith();
+                            });
+                        });
+
+                        describe('if the user has no payment plan', () => {
+                            beforeEach(done => {
+                                dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve(null);
+
+                                setTimeout(done);
+                            });
+
+                            afterEach(() => {
+                                expect(replace.calls.count()).toBe(1);
+                                expect(callback.calls.count()).toBe(1);
+                            });
+
+                            it('should redirect to /dashboard/add-product', () => {
+                                expect(replace).toHaveBeenCalledWith('/dashboard/add-product');
+                                expect(callback).toHaveBeenCalledWith();
+                            });
+                        });
+
+                        describe('if the user has a legitimate payment plan', () => {
+                            let paymentPlan;
+
+                            beforeEach(done => {
+                                paymentPlan = {
+                                    id: `pp-${createUuid()}`,
+                                    maxCampaigns: 1
+                                };
+                                state.db.paymentPlan[paymentPlan.id] = paymentPlan;
+
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
+                                setTimeout(done);
+                            });
+
+                            describe('and no campaigns', () => {
+                                beforeEach(done => {
+                                    dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([]);
+
                                     setTimeout(done);
                                 });
 
-                                it('should go to the /add-product state', function() {
+                                afterEach(() => {
+                                    expect(replace.calls.count()).toBe(1);
+                                    expect(callback.calls.count()).toBe(1);
+                                });
+
+                                it('should redirect to /dashboard/add-product', () => {
                                     expect(replace).toHaveBeenCalledWith('/dashboard/add-product');
                                     expect(callback).toHaveBeenCalledWith();
                                 });
                             });
 
-                            describe('and there is one', function() {
-                                let campaign;
+                            describe('and at least one campaign', () => {
+                                beforeEach(done => {
+                                    dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([`cam-${createUuid()}`]);
 
-                                beforeEach(function(done) {
-                                    campaign = `cam-${createUuid()}`;
-                                    dispatchDeferred.resolve([campaign]);
                                     setTimeout(done);
                                 });
 
-                                it('should go to the /campaigns/:campaignId state', function() {
-                                    expect(replace).toHaveBeenCalledWith(`/dashboard/campaigns/${campaign}`);
+                                afterEach(() => {
+                                    expect(callback.calls.count()).toBe(1);
+                                });
+
+                                it('should do nothing', () => {
+                                    expect(replace).not.toHaveBeenCalled();
                                     expect(callback).toHaveBeenCalledWith();
                                 });
                             });
                         });
 
-                        describe('if the campaigns cannot be fetched', function() {
-                            let reason;
+                        describe('if the user has a canceled paymentPlan', () => {
+                            let paymentPlan;
 
-                            beforeEach(function(done) {
-                                reason = new Error('There was a problem!');
-                                dispatchDeferred.reject(reason);
+                            beforeEach(done => {
+                                paymentPlan = {
+                                    id: `pp-${createUuid()}`,
+                                    maxCampaigns: 0
+                                };
+                                state.db.paymentPlan[paymentPlan.id] = paymentPlan;
+
+                                dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
                                 setTimeout(done);
                             });
 
-                            it('should show an error notification', function() {
-                                expect(notificationActions.notify).toHaveBeenCalledWith({
-                                    type: NOTIFICATION_TYPE.DANGER,
-                                    message: `Unexpected error: ${reason.message}`,
-                                    time: 10000
-                                });
-                                expect(store.dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                            afterEach(() => {
+                                expect(callback.calls.count()).toBe(1);
+                            });
+
+                            it('should do nothing', () => {
+                                expect(replace).not.toHaveBeenCalled();
                                 expect(callback).toHaveBeenCalledWith();
                             });
                         });
@@ -162,8 +243,9 @@ describe('createRoutes(store)', function() {
                     });
 
                     describe('onEnter()', function() {
+                        let state;
                         let onEnter;
-                        let dispatchDeferred;
+                        let dispatchStub;
                         let routerState, replace, callback;
 
                         beforeEach(function(done) {
@@ -173,63 +255,115 @@ describe('createRoutes(store)', function() {
                             replace = jasmine.createSpy('replace()');
                             callback = jasmine.createSpy('callback()');
 
-                            spyOn(store, 'dispatch').and.returnValue((dispatchDeferred = defer()).promise);
+                            state = {
+                                db: {
+                                    paymentPlan: {}
+                                }
+                            };
+
+                            dispatchStub = stubs.dispatch();
+                            spyOn(store, 'dispatch').and.callFake(dispatchStub);
+                            spyOn(store, 'getState').and.callFake(() => clone(state));
 
                             onEnter(routerState, replace, callback);
                             setTimeout(done);
                         });
 
-                        it('should getCampaigns()', function() {
-                            expect(sessionActions.getCampaigns).toHaveBeenCalledWith();
-                            expect(store.dispatch).toHaveBeenCalledWith(sessionActions.getCampaigns.calls.mostRecent().returnValue);
+                        it('should get the user\'s campaigns', () => {
+                            expect(store.dispatch).toHaveBeenCalledWith(getCampaigns());
                         });
 
-                        describe('when the campaigns are fetched', function() {
-                            describe('and there are none', function() {
-                                beforeEach(function(done) {
-                                    dispatchDeferred.resolve([]);
-                                    setTimeout(done);
-                                });
-
-                                it('should allow the transition', function() {
-                                    expect(replace).not.toHaveBeenCalled();
-                                    expect(callback).toHaveBeenCalledWith();
-                                });
-                            });
-
-                            describe('and there is one', function() {
-                                let campaign;
-
-                                beforeEach(function(done) {
-                                    campaign = `cam-${createUuid()}`;
-                                    dispatchDeferred.resolve([campaign]);
-                                    setTimeout(done);
-                                });
-
-                                it('should go to the dashboard state', function() {
-                                    expect(replace).toHaveBeenCalledWith('/dashboard');
-                                    expect(callback).toHaveBeenCalledWith();
-                                });
-                            });
+                        it('should get the user\'s paymentPlan', () => {
+                            expect(store.dispatch).toHaveBeenCalledWith(getPaymentPlan());
                         });
 
-                        describe('if the campaigns cannot be fetched', function() {
+                        describe('if something goes wrong', () => {
                             let reason;
 
-                            beforeEach(function(done) {
-                                reason = new Error('There was a problem!');
-                                dispatchDeferred.reject(reason);
+                            beforeEach(done => {
+                                reason = new Error('It went badly!');
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).reject(reason);
+
+                                setTimeout(done);
+
+                                store.dispatch.calls.reset();
+                            });
+
+                            it('should show an error notification', function() {
+                                expect(store.dispatch).toHaveBeenCalledWith(notify({
+                                    type: NOTIFICATION_TYPE.WARNING,
+                                    message: `Unexpected error: ${reason.message}`
+                                }));
+                                expect(replace).not.toHaveBeenCalled();
+                                expect(callback).toHaveBeenCalledWith();
+                            });
+                        });
+
+                        describe('if the user has no payment plan', () => {
+                            beforeEach(done => {
+                                dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve([]);
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve(null);
+
                                 setTimeout(done);
                             });
 
-                            it('should show an error notification and go to the dashboard', function() {
-                                expect(notificationActions.notify).toHaveBeenCalledWith({
-                                    type: NOTIFICATION_TYPE.WARNING,
-                                    message: `Unexpected error: ${reason.message}`
-                                });
-                                expect(store.dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
-                                expect(replace).toHaveBeenCalledWith('/dashboard');
+                            afterEach(() => {
+                                expect(callback.calls.count()).toBe(1);
+                            });
+
+                            it('should do nothing', () => {
+                                expect(replace).not.toHaveBeenCalled();
                                 expect(callback).toHaveBeenCalledWith();
+                            });
+                        });
+
+                        describe('if the user has a payment plan', () => {
+                            let paymentPlan;
+
+                            beforeEach(done => {
+                                paymentPlan = {
+                                    id: `pp-${createUuid()}`,
+                                    maxCampaigns: 3
+                                };
+                                state.db.paymentPlan[paymentPlan.id] = paymentPlan;
+
+                                dispatchStub.getDeferred(store.dispatch.calls.mostRecent().args[0]).resolve([paymentPlan]);
+                                setTimeout(done);
+                            });
+
+                            describe('and they have the maximum amount of campaigns', () => {
+                                beforeEach(done => {
+                                    dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve(Array.apply([], new Array(paymentPlan.maxCampaigns)).map(() => `cam-${createUuid()}`));
+
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    expect(replace.calls.count()).toBe(1);
+                                    expect(callback.calls.count()).toBe(1);
+                                });
+
+                                it('should redirect to /dashboard/campaigns', () => {
+                                    expect(replace).toHaveBeenCalledWith('/dashboard/campaigns');
+                                    expect(callback).toHaveBeenCalledWith();
+                                });
+                            });
+
+                            describe('and they have room for additional apps', () => {
+                                beforeEach(done => {
+                                    dispatchStub.getDeferred(store.dispatch.calls.first().args[0]).resolve(Array.apply([], new Array(paymentPlan.maxCampaigns - 1)).map(() => `cam-${createUuid()}`));
+
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    expect(callback.calls.count()).toBe(1);
+                                });
+
+                                it('should do nothing', () => {
+                                    expect(replace).not.toHaveBeenCalled();
+                                    expect(callback).toHaveBeenCalledWith();
+                                });
                             });
                         });
                     });

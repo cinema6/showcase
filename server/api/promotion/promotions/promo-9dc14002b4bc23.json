@@ -9,7 +9,15 @@
         "pp-0Ekdsm05KVZ43Aqj": {
             "trialLength": 14,
             "paymentMethodRequired": false,
+            "targetUsers": 1000
+        },
+        "pp-0aZ6Hz0aODM2vjFU": {
+            "paymentMethodRequired": true,
             "targetUsers": 2000
+        },
+        "pp-0aZ6Hz0aODOr6jFU": {
+            "paymentMethodRequired": true,
+            "targetUsers": 3000
         }
     }
 }

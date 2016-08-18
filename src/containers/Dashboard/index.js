@@ -6,10 +6,14 @@ import * as dashboardActions from '../../actions/dashboard';
 import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
+import StatsSummaryBar from '../../components/StatsSummaryBar.js';
+import { get, compact } from 'lodash';
+import moment from 'moment';
 
 class Dashboard extends Component {
     componentDidMount() {
         this.props.checkIfPaymentMethodRequired();
+        this.props.loadPageData();
     }
 
     render() {
@@ -20,6 +24,13 @@ class Dashboard extends Component {
 
             logoutUser,
             toggleNav,
+
+            billingPeriod,
+            paymentPlan,
+            campaigns,
+            analytics,
+
+            addApp,
         } = this.props;
 
         if (!user) { return null; }
@@ -59,8 +70,37 @@ class Dashboard extends Component {
                             </li>
                         </ul>
                     </div>
+                    <button
+                        className="btn btn-danger hidden-xs btn-header" onClick={addApp}
+                    >
+                        <i className="fa fa-plus" /> Add New App
+                    </button> {/* show alert asking to upgrade if
+                    users have maximum allowed apps on current plan */}
                 </div>
             </nav>
+            {(() => {
+                if (!billingPeriod || !paymentPlan) {
+                    return undefined;
+                }
+
+                const views = analytics.length > 0 ? analytics.reduce((total, campaign) => (
+                    total + campaign.cycle.users
+                ), 0) : null;
+                const startDate = moment(billingPeriod.cycleStart);
+                const endDate = moment(billingPeriod.cycleEnd);
+                const viewGoals = billingPeriod.totalViews;
+                const maxApps = paymentPlan.maxCampaigns;
+                const appsUsed = get(campaigns, 'length');
+
+                return (<StatsSummaryBar
+                    startDate={startDate}
+                    endDate={endDate}
+                    views={views}
+                    viewGoals={viewGoals}
+                    appsUsed={appsUsed}
+                    maxApps={maxApps}
+                />);
+            })()}
             {/* vertical mobile menu */} {/* hidden until triggered */}
             <nav
                 id="sidePanel"
@@ -70,13 +110,31 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-th-large" /> Dashboard</Link>
+                        <button className="bg-danger" onClick={addApp} > {/* link to add new app*/}
+                            <i className="fa fa-plus" /> Add New App
+                        </button> {/* show alert asking to upgrade if
+                        users have maximum allowed apps on current plan */}
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/billing"><i className="fa fa-usd" /> Billing</Link>
+                        <Link to="/dashboard/campaigns" activeClassName="active">
+                            <i className="fa fa-th-large" /> Dashboard
+                        </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" /> Profile</Link>
+                        <Link to="/dashboard/archive" activeClassName="active">
+                            <i className="fa fa-archive" /> Archive
+                        </Link>
+                        {/* link to archive*/}
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard/billing" activeClassName="active">
+                            <i className="fa fa-usd" /> Billing
+                        </Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard/account" activeClassName="active">
+                            <i className="fa fa-user" /> Profile
+                        </Link>
                     </li>
                     <li className="menu-item">
                         <a href="https://reelcontent.com/apps/faqs.html" target="_blank">
@@ -99,17 +157,27 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <Link to="/dashboard"><i className="fa fa-th-large" />
+                        <Link to="/dashboard/campaigns" activeClassName="active">
+                            <i className="fa fa-th-large" />
                             <span className="menu-item-label">Dashboard</span>
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/billing"><i className="fa fa-usd" />
+                        <Link to="/dashboard/archive" activeClassName="active">
+                            <i className="fa fa-archive" />
+                            <span className="menu-item-label">Archive</span>
+                            {/* link to archive*/}
+                        </Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/dashboard/billing" activeClassName="active">
+                            <i className="fa fa-usd" />
                             <span className="menu-item-label">Billing</span>
                         </Link>
                     </li>
                     <li className="menu-item">
-                        <Link to="/dashboard/account"><i className="fa fa-user" />
+                        <Link to="/dashboard/account" activeClassName="active">
+                            <i className="fa fa-user" />
                             <span className="menu-item-label">Profile</span>
                         </Link>
                     </li>
@@ -146,13 +214,35 @@ Dashboard.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     toggleNav: PropTypes.func.isRequired,
     checkIfPaymentMethodRequired: PropTypes.func.isRequired,
+    loadPageData: PropTypes.func.isRequired,
+
+    billingPeriod: PropTypes.object,
+    paymentPlan: PropTypes.object,
+    campaigns: PropTypes.array,
+    analytics: PropTypes.array.isRequired,
+
+    addApp: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
-    const user = state.db.user[state.session.user];
+function mapStateToProps({
+    session,
+    db,
+    analytics,
+}) {
+    const user = db.user[session.user];
+    const billingPeriod = session.billingPeriod;
+    const paymentPlan = db.paymentPlan[get(session, 'paymentPlanStatus.paymentPlanId')];
+    const campaigns = session.campaigns && session.campaigns.map(id => db.campaign[id]);
+    const totalAnalytics = session.campaigns && session.campaigns.concat(session.archive);
+    const campaignAnalytics = totalAnalytics &&
+        compact(totalAnalytics.map(id => analytics.results[id]));
 
     return {
         user: user || null,
+        billingPeriod: billingPeriod || null,
+        paymentPlan: paymentPlan || null,
+        campaigns: campaigns || null,
+        analytics: campaignAnalytics || [],
     };
 }
 

@@ -6,7 +6,8 @@ import {
 } from '../../src/actions/auth';
 import payment, { paymentMethod } from '../../src/actions/payment';
 import campaign, {
-    CANCEL
+    CANCEL,
+    RESTORE
 } from '../../src/actions/campaign';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
@@ -14,19 +15,23 @@ import { createUuid } from 'rc-uuid';
 import {
     GET_PROMOTIONS,
     GET_BILLING_PERIOD,
-    GET_PAYMENT_PLAN,
     GET_ORG
 } from '../../src/actions/session';
 import moment from 'moment';
+import {
+    CHANGE_PAYMENT_PLAN_SUCCESS,
+    GET_PAYMENT_PLAN_STATUS_SUCCESS
+} from '../../src/actions/org';
 
 describe('sessionReducer()', function() {
     it('should return some initial state', function() {
         expect(sessionReducer(undefined, 'INIT')).toEqual({
             user: null,
             promotions: null,
-            paymentPlan: null,
+            paymentPlanStatus: null,
             org: null,
             campaigns: null,
+            archive: null,
             payments: [],
             paymentMethods: [],
             billingPeriod: null
@@ -46,6 +51,7 @@ describe('sessionReducer()', function() {
                 payments: Array.apply([], new Array(5)).map(() => createUuid()),
                 paymentMethods: Array.apply([], new Array(3)).map(() => createUuid()),
                 campaigns: Array.apply([], new Array(10)).map(() => createUuid()),
+                archive: Array.apply([], new Array(10)).map(() => createUuid()),
 
                 billingPeriod: null,
                 paymentPlan: null
@@ -88,14 +94,14 @@ describe('sessionReducer()', function() {
 
         describe(`${GET_PROMOTIONS}_FULFILLED`, function() {
             beforeEach(function() {
-                this.promotions = Array.apply([], new Array(3)).map(() => `pro-${createUuid()}`);
+                this.promotions = Array.apply([], new Array(3)).map(() => ({ id: `pro-${createUuid()}` }));
 
                 newState = sessionReducer(state, createAction(`${GET_PROMOTIONS}_FULFILLED`)(this.promotions));
             });
 
             it('should update the promotions', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    promotions: this.promotions
+                    promotions: this.promotions.map(promotion => promotion.id)
                 }));
             });
         });
@@ -117,30 +123,62 @@ describe('sessionReducer()', function() {
             });
         });
 
-        describe(`${GET_PAYMENT_PLAN}_FULFILLED`, function() {
-            beforeEach(function() {
-                this.paymentPlanId = `pp-${createUuid()}`;
+        describe(CHANGE_PAYMENT_PLAN_SUCCESS, () => {
+            let status;
 
-                newState = sessionReducer(state, createAction(`${GET_PAYMENT_PLAN}_FULFILLED`)([this.paymentPlanId]));
+            beforeEach(() => {
+                status = {
+                    paymentPlanId: `pp-${createUuid()}`,
+                    nextPaymentPlanId: `pp-${createUuid()}`
+                };
+
+                newState = sessionReducer(state, createAction(CHANGE_PAYMENT_PLAN_SUCCESS)(status));
             });
 
-            it('should update the paymentPlan', function() {
+            afterEach(() => {
+                status = null;
+            });
+
+            it('should update the paymentPlanStatus', () => {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentPlan: this.paymentPlanId
+                    paymentPlanStatus: status
+                }));
+            });
+        });
+
+        describe(GET_PAYMENT_PLAN_STATUS_SUCCESS, () => {
+            let status;
+
+            beforeEach(() => {
+                status = {
+                    paymentPlanId: `pp-${createUuid()}`,
+                    nextPaymentPlanId: `pp-${createUuid()}`
+                };
+
+                newState = sessionReducer(state, createAction(GET_PAYMENT_PLAN_STATUS_SUCCESS)(status));
+            });
+
+            afterEach(() => {
+                status = null;
+            });
+
+            it('should update the payment plan status', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    paymentPlanStatus: status
                 }));
             });
         });
 
         describe(`${GET_ORG}_FULFILLED`, function() {
             beforeEach(function() {
-                this.orgId = `o-${createUuid()}`;
+                this.org = { id: `o-${createUuid()}` };
 
-                newState = sessionReducer(state, createAction(`${GET_ORG}_FULFILLED`)([this.orgId]));
+                newState = sessionReducer(state, createAction(`${GET_ORG}_FULFILLED`)([this.org]));
             });
 
             it('should add the org to the state', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    org: this.orgId
+                    org: this.org.id
                 }));
             });
         });
@@ -149,14 +187,18 @@ describe('sessionReducer()', function() {
             let campaigns;
 
             beforeEach(function() {
-                campaigns = [`cam-${createUuid()}`];
+                campaigns = ['active', 'canceled', 'outOfBudget', 'paused', 'draft', 'outOfBudget', 'active'].map(status => ({
+                    id: `cam-${createUuid()}`,
+                    status
+                }));
 
-                newState = sessionReducer(state, createAction(campaign.list.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.list.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
             });
 
-            it('should update the campaigns', function() {
+            it('should update the campaigns and archive campaigns', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns
+                    campaigns: campaigns.filter(campaign => campaign.status !== 'canceled').map(campaign => campaign.id),
+                    archive: campaigns.filter(campaign => campaign.status === 'canceled').map(campaign => campaign.id)
                 }));
             });
         });
@@ -165,14 +207,14 @@ describe('sessionReducer()', function() {
             let campaigns;
 
             beforeEach(function() {
-                campaigns = [`cam-${createUuid()}`];
+                campaigns = [{ id: `cam-${createUuid()}` }];
 
-                newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.create.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
             });
 
             it('should add the campaign', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: state.campaigns.concat(campaigns)
+                    campaigns: state.campaigns.concat(campaigns.map(campaign => campaign.id))
                 }));
             });
 
@@ -180,12 +222,12 @@ describe('sessionReducer()', function() {
                 beforeEach(function() {
                     state.campaigns = null;
 
-                    newState = sessionReducer(state, createAction(campaign.create.SUCCESS)(campaigns));
+                    newState = sessionReducer(state, createAction(campaign.create.SUCCESS, null, () => ({ ids: campaigns.map(campaign => campaign.id) }))(campaigns));
                 });
 
                 it('should update the campaigns', function() {
                     expect(newState).toEqual(assign({}, state, {
-                        campaigns
+                        campaigns: campaigns.map(campaign => campaign.id)
                     }));
                 });
             });
@@ -197,7 +239,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 campaigns = [state.campaigns[4]];
 
-                newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                newState = sessionReducer(state, createAction(campaign.remove.SUCCESS, null, () => ({ ids: campaigns }))(null));
             });
 
             it('should remove the campaign', function() {
@@ -210,7 +252,7 @@ describe('sessionReducer()', function() {
                 beforeEach(function() {
                     state.campaigns = null;
 
-                    newState = sessionReducer(state, createAction(campaign.remove.SUCCESS)(campaigns));
+                    newState = sessionReducer(state, createAction(campaign.remove.SUCCESS, null, () => ({ ids: campaigns }))(null));
                 });
 
                 it('should do nothing', function() {
@@ -223,20 +265,22 @@ describe('sessionReducer()', function() {
             let campaign;
 
             beforeEach(function() {
-                campaign = state.campaigns[3];
+                campaign = { id: state.campaigns[3] };
 
                 newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
             });
 
             it('should remove the campaign from the session', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    campaigns: state.campaigns.filter(id => id !== campaign)
+                    campaigns: state.campaigns.filter(id => id !== campaign.id),
+                    archive: state.archive.concat([campaign.id])
                 }));
             });
 
             describe('if there are no campaigns in the session', function() {
                 beforeEach(function() {
                     state.campaigns = null;
+                    state.archive = null;
 
                     newState = sessionReducer(state, createAction(`${CANCEL}_FULFILLED`)([campaign]));
                 });
@@ -247,18 +291,52 @@ describe('sessionReducer()', function() {
             });
         });
 
+        describe(`${RESTORE}_FULFILLED`, () => {
+            let campaign;
+
+            beforeEach(() => {
+                campaign = { id: state.archive[2].id };
+
+                newState = sessionReducer(state, createAction(`${RESTORE}_FULFILLED`)([campaign]));
+            });
+
+            afterEach(() => {
+                campaign = null;
+            });
+
+            it('should move the campaign from the archive', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    campaigns: state.campaigns.concat([campaign.id]),
+                    archive: state.archive.filter(id => id !== campaign.id)
+                }));
+            });
+
+            describe('if there are no campaigns cached', function() {
+                beforeEach(() => {
+                    state.campaigns = null;
+                    state.archive = null;
+
+                    newState = sessionReducer(state, createAction(`${RESTORE}_FULFILLED`)([campaign]));
+                });
+
+                it('should do nothing', () => {
+                    expect(newState).toEqual(state);
+                });
+            });
+        });
+
         describe(payment.list.SUCCESS, function() {
             let payments;
 
             beforeEach(function() {
-                payments = Array.apply([], new Array(7)).map(() => createUuid());
+                payments = Array.apply([], new Array(7)).map(() => ({ id: createUuid() }));
 
-                newState = sessionReducer(state, createAction(payment.list.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.list.SUCCESS, null, () => ({ ids: payments.map(payment => payment.id) }))(payments));
             });
 
             it('should update the payments', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    payments
+                    payments: payments.map(payment => payment.id)
                 }));
             });
         });
@@ -267,14 +345,14 @@ describe('sessionReducer()', function() {
             let payments;
 
             beforeEach(function() {
-                payments = [createUuid()];
+                payments = [{ id: createUuid() }];
 
-                newState = sessionReducer(state, createAction(payment.create.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.create.SUCCESS, null, () => ({ ids: payments.map(payment => payment.id) }))(payments));
             });
 
             it('should add the item to the payments', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    payments: state.payments.concat(payments)
+                    payments: state.payments.concat(payments[0].id)
                 }));
             });
         });
@@ -285,7 +363,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 payments = [state.payments[1]];
 
-                newState = sessionReducer(state, createAction(payment.remove.SUCCESS)(payments));
+                newState = sessionReducer(state, createAction(payment.remove.SUCCESS, null, () => ({ ids: payments }))(null));
             });
 
             it('should remove the items from its list', function() {
@@ -299,14 +377,14 @@ describe('sessionReducer()', function() {
             let paymentMethods;
 
             beforeEach(function() {
-                paymentMethods = Array.apply([], new Array(3)).map(() => createUuid());
+                paymentMethods = Array.apply([], new Array(3)).map(() => ({ token: createUuid() }));
 
-                newState = sessionReducer(state, createAction(paymentMethod.list.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.list.SUCCESS, null, () => ({ ids: paymentMethods.map(method => method.token) }))(paymentMethods));
             });
 
             it('should update the paymentMethods', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentMethods
+                    paymentMethods: paymentMethods.map(method => method.token)
                 }));
             });
         });
@@ -315,14 +393,14 @@ describe('sessionReducer()', function() {
             let paymentMethods;
 
             beforeEach(function() {
-                paymentMethods = [createUuid()];
+                paymentMethods = [{ token: createUuid() }];
 
-                newState = sessionReducer(state, createAction(paymentMethod.create.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.create.SUCCESS, null, () => ({ ids: paymentMethods.map(method => method.token) }))(paymentMethods));
             });
 
             it('should add the item to the paymentMethods', function() {
                 expect(newState).toEqual(assign({}, state, {
-                    paymentMethods: state.paymentMethods.concat(paymentMethods)
+                    paymentMethods: state.paymentMethods.concat(paymentMethods.map(method => method.token))
                 }));
             });
         });
@@ -333,7 +411,7 @@ describe('sessionReducer()', function() {
             beforeEach(function() {
                 paymentMethods = [state.paymentMethods[1]];
 
-                newState = sessionReducer(state, createAction(paymentMethod.remove.SUCCESS)(paymentMethods));
+                newState = sessionReducer(state, createAction(paymentMethod.remove.SUCCESS, null, () => ({ ids: paymentMethods }))(null));
             });
 
             it('should remove the paymentMethod from its list', function() {

@@ -21,14 +21,16 @@ import advertiser from '../../src/actions/advertiser';
 import { replace } from 'react-router-redux';
 import { notify } from '../../src/actions/notification';
 import { TYPE as NOTIFICATION_TYPE } from '../../src/enums/notification';
-import { campaignFromData } from '../../src/utils/campaign';
+import { campaignFromData, campaignUpdateFromData } from '../../src/utils/campaign';
 import { push, goBack } from 'react-router-redux';
 import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
 import { collectPayment, autofill, completeAutofill } from '../../src/actions/product_wizard';
 import { dispatch } from '../helpers/stubs';
-import { getPromotions, getOrg } from '../../src/actions/session';
-import { assign } from 'lodash';
+import { getPromotions, getOrg, getPaymentPlan } from '../../src/actions/session';
+import { assign, cloneDeep as clone, find, get } from 'lodash';
 import moment from 'moment';
+import * as stub from '../helpers/stubs';
+import { changePaymentPlan } from '../../src/actions/org';
 
 const proxyquire = require('proxyquire');
 
@@ -69,9 +71,11 @@ describe('product wizard actions', function() {
             './session': {
                 getPromotions,
                 getOrg,
+                getPaymentPlan,
 
                 __esModule: true
-            }
+            },
+            './org': require('../../src/actions/org')
         });
         productSelected = actions.productSelected;
         wizardComplete = actions.wizardComplete;
@@ -160,7 +164,7 @@ describe('product wizard actions', function() {
             });
 
             it('should update the campaign', function() {
-                expect(campaign.update).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }, camp) });
+                expect(campaign.update).toHaveBeenCalledWith({ data: campaignUpdateFromData({ productData, targeting }, camp) });
                 expect(dispatch).toHaveBeenCalledWith(campaign.update.calls.mostRecent().returnValue);
             });
 
@@ -170,12 +174,12 @@ describe('product wizard actions', function() {
 
             describe('when the campaign is updated', function() {
                 beforeEach(function(done) {
-                    dispatchDeferred.resolve([id]);
+                    dispatchDeferred.resolve([campaign.update.calls.mostRecent().args[0].data]);
                     setTimeout(done);
                 });
 
                 it('should go to the product page', function() {
-                    expect(dispatch).toHaveBeenCalledWith(push(`/dashboard/campaigns/${id}`));
+                    expect(dispatch).toHaveBeenCalledWith(push(`/dashboard/campaigns/${camp.id}`));
                 });
 
                 it('should show a notification', function() {
@@ -376,8 +380,8 @@ describe('product wizard actions', function() {
         });
     });
 
-    describe('createCampaign({ productData, targeting, payment })', function() {
-        let productData, targeting, payment;
+    describe('createCampaign({ productData, targeting, payment, paymentPlan })', function() {
+        let productData, targeting, payment, paymentPlan;
         let thunk;
 
         beforeEach(function() {
@@ -395,8 +399,11 @@ describe('product wizard actions', function() {
                 cardholderName: 'Foo',
                 nonce: createUuid()
             };
+            paymentPlan = {
+                id: `pp-${createUuid()}`
+            };
 
-            thunk = getThunk(createCampaign({ productData, targeting, payment }));
+            thunk = getThunk(createCampaign({ productData, targeting, payment, paymentPlan }));
         });
 
         it('should return a thunk', function() {
@@ -405,14 +412,13 @@ describe('product wizard actions', function() {
 
         describe('when executed', function() {
             let userID;
-            let dispatchDeferred, state;
+            let state;
             let dispatch, getState;
             let success, failure;
 
             beforeEach(function(done) {
                 userID = `u-${createUuid}`;
 
-                dispatchDeferred = defer();
                 state = {
                     session: {
                         user: userID
@@ -427,97 +433,80 @@ describe('product wizard actions', function() {
                     }
                 };
 
-                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (action.type === createThunk()().type) { return dispatchDeferred.promise; }
-
-                    if (!(action.payload instanceof Promise)) {
-                        return Promise.resolve(action.payload);
-                    } else {
-                        return action.payload.then(value => ({ value, action }))
-                            .catch(reason => Promise.reject({ reason, action }));
-                    }
-                });
+                dispatch = stub.dispatch();
                 getState = jasmine.createSpy('getState()').and.returnValue(state);
 
                 success = jasmine.createSpy('success()');
                 failure = jasmine.createSpy('failure()');
 
-                spyOn(paymentMethod, 'create').and.callThrough();
-
                 thunk(dispatch, getState).then(success, failure);
                 setTimeout(done);
-            });
-
-            it('should create a paymentMethod', function() {
-                expect(paymentMethod.create).toHaveBeenCalledWith({ data: { cardholderName: payment.cardholderName, paymentMethodNonce: payment.nonce, makeDefault: true } });
-                expect(dispatch).toHaveBeenCalledWith(paymentMethod.create.calls.mostRecent().returnValue);
             });
 
             it('should dispatch CREATE_CAMPAIGN', function() {
                 expect(dispatch).toHaveBeenCalledWith(createAction(CREATE_CAMPAIGN)(jasmine.any(Promise)));
             });
 
-            describe('when the payment method is created', function() {
-                beforeEach(function(done) {
-                    spyOn(advertiser, 'query').and.callThrough();
-                    dispatchDeferred.resolve([createUuid()]);
+            it('should create a paymentMethod', function() {
+                expect(dispatch).toHaveBeenCalledWith(paymentMethod.create({ data: { cardholderName: payment.cardholderName, paymentMethodNonce: payment.nonce, makeDefault: true } }));
+            });
 
-                    dispatchDeferred = defer();
+            it('should update the user\'s payment plan', () => {
+                expect(dispatch).toHaveBeenCalledWith(changePaymentPlan({ orgId: state.db.user[state.session.user].org, paymentPlanId: paymentPlan.id }));
+            });
+
+            describe('when the payment method is created and payment plan is updated', function() {
+                beforeEach(function(done) {
+                    dispatch.getDeferred(find(dispatch.calls.all(), call => get(call, 'args[0].payload.fn') === paymentMethod.create().payload.fn).args[0]).resolve([createUuid()]);
+                    dispatch.getDeferred(find(dispatch.calls.all(), call => get(call, 'args[0].payload.fn') === changePaymentPlan({}).payload.fn).args[0]).resolve({ paymentPlanId: paymentPlan.id });
                     dispatch.calls.reset();
 
                     setTimeout(done);
                 });
 
                 it('should get the advertiser', function() {
-                    expect(advertiser.query).toHaveBeenCalledWith({
+                    expect(dispatch).toHaveBeenCalledWith(advertiser.query({
                         org: state.db.user[state.session.user].org,
                         limit: 1
-                    });
-                    expect(dispatch).toHaveBeenCalledWith(advertiser.query.calls.mostRecent().returnValue);
+                    }));
                 });
 
                 describe('when the advertiser is fetched', function() {
-                    let advertiserID;
+                    let advertiser;
 
                     beforeEach(function(done) {
-                        advertiserID = `a-${createUuid()}`;
-                        dispatchDeferred.resolve([advertiserID]);
-
-                        spyOn(campaign, 'create').and.callThrough();
-                        dispatchDeferred = defer();
+                        advertiser = { id: `a-${createUuid()}` };
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([advertiser]);
                         dispatch.calls.reset();
 
                         setTimeout(done);
                     });
 
                     it('should create a campaign', function() {
-                        expect(campaign.create).toHaveBeenCalledWith({ data: campaignFromData({ productData, targeting }, { advertiserId: advertiserID }) });
-                        expect(dispatch).toHaveBeenCalledWith(campaign.create.calls.mostRecent().returnValue);
+                        expect(dispatch).toHaveBeenCalledWith(campaign.create({ data: campaignFromData({ productData, targeting }, { advertiserId: advertiser.id }) }));
                     });
 
                     describe('when the campaign has been created', function() {
-                        let id;
+                        let campaign;
 
                         beforeEach(function(done) {
-                            id = `cam-${createUuid()}`;
-                            dispatchDeferred.resolve([id]);
+                            campaign = { id: `cam-${createUuid()}` };
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([campaign]);
 
-                            dispatchDeferred = defer();
                             dispatch.calls.reset();
                             setTimeout(done);
                         });
 
                         it('should redirect to the product page', function() {
-                            expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${id}`));
+                            expect(dispatch).toHaveBeenCalledWith(replace(`/dashboard/campaigns/${campaign.id}`));
                         });
 
                         it('should show a success notification', function() {
-                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.SUCCESS, message: jasmine.any(String), time: 6000 });
-                            expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                            expect(dispatch).toHaveBeenCalledWith(notify({ type: NOTIFICATION_TYPE.SUCCESS, message: jasmine.any(String), time: 6000 }));
                         });
 
                         it('should fulfill the promise', function() {
-                            expect(success).toHaveBeenCalledWith([id]);
+                            expect(success).toHaveBeenCalledWith([campaign]);
                         });
                     });
 
@@ -527,9 +516,7 @@ describe('product wizard actions', function() {
                         beforeEach(function(done) {
                             reason = new Error('It went wrong!');
                             reason.response = 'Something bad happened!';
-                            dispatchDeferred.reject(reason);
-
-                            dispatchDeferred = defer();
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
                             dispatch.calls.reset();
                             setTimeout(done);
                         });
@@ -541,8 +528,7 @@ describe('product wizard actions', function() {
                         });
 
                         it('should show a failure notification', function() {
-                            expect(notificationActions.notify).toHaveBeenCalledWith({ type: NOTIFICATION_TYPE.DANGER, message: `There was a problem: ${reason.response}` });
-                            expect(dispatch).toHaveBeenCalledWith(notificationActions.notify.calls.mostRecent().returnValue);
+                            expect(dispatch).toHaveBeenCalledWith(notify({ type: NOTIFICATION_TYPE.DANGER, message: `There was a problem: ${reason.response}` }));
                         });
 
                         it('should reject the promise', function() {
@@ -555,29 +541,75 @@ describe('product wizard actions', function() {
 
             describe('if no payment is specified', function() {
                 beforeEach(function(done) {
-                    dispatchDeferred = defer();
                     dispatch.calls.reset();
-                    paymentMethod.create.calls.reset();
+                    dispatch.resetDeferreds();
 
                     success.calls.reset();
                     failure.calls.reset();
 
-                    spyOn(advertiser, 'query').and.callThrough();
-
-                    getThunk(createCampaign({ productData, targeting }))(dispatch, getState).then(success, failure);
+                    getThunk(createCampaign({ productData, targeting, paymentPlan }))(dispatch, getState).then(success, failure);
                     setTimeout(done);
                 });
 
                 it('should not create a paymentMethod', function() {
-                    expect(paymentMethod.create).not.toHaveBeenCalled();
+                    expect(dispatch).not.toHaveBeenCalledWith(paymentMethod.create(jasmine.any(Object)));
                 });
 
-                it('should get the advertiser', function() {
-                    expect(advertiser.query).toHaveBeenCalledWith({
-                        org: state.db.user[state.session.user].org,
-                        limit: 1
+                it('should update the user\'s payment plan', () => {
+                    expect(dispatch).toHaveBeenCalledWith(changePaymentPlan({ orgId: state.db.user[state.session.user].org, paymentPlanId: paymentPlan.id }));
+                });
+
+                describe('when the user\'s paymentPlan is updated', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve({ paymentPlanId: paymentPlan.id });
+                        dispatch.calls.reset();
+
+                        setTimeout(done);
                     });
-                    expect(dispatch).toHaveBeenCalledWith(advertiser.query.calls.mostRecent().returnValue);
+
+                    it('should get the advertiser', function() {
+                        expect(dispatch).toHaveBeenCalledWith(advertiser.query({
+                            org: state.db.user[state.session.user].org,
+                            limit: 1
+                        }));
+                    });
+                });
+            });
+
+            describe('if no payment plan is specified', function() {
+                beforeEach(function(done) {
+                    dispatch.calls.reset();
+                    dispatch.resetDeferreds();
+
+                    success.calls.reset();
+                    failure.calls.reset();
+
+                    getThunk(createCampaign({ productData, targeting, payment }))(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                it('should not change the paymentPlan', function() {
+                    expect(dispatch).not.toHaveBeenCalledWith(changePaymentPlan(jasmine.any(Object)));
+                });
+
+                it('should create a paymentMethod', function() {
+                    expect(dispatch).toHaveBeenCalledWith(paymentMethod.create({ data: { cardholderName: payment.cardholderName, paymentMethodNonce: payment.nonce, makeDefault: true } }));
+                });
+
+                describe('when the payment method is created', () => {
+                    beforeEach(done => {
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([createUuid()]);
+                        dispatch.calls.reset();
+
+                        setTimeout(done);
+                    });
+
+                    it('should get the advertiser', function() {
+                        expect(dispatch).toHaveBeenCalledWith(advertiser.query({
+                            org: state.db.user[state.session.user].org,
+                            limit: 1
+                        }));
+                    });
                 });
             });
         });
@@ -738,7 +770,7 @@ describe('product wizard actions', function() {
         describe('when executed', function() {
             let user;
             let success, failure;
-            let state, dispatchDeferred;
+            let state;
             let dispatch, getState;
 
             beforeEach(function(done) {
@@ -749,7 +781,6 @@ describe('product wizard actions', function() {
                     id: `u-${createUuid()}`
                 };
 
-                dispatchDeferred = defer();
                 state = {
                     session: {
                         user: user.id,
@@ -760,91 +791,45 @@ describe('product wizard actions', function() {
                     }
                 };
 
-                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (action.type === createThunk()().type) {
-                        return dispatchDeferred.promise;
-                    }
-
-                    if (action.payload instanceof Promise) {
-                        return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
-                    }
-
-                    return Promise.resolve(action.payload);
-                });
-                getState = jasmine.createSpy('getState()').and.returnValue(state);
-
-                spyOn(paymentMethod, 'list').and.callThrough();
+                dispatch = stub.dispatch();
+                getState = jasmine.createSpy('getState()').and.callFake(() => clone(state));
 
                 thunk(dispatch, getState).then(success, failure);
                 setTimeout(done);
             });
 
-            it('should list the paymentMethods', function() {
-                expect(paymentMethod.list).toHaveBeenCalledWith();
-                expect(dispatch).toHaveBeenCalledWith(paymentMethod.list.calls.mostRecent().returnValue);
+            afterEach(() => {
+                user = null;
+                success = null;
+                failure = null;
+                state = null;
+                dispatch = null;
+                getState = null;
             });
 
-            describe('when the paymentMethods are fetched', function() {
-                describe('if there is one', function() {
-                    beforeEach(function(done) {
-                        dispatch.calls.reset();
-                        dispatchDeferred.resolve([createUuid()]);
-                        dispatch.and.callFake(action => {
-                            if (action.type === createThunk()().type) {
-                                return Promise.resolve(action(dispatch, getState));
-                            }
-
-                            if (action.payload instanceof Promise) {
-                                return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
-                            }
-
-                            return Promise.resolve(action.payload);
-                        });
-
-                        setTimeout(done);
-                    });
-
-                    it('should dispatch createCampaign()', function() {
-                        expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
-                    });
-                });
-
-                describe('if there are none', function() {
-                    beforeEach(function(done) {
-                        dispatch.calls.reset();
-                        dispatchDeferred.resolve([]);
-
-                        setTimeout(done);
-                    });
-
-                    it('should dispatch GO_TO_STEP', function() {
-                        expect(dispatch).toHaveBeenCalledWith(goToStep(3));
-                    });
-                });
+            it('should get the payment plan', () => {
+                expect(dispatch).toHaveBeenCalledWith(getPaymentPlan());
             });
 
-            describe('if the user has a payment method', function() {
-                beforeEach(function(done) {
-                    dispatch.calls.reset();
-                    dispatch.and.callFake(action => {
-                        if (action.type === createThunk()().type) {
-                            return Promise.resolve(action(dispatch, getState));
-                        }
-
-                        if (action.payload instanceof Promise) {
-                            return action.payload.then(value => ({ value, action }), reason => Promise.reject({ reason, action }));
-                        }
-
-                        return Promise.resolve(action.payload);
-                    });
-                    state.session.paymentMethods = [createUuid()];
-
-                    thunk(dispatch, getState).then(success, failure);
+            describe('if the user has a payment plan', () => {
+                beforeEach(done => {
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([`pp-${createUuid()}`]);
                     setTimeout(done);
                 });
 
                 it('should dispatch createCampaign()', function() {
                     expect(dispatch).toHaveBeenCalledWith(createCampaign({ productData, targeting }));
+                });
+            });
+
+            describe('if the user has no payment plan', () => {
+                beforeEach(done => {
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(null);
+                    setTimeout(done);
+                });
+
+                it('should got to step 3', () => {
+                    expect(dispatch).toHaveBeenCalledWith(goToStep(3));
                 });
             });
         });
@@ -889,7 +874,7 @@ describe('product wizard actions', function() {
         });
     });
 
-    describe('collectPayment({ productData, targeting })', function() {
+    describe('collectPayment({ productData, targeting, paymentPlan })', function() {
         beforeEach(function() {
             createCampaign = require('../../src/actions/product_wizard').createCampaign;
             this.productData = {
@@ -900,7 +885,10 @@ describe('product wizard actions', function() {
                 age: [TARGETING.AGE.ALL],
                 gender: []
             };
-            this.thunk = getThunk(collectPayment({ productData: this.productData, targeting: this.targeting }));
+            this.paymentPlan = {
+                id: `pp-${createUuid()}`
+            };
+            this.thunk = getThunk(collectPayment({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan }));
         });
 
         it('should return a thunk', function() {
@@ -997,7 +985,7 @@ describe('product wizard actions', function() {
                     });
 
                     this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
-                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                     setTimeout(done);
                 });
 
@@ -1021,7 +1009,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 30,
                                     paymentMethodRequired: true
                                 }
@@ -1031,7 +1019,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 10,
                                     paymentMethodRequired: false
                                 }
@@ -1041,7 +1029,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 11,
                                     paymentMethodRequired: true
                                 }
@@ -1061,14 +1049,14 @@ describe('product wizard actions', function() {
                         })
                     });
 
-                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
                     setTimeout(done);
                 });
 
                 describe('and the org has no payment plan', function() {
                     beforeEach(function(done) {
                         delete this.org.paymentPlanId;
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1077,13 +1065,13 @@ describe('product wizard actions', function() {
                     });
 
                     it('should create the campaign', function() {
-                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting }));
+                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan }));
                     });
 
                     describe('if the campaign cannot be created', function() {
                         beforeEach(function(done) {
                             this.reason = new Error('I failed!');
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).reject(this.reason);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).reject(this.reason);
                             setTimeout(done);
                         });
 
@@ -1114,7 +1102,7 @@ describe('product wizard actions', function() {
                                 })
                             });
                             this.getState.and.returnValue(this.state);
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).resolve([this.campaign.id]);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign]);
                             setTimeout(done);
                         });
 
@@ -1128,7 +1116,7 @@ describe('product wizard actions', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanStart = moment().add(2, 'days').format();
 
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1137,13 +1125,13 @@ describe('product wizard actions', function() {
                     });
 
                     it('should create the campaign', function() {
-                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting }));
+                        expect(this.dispatch).toHaveBeenCalledWith(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan }));
                     });
 
                     describe('if the campaign cannot be created', function() {
                         beforeEach(function(done) {
                             this.reason = new Error('I failed!');
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).reject(this.reason);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).reject(this.reason);
                             setTimeout(done);
                         });
 
@@ -1174,7 +1162,7 @@ describe('product wizard actions', function() {
                                 })
                             });
                             this.getState.and.returnValue(this.state);
-                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting })).resolve([this.campaign.id]);
+                            this.dispatch.getDeferred(createCampaign({ productData: this.productData, targeting: this.targeting, paymentPlan: this.paymentPlan })).resolve([this.campaign]);
                             setTimeout(done);
                         });
 
@@ -1188,7 +1176,7 @@ describe('product wizard actions', function() {
                     beforeEach(function(done) {
                         this.org.paymentPlanStart = moment().subtract(2, 'days').format();
 
-                        this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                        this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                         setTimeout(done);
                     });
 
@@ -1218,7 +1206,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 30,
                                     paymentMethodRequired: true
                                 }
@@ -1228,7 +1216,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 10,
                                     paymentMethodRequired: true
                                 }
@@ -1238,7 +1226,7 @@ describe('product wizard actions', function() {
                             id: `pro-${createUuid()}`,
                             type: 'freeTrial',
                             data: {
-                                [this.org.paymentPlanId]: {
+                                [this.paymentPlan.id]: {
                                     trialLength: 11,
                                     paymentMethodRequired: true
                                 }
@@ -1257,8 +1245,8 @@ describe('product wizard actions', function() {
                         })
                     });
 
-                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions.map(promotion => promotion.id));
-                    this.dispatch.getDeferred(getOrg()).resolve([this.org.id]);
+                    this.dispatch.getDeferred(getPromotions()).resolve(this.promotions);
+                    this.dispatch.getDeferred(getOrg()).resolve([this.org]);
                     setTimeout(done);
                 });
 

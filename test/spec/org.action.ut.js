@@ -1,5 +1,20 @@
 const proxyquire = require('proxyquire');
 
+import { createUuid } from 'rc-uuid';
+import { callAPI } from '../../src/actions/api';
+import {
+    changePaymentPlan,
+    getPaymentPlanStatus,
+
+    CHANGE_PAYMENT_PLAN_START,
+    CHANGE_PAYMENT_PLAN_SUCCESS,
+    CHANGE_PAYMENT_PLAN_FAILURE,
+
+    GET_PAYMENT_PLAN_STATUS_START,
+    GET_PAYMENT_PLAN_STATUS_SUCCESS,
+    GET_PAYMENT_PLAN_STATUS_FAILURE
+} from '../../src/actions/org';
+
 describe('org actions', function() {
     let realCreateDbActions, createDbActions;
     let actions;
@@ -31,5 +46,51 @@ describe('org actions', function() {
             endpoint: '/api/account/orgs'
         });
         expect(org).toEqual(createDbActions.calls.mostRecent().returnValue);
+    });
+
+    describe('changePaymentPlan({ orgId, paymentPlanId })', () => {
+        let orgId;
+        let paymentPlanId;
+
+        beforeEach(() => {
+            orgId = `o-${createUuid()}`;
+            paymentPlanId = `pp-${createUuid()}`;
+        });
+
+        afterEach(() => {
+            orgId = null;
+            paymentPlanId = null;
+        });
+
+        it('should call the API', () => {
+            expect(changePaymentPlan({ orgId, paymentPlanId })).toEqual(callAPI({
+                method: 'POST',
+                endpoint: `/api/account/orgs/${orgId}/payment-plan`,
+                types: [CHANGE_PAYMENT_PLAN_START, CHANGE_PAYMENT_PLAN_SUCCESS, CHANGE_PAYMENT_PLAN_FAILURE],
+                body: {
+                    id: paymentPlanId
+                }
+            }));
+        });
+    });
+
+    describe('getPaymentPlanStatus({ orgId })', () => {
+        let orgId;
+
+        beforeEach(() => {
+            orgId = `o-${createUuid()}`;
+        });
+
+        afterEach(() => {
+            orgId = null;
+        });
+
+        it('should call the API', () => {
+            expect(getPaymentPlanStatus({ orgId })).toEqual(callAPI({
+                method: 'GET',
+                endpoint: `/api/account/orgs/${orgId}/payment-plan`,
+                types: [GET_PAYMENT_PLAN_STATUS_START, GET_PAYMENT_PLAN_STATUS_SUCCESS, GET_PAYMENT_PLAN_STATUS_FAILURE]
+            }));
+        });
     });
 });

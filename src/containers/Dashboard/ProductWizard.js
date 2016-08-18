@@ -10,10 +10,9 @@ import WizardPlanInfoModal from '../../components/WizardPlanInfoModal';
 import WizardConfirmationModal from '../../components/WizardConfirmationModal';
 import AdPreview from '../../components/AdPreview';
 import classnames from 'classnames';
-import _, { pick, includes, assign } from 'lodash';
+import _, { pick, includes, assign, find } from 'lodash';
 import { getValues as getFormValues } from 'redux-form';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
-import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import DocumentTitle from 'react-document-title';
 
 const PREVIEW = {
@@ -92,12 +91,15 @@ class ProductWizard extends Component {
             productData,
             targeting,
             promotions,
+            paymentPlans,
             paymentPlanId,
 
             page: { step, previewLoaded, checkingIfPaymentRequired },
         } = this.props;
 
         const promotionConfigs = _(promotions).map(`data[${paymentPlanId}]`);
+        const freeViews = promotionConfigs.map('targetUsers').sum();
+        const trialLength = promotionConfigs.map('trialLength').sum();
 
         return (<div className="container main-section">
             <DocumentTitle
@@ -106,71 +108,34 @@ class ProductWizard extends Component {
                 }`}
             />
             <div className="row">
-                <div className="campaign-progressbar col-md-12 col-sm-12 col-xs-12">
-                    <ul className="nav nav-pills nav-justified">
-                        {includes(steps, 0) && (<li
-                            className={classnames('progressbar-step-1', {
-                                active: step >= 0,
-                            })}
-                        >
-                            <button onClick={() => goToStep(0)}>
-                                <h3>
-                                    <i className="fa fa-search" />
-                                    <span className="sr-only">Search</span>
-                                </h3>
-                                Search
-                            </button>
-                        </li>)}
-                        {includes(steps, 1) && (<li
-                            className={classnames('progressbar-step-2', {
-                                active: step >= 1,
-                            })}
-                        >
-                            <button
-                                disabled={step < 2}
-                                onClick={() => goToStep(1)}
-                            >
-                                <h3>
-                                    <i className="fa fa-pencil-square-o" />
-                                    <span className="sr-only">Create</span>
-                                </h3>
-                                Create
-                            </button>
-                        </li>)}
-                        {includes(steps, 2) && (<li
-                            className={classnames('progressbar-step-3', {
-                                active: step >= 2,
-                            })}
-                        >
-                            <button
-                                disabled={step < 3}
-                                onClick={() => goToStep(2)}
-                            >
-                                <h3>
-                                    <i className="fa fa-bullseye" />
-                                    <span className="sr-only">Target</span>
-                                </h3>
-                                Target
-                            </button>
-                        </li>)}
-                        {includes(steps, 3) && (<li
-                            className={classnames('progressbar-step-4', {
-                                active: step >= 3,
-                            })}
-                        >
-                            <button
-                                disabled={step < 4}
-                                onClick={() => goToStep(3)}
-                            >
-                                <h3>
-                                    <i className="fa fa-paper-plane-o" />
-                                    <span className="sr-only">Promote</span>
-                                </h3>
-                                Promote
-                            </button>
-                        </li>)}
-                    </ul>
-                </div>
+                <ul className="nav nav-pills nav-justified campaign-progressbar">
+                    {[
+                        'Search',
+                        'Create',
+                        'Target',
+                        'Promote',
+                    ].map((label, index) => <li
+                        key={label}
+                        className={classnames('progressbar-step', {
+                            active: Math.min(step, steps.length - 1) === index,
+                            disabled: step < index,
+                            completed: step > index,
+                        })}
+                    >
+                        <div className="text-center progressbar-step-stepnum">{label}</div>
+                        <div className="progress-wrapper">
+                            <div className="progress-bar" />
+                        </div>
+                        <button
+                            className={classnames(
+                                'progressbar-step-dot',
+                                `${label.toLowerCase()}-icon`
+                            )}
+                            disabled={step < index}
+                            onClick={() => goToStep(index)}
+                        />
+                    </li>).filter((node, index) => includes(steps, index))}
+                </ul>
             </div>
             <br />
             <div className="row">
@@ -225,20 +190,23 @@ class ProductWizard extends Component {
                 show={step === 3}
                 actionPending={checkingIfPaymentRequired}
                 onClose={() => goToStep(2)}
-                onContinue={() => collectPayment({
+                onContinue={selectedPlanId => collectPayment({
                     productData: this.getProductData(),
                     targeting: this.getTargeting(),
+                    paymentPlan: find(paymentPlans, { id: selectedPlanId }),
                 })}
-                trialLength={promotionConfigs.map('trialLength').sum()}
-                freeViews={promotionConfigs.map('targetUsers').sum()}
+                trialLength={trialLength}
+                freeViews={freeViews}
+                plans={paymentPlans}
             />
             {step === 4 && (
                 <WizardConfirmationModal
-                    startDate={promotions && getPaymentPlanStart(promotions)}
+                    freeViews={freeViews}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({
                         payment,
+                        paymentPlan: find(paymentPlans, { id: paymentPlanId }),
                         productData: this.getProductData(),
                         targeting: this.getTargeting(),
                     })}
@@ -280,6 +248,9 @@ ProductWizard.propTypes = {
     promotions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
     }).isRequired),
+    paymentPlans: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+    })),
     paymentPlanId: PropTypes.string,
 };
 

@@ -26,7 +26,6 @@ import * as TARGETING from '../../src/enums/targeting';
 import { getClientToken } from '../../src/actions/payment';
 import AdPreview from '../../src/components/AdPreview';
 import { createInterstitialFactory } from 'showcase-core/dist/factories/app';
-import { getPaymentPlanStart } from 'showcase-core/dist/billing';
 import WizardPlanInfoModal from '../../src/components/WizardPlanInfoModal';
 
 const proxyquire = require('proxyquire');
@@ -183,6 +182,29 @@ describe('ProductWizard', function() {
                         }
                     }
                 ],
+                paymentPlans: [
+                    {
+                        id: 'pp-0Ek6Vw0bWnqdlr61',
+                        price: 10,
+                        viewsPerMonth: 2000,
+                        name: 'Baby',
+                        maxCampaigns: 1
+                    },
+                    {
+                        id: 'pp-0Ek6V-0bWnuhLfQl',
+                        price: 24.99,
+                        viewsPerMonth: 4000,
+                        name: 'Kid',
+                        maxCampaigns: 5
+                    },
+                    {
+                        id: 'pp-0Ek6Ws0bWnxCV-B7',
+                        price: 49.99,
+                        viewsPerMonth: 10000,
+                        name: 'Adult',
+                        maxCampaigns: 10
+                    }
+                ],
 
                 loadData: jasmine.createSpy('loadData()').and.returnValue(Promise.resolve(undefined)),
                 onFinish: jasmine.createSpy('onFinish()').and.returnValue(Promise.resolve(3))
@@ -225,6 +247,132 @@ describe('ProductWizard', function() {
 
             it('should dispatch wizardDestroyed()', function() {
                 expect(productWizardActions.wizardDestroyed).toHaveBeenCalledWith();
+            });
+        });
+
+        describe('the steps', () => {
+            let steps;
+
+            beforeEach(() => {
+                store.dispatch.calls.reset();
+
+                steps = component.find('.progressbar-step');
+            });
+
+            it('should render all four', () => {
+                const one = steps.at(0);
+                const two = steps.at(1);
+                const three = steps.at(2);
+                const four = steps.at(3);
+
+                expect(one.find('.search-icon').length).toBe(1, 'search is not displayed.');
+                expect(one.find('.progressbar-step-stepnum').text()).toBe('Search');
+
+                expect(two.find('.create-icon').length).toBe(1, 'create is not displayed.');
+                expect(two.find('.progressbar-step-stepnum').text()).toBe('Create');
+
+                expect(three.find('.target-icon').length).toBe(1, 'target is not displayed.');
+                expect(three.find('.progressbar-step-stepnum').text()).toBe('Target');
+
+                expect(four.find('.promote-icon').length).toBe(1, 'promote is not displayed.');
+                expect(four.find('.progressbar-step-stepnum').text()).toBe('Promote');
+            });
+
+            it('should go to the correct step', () => {
+                steps.forEach((step, index) => {
+                    store.dispatch.and.returnValue(new Promise(() => {}));
+                    store.dispatch.calls.reset();
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step: index + 1
+                        })
+                    });
+
+                    step.find('button').simulate('click');
+
+                    expect(store.dispatch).toHaveBeenCalledWith(goToStep(index));
+                });
+            });
+
+            [
+                '.search-icon',
+                '.create-icon',
+                '.target-icon',
+                '.promote-icon'
+            ].forEach((selector, index) => describe(`if step ${index} is omitted`, () => {
+                let step;
+
+                beforeEach(() => {
+                    wrapper.setProps({
+                        steps: props.steps.filter(step => step !== index)
+                    });
+
+                    steps = component.find('.progressbar-step');
+                    step = steps.find(selector);
+                });
+
+                it('should remove the step', () => {
+                    expect(steps.length).toBe(3);
+                    expect(step.length).toBe(0, `${selector} is rendered.`);
+                });
+            }));
+
+            [0, 1, 2, 3].forEach(step => describe(`on step ${step}`, () => {
+                let all;
+                let current;
+                let previous;
+                let future;
+
+                beforeEach(() => {
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step
+                        })
+                    });
+
+                    all = steps.map(step => step);
+                    current = all[step];
+                    previous = all.slice(0, step);
+                    future = all.slice(step + 1);
+                });
+
+                it('should add the "completed" class to all the previous steps', () => {
+                    previous.forEach(step => expect(step.hasClass('completed')).toBe(true, `${step.html()} lacks "completed" class`));
+                    expect(current.hasClass('completed')).toBe(false, `${current.html()} has "completed" class`);
+                    future.forEach(step => expect(step.hasClass('completed')).toBe(false, `${step.html()} has "completed" class`));
+                });
+
+                it('should add "active" to the current step', () => {
+                    expect(current.hasClass('active')).toBe(true, `${current.html()} lacks class "active"`);
+                    previous.forEach(step => expect(step.hasClass('active')).toBe(false, `${step.html()} has "active" class`));
+                    future.forEach(step => expect(step.hasClass('active')).toBe(false, `${step.html()} has "active" class`));
+                });
+
+                it('should add "disabled" to the future steps', () => {
+                    future.forEach(step => expect(step.hasClass('disabled')).toBe(true, `${step.html()} lacks "disabled" class`));
+                    expect(current.hasClass('disabled')).toBe(false, `${current.html()} has "disabled" class`);
+                    previous.forEach(step => expect(step.hasClass('disabled')).toBe(false, `${step.html()} has "disabled" class`));
+                });
+
+                it('should disable the buttons of future steps', () => {
+                    future.forEach(step => expect(step.find('button').prop('disabled')).toBe(true, `${step.html()} lacks "disabled" class`));
+                    expect(current.find('button').prop('disabled')).toBe(false, `${current.html()} has "disabled" class`);
+                    previous.forEach(step => expect(step.find('button').prop('disabled')).toBe(false, `${step.html()} has "disabled" class`));
+                });
+            }));
+
+            describe('if the step exceeds the last step', () => {
+                beforeEach(() => {
+                    wrapper.setProps({
+                        page: assign({}, props.page, {
+                            step: 7
+                        })
+                    });
+                });
+
+                it('should keep the last step active', () => {
+                    expect(steps.last().hasClass('active')).toBe(true, 'Last step lacks "active" class');
+                });
             });
         });
 
@@ -340,6 +488,12 @@ describe('ProductWizard', function() {
                             expect(this.planInfoModal.prop('freeViews')).toBe(0);
                         });
                     }));
+                });
+
+                describe('plans', function() {
+                    it('should be the paymentPlans prop', function() {
+                        expect(this.planInfoModal.prop('plans')).toEqual(props.paymentPlans);
+                    });
                 });
             });
         });
@@ -674,13 +828,16 @@ describe('ProductWizard', function() {
                 beforeEach(function() {
                     store.dispatch.calls.reset();
 
-                    this.planInfoModal.props().onContinue();
+                    this.paymentPlanId = props.paymentPlans[1].id;
+
+                    this.planInfoModal.props().onContinue(this.paymentPlanId);
                 });
 
                 it('should dispatch() collectPayment()', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(collectPayment({
                         productData: component.node.getProductData(),
-                        targeting: component.node.getTargeting()
+                        targeting: component.node.getTargeting(),
+                        paymentPlan: props.paymentPlans[1]
                     }));
                 });
             });
@@ -727,11 +884,9 @@ describe('ProductWizard', function() {
                 });
 
                 describe('props', function() {
-                    describe('startDate', function() {
+                    describe('freeViews', function() {
                         it('should be computed from the promotions', function() {
-                            const expected = getPaymentPlanStart(props.promotions);
-
-                            expect(modal.props().startDate.isSame(expected)).toBe(true, `Expected: ${expected.format()}; got: ${modal.props().startDate.format()}`);
+                            expect(modal.prop('freeViews')).toBe(1200);
                         });
 
                         describe('if there are no promotions', function() {
@@ -739,8 +894,8 @@ describe('ProductWizard', function() {
                                 wrapper.setProps({ promotions: null });
                             });
 
-                            it('should be null', function() {
-                                expect(modal.props().startDate).toBeNull();
+                            it('should be 0', function() {
+                                expect(modal.prop('freeViews')).toBe(0);
                             });
                         });
                     });
@@ -766,7 +921,11 @@ describe('ProductWizard', function() {
                         let payment;
 
                         beforeEach(function() {
+                            wrapper.setProps({
+                                paymentPlanId: props.paymentPlans[1].id
+                            });
                             payment = { nonce: createUuid(), cardholderName: 'Buttface McGee' };
+                            store.dispatch.calls.reset();
 
                             modal.props().onSubmit(payment);
                         });
@@ -775,7 +934,8 @@ describe('ProductWizard', function() {
                             expect(store.dispatch).toHaveBeenCalledWith(createCampaign({
                                 payment,
                                 productData: component.node.getProductData(),
-                                targeting: component.node.getTargeting()
+                                targeting: component.node.getTargeting(),
+                                paymentPlan: props.paymentPlans[1]
                             }));
                         });
                     });

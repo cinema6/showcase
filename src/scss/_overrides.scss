@@ -15,6 +15,7 @@
  * * *Slideout
  * Forms
  * Create Campaign
+ * Campaign Dashboard
  * Campaign Stats
  * Plans
  * Payment Modals
@@ -52,6 +53,12 @@
         min-height: 750px;
         overflow-y: auto;
     }
+    button,
+    button:focus,
+    button:active {
+        outline: none !important;
+        outline: 0 !important;
+    }
  /***
  Mixins
  ----------------------------
@@ -76,6 +83,12 @@
         right: 0;
         margin: 0;
     }*/
+    div#root {
+        overflow: auto;
+    }
+    .overflow-wrap {
+        overflow: hidden;
+    }
     .navbar-nav {
         margin: 0;
     }
@@ -198,6 +211,7 @@
         right: 10%;
         top: 10px;
         max-width: 600px;
+        text-align: center;
         z-index: 10000;
         box-shadow: 0 3px 10px rgba(28, 28, 28, 0.5)
     }
@@ -252,13 +266,19 @@
     }
     .btn-default {
         color: #0dbeb2;
-        background-color: transparent;
+        /*background-color: transparent;*/
+        background-color: #fff;
         border-color: #0dbeb2;
     }
-        .btn-default:hover {
+        /*.btn-default:hover {
             color: #08766f;
             background-color: #E1DDD7;
             border-color: #0dbeb2;
+        }*/
+        .btn-default:hover {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
         }
         .btn-default:active,
         .btn-default.active,
@@ -276,9 +296,9 @@
         .btn-default:active.focus,
         .btn-default.active.focus,
         .open>.dropdown-toggle.btn-default.focus {
-            color: #fff;
-            background-color: #0dbeb2;
-            border-color: #0dbeb2;
+            color: #000;
+            background-color: #ccc;
+            border-color: #8c8c8c
         }
         .btn-danger:active:hover,
         .btn-danger.active:hover,
@@ -379,10 +399,14 @@
             vertical-align: middle;
             display: inline;
         }
+    .navbar .btn-header {
+        margin-top: 22px;
+        float: right;
+    }
 
 /***Slideout Menu***/
     .slideout-menu {
-        background: #E54B4B;
+        background: #353A47;
         width: 300px;
         max-width: 90%;
         position: fixed;
@@ -404,12 +428,26 @@
                 display: inline-block;
                 width: 100%;
                 padding: 20px 30px;
-                border-bottom: 1px solid #d82632;
-                color: #d6fcff;
+                border-bottom: 1px solid #24272F;
+                color: #E3E3E3;
+                text-decoration: none;
+                text-align: left;
+            }
+            .slideout-menu .menu-item a.active {
+                background: #5C5F69;
+            }
+            .slideout-menu .menu-item button {
+                display: inline-block;
+                width: 100%;
+                padding: 20px 30px;
+                border: 0;
+                border-bottom: 1px solid #24272F;
+                color: #E3E3E3;
                 text-decoration: none;
                 text-align: left;
             }
             .slideout-menu .menu-item a i.fa,
+            .slideout-menu .menu-item button i.fa,
             .slideout-menu .menu-item button.btn-link i.fa {
                 margin-right: 0.25em;
                 display: inline-block;
@@ -449,6 +487,7 @@
             /*border-bottom: 1px solid #d82632;*/
             border-bottom: 1px solid #24272F;
         }
+            .vertical-menu-bar .menu-item a.active,
             .vertical-menu-bar .menu-item a:hover,
             .vertical-menu-bar .menu-item a:focus,
             .vertical-menu-bar .menu-item button.btn-link:focus,
@@ -601,6 +640,8 @@
             }
                 .campaign-progress-bar .nav-pills>li.active.current {
                     background-position: -100% 0 !important;
+                    -webkit-transition: background-size 1s;
+                    -moz-transition: background-size 1s;
                     transition: background-size 1s;
                 }
             .campaign-progress-bar .nav-pills>li a {
@@ -612,7 +653,168 @@
     .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
         margin-left: 0;
     }
-    
+    /***circled progress-bar***/
+    .campaign-progressbar {        
+        padding: 0 0 10px 0;
+    }
+        .progress-wrapper {
+            overflow: hidden;
+            height: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .campaign-progressbar > .progressbar-step {
+            padding: 0;
+            position: relative;
+        }
+            .campaign-progressbar > .progressbar-step + .progressbar-step {}
+            .campaign-progressbar > .progressbar-step .progressbar-step-stepnum {
+                color: #595959;
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+            .campaign-progressbar > .progressbar-step .progressbar-step-info {
+                color: #999;
+                font-size: 14px;
+            }
+            .campaign-progressbar > .progressbar-step > .progressbar-step-dot {
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                display: block;
+                background: #171738;
+                top: 45px;
+                left: 45%;
+                margin-top: -15px;
+                margin-left: -15px;
+                border-radius: 50%;
+                -webkit-transition: all 0.6s ease;
+                -moz-transition: all 0.6s ease;
+                transition: all 0.6s ease;
+            }
+            .campaign-progressbar > .progressbar-step > .progressbar-step-dot:after {
+                content: ' ';
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
+                color: #fff;
+                /*background: #f5f5f5;*/
+                border-radius: 50px;
+                position: absolute;
+                top: 7px;
+                left: 7px;
+            }
+            .campaign-progressbar > .progressbar-step > .progress-wrapper {
+                position: relative;
+                border-radius: 0px;
+                height: 8px;
+                box-shadow: none;
+                margin: 35px 0;
+            }
+                .campaign-progressbar > .progressbar-step > .progress-wrapper > .progress-bar {
+                    width: 0px;
+                    box-shadow: none;
+                    background: #171738;
+                }
+                    .campaign-progressbar > .progressbar-step.completed > .progress-wrapper > .progress-bar {
+                        width: 100%;
+                    }
+                    .campaign-progressbar > .progressbar-step.active > .progress-wrapper > .progress-bar {
+                        width: 50%;
+                        /*-webkit-transition-delay: 0.1s;
+                        -moz-transition-delay: 0.1s;
+                        -o-transition-delay: 0.1s;*/
+                        transition-delay: 0.6s;
+                    }
+                    .campaign-progressbar > .progressbar-step:first-child.active > .progress-wrapper > .progress-bar {
+                        width: 0%;
+                    }
+                    .campaign-progressbar > .progressbar-step:last-child.active > .progress-wrapper > .progress-bar {
+                        width: 100%;
+                    }
+                    .campaign-progressbar > .progressbar-step.active.disabled > .progressbar-step-dot {
+                        background-color: #e0e0e0;
+                        color: #0d9289 !important;
+                        border: 1px solid #171738;
+                    }
+                    .campaign-progressbar > .progressbar-step.active.disabled > .progressbar-step-dot:after {
+                        opacity: 1;
+                        color: #171738 !important;
+                    }
+                    .campaign-progressbar > .progressbar-step.disabled > .progressbar-step-dot {
+                        background-color: #fff;
+                        color: #4ECDC4 !important;
+                        border: 1px solid #ddd;
+                    }
+                .campaign-progressbar > .progressbar-step.disabled > .progressbar-step-dot:after {
+                    opacity: 1;
+                    color: #4ECDC4 !important;
+                }
+                .campaign-progressbar > .progressbar-step:first-child > .progress-wrapper {
+                    left: 50%;
+                    width: 50%;
+                }
+                .campaign-progressbar > .progressbar-step:last-child > .progress-wrapper {
+                    width: 50%;
+                }
+                    .campaign-progressbar > .progressbar-step.disabled a.progressbar-step-dot {
+                        pointer-events: none;
+                    }
+                .campaign-progressbar.nav-justified > li > button, 
+                .campaign-progressbar.nav-tabs.nav-justified > li > button, 
+                .campaign-progressbar.nav-justified > li > button:disabled:hover, 
+                .campaign-progressbar.nav-justified > li > button:disabled:focus {
+                    position: absolute;                    
+                    width: 60px;
+                }
+        .search-icon:after {
+            content: '\f002' !important;
+            font-family: 'FontAwesome';
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .create-icon:after {
+            content: '\f044' !important;
+            font-family: 'FontAwesome';
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .target-icon:after {
+            content: '\f140' !important;
+            font-family: 'FontAwesome';
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .promote-icon:after {
+            content: '\f1d9' !important;
+            font-family: 'FontAwesome';
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            line-height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+        @media (max-width: 767px) {
+            .campaign-progressbar > .progressbar-step > .progressbar-step-dot {
+                left: 40%;
+            }
+        }
 /***App Search Form***/
     .app-search {
         padding: 0 5px;
@@ -916,11 +1118,291 @@
     .select-target-options {
         display: block;
     }
+
+ /***
+ Campaign Dashboard
+ ----------------------------
+ ***/
+    .account-summary {
+        width: 100%;
+        min-height: 80px;
+        background: #c9fbff;
+        /*background: #fff;*/
+        margin-top: 81px;
+        border-bottom: 1px solid #aaa;
+        height: auto;
+        overflow: hidden;
+        padding-bottom: 15px;
+    }
+        .account-summary .campaign-mini-stats {
+            padding-top: 15px;
+            padding-bottom: 0;
+            box-sizing: border-box;
+        }
+        .account-summary .campaign-mini-stats .stats-header {
+            color: #222;
+            font-size: 24px;
+            margin: 0;
+        }
+        .account-summary .bar-wrap {
+            border: 1px solid #666;
+            height: 16px;
+            margin-top: 5px;
+            background: #fff;
+        }
+        .account-summary .bar-fill {
+            height: 14px;
+        }
+        .account-summary .stats-header.stas-bar.view-count .bar-fill {
+            background: #26ade4;
+        }
+        .account-summary .stats-header.stas-bar.app-count .bar-fill {
+            background: #444;
+        }
+        .account-summary ~ .main-section {
+            margin-top: 40px;
+        }
+        /*.campaign-dashboard {
+            margin-top: 40px;
+        }*/
+        .campaign-app-list {
+            overflow: hidden;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .campaign-app-list a {
+            color: initial;
+        }
+        .campaign-list-item-wrapper {                    
+            display: block;                    
+            border-bottom: 1px solid #ddd;
+        }
+            .campaign-list-item-wrapper:hover {
+                background: #f5f5f5;
+                cursor: pointer;
+            }
+        .campaign-list-item {
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        .campaign-toggle .btn-group {
+            float: right;
+        }
+        .campaign-toggle .btn-link {
+            font-size: 18px;
+        }
+        .app-icon-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+        }
+        .app-info-wrapper .app-title {
+            margin-top: 0;
+            line-height: 1.25;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .campaign-list-item .app__ratings,
+        .campaign-list-item .app__ratings--stars {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .campaign-app-list .app__ratings p {
+            display: inline-block;
+        }
+        .promote-app-cta {
+            margin-bottom: 40px;
+        }
+       /* .campaign-list-item .view-count {
+            clear: none;
+        }*/
+        .main-section {
+            /*margin-top: 40px;*/
+            margin-top: 100px;
+        }
+        .account-summary ~ .main-section {
+            margin-top: 40px;
+        }
+        .campaign-list-item .stats-header {
+            margin-bottom: 0;
+            font-size: 24px;
+        }
+            .item-preloader {
+                font-family: 'BLOKKNeue';
+                color: #eee;
+                line-height: initial;
+                animation: colorChange 2s infinite;
+            }
+                .item-preloader .app__ratings--stars {
+                    font-family: 'FontAwesome';
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .campaign-reach-mini .stats-header,
+                .item-preloader .campaign-clicks-mini .stats-header,
+                .item-preloader .campaign-ctr-mini .stats-header {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                .item-preloader .btn-link {
+                    color: #eee;
+                    animation: colorChange 2s infinite;
+                }
+                @-webkit-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-moz-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @-ms-keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+                @keyframes colorChange {
+                    0% {
+                        color : #eee;}
+                    25% {
+                        color : #ccc;}
+                    50% {
+                        color : #ccc;}
+                    100% {
+                        color : #eee;}
+                }
+
+        @media (max-width: 991px) {
+            .campaign-list-item .view-count {
+                clear: both;
+            }
+            .main-section {
+                /*margin-top: 40px;*/
+                margin-top: 100px;
+            }
+            .account-summary ~ .main-section {
+                margin-top: 40px;
+            }
+            .campaign-toggle {
+                float: right;
+            }
+            .campaign-toggle .btn-group {
+                float: none;
+            }
+        }
+        @media (min-width: 768px) and (max-width: 991px) {
+            .campaign-list-item .view-count,
+            .campaign-list-item .click-count,
+            .campaign-list-item .ctr-count {
+                border-top: 1px dotted #ddd;
+            }
+        }
+        @media (max-width: 767px) {
+            .campaign-app-list {
+                overflow: hidden;
+                list-style-type: none;
+                padding-left: 0;
+                background: #f5efe6;
+                box-shadow: none;
+            }
+            .campaign-list-item-wrapper {
+                display: block;
+                border-bottom: none;
+                margin-bottom: 15px;
+                background: #fff;
+                border-radius: 4px;
+                -webkit-box-shadow: 0 2px 2px 0
+                    rgba(0,0,0,.14),0 3px 1px -2px
+                    rgba(0,0,0,.2),0 1px 5px 0
+                    rgba(0,0,0,.12);
+                -moz-box-shadow: 0 2px 2px 0
+                    rgba(0,0,0,.14),0 3px 1px -2px
+                    rgba(0,0,0,.2),0 1px 5px 0
+                    rgba(0,0,0,.12);
+                box-shadow: 0 2px 2px 0
+                    rgba(0,0,0,.14),0 3px 1px -2px
+                    rgba(0,0,0,.2),0 1px 5px 0
+                    rgba(0,0,0,.12);
+            }
+            .campaign-list-title {
+                text-align: center;
+            }
+            .campaign-list-item {
+                text-align: center;
+            }            
+            .campaign-list-item .stats-header {
+                font-size: 18px;
+                font-weight: 400;
+            }
+            .account-summary .campaign-mini-stats .stats-header {
+                font-size: 18px;
+                font-weight: 400;
+            }
+            .account-summary .campaign-mini-stats .lighter-text {
+                font-size: 12px;
+            }
+            .main-section {
+                /*margin-top: 20px;*/
+                margin-top: 100px;
+            }
+            .account-summary ~ .main-section {
+                margin-top: 20px;
+            }
+            .campaign-overview h3 {
+                text-align: center;
+            }
+            .app-icon-wrapper img {
+                max-width: 100%;
+                width: 128px;
+                height: auto;
+                margin-bottom: 20px;
+                margin-top: 20px;
+            }
+            .campaign-toggle {
+                float: none;
+                border-top: 1px dotted #ddd;
+                border-bottom: 1px dotted #ddd;
+            }
+            .campaign-toggle .btn-group {
+                float: none;
+            }
+        }
+
  /***
  Campaign Stats
  ----------------------------
  ***/
-
+    .breadcrumb {
+        background: transparent;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+        font-size: 18px;
+        font-weight: 300;
+    }
+        .breadcrumb>li {
+            display: inline;
+        }
+        .breadcrumb>li a {
+            font-weight: 400;
+        }
     .campaign-stats {
         display: block;
     }
@@ -930,6 +1412,18 @@
             border-bottom: 1px dotted $brand-primary;*/
             margin-top: 30px;
             padding-left: 0;
+        }
+    .campaign-stats {
+        margin-top: 80px;        
+    }
+        .campaign-stats>.main-section {
+            margin-top: 40px;
+        }
+    .account-summary ~ .campaign-stats {
+        margin-top: 0;
+    }
+        .account-summary ~ .campaign-stats>.main-section {
+            margin-top: 40px;
         }
     .campaign-overview {
         display: block;
@@ -1253,17 +1747,89 @@
         .trial-wrap h3 {
             margin-top: 0;
         }
+    .payment-plan {
+        padding: 0 !important;
+        margin-bottom: 20px;
+    }
+    .payment-plan label {
+        width: 85%;
+    }
+    .payment-plan input[type=radio] {
+        display: none;
+        visibility: hidden;
+    }
+    .payment-plan .plan-info-box:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .payment-plan input[type=radio]:checked~.plan-info-box {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        background: #e4fffd;
+        -webkit-transition: background 0.5s ease-in;
+        -moz-transition: background 0.5s ease-in;
+        transition: background 0.5s ease-in;
+    }
+    /*.payment-plan input[type=radio]:checked ~ .plan-info-box:before {
+        /*content: 'selected';
+        background: #009a90;
+        width: 100%;
+        left: 0;
+        right: 0;
+        display: block;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        color: #fff;
+        line-height: 40px;
+        border: 1px solid #009a90;
+        border-bottom: 0;
+        height: 40px;*/
+     /*   content: 'selected';
+        background: #25ab27;
+        width: 80%;
+        left: 10%;
+        right: 0;
+        display: block;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        color: #fff;
+        line-height: 30px;
+        border: 0;
+        border-bottom: 0;
+        height: 30px;
+        position: absolute;
+        bottom: -5px;
+        z-index: 0;
+    }
+    .payment-plan input[type=radio]:checked~.plan-info-box:after {*/
+        /*content: '\f058';
+        color: #ecfffe;
+        font-family: 'FontAwesome';
+        position: absolute;
+        font-size: 24px;
+        width: 34px;
+        margin-left: -12px;
+        border-radius: 50%;
+        margin-top: -10px;
+        top: 14px;
+        right: 30px;*/
+        /*content: '\f058';
+        color: #ecfffe;
+        font-family: 'FontAwesome';
+        position: absolute;
+        font-size: 24px;
+        width: 34px;
+        margin-left: -12px;
+        border-radius: 50%;
+        bottom: -5px;
+        right: 30px;
+    }*/
     .plan-info-box {
         background: #fff;
         border: 1px solid #0dbeb2/*$brand-primary*/;
-    }
-    .plan-info-box.plan-starter {
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-    .plan-info-box.plan-pro,
+    }    
+    /*.plan-info-box.plan-pro,
     .plan-info-box.plan-business {
         opacity: 0.6;
-    }
+    }*/
         .plan-box-header {
             background: #0dbeb2/*$brand-primary*/;
         }
@@ -1302,21 +1868,77 @@
             margin: 5px -1px -1px -1px;
             border-bottom-left-radius: 4px;
             border-bottom-right-radius: 4px;
+            position: relative;
         }
-        .plan-box-footer.plan-selected {
-            background: #777;
+        .plan-box-footer.current-plan {
+            /*background: #777;*/
             color: #fff;
         }
+            .plan-box-footer.current-plan:after {
+                content: 'current plan';
+                color: #fff;
+                background: #f2414d;
+                /* display: block; */
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+                width: 80%;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                opacity: 0.5
+            }
+            .plan-box-footer.choose-plan:after {
+                content: 'choose plan';
+                background: #f2414d;
+                color: #fff;
+                /* display: block; */
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+                width: 80%;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:after {
+                background: #d80f1c;
+                content: 'Selected';
+                text-align: left;
+                -webkit-transition: all 0.5s ease-in;
+                -moz-transition: all 0.5s ease-in;
+                transition: all 0.5s ease-in;
+            }
+            .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:before {
+                content: '\f058';
+                color: #ecfffe;
+                font-family: 'FontAwesome';
+                position: absolute;
+                font-size: 24px;
+                width: 34px;
+                margin-left: -12px;
+                border-radius: 50%;
+                bottom: 18px;
+                right: 20px;
+            }
         .plan-box-footer.plan-coming-soon {
-            background: #bbb;
+            background: #f2414d;
             color: #fff;
         }
             .plan-box-footer h4 {
                 margin: 0;
             }
+    .change-plan .alert.alert-success.text-center {
+        background: transparent;
+    }
+    .change-plan .alert.alert-warning.text-center {
+        background: transparent;
+    }
+
     .checked-feature-list {
         list-style-type: none;
         padding: 0;
+        margin-bottom: 20px;
     }
         .checked-feature-list li {
             padding: 10px 10px 10px 20px;
@@ -1450,6 +2072,13 @@
  /***payment modal***/
      .modal {
         background: rgba(28,28,28,0.7);
+        z-index: 10001;
+    }
+    .modal-backdrop {
+        z-index: 10000;
+    }
+    .modal-content {
+        z-index: 10002;
     }
     .payment-modal .modal-body {
         overflow: hidden;
@@ -1535,7 +2164,9 @@
         background: #fff;
         border: 1px solid #0dbeb2/*$brand-primary*/;
         margin-bottom: 20px;
+        padding-bottom: 10px;
         border-radius: 4px;
+        cursor: pointer;
     }
         .plan-box-header {
             background: #0dbeb2/*$brand-primary*/;
@@ -1570,7 +2201,15 @@
                 display: inline-block;
                 margin: 0 0 0 10px;
             }
-
+    .cancel-plan {
+        margin-top: 30px;
+    }
+        .cancel-plan p {
+            margin-bottom: 0;
+        }
+    .cancel-stats h3 {
+        margin: 0;
+    }
  /***
  Responsive styles
  ----------------------------
@@ -1665,9 +2304,13 @@
                 float: none !important;
                 display: block;
             }
-        .main-section.campaign-stats {
+        .campaign-stats .main-section {
+            /*margin-top: 40px;*/
             margin-top: 100px;
         }
+        .account-summary ~ .campaign-stats>.main-section {
+            margin-top: 40px;
+        }            
         .navbar-inverse .container-fluid > .navbar-header {
             margin-left: 0;
         }
@@ -1726,6 +2369,9 @@
             .payment-modal .modal-header h4 {
                 font-size: 18px;
             }
+        .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:before {
+            right: 30px;
+        }
         .campaign-stats .nav-justified {
             margin-bottom: 10px;
         }
@@ -1822,6 +2468,10 @@
             display: block;
             width: 100%;
         }
+        .stats-list h4 {
+            font-size: 14px;
+            text-align: left;
+        }
         .campaign-stats-totals span {
             margin-bottom: 5px;
             display: block;
@@ -1882,7 +2532,9 @@
 }
 /***button spinner***/
 .btn-waiting {
-    padding-right: 2.5rem;
+    padding-right: 3.5rem;
+    -webkit-transition: padding 0.2s ease-in;
+    -moz-transition: padding 0.2s ease-in;
     transition: padding 0.2s ease-in;
 }
     .btn-waiting:after {
@@ -1913,7 +2565,7 @@
         height: 100%;
         top: 0;
         left: 0;
-        z-index: 10000;
+        z-index: 9999;
         background: white;
     }
     .spinner-wrap {
@@ -1923,7 +2575,7 @@
         right: 0;
         bottom: 0;
         background: #fff;
-        z-index: 10000;
+        z-index: 99999;
         overflow: hidden;
         height: 100%;
         width: 100%;

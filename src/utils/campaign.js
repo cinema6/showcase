@@ -5,6 +5,7 @@ import {
     assign,
     cloneDeep as clone,
     get,
+    pick,
 } from 'lodash';
 import * as TARGETING from '../enums/targeting';
 
@@ -51,4 +52,11 @@ export function campaignFromData({ productData, targeting }, campaign) {
             appStoreCategory: productData.categories || base.targeting.appStoreCategory,
         }),
     });
+}
+
+export function campaignUpdateFromData({ productData, targeting }, campaign) {
+    return pick(
+        campaignFromData({ productData, targeting }, campaign),
+        ['id', 'name', 'product', 'targeting']
+    );
 }
