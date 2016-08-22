@@ -46,7 +46,8 @@ export function Password({
                     </div>
                     <div className="form-group">
                         <label htmlFor="inputHelpBlock">
-                            New Password {tooltip('Your new password.', 'new-password')}
+                            New Password
+                            {tooltip('Your new password.', 'new-password')}
                         </label>
                         <input type="password" {...newPassword} className="form-control" />
                     </div>

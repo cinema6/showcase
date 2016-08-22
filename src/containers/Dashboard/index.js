@@ -71,7 +71,7 @@ class Dashboard extends Component {
                         </ul>
                     </div>
                     <button
-                        className="btn btn-danger hidden-xs btn-header" onClick={addApp}
+                        className="btn btn-default hidden-xs btn-header" onClick={addApp}
                     >
                         <i className="fa fa-plus" /> Add New App
                     </button> {/* show alert asking to upgrade if

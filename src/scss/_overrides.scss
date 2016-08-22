@@ -41,10 +41,10 @@
         padding-bottom: 20px;
     }
     body.bg-dark {
-        background: #171738;
+        background: #003c38;
     }
     .bg-dark-wrap {
-        background:  #171738;
+        background:  #003c38;
         position: absolute;
         top: 0;
         left: 0;
@@ -110,7 +110,7 @@
     .navbar-nav .user-initials {
         width: 40px;
         height: 40px;
-        background: orange;
+        background: #25c5ba;
         color: #fff;
         display: inline-block;
         border-radius: 50%;
@@ -160,8 +160,10 @@
         text-decoration: none;
     }
     .navbar-inverse .navbar-nav  .open>a, .navbar-inverse .navbar-nav  .open>a:hover, .navbar-inverse .navbar-nav .open>a:focus {
-        background: #00001F;
-        color: white;
+        background: #5de0d7;
+        color: #fff;
+        box-shadow: none;
+        text-decoration: underline;
     }
     .page-header {
         margin: 20px 20px 0;
@@ -264,6 +266,24 @@
     .modal-footer {
         border: 0;
     }
+        .modal .btn-default {            
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+        }
+        .modal .btn-default:hover {
+            color: #333;
+            background-color: #ccc;
+            border-color: #adadad;
+        }
+        .modal .btn-default:focus,
+        .modal .btn-default:active,
+        .modal .btn-default:active:focus,
+        .modal .btn-default:active:hover {
+            color: #333;
+            background-color: #ccc;
+            border-color: #adadad;
+        }
     .btn-default {
         color: #0dbeb2;
         /*background-color: transparent;*/
@@ -271,15 +291,10 @@
         border-color: #0dbeb2;
     }
         /*.btn-default:hover {
-            color: #08766f;
-            background-color: #E1DDD7;
-            border-color: #0dbeb2;
-        }*/
-        .btn-default:hover {
             color: #333;
             background-color: #e6e6e6;
             border-color: #adadad;
-        }
+        }*/
         .btn-default:active,
         .btn-default.active,
         .open>.dropdown-toggle.btn-default {
@@ -288,6 +303,13 @@
             border-color: #0dbeb2;
             box-shadow: none;
         }
+        .btn-default:hover {
+            color: #fff;
+            background-color: #0dbeb2;
+            border-color: #0dbeb2;
+        }
+        
+        .btn-default:focus,
         .btn-default:active:hover,
         .btn-default.active:hover,
         .open>.dropdown-toggle.btn-default:hover,
@@ -296,9 +318,9 @@
         .btn-default:active.focus,
         .btn-default.active.focus,
         .open>.dropdown-toggle.btn-default.focus {
-            color: #000;
-            background-color: #ccc;
-            border-color: #8c8c8c
+            color: #fff;
+            background-color: #08a096;
+            border-color: #08a096;
         }
         .btn-danger:active:hover,
         .btn-danger.active:hover,
@@ -592,7 +614,10 @@
  Forms
  ----------------------------
  ***/
-
+    /***account settings***/
+    .form-group label .fa {
+        margin-left: 5px;
+    }
  /***
  Pre-Login Screens
  ----------------------------
@@ -1118,6 +1143,12 @@
     .select-target-options {
         display: block;
     }
+        .select-target-options .btn:hover,
+        .select-target-options-vertical .btn:hover {
+            background: #0dbeb2;
+            color: #fff;
+            border-color: #0dbeb2;
+        }
 
  /***
  Campaign Dashboard
@@ -1126,7 +1157,7 @@
     .account-summary {
         width: 100%;
         min-height: 80px;
-        background: #c9fbff;
+        background: #ecfffe;
         /*background: #fff;*/
         margin-top: 81px;
         border-bottom: 1px solid #aaa;
@@ -1877,7 +1908,7 @@
             .plan-box-footer.current-plan:after {
                 content: 'current plan';
                 color: #fff;
-                background: #f2414d;
+                background: #25ab27;
                 /* display: block; */
                 padding: 10px;
                 border-radius: 5px;
@@ -1902,7 +1933,7 @@
                 margin-right: auto;
             }
             .payment-plan input[type=radio]:checked ~ .plan-info-box .plan-box-footer.choose-plan:after {
-                background: #d80f1c;
+                background: #0dbeb2;
                 content: 'Selected';
                 text-align: left;
                 -webkit-transition: all 0.5s ease-in;
@@ -2507,27 +2538,31 @@
 
 /***scrollbar***/
 
-.create-app-campaign ::-webkit-scrollbar {
+.create-app-campaign ::-webkit-scrollbar,
+.campaign-stats-table::-webkit-scrollbar {
   -webkit-appearance:none;
   width:12px;
   background: #FFF;
 }
 
-.create-app-campaign ::-webkit-scrollbar-thumb {
+.create-app-campaign ::-webkit-scrollbar-thumb,
+.campaign-stats-table::-webkit-scrollbar-thumb {
   border-radius:12px;
   /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   _background-color:#0DBEB2;
   background-color: #0DBEB2;
 }
-.create-app-campaign ::-webkit-scrollbar-thumb:hover {
+.create-app-campaign ::-webkit-scrollbar-thumb:hover,
+.campaign-stats-table::-webkit-scrollbar-thumb:hover {
   border-radius:12px;
   /*border:3px solid rgba(255,255,255,0);*/
   background-clip:content-box;
   background-color: #08766f;
 }
 
-.create-app-campaign ::-webkit-scrollbar-corner {
+.create-app-campaign ::-webkit-scrollbar-corner,
+.campaign-stats-table::-webkit-scrollbar-corner {
   background-color:#e6e6e6;
 }
 /***button spinner***/
