@@ -1,6 +1,9 @@
 # Showcase
 
 ## v0.13.0 (August 18, 2016)
+* *[v0.13.0-rc3]*
+  * Update interface styles
+
 * *[v0.13.0-rc2]*
   * [FIX]: Fix for an issue that prevented campaigns from being restored
     from the archive.
