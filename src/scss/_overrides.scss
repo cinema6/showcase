@@ -41,10 +41,10 @@
         padding-bottom: 20px;
     }
     body.bg-dark {
-        background: #171738;
+        background: #003c38;
     }
     .bg-dark-wrap {
-        background:  #333;
+        background:  #003c38;
         position: absolute;
         top: 0;
         left: 0;
@@ -614,7 +614,10 @@
  Forms
  ----------------------------
  ***/
-
+    /***account settings***/
+    .form-group label .fa {
+        margin-left: 5px;
+    }
  /***
  Pre-Login Screens
  ----------------------------
