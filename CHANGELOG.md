@@ -3,6 +3,8 @@
 ## v0.13.0 (August 18, 2016)
 * *[v0.13.0-rc3]*
   * Update interface styles
+  * [FIX]: Ensure the user never needs to refresh the page to see
+    current billing cycle info at the top of the interface
 
 * *[v0.13.0-rc2]*
   * [FIX]: Fix for an issue that prevented campaigns from being restored
