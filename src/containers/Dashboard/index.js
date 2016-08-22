@@ -2,18 +2,53 @@ import React, { PropTypes, Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { pageify } from '../../utils/page';
-import * as dashboardActions from '../../actions/dashboard';
+import {
+    logoutUser,
+    toggleNav,
+    addApp,
+    checkIfPaymentMethodRequired,
+    loadPageData,
+} from '../../actions/dashboard';
 import { Link } from 'react-router';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import classnames from 'classnames';
 import StatsSummaryBar from '../../components/StatsSummaryBar.js';
 import { get, compact } from 'lodash';
 import moment from 'moment';
+import billingCycle from '../../resources/billing_cycle';
+import {
+    GET_BILLING_PERIOD,
+} from '../../actions/session';
 
 class Dashboard extends Component {
+    constructor(props) {
+        super(props);
+
+        this.handleBillingCycleChange = this.handleBillingCycleChange.bind(this);
+        this.handleBillingCycleError = this.handleBillingCycleError.bind(this);
+    }
+
     componentDidMount() {
         this.props.checkIfPaymentMethodRequired();
         this.props.loadPageData();
+
+        billingCycle.on('change', this.handleBillingCycleChange);
+        billingCycle.on('error', this.handleBillingCycleError);
+    }
+
+    componentWillUnmount() {
+        billingCycle.removeListener('change', this.handleBillingCycleChange);
+        billingCycle.removeListener('error', this.handleBillingCycleError);
+    }
+
+    handleBillingCycleChange(cycle) {
+        this.props.changeBillingPeriod(cycle);
+    }
+
+    handleBillingCycleError(reason) {
+        if (reason.status === 404) {
+            this.props.changeBillingPeriod(null);
+        }
     }
 
     render() {
@@ -22,15 +57,10 @@ class Dashboard extends Component {
             user,
             page: { showNav },
 
-            logoutUser,
-            toggleNav,
-
             billingPeriod,
             paymentPlan,
             campaigns,
             analytics,
-
-            addApp,
         } = this.props;
 
         if (!user) { return null; }
@@ -45,7 +75,7 @@ class Dashboard extends Component {
                     <div className="navbar-header pull-left">
                         <a
                             className="navbar-brand-link btn btn-default pull-left"
-                            onClick={toggleNav}
+                            onClick={this.props.toggleNav}
                         >
                             <i className="fa fa-bars"></i>
                         </a>
@@ -64,14 +94,16 @@ class Dashboard extends Component {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <MenuItem href="/#/dashboard/account">My Profile</MenuItem>
-                                        <MenuItem onClick={logoutUser}>Sign out</MenuItem>
+                                        <MenuItem onClick={this.props.logoutUser}>
+                                            Sign out
+                                        </MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </li>
                         </ul>
                     </div>
                     <button
-                        className="btn btn-default hidden-xs btn-header" onClick={addApp}
+                        className="btn btn-default hidden-xs btn-header" onClick={this.props.addApp}
                     >
                         <i className="fa fa-plus" /> Add New App
                     </button> {/* show alert asking to upgrade if
@@ -110,7 +142,7 @@ class Dashboard extends Component {
             >
                 <ul className="menu-item-list">
                     <li className="menu-item">
-                        <button className="bg-danger" onClick={addApp} > {/* link to add new app*/}
+                        <button className="bg-danger" onClick={this.props.addApp}>
                             <i className="fa fa-plus" /> Add New App
                         </button> {/* show alert asking to upgrade if
                         users have maximum allowed apps on current plan */}
@@ -142,7 +174,7 @@ class Dashboard extends Component {
                         </a>
                     </li>
                     <li className="menu-item">
-                        <button className="btn btn-link" onClick={logoutUser}>
+                        <button className="btn btn-link" onClick={this.props.logoutUser}>
                             <i className="fa fa-power-off" />
                             Logout
                         </button>
@@ -188,7 +220,7 @@ class Dashboard extends Component {
                         </a>
                     </li>
                     <li className="menu-item">
-                        <button className="btn btn-link" onClick={logoutUser}>
+                        <button className="btn btn-link" onClick={this.props.logoutUser}>
                             <i className="fa fa-power-off" />
                             <span className="menu-item-label">Logout</span>
                         </button>
@@ -215,13 +247,13 @@ Dashboard.propTypes = {
     toggleNav: PropTypes.func.isRequired,
     checkIfPaymentMethodRequired: PropTypes.func.isRequired,
     loadPageData: PropTypes.func.isRequired,
+    addApp: PropTypes.func.isRequired,
+    changeBillingPeriod: PropTypes.func.isRequired,
 
     billingPeriod: PropTypes.object,
     paymentPlan: PropTypes.object,
     campaigns: PropTypes.array,
     analytics: PropTypes.array.isRequired,
-
-    addApp: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({
@@ -248,5 +280,15 @@ function mapStateToProps({
 
 export default compose(
     pageify({ path: 'dashboard' }),
-    connect(mapStateToProps, dashboardActions)
+    connect(mapStateToProps, {
+        logoutUser,
+        toggleNav,
+        addApp,
+        checkIfPaymentMethodRequired,
+        loadPageData,
+        changeBillingPeriod: billingPeriod => ({
+            type: `${GET_BILLING_PERIOD}_FULFILLED`,
+            payload: billingPeriod,
+        }),
+    })
 )(Dashboard);

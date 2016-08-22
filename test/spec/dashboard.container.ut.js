@@ -14,6 +14,11 @@ import { createUuid } from 'rc-uuid';
 import defer from 'promise-defer';
 import { get, cloneDeep as clone, compact } from 'lodash';
 import moment from 'moment';
+import billingCycle from '../../src/resources/billing_cycle';
+import {
+    GET_BILLING_PERIOD
+} from '../../src/actions/session';
+import { StatusCodeError } from 'rc-live-resource/dist/lib/errors';
 
 const proxyquire = require('proxyquire');
 
@@ -34,7 +39,11 @@ describe('Dashboard', function() {
 
         Dashboard = proxyquire('../../src/containers/Dashboard', {
             'react': React,
-            '../../actions/dashboard': dashboardActions
+            '../../actions/dashboard': dashboardActions,
+            '../../resources/billing_cycle': {
+                default: billingCycle,
+                __esModule: true
+            }
         }).default;
     });
 
@@ -110,6 +119,8 @@ describe('Dashboard', function() {
             this.analytics = this.totalAnalytics &&
                 compact(this.totalAnalytics.map(id => state.analytics.results[id]));
 
+            spyOn(billingCycle, 'open');
+
             store = createStore(() => clone(state));
             spyOn(store, 'dispatch').and.callThrough();
 
@@ -128,6 +139,10 @@ describe('Dashboard', function() {
             spyOn(component, 'setState').and.callThrough();
         });
 
+        afterEach(() => {
+            wrapper.unmount();
+        });
+
         it('should exist', function() {
             expect(component.length).toEqual(1);
         });
@@ -137,7 +152,6 @@ describe('Dashboard', function() {
         });
 
         it('should pass in the props', function() {
-
             expect(component.props()).toEqual(jasmine.objectContaining({
                 user: this.user,
                 billingPeriod: this.billingPeriod,
@@ -153,6 +167,98 @@ describe('Dashboard', function() {
 
         it('should dispatch loadPageData()', function() {
             expect(store.dispatch).toHaveBeenCalledWith(loadPageData());
+        });
+
+        describe('when the billing cycle changes', () => {
+            let cycle;
+
+            beforeEach(() => {
+                cycle = {
+                    foo: 'bar',
+                    bar: 'foo',
+                    hello: 'world'
+                };
+                store.dispatch.calls.reset();
+
+                billingCycle.emit('change', cycle);
+            });
+
+            afterEach(() => {
+                cycle = null;
+            });
+
+            it('should dispatch a GET_CURRENT_PAYMENT_SUCCESS action', () => {
+                expect(store.dispatch).toHaveBeenCalledWith({
+                    type: `${GET_BILLING_PERIOD}_FULFILLED`,
+                    payload: cycle
+                });
+            });
+
+            describe('when the component is unmounted', () => {
+                beforeEach(() => {
+                    wrapper.unmount();
+                    store.dispatch.calls.reset();
+
+                    billingCycle.emit('change', cycle);
+                });
+
+                it('should do nothing', () => {
+                    expect(store.dispatch).not.toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('if there is an error getting the billing period', () => {
+            let reason;
+
+            beforeEach(() => {
+                store.dispatch.calls.reset();
+            });
+
+            describe('becasue of a 404', () => {
+                beforeEach(() => {
+                    reason = new StatusCodeError('I failed!', { status: 404 });
+
+                    billingCycle.emit('error', reason);
+                });
+
+                it('should dispatch a GET_CURRENT_PAYMENT_SUCCESS action', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith({
+                        type: `${GET_BILLING_PERIOD}_FULFILLED`,
+                        payload: null
+                    });
+                });
+
+                describe('when the component is unmounted', () => {
+                    beforeEach(() => {
+                        wrapper.unmount();
+                        store.dispatch.calls.reset();
+
+                        try {
+                            billingCycle.emit('error', reason);
+                        } catch (e) {
+                            const foo = () => {};
+                            foo();
+                        }
+                    });
+
+                    it('should do nothing', () => {
+                        expect(store.dispatch).not.toHaveBeenCalled();
+                    });
+                });
+            });
+
+            describe('because of another reason', () => {
+                beforeEach(() => {
+                    reason = new StatusCodeError('I failed!', { status: 400 });
+
+                    billingCycle.emit('error', reason);
+                });
+
+                it('should do nothing', () => {
+                    expect(store.dispatch).not.toHaveBeenCalled();
+                });
+            });
         });
 
         describe('if no user is logged in', function() {
@@ -209,7 +315,6 @@ describe('Dashboard', function() {
             });
 
             describe('if a campaign is archived', function() {
-
                 beforeEach(function() {
                     const archivedCamp = {
                         id: createUuid()
