@@ -2,7 +2,7 @@
 
 ## v0.13.0 (August 18, 2016)
 * *[v0.13.0-rc4]*
-  * Fixed line-height issue on account summary
+  * [FIX]: Fixed line-height issue on account summary
 
 * *[v0.13.0-rc3]*
   * Update interface styles
