@@ -28,6 +28,15 @@ import CampaignDetailStatsDetails from '../../src/components/CampaignDetailStats
 import {
     archiveCampaign
 } from '../../src/actions/campaign_list';
+import {
+    LiveResource
+} from 'rc-live-resource';
+import {
+    GET
+} from '../../src/utils/db';
+import {
+    GET_CAMPAIGN_ANALYTICS_SUCCESS
+} from '../../src/actions/analytics';
 
 describe('CampaignDetail', function() {
     beforeEach(function() {
@@ -236,12 +245,17 @@ describe('CampaignDetail', function() {
         this.store = createStore(() => clone(this.state));
 
         spyOn(this.store, 'dispatch');
+        spyOn(LiveResource.prototype, 'open');
 
         this.wrapper = mount(
             <CampaignDetail {...this.props} />,
             { context: { store: this.store }, attachTo: document.createElement('div') }
         );
         this.component = this.wrapper.find(CampaignDetail.WrappedComponent.WrappedComponent);
+    });
+
+    afterEach(function() {
+        this.wrapper.unmount();
     });
 
     it('should exist', function() {
@@ -259,6 +273,121 @@ describe('CampaignDetail', function() {
         expect(back.text()).toBe('Back to Dashboard');
 
         expect(this.component.find('.breadcrumb li').last().text()).toBe(this.campaign.product.name);
+    });
+
+    it('should create a live resource for the campaign', function() {
+        const campaign = this.component.node.campaign;
+
+        expect(campaign).toEqual(jasmine.any(LiveResource));
+        expect(campaign.config.endpoint).toBe(`/api/campaigns/${this.props.params.campaignId}`);
+        expect(campaign.config.pollInterval).toBe(5000);
+    });
+
+    it('should create a live resource for the analytics', function() {
+        const analytics = this.component.node.analytics;
+
+        expect(analytics).toEqual(jasmine.any(LiveResource));
+        expect(analytics.config.endpoint).toBe(`/api/analytics/campaigns/showcase/apps/${this.props.params.campaignId}`);
+        expect(analytics.config.pollInterval).toBe(5000);
+    });
+
+    describe('when the campaign is changed', function() {
+        let campaign;
+        let newData;
+
+        beforeEach(function() {
+            campaign = this.component.node.campaign;
+            this.store.dispatch.calls.reset();
+
+            newData = assign({}, this.campaign, {
+                targetUsers: 2000
+            });
+
+            campaign.emit('change', newData);
+        });
+
+        afterEach(function() {
+            campaign = null;
+        });
+
+        it('should dispatch an action to update the database cache', function() {
+            expect(this.store.dispatch).toHaveBeenCalledWith({
+                type: GET.SUCCESS,
+                payload: newData,
+                meta: {
+                    type: 'campaign',
+                    key: 'id',
+                    id: newData.id
+                }
+            });
+        });
+
+        describe('if the component is unmounted', function() {
+            beforeEach(function() {
+                this.wrapper.unmount();
+                this.store.dispatch.calls.reset();
+
+                campaign.emit('change', newData);
+            });
+
+            it('should not dispatch anything', function() {
+                expect(this.store.dispatch).not.toHaveBeenCalled();
+            });
+
+            it('should null-out the campaign', function() {
+                expect(this.component.node.campaign).toBeNull();
+            });
+        });
+    });
+
+    describe('when the analytics are changed', function() {
+        let analytics;
+        let newData;
+
+        beforeEach(function() {
+            analytics = this.component.node.analytics;
+            this.store.dispatch.calls.reset();
+
+            newData = assign({}, this.state.analytics.results[this.campaign.id], {
+                'cycle': {
+                    'users': 2000,
+                    'views': 3449,
+                    'clicks': 200,
+                    'installs': 60,
+                    'launches':0
+                }
+            });
+
+            analytics.emit('change', newData);
+        });
+
+        afterEach(function() {
+            analytics = null;
+        });
+
+        it('should dispatch an action to update the database cache', function() {
+            expect(this.store.dispatch).toHaveBeenCalledWith({
+                type: GET_CAMPAIGN_ANALYTICS_SUCCESS,
+                payload: newData
+            });
+        });
+
+        describe('if the component is unmounted', function() {
+            beforeEach(function() {
+                this.wrapper.unmount();
+                this.store.dispatch.calls.reset();
+
+                analytics.emit('change', newData);
+            });
+
+            it('should not dispatch anything', function() {
+                expect(this.store.dispatch).not.toHaveBeenCalled();
+            });
+
+            it('should null-out the analytics', function() {
+                expect(this.component.node.analytics).toBeNull();
+            });
+        });
     });
 
     describe('before the campaign is fetched', function() {
@@ -578,26 +707,169 @@ describe('CampaignDetail', function() {
     });
 
     describe('if the campaignId does not change', function() {
+        let campaign;
+        let analytics;
+
         beforeEach(function() {
             this.store.dispatch.calls.reset();
+            campaign = this.component.node.campaign;
+            analytics = this.component.node.analytics;
 
             this.wrapper.setProps({ foo: 'bar' });
+        });
+
+        afterEach(function() {
+            campaign = null;
+            analytics = null;
         });
 
         it('should not loadPageData()', function() {
             expect(this.store.dispatch).not.toHaveBeenCalledWith(loadPageData(this.campaign.id));
         });
+
+        it('should not change the campaign resource', function() {
+            expect(this.component.node.campaign).toBe(campaign);
+        });
+
+        it('should not change the analytics resource', function() {
+            expect(this.component.node.analytics).toBe(analytics);
+        });
     });
 
     describe('if the campaignId does change', function() {
+        let oldCampaign;
+        let newCampaign;
+        let oldAnalytics;
+        let newAnalytics;
+
         beforeEach(function() {
+            oldCampaign = this.component.node.campaign;
+            oldAnalytics = this.component.node.analytics;
             this.store.dispatch.calls.reset();
 
             this.wrapper.setProps({ params: { campaignId: `cam-${createUuid()}` } });
+            newCampaign = this.component.node.campaign;
+            newAnalytics = this.component.node.analytics;
+        });
+
+        afterEach(function() {
+            oldCampaign = null;
+            newCampaign = null;
+            oldAnalytics = null;
+            newAnalytics = null;
         });
 
         it('should load the page data', function() {
             expect(this.store.dispatch).toHaveBeenCalledWith(loadPageData(this.wrapper.prop('params').campaignId));
+        });
+
+        it('should create a new campaign resource', function() {
+            const campaign = this.component.node.campaign;
+
+            expect(campaign).toEqual(jasmine.any(LiveResource));
+            expect(campaign.config.endpoint).toBe(`/api/campaigns/${this.wrapper.prop('params').campaignId}`);
+            expect(campaign.config.pollInterval).toBe(5000);
+        });
+
+        it('should create a new analytics resource', function() {
+            expect(newAnalytics).toEqual(jasmine.any(LiveResource));
+            expect(newAnalytics.config.endpoint).toBe(`/api/analytics/campaigns/showcase/apps/${this.wrapper.prop('params').campaignId}`);
+            expect(newAnalytics.config.pollInterval).toBe(5000);
+        });
+
+        describe('when the new campaign is changed', function() {
+            let newData;
+
+            beforeEach(function() {
+                this.store.dispatch.calls.reset();
+
+                newData = assign({}, this.campaign, {
+                    targetUsers: 2000
+                });
+
+                newCampaign.emit('change', newData);
+            });
+
+            it('should dispatch an action to update the database cache', function() {
+                expect(this.store.dispatch).toHaveBeenCalledWith({
+                    type: GET.SUCCESS,
+                    payload: newData,
+                    meta: {
+                        type: 'campaign',
+                        key: 'id',
+                        id: newData.id
+                    }
+                });
+            });
+        });
+
+        describe('when the old campaign is changed', function() {
+            let newData;
+
+            beforeEach(function() {
+                this.store.dispatch.calls.reset();
+
+                newData = assign({}, this.campaign, {
+                    targetUsers: 2000
+                });
+
+                oldCampaign.emit('change', newData);
+            });
+
+            it('should do nothing', function() {
+                expect(this.store.dispatch).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('when the new analytics are changed', function() {
+            let newData;
+
+            beforeEach(function() {
+                this.store.dispatch.calls.reset();
+
+                newData = assign({}, this.state.analytics.results[this.campaign.id], {
+                    'cycle': {
+                        'users': 2000,
+                        'views': 3449,
+                        'clicks': 200,
+                        'installs': 60,
+                        'launches':0
+                    }
+                });
+
+                newAnalytics.emit('change', newData);
+            });
+
+            it('should dispatch an action to update the database cache', function() {
+                expect(this.store.dispatch).toHaveBeenCalledWith({
+                    type: GET_CAMPAIGN_ANALYTICS_SUCCESS,
+                    payload: newData
+                });
+            });
+        });
+
+        describe('when the old analytics are changed', function() {
+            let newData;
+
+            beforeEach(function() {
+                this.store.dispatch.calls.reset();
+
+                newData = assign({}, this.state.analytics.results[this.campaign.id], {
+                    'cycle': {
+                        'users': 2000,
+                        'views': 3449,
+                        'clicks': 200,
+                        'installs': 60,
+                        'launches':0
+                    }
+                });
+
+                oldAnalytics.emit('change', newData);
+            });
+
+            it('should do nothing', function() {
+                expect(this.store.dispatch).not.toHaveBeenCalled();
+            });
         });
     });
 
