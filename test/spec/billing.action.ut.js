@@ -8,10 +8,11 @@ import {
     CHANGE_PAYMENT_PLAN,
     CANCEL_SUBSCRIPTION,
     SET_POST_PLAN_CHANGE_REDIRECT,
+    SET_POST_PAYMENT_CHANGE_PLAN,
 
-    changePaymentPlan,
     cancelSubscription,
-    setPostPlanChangeRedirect
+    setPostPlanChangeRedirect,
+    setPostPaymentChangePlan
 } from '../../src/actions/billing';
 import orgs, {
     changePaymentPlan as changeOrgPaymentPlan
@@ -19,8 +20,7 @@ import orgs, {
 import { createAction } from 'redux-actions';
 import { assign, find, cloneDeep as clone } from 'lodash';
 import { createUuid } from 'rc-uuid';
-import defer from 'promise-defer';
-import { getThunk, createThunk } from '../../src/middleware/fsa_thunk';
+import { getThunk } from '../../src/middleware/fsa_thunk';
 import { getBillingPeriod, getPaymentPlanStatus } from '../../src/actions/session';
 import { getPaymentPlans } from '../../src/actions/system';
 import * as stub from '../helpers/stubs';
@@ -33,7 +33,7 @@ const proxyquire = require('proxyquire');
 
 describe('billing actions', function() {
     let actions;
-    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod, showPlanModal;
+    let getPayments, getPaymentMethods, loadPageData, showChangeModal, changePaymentMethod, showPlanModal, changePaymentPlan;
     let paymentActions;
 
     beforeEach(function() {
@@ -47,7 +47,9 @@ describe('billing actions', function() {
 
                 __esModule: true
             },
-            './system': require('../../src/actions/system')
+            './system': require('../../src/actions/system'),
+            './org': require('../../src/actions/org'),
+            './notification': require('../../src/actions/notification')
         });
         getPayments = actions.getPayments;
         getPaymentMethods = actions.getPaymentMethods;
@@ -55,6 +57,7 @@ describe('billing actions', function() {
         showChangeModal = actions.showChangeModal;
         changePaymentMethod = actions.changePaymentMethod;
         showPlanModal = actions.showPlanModal;
+        changePaymentPlan = actions.changePaymentPlan;
     });
 
     describe('getPayments()', function() {
@@ -154,11 +157,7 @@ describe('billing actions', function() {
                 spyOn(paymentActions.paymentMethod, 'list').and.callThrough();
                 spyOn(paymentActions.default, 'list').and.callThrough();
 
-                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (action.type === createThunk()().type) { return getThunk(action)(dispatch, getState); }
-
-                    return new Promise(() => {});
-                });
+                dispatch = stub.dispatch();
                 getState = jasmine.createSpy('getState()').and.returnValue({});
 
                 success = jasmine.createSpy('success()');
@@ -216,8 +215,18 @@ describe('billing actions', function() {
         });
     });
 
-    describe('changePaymentMethod(newMethod)', function() {
+    describe('setPostPaymentChangePlan()', () => {
+        it('should return an action', () => {
+            const paymentPlanId = `pp-${createUuid()}`;
+
+            expect(setPostPaymentChangePlan(paymentPlanId)).toEqual(createAction(SET_POST_PAYMENT_CHANGE_PLAN)(paymentPlanId));
+        });
+    });
+
+    describe('changePaymentMethod(newMethod, { paymentPlanId, redirect })', function() {
         let newMethod;
+        let paymentPlanId;
+        let redirect;
         let thunk;
 
         beforeEach(function() {
@@ -225,8 +234,10 @@ describe('billing actions', function() {
                 cardholderName: 'Foo',
                 nonce: createUuid()
             };
+            paymentPlanId = `pp-${createUuid()}`;
+            redirect = '/dashboard/campaigns';
 
-            thunk = getThunk(changePaymentMethod(newMethod));
+            thunk = getThunk(changePaymentMethod(newMethod, { paymentPlanId, redirect }));
         });
 
         it('should return a thunk', function() {
@@ -234,7 +245,7 @@ describe('billing actions', function() {
         });
 
         describe('when executed', function() {
-            let dispatchDeferred, actionDeferred, state;
+            let state;
             let dispatch, getState;
             let success, failure;
 
@@ -257,27 +268,24 @@ describe('billing actions', function() {
                 };
                 state.db.paymentMethod[Object.keys(state.db.paymentMethod)[2]].default = true;
 
-                dispatch = jasmine.createSpy('dispatch()').and.callFake(action => {
-                    if (action.type === createThunk()().type) {
-                        return (dispatchDeferred = defer()).promise;
-                    } else {
-                        return (actionDeferred = defer()).promise;
-                    }
-                });
+                dispatch = stub.dispatch();
                 getState = jasmine.createSpy('getState()').and.returnValue(state);
 
                 success = jasmine.createSpy('success()');
                 failure = jasmine.createSpy('failure()');
-
-                spyOn(paymentActions.paymentMethod, 'create').and.callThrough();
 
                 thunk(dispatch, getState).then(success, failure);
                 setTimeout(done);
             });
 
             it('should create a new paymentMethod', function() {
-                expect(paymentActions.paymentMethod.create).toHaveBeenCalledWith({ data: { cardholderName: newMethod.cardholderName, paymentMethodNonce: newMethod.nonce, makeDefault: true } });
-                expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.create.calls.mostRecent().returnValue);
+                expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.create({
+                    data: {
+                        cardholderName: newMethod.cardholderName,
+                        paymentMethodNonce: newMethod.nonce,
+                        makeDefault: true
+                    }
+                }));
             });
 
             it('should dispatch CHANGE_PAYMENT_METHOD', function() {
@@ -291,7 +299,7 @@ describe('billing actions', function() {
                     reason = new Error('403 - Forbidden');
                     reason.response = 'Something went really wrong.';
 
-                    actionDeferred.reject({ reason, action: dispatch.calls.all()[0].args[0] });
+                    dispatch.getDeferred(dispatch.calls.first().args[0]).reject(reason);
                     setTimeout(done);
                 });
 
@@ -312,47 +320,64 @@ describe('billing actions', function() {
                     });
                     state.db.paymentMethod[token] = method;
 
-                    spyOn(paymentActions.paymentMethod, 'remove').and.callThrough();
-
-                    dispatchDeferred.resolve(newMethod);
+                    dispatch.getDeferred(dispatch.calls.first().args[0]).resolve(newMethod);
                     setTimeout(done);
-
                     dispatch.calls.reset();
-                    dispatch.and.returnValue((dispatchDeferred = defer()).promise);
                 });
 
                 it('should remove the old paymentMethod', function() {
-                    expect(paymentActions.paymentMethod.remove).toHaveBeenCalledWith({ id: oldMethod.token });
-                    expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.remove.calls.mostRecent().returnValue);
+                    expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.remove({ id: oldMethod.token }));
                 });
 
                 describe('when the old payment method has been removed', function() {
                     beforeEach(function(done) {
-                        spyOn(paymentActions.paymentMethod, 'list').and.callThrough();
-
-                        dispatchDeferred.resolve([oldMethod.token]);
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([oldMethod.token]);
                         setTimeout(done);
-
                         dispatch.calls.reset();
-                        dispatch.and.returnValue((dispatchDeferred = defer()).promise);
                     });
 
                     it('should get all of the payment methods', function() {
-                        expect(paymentActions.paymentMethod.list).toHaveBeenCalledWith();
-                        expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list.calls.mostRecent().returnValue);
+                        expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list());
                     });
 
                     describe('when the list has been fetched', function() {
                         beforeEach(function(done) {
-                            dispatchDeferred.resolve(Object.keys(state.db.paymentMethod));
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(
+                                Object.keys(state.db.paymentMethod).map(id => state.db.paymentMethod[id])
+                            );
                             setTimeout(done);
-
                             dispatch.calls.reset();
-                            dispatch.and.returnValue((dispatchDeferred = defer()).promise);
                         });
 
-                        it('should close the modal', function() {
-                            expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
+                        it('should change the payment plan', () => {
+                            expect(dispatch).toHaveBeenCalledWith(changePaymentPlan(paymentPlanId, redirect));
+                        });
+
+                        describe('when the plan has been changed', () => {
+                            beforeEach(done => {
+                                dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(undefined);
+                                setTimeout(done);
+                                dispatch.calls.reset();
+                            });
+
+                            it('should close the modal', function() {
+                                expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
+                            });
+                        });
+
+                        describe('if changing the plan fails', () => {
+                            let reason;
+
+                            beforeEach(done => {
+                                reason = new Error('Something went wrong!');
+                                dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                                setTimeout(done);
+                                dispatch.calls.reset();
+                            });
+
+                            it('should reject the Promise', () => {
+                                expect(failure).toHaveBeenCalledWith(new Error(reason.message));
+                            });
                         });
                     });
                 });
@@ -367,6 +392,67 @@ describe('billing actions', function() {
                     state.db.paymentMethod = {};
 
                     thunk(dispatch, getState).then(success, failure);
+                    setTimeout(done);
+                });
+
+                describe('when the paymentMethod has been created', () => {
+                    let token;
+                    let method;
+
+                    beforeEach(done => {
+                        token = createUuid();
+                        method = assign({}, newMethod, {
+                            token
+                        });
+                        state.db.paymentMethod[token] = method;
+
+                        dispatch.getDeferred(dispatch.calls.first().args[0]).resolve(method);
+                        setTimeout(done);
+
+                        dispatch.calls.reset();
+                    });
+
+                    afterEach(() => {
+                        token = null;
+                        method = null;
+                    });
+
+                    it('should get all of the payment methods', function() {
+                        expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list());
+                    });
+
+                    describe('when the list has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(Object.keys(state.db.paymentMethod));
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
+                        });
+
+                        describe('when the plan has been changed', () => {
+                            beforeEach(done => {
+                                dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(undefined);
+                                setTimeout(done);
+                                dispatch.calls.reset();
+                            });
+
+                            it('should close the modal', function() {
+                                expect(dispatch).toHaveBeenCalledWith(showChangeModal(false));
+                            });
+                        });
+                    });
+                });
+            });
+
+            describe('if no paymentPlanId or redirect are specified', () => {
+                beforeEach(done => {
+                    success.calls.reset();
+                    failure.calls.reset();
+
+                    dispatch = stub.dispatch();
+                    state.db.paymentMethod = {};
+
+                    getThunk(changePaymentMethod(newMethod))(dispatch, getState).then(success, failure);
                     setTimeout(done);
                 });
 
@@ -480,70 +566,89 @@ describe('billing actions', function() {
                 expect(dispatch).toHaveBeenCalledWith(createAction(CHANGE_PAYMENT_PLAN)(jasmine.any(Promise)));
             });
 
-            it('should change the payment plan of the user\'s org', () => {
-                expect(dispatch).toHaveBeenCalledWith(changeOrgPaymentPlan({ paymentPlanId, orgId: user.org }));
+            it('should get the user\'s payment methods', () => {
+                expect(dispatch).toHaveBeenCalledWith(paymentActions.paymentMethod.list());
             });
 
-            describe('if the payment plan cannot be changed', () => {
-                let reason;
+            describe('if the user has no default payment method', () => {
+                let paymentMethods;
 
                 beforeEach(done => {
-                    reason = new Error('foo');
-                    reason.response = 'I failed hard.';
+                    paymentMethods = [
+                        {
+                            default: false,
+                            token: createUuid()
+                        },
+                        {
+                            default: false,
+                            token: createUuid()
+                        },
+                        {
+                            default: false,
+                            token: createUuid()
+                        }
+                    ];
 
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentMethods);
                     setTimeout(done);
-
                     dispatch.calls.reset();
                 });
 
-                afterEach(() => {
-                    reason = null;
+                it('should not change the payment plan', () => {
+                    expect(dispatch).not.toHaveBeenCalledWith(changeOrgPaymentPlan({ paymentPlanId, orgId: user.org }));
                 });
 
-                it('should show an error', () => {
-                    expect(dispatch).toHaveBeenCalledWith(notify({
-                        type: NOTIFICATION.TYPE.DANGER,
-                        message: jasmine.any(String),
-                        time: 10000
-                    }));
+                it('should set the post payment change plan', () => {
+                    expect(dispatch).toHaveBeenCalledWith(setPostPaymentChangePlan(paymentPlanId));
                 });
 
-                it('should fulfill the Promise with undefined', () => {
+                it('should hide the plan change modal', () => {
+                    expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                });
+
+                it('should show the payment method change modal', () => {
+                    expect(dispatch).toHaveBeenCalledWith(showChangeModal(true));
+                });
+
+                it('should fulfill with undefined', () => {
                     expect(success).toHaveBeenCalledWith(undefined);
                 });
             });
 
-            describe('when the plan has been changed', () => {
-                let response;
+            describe('if the user has a default payment method', () => {
+                let paymentMethods;
 
                 beforeEach(done => {
-                    response = {
-                        paymentPlanId,
-                        nextPaymentPlanId: null,
-                        effectiveDate: moment().format()
-                    };
+                    paymentMethods = [
+                        {
+                            default: false,
+                            token: createUuid()
+                        },
+                        {
+                            default: true,
+                            token: createUuid()
+                        },
+                        {
+                            default: false,
+                            token: createUuid()
+                        }
+                    ];
 
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentMethods);
                     setTimeout(done);
-
                     dispatch.calls.reset();
                 });
 
-                afterEach(() => {
-                    response = null;
+                it('should change the payment plan of the user\'s org', () => {
+                    expect(dispatch).toHaveBeenCalledWith(changeOrgPaymentPlan({ paymentPlanId, orgId: user.org }));
                 });
 
-                it('should re-fetch the org', () => {
-                    expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
-                });
-
-                describe('if the org cannot be changed', () => {
+                describe('if the payment plan cannot be changed', () => {
                     let reason;
 
                     beforeEach(done => {
                         reason = new Error('foo');
-                        reason.response = 'I failed...';
+                        reason.response = 'I failed hard.';
 
                         dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
                         setTimeout(done);
@@ -568,76 +673,131 @@ describe('billing actions', function() {
                     });
                 });
 
-                describe('when the org has been fetched', () => {
+                describe('when the plan has been changed', () => {
+                    let response;
+
                     beforeEach(done => {
-                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                        response = {
+                            paymentPlanId,
+                            nextPaymentPlanId: null,
+                            effectiveDate: moment().format()
+                        };
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
                         setTimeout(done);
+
                         dispatch.calls.reset();
                     });
 
-                    it('should close the modal', () => {
-                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    afterEach(() => {
+                        response = null;
                     });
 
-                    it('should show a success message', () => {
-                        expect(dispatch).toHaveBeenCalledWith(notify({
-                            type: NOTIFICATION.TYPE.SUCCESS,
-                            message: 'You have successfully upgraded your account!',
-                            time: 5000
-                        }));
+                    it('should re-fetch the org', () => {
+                        expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
                     });
 
-                    it('should not change URLs', () => {
-                        dispatch.calls.all().forEach(call => expect(call.args[0].type).not.toBe(push('foo').type));
+                    describe('if the org cannot be changed', () => {
+                        let reason;
+
+                        beforeEach(done => {
+                            reason = new Error('foo');
+                            reason.response = 'I failed...';
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).reject(reason);
+                            setTimeout(done);
+
+                            dispatch.calls.reset();
+                        });
+
+                        afterEach(() => {
+                            reason = null;
+                        });
+
+                        it('should show an error', () => {
+                            expect(dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION.TYPE.DANGER,
+                                message: jasmine.any(String),
+                                time: 10000
+                            }));
+                        });
+
+                        it('should fulfill the Promise with undefined', () => {
+                            expect(success).toHaveBeenCalledWith(undefined);
+                        });
                     });
 
-                    it('should fulfill with undefined', () => {
-                        expect(success).toHaveBeenCalledWith(undefined);
+                    describe('when the org has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
+
+                        it('should close the modal', () => {
+                            expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                        });
+
+                        it('should show a success message', () => {
+                            expect(dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION.TYPE.SUCCESS,
+                                message: 'You have successfully upgraded your account!',
+                                time: 5000
+                            }));
+                        });
+
+                        it('should not change URLs', () => {
+                            dispatch.calls.all().forEach(call => expect(call.args[0].type).not.toBe(push('foo').type));
+                        });
+
+                        it('should fulfill with undefined', () => {
+                            expect(success).toHaveBeenCalledWith(undefined);
+                        });
                     });
                 });
-            });
 
-            describe('if the change will not take effect until a future date', () => {
-                let response;
+                describe('if the change will not take effect until a future date', () => {
+                    let response;
 
-                beforeEach(done => {
-                    response = {
-                        paymentPlanId: `pp-${createUuid()}`,
-                        nextPaymentPlanId: paymentPlanId,
-                        effectiveDate: moment().add(2, 'days').utcOffset(0).endOf('day').format()
-                    };
-
-                    dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
-                    setTimeout(done);
-
-                    dispatch.calls.reset();
-                });
-
-                it('should re-fetch the org', () => {
-                    expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
-                });
-
-                describe('when the org has been fetched', () => {
                     beforeEach(done => {
-                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                        response = {
+                            paymentPlanId: `pp-${createUuid()}`,
+                            nextPaymentPlanId: paymentPlanId,
+                            effectiveDate: moment().add(2, 'days').utcOffset(0).endOf('day').format()
+                        };
+
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
                         setTimeout(done);
+
                         dispatch.calls.reset();
                     });
 
-                    it('should close the modal', () => {
-                        expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                    it('should re-fetch the org', () => {
+                        expect(dispatch).toHaveBeenCalledWith(orgs.get({ id: user.org }));
                     });
 
-                    it('should show a success message', () => {
-                        expect(dispatch).toHaveBeenCalledWith(notify({
-                            type: NOTIFICATION.TYPE.SUCCESS,
-                            message: `Your changes will take effect at the end of the current billing period: ${moment(response.effectiveDate).format('MMM D')}.`,
-                            time: 10000
-                        }));
-                    });
+                    describe('when the org has been fetched', () => {
+                        beforeEach(done => {
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                            setTimeout(done);
+                            dispatch.calls.reset();
+                        });
 
-                    it('should fulfill with undefined', () => {
-                        expect(success).toHaveBeenCalledWith(undefined);
+                        it('should close the modal', () => {
+                            expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                        });
+
+                        it('should show a success message', () => {
+                            expect(dispatch).toHaveBeenCalledWith(notify({
+                                type: NOTIFICATION.TYPE.SUCCESS,
+                                message: `Your changes will take effect at the end of the current billing period: ${moment(response.effectiveDate).format('MMM D')}.`,
+                                time: 10000
+                            }));
+                        });
+
+                        it('should fulfill with undefined', () => {
+                            expect(success).toHaveBeenCalledWith(undefined);
+                        });
                     });
                 });
             });
@@ -657,47 +817,72 @@ describe('billing actions', function() {
                     setTimeout(done);
                 });
 
-                describe('when the plan has been changed', () => {
-                    let response;
+                describe('if the user has a default payment method', () => {
+                    let paymentMethods;
 
                     beforeEach(done => {
-                        response = {
-                            paymentPlanId,
-                            nextPaymentPlanId: null,
-                            effectiveDate: moment().format()
-                        };
+                        paymentMethods = [
+                            {
+                                default: false,
+                                token: createUuid()
+                            },
+                            {
+                                default: true,
+                                token: createUuid()
+                            },
+                            {
+                                default: false,
+                                token: createUuid()
+                            }
+                        ];
 
-                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
+                        dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(paymentMethods);
                         setTimeout(done);
-
                         dispatch.calls.reset();
                     });
 
-                    describe('when the org has been fetched', () => {
+                    describe('when the plan has been changed', () => {
+                        let response;
+
                         beforeEach(done => {
-                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                            response = {
+                                paymentPlanId,
+                                nextPaymentPlanId: null,
+                                effectiveDate: moment().format()
+                            };
+
+                            dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve(response);
                             setTimeout(done);
+
                             dispatch.calls.reset();
                         });
 
-                        it('should close the modal', () => {
-                            expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
-                        });
+                        describe('when the org has been fetched', () => {
+                            beforeEach(done => {
+                                dispatch.getDeferred(dispatch.calls.mostRecent().args[0]).resolve([user.org]);
+                                setTimeout(done);
+                                dispatch.calls.reset();
+                            });
 
-                        it('should show a success message', () => {
-                            expect(dispatch).toHaveBeenCalledWith(notify({
-                                type: NOTIFICATION.TYPE.SUCCESS,
-                                message: jasmine.any(String),
-                                time: jasmine.any(Number)
-                            }));
-                        });
+                            it('should close the modal', () => {
+                                expect(dispatch).toHaveBeenCalledWith(showPlanModal(false));
+                            });
 
-                        it('should navigate to the redirect', () => {
-                            expect(dispatch).toHaveBeenCalledWith(push(redirect));
-                        });
+                            it('should show a success message', () => {
+                                expect(dispatch).toHaveBeenCalledWith(notify({
+                                    type: NOTIFICATION.TYPE.SUCCESS,
+                                    message: jasmine.any(String),
+                                    time: jasmine.any(Number)
+                                }));
+                            });
 
-                        it('should fulfill with undefined', () => {
-                            expect(success).toHaveBeenCalledWith(undefined);
+                            it('should navigate to the redirect', () => {
+                                expect(dispatch).toHaveBeenCalledWith(push(redirect));
+                            });
+
+                            it('should fulfill with undefined', () => {
+                                expect(success).toHaveBeenCalledWith(undefined);
+                            });
                         });
                     });
                 });
