@@ -7,6 +7,8 @@
     the campaign detail view
   * [FIX]: Make sure the user sees how many views their campaign will
     get after creating it
+  * [FIX]: Prevent errors if the user tries to upgrade their account
+    with no payment method on file
 
 * *[v0.13.0-rc3]*
   * Update interface styles
