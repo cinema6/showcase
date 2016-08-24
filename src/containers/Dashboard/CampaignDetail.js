@@ -29,6 +29,16 @@ import {
 import {
     restoreCampaign,
 } from '../../actions/archive';
+import {
+    LiveResource,
+} from 'rc-live-resource';
+import {
+    GET,
+} from '../../utils/db';
+import {
+    GET_CAMPAIGN_ANALYTICS_SUCCESS,
+} from '../../actions/analytics';
+import { createAction } from 'redux-actions';
 
 const CARD_OPTIONS = {
     cardType: 'showcase-app',
@@ -40,14 +50,64 @@ const PLACEMENT_OPTIONS = {
 };
 
 class CampaignDetail extends Component {
+    constructor(props) {
+        super(props);
+
+        this.handleCampaignChange = this.handleCampaignChange.bind(this);
+        this.handleAnalyticsChange = this.handleAnalyticsChange.bind(this);
+    }
+
     componentWillMount() {
         return this.props.loadPageData(this.props.params.campaignId);
+    }
+
+    componentDidMount() {
+        this.initLiveResources();
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.params.campaignId !== this.props.params.campaignId) {
             this.props.loadPageData(nextProps.params.campaignId);
+            this.initLiveResources(nextProps);
         }
+    }
+
+    componentWillUnmount() {
+        this.campaign.removeListener('change', this.handleCampaignChange);
+        this.campaign = null;
+
+        this.analytics.removeListener('change', this.handleAnalyticsChange);
+        this.analytics = null;
+    }
+
+    initLiveResources(props = this.props) {
+        if (this.campaign) {
+            this.campaign.removeListener('change', this.handleCampaignChange);
+        }
+
+        if (this.analytics) {
+            this.analytics.removeListener('change', this.handleAnalyticsChange);
+        }
+
+        this.campaign = new LiveResource({
+            endpoint: `/api/campaigns/${props.params.campaignId}`,
+            pollInterval: 5000,
+        });
+        this.campaign.on('change', this.handleCampaignChange);
+
+        this.analytics = new LiveResource({
+            endpoint: `/api/analytics/campaigns/showcase/apps/${props.params.campaignId}`,
+            pollInterval: 5000,
+        });
+        this.analytics.on('change', this.handleAnalyticsChange);
+    }
+
+    handleCampaignChange(campaign) {
+        this.props.refreshCampaign(campaign);
+    }
+
+    handleAnalyticsChange(analytics) {
+        this.props.refreshAnalytics(analytics);
     }
 
     render() {
@@ -222,6 +282,8 @@ CampaignDetail.propTypes = {
     showInstallTrackingInstructions: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
     updateChartSelection: PropTypes.func.isRequired,
+    refreshCampaign: PropTypes.func.isRequired,
+    refreshAnalytics: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, props) {
@@ -241,5 +303,11 @@ export default compose(
         notify,
         updateChartSelection,
         restoreCampaign,
+        refreshCampaign: createAction(GET.SUCCESS, null, campaign => ({
+            type: 'campaign',
+            id: campaign.id,
+            key: 'id',
+        })),
+        refreshAnalytics: createAction(GET_CAMPAIGN_ANALYTICS_SUCCESS),
     })
 )(CampaignDetail);
