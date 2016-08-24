@@ -9,6 +9,7 @@
     get after creating it
   * [FIX]: Prevent errors if the user tries to upgrade their account
     with no payment method on file
+* *[/v0.13.0-rc4]*
 
 * *[v0.13.0-rc3]*
   * Update interface styles
