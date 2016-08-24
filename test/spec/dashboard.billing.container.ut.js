@@ -9,7 +9,7 @@ import { showAlert } from '../../src/actions/alert';
 import moment from 'moment';
 import numeral from 'numeral';
 import { getValues } from 'redux-form';
-import { changePaymentPlan, cancelSubscription } from '../../src/actions/billing';
+import { changePaymentPlan, cancelSubscription, setPostPaymentChangePlan } from '../../src/actions/billing';
 import * as stub from '../helpers/stubs';
 
 const proxyquire = require('proxyquire');
@@ -27,6 +27,7 @@ describe('Billing', function() {
             changePaymentMethod: jasmine.createSpy('changePaymentMethod()').and.callFake(require('../../src/actions/billing').changePaymentMethod),
             changePaymentPlan,
             cancelSubscription,
+            setPostPaymentChangePlan,
 
             __esModule: true
         };
@@ -137,7 +138,8 @@ describe('Billing', function() {
                         showChangeModal: false,
                         showPlanModal: false,
                         changingPlan: false,
-                        postPlanChangeRedirect: '/dashboard/add-product'
+                        postPlanChangeRedirect: '/dashboard/add-product',
+                        postPaymentChangePlan: paymentPlans[3].id
                     }
                 },
                 form: {
@@ -649,6 +651,32 @@ describe('Billing', function() {
             });
         });
 
+        describe('the PaymentMethod component', () => {
+            let paymentMethod;
+
+            beforeEach(() => {
+                paymentMethod = component.find('PaymentMethod');
+            });
+
+            afterEach(() => {
+                paymentMethod = null;
+            });
+
+            describe('when changed', () => {
+                beforeEach(() => {
+                    paymentMethod.prop('onChangeMethod')();
+                });
+
+                it('should dispatch showChangeModal(true)', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showChangeModal(true));
+                });
+
+                it('should dispatch setPostPaymentChangePlan(null)', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.setPostPaymentChangePlan(null));
+                });
+            });
+        });
+
         describe('props', function() {
             beforeEach(function() {
                 store.dispatch.calls.reset();
@@ -745,7 +773,28 @@ describe('Billing', function() {
             it('should render a ChangePaymentMethodModal', function() {
                 expect(modal.length).toEqual(1, 'ChangePaymentMethodModal is not rendered');
                 expect(modal.props().getToken).toBe(component.props().getClientToken);
-                expect(modal.props().onSubmit).toBe(component.props().changePaymentMethod);
+            });
+
+            describe('when onSubmit() is called', () => {
+                let method;
+
+                beforeEach(() => {
+                    method = { token: createUuid() };
+                    store.dispatch.calls.reset();
+
+                    modal.prop('onSubmit')(method);
+                });
+
+                afterEach(() => {
+                    method = null;
+                });
+
+                it('should dispatch changePaymentMethod()', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.changePaymentMethod(method, {
+                        paymentPlanId: state.page['dashboard.billing'].postPaymentChangePlan,
+                        redirect: state.page['dashboard.billing'].postPlanChangeRedirect
+                    }));
+                });
             });
         });
     });

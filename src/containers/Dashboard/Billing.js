@@ -42,6 +42,7 @@ class Billing extends Component {
             showAlert,
             changePaymentPlan,
             cancelSubscription,
+            setPostPaymentChangePlan,
         } = this.props;
 
         const billingEnd = billingPeriod && moment(billingPeriod.cycleEnd);
@@ -95,7 +96,10 @@ class Billing extends Component {
                     <PaymentMethod
                         loading={page.loading}
                         method={defaultPaymentMethod}
-                        onChangeMethod={() => showChangeModal(true)}
+                        onChangeMethod={() => {
+                            showChangeModal(true);
+                            setPostPaymentChangePlan(null);
+                        }}
                     />
                 </div>
             </div>
@@ -113,7 +117,10 @@ class Billing extends Component {
 
             {page.showChangeModal && (<ChangePaymentMethodModal
                 getToken={getClientToken}
-                onSubmit={changePaymentMethod}
+                onSubmit={method => changePaymentMethod(method, {
+                    paymentPlanId: page.postPaymentChangePlan,
+                    redirect: page.postPlanChangeRedirect,
+                })}
                 handleClose={() => showChangeModal(false)}
             />)}
             <ChangePlanModal
@@ -191,6 +198,7 @@ Billing.propTypes = {
         showPlanModal: PropTypes.bool.isRequired,
         changingPlan: PropTypes.bool.isRequired,
         postPlanChangeRedirect: PropTypes.string,
+        postPaymentChangePlan: PropTypes.string,
     }).isRequired,
     billingPeriod: PropTypes.shape({
         cycleStart: PropTypes.string.isRequired,
@@ -217,6 +225,7 @@ Billing.propTypes = {
     showAlert: PropTypes.func.isRequired,
     changePaymentPlan: PropTypes.func.isRequired,
     cancelSubscription: PropTypes.func.isRequired,
+    setPostPaymentChangePlan: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({

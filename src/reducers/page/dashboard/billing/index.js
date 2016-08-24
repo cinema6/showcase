@@ -5,6 +5,7 @@ import {
     SHOW_PLAN_MODAL,
     CHANGE_PAYMENT_PLAN,
     SET_POST_PLAN_CHANGE_REDIRECT,
+    SET_POST_PAYMENT_CHANGE_PLAN,
 } from '../../../../actions/billing';
 import { assign } from 'lodash';
 
@@ -14,6 +15,7 @@ const INITIAL_STATE = {
     loading: false,
     changingPlan: false,
     postPlanChangeRedirect: null,
+    postPaymentChangePlan: null,
 };
 
 export default handleActions({
@@ -26,6 +28,9 @@ export default handleActions({
 
     [SET_POST_PLAN_CHANGE_REDIRECT]: (state, { payload: path }) => assign({}, state, {
         postPlanChangeRedirect: path,
+    }),
+    [SET_POST_PAYMENT_CHANGE_PLAN]: (state, { payload: paymentPlanId }) => assign({}, state, {
+        postPaymentChangePlan: paymentPlanId,
     }),
 
     [`${CHANGE_PAYMENT_PLAN}_PENDING`]: state => assign({}, state, {

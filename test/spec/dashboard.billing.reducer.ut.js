@@ -4,10 +4,12 @@ import {
     LOAD_PAGE_DATA,
     SHOW_PLAN_MODAL,
     CHANGE_PAYMENT_PLAN,
-    SET_POST_PLAN_CHANGE_REDIRECT
+    SET_POST_PLAN_CHANGE_REDIRECT,
+    SET_POST_PAYMENT_CHANGE_PLAN
 } from '../../src/actions/billing';
 import { createAction } from 'redux-actions';
 import { assign } from 'lodash';
+import { createUuid } from 'rc-uuid';
 
 describe('dashboardBillingReducer()', function() {
     it('should return some initial state for the page', function() {
@@ -16,7 +18,8 @@ describe('dashboardBillingReducer()', function() {
             showPlanModal: false,
             loading: false,
             changingPlan: false,
-            postPlanChangeRedirect: null
+            postPlanChangeRedirect: null,
+            postPaymentChangePlan: null
         });
     });
 
@@ -30,7 +33,8 @@ describe('dashboardBillingReducer()', function() {
                 showPlanModal: false,
                 loading: false,
                 changingPlan: false,
-                postPlanChangeRedirect: null
+                postPlanChangeRedirect: null,
+                postPaymentChangePlan: null
             };
         });
 
@@ -75,6 +79,23 @@ describe('dashboardBillingReducer()', function() {
             it('should update the postPlanChangeRedirect', () => {
                 expect(newState).toEqual(assign({}, state, {
                     postPlanChangeRedirect: path
+                }));
+            });
+        });
+
+        describe(SET_POST_PAYMENT_CHANGE_PLAN, () => {
+            let paymentPlanId;
+
+            beforeEach(() => {
+                paymentPlanId = `pp-${createUuid()}`;
+
+                action = createAction(SET_POST_PAYMENT_CHANGE_PLAN)(paymentPlanId);
+                newState = dashboardBillingReducer(state, action);
+            });
+
+            it('should update the postPaymentChangePlan', () => {
+                expect(newState).toEqual(assign({}, state, {
+                    postPaymentChangePlan: paymentPlanId
                 }));
             });
         });

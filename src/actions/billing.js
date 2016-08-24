@@ -53,9 +53,88 @@ export const loadPageData = createThunk(() => (
 export const SHOW_CHANGE_MODAL = prefix('SHOW_CHANGE_MODAL');
 export const showChangeModal = createAction(SHOW_CHANGE_MODAL);
 
+export const SHOW_PLAN_MODAL = prefix('SHOW_PLAN_MODAL');
+export const showPlanModal = createAction(SHOW_PLAN_MODAL);
+
+export const SET_POST_PAYMENT_CHANGE_PLAN = prefix('SET_POST_PAYMENT_CHANGE_PLAN');
+export const setPostPaymentChangePlan = createAction(SET_POST_PAYMENT_CHANGE_PLAN);
+
+export const CHANGE_PAYMENT_PLAN = prefix('CHANGE_PAYMENT_PLAN');
+export const changePaymentPlan = createThunk((
+    paymentPlanId,
+    redirect
+) => (dispatch, getState) => dispatch(
+    createAction(CHANGE_PAYMENT_PLAN)(Promise.resolve().then(() => {
+        const state = getState();
+        const user = state.db.user[state.session.user];
+        const orgId = user.org;
+
+        return dispatch(paymentMethod.list()).then(methods => {
+            const method = find(methods, { default: true });
+
+            if (!method) {
+                return Promise.all([
+                    dispatch(setPostPaymentChangePlan(paymentPlanId)),
+                    dispatch(showPlanModal(false)),
+                    dispatch(showChangeModal(true)),
+                ]);
+            }
+
+            return dispatch(changeOrgPaymentPlan({
+                orgId,
+                paymentPlanId,
+            }))
+            .then(changes => {
+                const isImmediate = !changes.nextPaymentPlanId;
+                const effectiveDate = moment(changes.effectiveDate);
+
+                return dispatch(orgs.get({
+                    id: orgId,
+                }))
+                .then(() => {
+                    dispatch(showPlanModal(false));
+
+                    if (isImmediate) {
+                        dispatch(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: 'You have successfully upgraded your account!',
+                            time: 5000,
+                        }));
+                    } else {
+                        dispatch(notify({
+                            type: NOTIFICATION.TYPE.SUCCESS,
+                            message: 'Your changes will take effect at the end of the current ' +
+                                `billing period: ${effectiveDate.format('MMM D')}.`,
+                            time: 10000,
+                        }));
+                    }
+
+                    if (redirect) {
+                        dispatch(push(redirect));
+                    }
+                });
+            });
+        })
+        .catch(reason => {
+            dispatch(notify({
+                type: NOTIFICATION.TYPE.DANGER,
+                message: `Unexpected error changing subscription: ${
+                    reason.response || reason.message
+                }`,
+                time: 10000,
+            }));
+        })
+        .then(() => undefined);
+    }))
+).then(({ value }) => value));
+
 export const CHANGE_PAYMENT_METHOD = prefix('CHANGE_PAYMENT_METHOD');
-export const changePaymentMethod = createThunk(({ cardholderName, nonce }) => (
+export const changePaymentMethod = createThunk((method, {
+    paymentPlanId,
+    redirect,
+} = {}) => (
     function thunk(dispatch, getState) {
+        const { cardholderName, nonce } = method;
         const oldMethod = find(getState().db.paymentMethod, { default: true });
 
         return dispatch(createAction(CHANGE_PAYMENT_METHOD)(
@@ -72,70 +151,13 @@ export const changePaymentMethod = createThunk(({ cardholderName, nonce }) => (
                 return undefined;
             })
             .then(() => dispatch(paymentMethod.list()))
+            .then(() => (
+                paymentPlanId ? dispatch(changePaymentPlan(paymentPlanId, redirect)) : null
+            ))
             .then(() => dispatch(showChangeModal(false)))
-        )).catch(({ reason }) => Promise.reject(new Error(reason.response)));
+        )).catch(({ reason }) => Promise.reject(new Error(reason.response || reason.message)));
     }
 ));
-
-export const SHOW_PLAN_MODAL = prefix('SHOW_PLAN_MODAL');
-export const showPlanModal = createAction(SHOW_PLAN_MODAL);
-
-export const CHANGE_PAYMENT_PLAN = prefix('CHANGE_PAYMENT_PLAN');
-export const changePaymentPlan = createThunk((
-    paymentPlanId,
-    redirect
-) => (dispatch, getState) => dispatch(
-    createAction(CHANGE_PAYMENT_PLAN)(Promise.resolve().then(() => {
-        const state = getState();
-        const user = state.db.user[state.session.user];
-        const orgId = user.org;
-
-        return dispatch(changeOrgPaymentPlan({
-            orgId,
-            paymentPlanId,
-        }))
-        .then(changes => {
-            const isImmediate = !changes.nextPaymentPlanId;
-            const effectiveDate = moment(changes.effectiveDate);
-
-            return dispatch(orgs.get({
-                id: orgId,
-            }))
-            .then(() => {
-                dispatch(showPlanModal(false));
-
-                if (isImmediate) {
-                    dispatch(notify({
-                        type: NOTIFICATION.TYPE.SUCCESS,
-                        message: 'You have successfully upgraded your account!',
-                        time: 5000,
-                    }));
-                } else {
-                    dispatch(notify({
-                        type: NOTIFICATION.TYPE.SUCCESS,
-                        message: 'Your changes will take effect at the end of the current ' +
-                            `billing period: ${effectiveDate.format('MMM D')}.`,
-                        time: 10000,
-                    }));
-                }
-
-                if (redirect) {
-                    dispatch(push(redirect));
-                }
-            });
-        })
-        .catch(reason => {
-            dispatch(notify({
-                type: NOTIFICATION.TYPE.DANGER,
-                message: `Unexpected error changing subscription: ${
-                    reason.response || reason.message
-                }`,
-                time: 10000,
-            }));
-        })
-        .then(() => undefined);
-    }))
-).then(({ value }) => value));
 
 export const CANCEL_SUBSCRIPTION = prefix('CANCEL_SUBSCRIPTION');
 export const cancelSubscription = createThunk(() => (dispatch, getState) => dispatch(
