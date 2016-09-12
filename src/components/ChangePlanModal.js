@@ -24,7 +24,6 @@ export default function ChangePlanModal({
     cycleEnd,
 
     onConfirm,
-    onCancel,
     onClose,
 }) {
     const loading = (!plans || plans.length < 1);
@@ -88,13 +87,6 @@ export default function ChangePlanModal({
                             Confirm
                         </Button>
                     </div>
-                    <br />
-                    <div className="col-md-12 text-center cancel-plan">
-                        <p>Don't want to run ads anymore?</p>
-                        <button className="btn btn-link" onClick={() => onCancel()}>
-                            Cancel my plan
-                        </button>
-                    </div>
                 </div>
             </div>
         </Modal.Body>
@@ -114,7 +106,6 @@ ChangePlanModal.propTypes = {
     }),
 
     onConfirm: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
 };
 

@@ -65,7 +65,6 @@ describe('ChangePlanModal', () => {
             selectedPlan: 'pp-0Ek6Vw0bWnqdlr61',
             actionPending: false,
             onConfirm: jasmine.createSpy('onChange()'),
-            onCancel: jasmine.createSpy('onCancel()'),
             cycleEnd: moment().add(5, 'days').utcOffset(0).endOf('day')
         };
         component = mount(
@@ -301,28 +300,6 @@ describe('ChangePlanModal', () => {
 
             it('should call onConfirm()', () => {
                 expect(props.onConfirm).toHaveBeenCalledWith(props.selectedPlan);
-            });
-        });
-    });
-
-    describe('the cancel Button', () => {
-        let button;
-
-        beforeEach(() => {
-            button = modal.find('.btn-link');
-        });
-
-        afterEach(() => {
-            button = null;
-        });
-
-        describe('when clicked', () => {
-            beforeEach(() => {
-                button.simulate('click');
-            });
-
-            it('should call onCancel()', () => {
-                expect(props.onCancel).toHaveBeenCalledWith();
             });
         });
     });

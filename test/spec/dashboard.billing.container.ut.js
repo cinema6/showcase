@@ -275,227 +275,6 @@ describe('Billing', function() {
                     expect(store.dispatch).toHaveBeenCalledWith(changePaymentPlan(paymentPlanId, component.prop('page').postPlanChangeRedirect));
                 });
             });
-
-            describe('when onCancel() is called', () => {
-                beforeEach(() => {
-                    store.dispatch.calls.reset();
-                    modal.prop('onCancel')();
-                });
-
-                it('should dispatch() an alert', () => {
-                    expect(store.dispatch).toHaveBeenCalledWith((() => {
-                        const action = showAlert({
-                            title: jasmine.any(String),
-                            description: jasmine.any(Object),
-                            buttons: [
-                                {
-                                    text: jasmine.any(String),
-                                    type: jasmine.any(String),
-                                    onSelect: jasmine.any(Function)
-                                },
-                                {
-                                    text: jasmine.any(String),
-                                    type: jasmine.any(String),
-                                    onSelect: jasmine.any(Function)
-                                }
-                            ]
-                        });
-
-                        action.payload.id = jasmine.any(String);
-                        action.payload.buttons.forEach(button => button.id = jasmine.any(String));
-
-                        return action;
-                    })());
-                });
-
-                it('should close the modal', () => {
-                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
-                });
-
-                describe('the alert', () => {
-                    let alert;
-
-                    beforeEach(() => {
-                        alert = store.dispatch.calls.mostRecent().args[0].payload;
-                    });
-
-                    afterEach(() => {
-                        alert = null;
-                    });
-
-                    describe('description', () => {
-                        let description;
-
-                        beforeEach(() => {
-                            description = new ReactWrapper(alert.description);
-                        });
-
-                        afterEach(() => {
-                            description = null;
-                        });
-
-                        it('should render the amount of apps the user has', () => {
-                            expect(description.find('span p').first().text()).toBe(`All ${state.session.campaigns.length} of your apps will lose the exposure they have been getting!`);
-                        });
-
-                        it('should render the amount of views in the current billing cycle', () => {
-                            expect(description.find('.campaign-mini-stats h3').first().text()).toBe(numeral(paymentPlan.viewsPerMonth).format('0,0'));
-                        });
-
-                        describe('if the user only has one app', () => {
-                            beforeEach(() => {
-                                store.dispatch.and.callThrough();
-
-                                state = assign({}, state, {
-                                    session: assign({}, state.session, {
-                                        campaigns: state.session.campaigns.slice(0, 1)
-                                    })
-                                });
-                                store.dispatch({ type: '@@UPDATE' });
-
-                                modal.prop('onCancel')();
-                                alert = store.dispatch.calls.mostRecent().args[0].payload;
-                                description = new ReactWrapper(alert.description);
-                            });
-
-                            it('should use singular text', () => {
-                                expect(description.find('span p').first().text()).toBe('Your app will lose the exposure it has been getting!');
-                            });
-                        });
-
-                        describe('if the paymentPlan has not been fetched', () => {
-                            beforeEach(() => {
-                                store.dispatch.and.callThrough();
-
-                                state = assign({}, state, {
-                                    session: assign({}, state.session, {
-                                        paymentPlan: null
-                                    }),
-                                    system: assign({}, state.system, {
-                                        paymentPlans: null
-                                    })
-                                });
-                                store.dispatch({ type: '@@UPDATE' });
-
-                                modal.prop('onCancel')();
-                                alert = store.dispatch.calls.mostRecent().args[0].payload;
-                                description = new ReactWrapper(alert.description);
-                            });
-
-                            it('should not render the amount of views', () => {
-                                expect(description.find('.campaign-mini-stats h3').first().text()).toBe(DASH);
-                            });
-                        });
-                    });
-
-                    describe('buttons', () => {
-                        let buttons;
-
-                        beforeEach(() => {
-                            buttons = alert.buttons;
-                        });
-
-                        afterEach(() => {
-                            buttons = null;
-                        });
-
-                        describe('[0]', () => {
-                            let button;
-
-                            beforeEach(() => {
-                                button = buttons[0];
-                            });
-
-                            afterEach(() => {
-                                button = null;
-                            });
-
-                            describe('onSelect()', () => {
-                                let dismiss;
-                                let dispatchStub;
-
-                                beforeEach(done => {
-                                    store.dispatch.calls.reset();
-                                    dispatchStub = stub.dispatch();
-
-                                    dismiss = jasmine.createSpy('dismiss()');
-                                    store.dispatch.and.callFake(dispatchStub);
-
-                                    button.onSelect(dismiss);
-                                    setTimeout(done);
-                                });
-
-                                afterEach(() => {
-                                    dismiss = null;
-                                    dispatchStub = null;
-                                });
-
-                                it('should not dismiss the alert', () => {
-                                    expect(dismiss).not.toHaveBeenCalled();
-                                });
-
-                                it('should dispatch cancelSubscription()', () => {
-                                    expect(store.dispatch).toHaveBeenCalledWith(cancelSubscription());
-                                });
-
-                                describe('when the subscription is canceled', () => {
-                                    beforeEach(done => {
-                                        dispatchStub.getDeferred(dispatchStub.calls.mostRecent().args[0]).resolve(undefined);
-                                        setTimeout(done);
-
-                                        store.dispatch.calls.reset();
-                                    });
-
-                                    it('should dismiss the alert', () => {
-                                        expect(dismiss).toHaveBeenCalledWith();
-                                    });
-
-                                    it('should close the modal', () => {
-                                        expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
-                                    });
-                                });
-                            });
-                        });
-
-                        describe('[1]', () => {
-                            let button;
-
-                            beforeEach(() => {
-                                button = buttons[1];
-                            });
-
-                            afterEach(() => {
-                                button = null;
-                            });
-
-                            describe('onSelect()', () => {
-                                let dismiss;
-                                let dispatchStub;
-
-                                beforeEach(done => {
-                                    store.dispatch.calls.reset();
-                                    dispatchStub = stub.dispatch();
-
-                                    dismiss = jasmine.createSpy('dismiss()');
-                                    store.dispatch.and.callFake(dispatchStub);
-
-                                    button.onSelect(dismiss);
-                                    setTimeout(done);
-                                });
-
-                                afterEach(() => {
-                                    dismiss = null;
-                                    dispatchStub = null;
-                                });
-
-                                it('should dismiss the alert', () => {
-                                    expect(dismiss).toHaveBeenCalledWith();
-                                });
-                            });
-                        });
-                    });
-                });
-            });
         });
 
         describe('if there is a nextPaymentPlanId', () => {
@@ -590,6 +369,10 @@ describe('Billing', function() {
             it('should not render a "Change Plan" button', () => {
                 expect(component.find('.billing-summary Button').length).toBe(0, 'change plan button is rendered.');
             });
+
+            it('should not render a "Cancel Plan" button', () => {
+                expect(component.find('.billing-summary').first().find('button').length).toBe(0, 'change plan button is rendered.');
+            });
         });
 
         describe('if the campaigns have not been fetched', () => {
@@ -647,6 +430,212 @@ describe('Billing', function() {
 
                 it('should dispatch showPlanModal(true)', () => {
                     expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(true));
+                });
+            });
+        });
+
+        describe('the button to cancel the plan', () => {
+            let button;
+
+            beforeEach(() => {
+                button = component.find('.billing-summary').first().find('.btn-link');
+            });
+
+            afterEach(() => {
+                button = null;
+            });
+
+            describe('when clicked', () => {
+                beforeEach(() => {
+                    store.dispatch.calls.reset();
+                    button.simulate('click');
+                });
+
+                it('should dispatch() an alert', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith((() => {
+                        const action = showAlert({
+                            title: jasmine.any(String),
+                            description: jasmine.any(Object),
+                            buttons: [
+                                {
+                                    text: jasmine.any(String),
+                                    type: jasmine.any(String),
+                                    onSelect: jasmine.any(Function)
+                                },
+                                {
+                                    text: jasmine.any(String),
+                                    type: jasmine.any(String),
+                                    onSelect: jasmine.any(Function)
+                                }
+                            ]
+                        });
+
+                        action.payload.id = jasmine.any(String);
+                        action.payload.buttons.forEach(button => button.id = jasmine.any(String));
+
+                        return action;
+                    })());
+                });
+
+                it('should close the modal', () => {
+                    expect(store.dispatch).toHaveBeenCalledWith(billingActions.showPlanModal(false));
+                });
+
+                describe('the alert', () => {
+                    let alert;
+
+                    beforeEach(() => {
+                        alert = store.dispatch.calls.mostRecent().args[0].payload;
+                    });
+
+                    afterEach(() => {
+                        alert = null;
+                    });
+
+                    describe('description', () => {
+                        let description;
+
+                        beforeEach(() => {
+                            description = new ReactWrapper(alert.description);
+                        });
+
+                        afterEach(() => {
+                            description = null;
+                        });
+
+                        it('should render the amount of apps the user has', () => {
+                            expect(description.find('span p').first().text()).toBe(`All ${state.session.campaigns.length} of your apps will lose the exposure they have been getting!`);
+                        });
+
+                        it('should render the amount of views in the current billing cycle', () => {
+                            expect(description.find('.campaign-mini-stats h3').first().text()).toBe(numeral(paymentPlan.viewsPerMonth).format('0,0'));
+                        });
+
+                        describe('if the user only has one app', () => {
+                            beforeEach(() => {
+                                store.dispatch.and.callThrough();
+                                store.dispatch.calls.reset();
+
+                                state = assign({}, state, {
+                                    session: assign({}, state.session, {
+                                        campaigns: state.session.campaigns.slice(0, 1)
+                                    })
+                                });
+                                store.dispatch({ type: '@@UPDATE' });
+
+                                button.simulate('click');
+                                alert = store.dispatch.calls.mostRecent().args[0].payload;
+                                description = new ReactWrapper(alert.description);
+                            });
+
+                            it('should use singular text', () => {
+                                expect(description.find('span p').first().text()).toBe('Your app will lose the exposure it has been getting!');
+                            });
+                        });
+                    });
+
+                    describe('buttons', () => {
+                        let buttons;
+
+                        beforeEach(() => {
+                            buttons = alert.buttons;
+                        });
+
+                        afterEach(() => {
+                            buttons = null;
+                        });
+
+                        describe('[0]', () => {
+                            let button;
+
+                            beforeEach(() => {
+                                button = buttons[0];
+                            });
+
+                            afterEach(() => {
+                                button = null;
+                            });
+
+                            describe('onSelect()', () => {
+                                let dismiss;
+                                let dispatchStub;
+
+                                beforeEach(done => {
+                                    store.dispatch.calls.reset();
+                                    dispatchStub = stub.dispatch();
+
+                                    dismiss = jasmine.createSpy('dismiss()');
+                                    store.dispatch.and.callFake(dispatchStub);
+
+                                    button.onSelect(dismiss);
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    dismiss = null;
+                                    dispatchStub = null;
+                                });
+
+                                it('should not dismiss the alert', () => {
+                                    expect(dismiss).not.toHaveBeenCalled();
+                                });
+
+                                it('should dispatch cancelSubscription()', () => {
+                                    expect(store.dispatch).toHaveBeenCalledWith(cancelSubscription());
+                                });
+
+                                describe('when the subscription is canceled', () => {
+                                    beforeEach(done => {
+                                        dispatchStub.getDeferred(dispatchStub.calls.mostRecent().args[0]).resolve(undefined);
+                                        setTimeout(done);
+
+                                        store.dispatch.calls.reset();
+                                    });
+
+                                    it('should dismiss the alert', () => {
+                                        expect(dismiss).toHaveBeenCalledWith();
+                                    });
+                                });
+                            });
+                        });
+
+                        describe('[1]', () => {
+                            let button;
+
+                            beforeEach(() => {
+                                button = buttons[1];
+                            });
+
+                            afterEach(() => {
+                                button = null;
+                            });
+
+                            describe('onSelect()', () => {
+                                let dismiss;
+                                let dispatchStub;
+
+                                beforeEach(done => {
+                                    store.dispatch.calls.reset();
+                                    dispatchStub = stub.dispatch();
+
+                                    dismiss = jasmine.createSpy('dismiss()');
+                                    store.dispatch.and.callFake(dispatchStub);
+
+                                    button.onSelect(dismiss);
+                                    setTimeout(done);
+                                });
+
+                                afterEach(() => {
+                                    dismiss = null;
+                                    dispatchStub = null;
+                                });
+
+                                it('should dismiss the alert', () => {
+                                    expect(dismiss).toHaveBeenCalledWith();
+                                });
+                            });
+                        });
+                    });
                 });
             });
         });
