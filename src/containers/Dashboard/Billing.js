@@ -19,8 +19,80 @@ import { getValues } from 'redux-form';
 const DASH = '\u2014';
 
 class Billing extends Component {
+    constructor(props) {
+        super(props);
+
+        this.cancelSubscription = this.cancelSubscription.bind(this);
+    }
+
     componentWillMount() {
         return this.props.loadPageData();
+    }
+
+    formatViewsPerMonth() {
+        const {
+            paymentPlan,
+        } = this.props;
+
+        return (
+            paymentPlan &&
+            numeral(paymentPlan.viewsPerMonth).format('0,0')
+        ) || DASH;
+    }
+
+    cancelSubscription() {
+        const {
+            numberOfCampaigns,
+
+            showPlanModal,
+            showAlert,
+            cancelSubscription,
+        } = this.props;
+        const viewsPerMonth = this.formatViewsPerMonth();
+
+        showPlanModal(false);
+
+        showAlert({
+            title: 'Cancel Your Subscription',
+            description: (<div>
+                <span>
+                    <strong>Are you sure you want to cancel your subscription?</strong>
+                    <br />
+                    <p>
+                        <br />
+                        {numberOfCampaigns > 1 ?
+                            `All ${numberOfCampaigns} of your apps will lose the ` +
+                                'exposure they have been getting!' :
+                            'Your app will lose the exposure it has been getting!'
+                        }
+                    </p>
+                </span>
+                <div className="cancel-stats">
+                    <div className="campaign-mini-stats col-md-6 text-center">
+                        <span>Current period</span>
+                        <h3>{viewsPerMonth}</h3>
+                        <span>views</span>
+                    </div>
+                    <div className="campaign-mini-stats col-md-6 text-center">
+                        <span>Later</span>
+                        <h3>0</h3>
+                        <span>views</span>
+                    </div>
+                </div>
+            </div>),
+            buttons: [
+                {
+                    text: 'Cancel my subscription',
+                    type: 'danger btn-block',
+                    onSelect: dismiss => cancelSubscription().then(() => dismiss()),
+                },
+                {
+                    text: 'Keep my subscription',
+                    type: 'default btn-block',
+                    onSelect: dismiss => dismiss(),
+                },
+            ],
+        });
     }
 
     render() {
@@ -39,19 +111,14 @@ class Billing extends Component {
             showPlanModal,
             getClientToken,
             changePaymentMethod,
-            showAlert,
             changePaymentPlan,
-            cancelSubscription,
             setPostPaymentChangePlan,
         } = this.props;
 
         const billingEnd = billingPeriod && moment(billingPeriod.cycleEnd);
         const nextDueDate = billingEnd && moment(billingEnd).add(1, 'day');
 
-        const viewsPerMonth = (
-            paymentPlan &&
-            numeral(paymentPlan.viewsPerMonth).format('0,0')
-        ) || DASH;
+        const viewsPerMonth = this.formatViewsPerMonth();
         const dueDate = (
             nextDueDate &&
             nextDueDate.format('MMM D, YYYY')
@@ -67,9 +134,9 @@ class Billing extends Component {
                 <div className="col-md-6">
                     <div className="billing-summary col-md-12">
                         <div className="row">
-                            <div className="col-md-8">
+                            <div className="col-md-7">
                                 <div className="data-stacked">
-                                    <h4>Your subscription provides</h4>
+                                    <h4>Your plan provides</h4>
                                     <h3>{viewsPerMonth} views</h3>
                                 </div>
                                 <div className="data-stacked">
@@ -80,14 +147,21 @@ class Billing extends Component {
                                     }</h3>
                                 </div>
                             </div>
-                            <div className="col-md-4 btn-wrap">
+                            <div className="col-md-5 btn-wrap">
                                 {paymentPlan && <Button
                                     bsSize="lg"
                                     bsStyle="primary"
+                                    block
                                     onClick={() => showPlanModal(true)}
                                 >
                                     Update Plan
                                 </Button>}
+                                {paymentPlan && <button
+                                    className="btn btn-link"
+                                    onClick={this.cancelSubscription}
+                                >
+                                    Cancel Plan
+                                </button>}
                             </div>
                         </div>
                     </div>
@@ -137,54 +211,6 @@ class Billing extends Component {
                 onConfirm={paymentPlanId => (
                     changePaymentPlan(paymentPlanId, page.postPlanChangeRedirect)
                 )}
-                onCancel={() => {
-                    showPlanModal(false);
-
-                    showAlert({
-                        title: 'Cancel Your Subscription',
-                        description: (<div>
-                            <span>
-                                <strong>Are you sure you want to cancel your subscription?</strong>
-                                <br />
-                                <p>
-                                    <br />
-                                    {numberOfCampaigns > 1 ?
-                                        `All ${numberOfCampaigns} of your apps will lose the ` +
-                                            'exposure they have been getting!' :
-                                        'Your app will lose the exposure it has been getting!'
-                                    }
-                                </p>
-                            </span>
-                            <div className="cancel-stats">
-                                <div className="campaign-mini-stats col-md-6 text-center">
-                                    <span>Current period</span>
-                                    <h3>{viewsPerMonth}</h3>
-                                    <span>views</span>
-                                </div>
-                                <div className="campaign-mini-stats col-md-6 text-center">
-                                    <span>Later</span>
-                                    <h3>0</h3>
-                                    <span>views</span>
-                                </div>
-                            </div>
-                        </div>),
-                        buttons: [
-                            {
-                                text: 'Cancel my subscription',
-                                type: 'danger btn-block',
-                                onSelect: dismiss => cancelSubscription().then(() => Promise.all([
-                                    dismiss(),
-                                    showPlanModal(false),
-                                ])),
-                            },
-                            {
-                                text: 'Keep my subscription',
-                                type: 'default btn-block',
-                                onSelect: dismiss => dismiss(),
-                            },
-                        ],
-                    });
-                }}
             />
         </div>);
     }
