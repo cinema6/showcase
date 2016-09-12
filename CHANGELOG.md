@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.14.0 (September 12, 2016)
+* *[v0.14.0-rc1]*
+  * Make it easier for users to cancel their subscription
+* *[/v0.14.0-rc1]*
+
 ## v0.13.0 (August 18, 2016)
 * *[v0.13.0-rc4]*
   * [FIX]: Fixed line-height issue on account summary
