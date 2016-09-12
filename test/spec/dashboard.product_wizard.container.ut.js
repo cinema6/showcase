@@ -7,8 +7,6 @@ import defer from 'promise-defer';
 import { findApps } from '../../src/actions/search';
 import {
     productSelected,
-    productEdited,
-    targetingEdited,
     goToStep,
     wizardDestroyed,
     createCampaign,
@@ -42,8 +40,6 @@ describe('ProductWizard', function() {
         };
         productWizardActions = {
             productSelected: jasmine.createSpy('productSelected()').and.callFake(productSelected),
-            productEdited: jasmine.createSpy('productEdited()').and.callFake(productEdited),
-            targetingEdited: jasmine.createSpy('targetingEdited()').and.callFake(targetingEdited),
             goToStep: jasmine.createSpy('goToStep()').and.callFake(goToStep),
             wizardDestroyed: jasmine.createSpy('wizardDestroyed()').and.callFake(wizardDestroyed),
             createCampaign: jasmine.createSpy('createCampaign()').and.callFake(createCampaign),
