@@ -10,5 +10,14 @@ module.exports = {
                 dest: '.tmp/uncompressed/<%= settings.distDir %>/index.js'
             }
         ]
+    },
+
+    server: {
+        files: [
+            {
+                src: 'server/.build/index.js',
+                dest: 'server/.build/index.min.js'
+            }
+        ]
     }
 };
