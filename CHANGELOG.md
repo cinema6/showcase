@@ -1,5 +1,10 @@
 # Showcase
 
+## v0.14.1 (September 12, 2016)
+* *[v0.14.1-rc1]*
+  * [FIX]: Make the ad preview work again
+* *[/v0.14.1-rc1]*
+
 ## v0.14.0 (September 12, 2016)
 * *[v0.14.0-rc1]*
   * Make it easier for users to cancel their subscription
