@@ -32,6 +32,15 @@ export default function WizardConfirmationModal({
                     {!freeViews && (
                         <h4>Reach thousands of potential app users</h4>
                     )}
+                    <div className="alert alert-info">
+                        You will be charged $149.99/month starting today
+                    </div>
+                    <div className="alert alert-info">
+                        You will be charged $499.99/month starting today
+                    </div>
+                    <div className="alert alert-info">
+                        You will be charged $49.99/month starting Oct 13, 2016
+                    </div>
                 </div>
                 <div className="modal-body text-center">
                     <BraintreeCreditCardForm

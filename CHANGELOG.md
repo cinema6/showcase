@@ -1,5 +1,8 @@
 # Showcase
 
+* *[v0.14.2-rc1]*
+  * Add due date to payment screen after plan selection
+
 ## v0.14.1 (September 12, 2016)
 * *[v0.14.1-rc2]*
   * [FIX]: Actually make the ad preview work again
