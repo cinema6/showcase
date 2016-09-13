@@ -1,6 +1,10 @@
 # Showcase
 
 ## v0.14.1 (September 12, 2016)
+* *[v0.14.1-rc2]*
+  * [FIX]: Actually make the ad preview work again
+* *[/v0.14.1-rc2]*
+
 * *[v0.14.1-rc1]*
   * [FIX]: Make the ad preview work again
 * *[/v0.14.1-rc1]*
