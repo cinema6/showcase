@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import BraintreeCreditCardForm from './BraintreeCreditCardForm';
 import numeral from 'numeral';
+import moment from 'moment';
 
 function format(number) {
     return numeral(number).format('0,0');
@@ -12,6 +13,8 @@ export default function WizardConfirmationModal({
     getToken,
     onSubmit,
     handleClose,
+    planPrice,
+    trialLength,
 }) {
     return (<div className="modal payment-modal fade in show" id="pmtModal" role="dialog">
         <div className="modal-dialog" role="document">
@@ -33,13 +36,13 @@ export default function WizardConfirmationModal({
                         <h4>Reach thousands of potential app users</h4>
                     )}
                     <div className="alert alert-info">
-                        You will be charged $149.99/month starting today
-                    </div>
-                    <div className="alert alert-info">
-                        You will be charged $499.99/month starting today
-                    </div>
-                    <div className="alert alert-info">
-                        You will be charged $49.99/month starting Oct 13, 2016
+                        You will be charged{
+                            planPrice ? ` $${planPrice}/month ` : ' '
+                        }starting {
+                            trialLength > 0 ?
+                                moment().add(trialLength, 'days').format('MMM D, YYYY') :
+                                'today'
+                        }
                     </div>
                 </div>
                 <div className="modal-body text-center">
@@ -79,8 +82,11 @@ WizardConfirmationModal.propTypes = {
         format: PropTypes.func.isRequired,
     }),
     freeViews: PropTypes.number.isRequired,
+    trialLength: PropTypes.number.isRequired,
+    planPrice: PropTypes.number,
 };
 
 WizardConfirmationModal.defaultProps = {
     freeViews: 0,
+    trialLength: 0,
 };

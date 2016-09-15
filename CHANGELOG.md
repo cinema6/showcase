@@ -1,6 +1,6 @@
 # Showcase
 
-* *[v0.14.2-rc1]*
+* *[v0.15.0-rc1]*
   * Add due date to payment screen after plan selection
 
 ## v0.14.1 (September 12, 2016)
