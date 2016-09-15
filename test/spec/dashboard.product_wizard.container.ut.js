@@ -187,7 +187,7 @@ describe('ProductWizard', function() {
                         maxCampaigns: 1
                     },
                     {
-                        id: 'pp-0Ek6V-0bWnuhLfQl',
+                        id: paymentPlanId,
                         price: 24.99,
                         viewsPerMonth: 4000,
                         name: 'Kid',
@@ -892,6 +892,52 @@ describe('ProductWizard', function() {
 
                             it('should be 0', function() {
                                 expect(modal.prop('freeViews')).toBe(0);
+                            });
+                        });
+                    });
+
+                    describe('trialLength', () => {
+                        it('should come from the promotions', () => {
+                            expect(modal.prop('trialLength')).toBe(14);
+                        });
+
+                        describe('if there are no promotions', function() {
+                            beforeEach(function() {
+                                wrapper.setProps({ promotions: null });
+                            });
+
+                            it('should be 0', function() {
+                                expect(modal.prop('trialLength')).toBe(0);
+                            });
+                        });
+                    });
+
+                    describe('planPrice', () => {
+                        it('should be the price of the selected plan', () => {
+                            expect(modal.prop('planPrice')).toBe(props.paymentPlans[1].price);
+                        });
+
+                        describe('if there are no paymentPlans', () => {
+                            beforeEach(() => {
+                                wrapper.setProps({
+                                    paymentPlans: null
+                                });
+                            });
+
+                            it('should be undefined', () => {
+                                expect(modal.prop('planPrice')).toBeUndefined();
+                            });
+                        });
+
+                        describe('if there is no paymentPlanId', () => {
+                            beforeEach(() => {
+                                wrapper.setProps({
+                                    paymentPlanId: undefined
+                                });
+                            });
+
+                            it('should be undefined', () => {
+                                expect(modal.prop('planPrice')).toBeUndefined();
                             });
                         });
                     });

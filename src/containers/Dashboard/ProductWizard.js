@@ -100,6 +100,7 @@ class ProductWizard extends Component {
         const promotionConfigs = _(promotions).map(`data[${paymentPlanId}]`);
         const freeViews = promotionConfigs.map('targetUsers').sum();
         const trialLength = promotionConfigs.map('trialLength').sum();
+        const planPrice = (find(paymentPlans, { id: paymentPlanId }) || {}).price;
 
         return (<div className="container main-section">
             <DocumentTitle
@@ -202,6 +203,8 @@ class ProductWizard extends Component {
             {step === 4 && (
                 <WizardConfirmationModal
                     freeViews={freeViews}
+                    trialLength={trialLength}
+                    planPrice={planPrice}
                     getToken={getClientToken}
                     handleClose={() => goToStep(2)}
                     onSubmit={payment => createCampaign({
