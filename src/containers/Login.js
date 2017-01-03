@@ -91,13 +91,6 @@ export function Login({
                     </div>
                 </div>
                 <div className="clearfix"></div>
-                <br />
-                <div className="light-text col-md-4 col-md-offset-4 col-xs-12">
-
-                    <div className="text-center">
-                        New User? <Link to="/sign-up">Sign up now</Link>
-                    </div>
-                </div>
             </div>
         </div>
     </div>);

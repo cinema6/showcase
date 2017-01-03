@@ -5,9 +5,10 @@ const proxyquire = require('proxyquire');
 describe('analytics-actions',function(){
     let lib;
     let dispatch;
-    let callAPI = jasmine.createSpy('callAPI');
+    let callAPI;
 
     beforeEach(function(){
+        callAPI = jasmine.createSpy('callAPI');
         lib = proxyquire('../../src/actions/analytics', {
             './api':  { callAPI },
             __esModule: true

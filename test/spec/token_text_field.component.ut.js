@@ -150,6 +150,7 @@ describe('TokenTextField', function() {
         describe('typing', function() {
             let input, event;
 
+            /* eslint-disable jasmine/no-unsafe-spy */
             function keyDown(keyCode = 65) {
                 const event = { preventDefault: jasmine.createSpy('preventDefault()'), keyCode };
 
@@ -157,6 +158,7 @@ describe('TokenTextField', function() {
 
                 return event;
             }
+            /* eslint-enable jasmine/no-unsafe-spy */
 
             beforeEach(function() {
                 input = findRenderedDOMComponentWithTag(component, 'input');
