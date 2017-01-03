@@ -101,9 +101,9 @@ export const callAPI = createThunk(config => dispatch => {
             [HEADER.CONTENT_TYPE]: MIME.JSON,
         },
         credentials: CREDENTIALS.SAME_ORIGIN,
-    }), {
-        body: body && JSON.stringify(body),
-    })).then(response => checkFor202(response, 15)).then(([response, responseBody]) => {
+    }), body ? {
+        body: JSON.stringify(body),
+    } : {})).then(response => checkFor202(response, 15)).then(([response, responseBody]) => {
         if (!response.ok) {
             const error = new StatusCodeError(response.status, responseBody);
 

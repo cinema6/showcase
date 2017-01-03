@@ -3,7 +3,7 @@ import React from 'react';
 import Application from './containers/Application';
 import Dashboard from './containers/Dashboard';
 import Login from './containers/Login';
-import SignUp from './containers/SignUp';
+// import SignUp from './containers/SignUp';
 import ConfirmAccount from './containers/ConfirmAccount';
 import ResendConfirmation from './containers/ResendConfirmation';
 import Account from './containers/Account';
@@ -128,7 +128,7 @@ export default function createRoutes(store) {
             </Route>
 
             <Route path="login" component={Login} onEnter={checkLoggedIn} />
-            <Route path="sign-up" component={SignUp} onEnter={checkLoggedIn} />
+            <Route path="sign-up" component={Login} onEnter={checkLoggedIn} />
             <Route path="forgot-password" component={ForgotPassword} />
             <Route path="reset-password" component={ResetPassword} />
 
